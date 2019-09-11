@@ -1,0 +1,20 @@
+[package]
+name = "szalinski-egg"
+version = "0.1.0"
+authors = ["Max Willsey <me@mwillsey.com>"]
+edition = "2018"
+
+
+[dependencies]
+log = "0.4"
+ordered-float = "1"
+symbolic_expressions = "5.0.3"
+strum = "0.15"
+strum_macros = "0.15"
+
+[dependencies.egg]
+git = "https://github.com/mwillsey/egg.git"
+rev = "fc3bb9f2fabde6ea07ab89c9b37778ca31129703"
+
+[dev-dependencies]
+env_logger = "0.6"
