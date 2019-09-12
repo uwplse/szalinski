@@ -1,5 +1,6 @@
 mod cad;
 mod rules;
+mod solve;
 
 #[cfg(test)]
 mod tests {
