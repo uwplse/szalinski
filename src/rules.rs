@@ -1,7 +1,4 @@
-use egg::{
-    pattern::Rewrite,
-    parse::ParsableLanguage,
-};
+use egg::{parse::ParsableLanguage, pattern::Rewrite};
 
 use crate::cad::Cad;
 

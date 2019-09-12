@@ -9,22 +9,25 @@ use egg::{
     pattern::Rewrite,
 };
 
+use crate::solve::{solve, VecFormula};
+
 use log::*;
 use ordered_float::NotNan;
-use strum_macros::{Display, EnumString};
 use smallvec::SmallVec;
+use strum_macros::{Display, EnumString};
 
 type EGraph = egg::egraph::EGraph<Cad, Meta>;
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]
 pub struct Cad;
 
-#[derive(Debug, PartialEq, Eq, Hash, Clone, Copy)]
+#[derive(Debug, PartialEq, Eq, Hash, Clone)]
 pub enum Constant {
     Unit,
     Empty,
     Nil,
     Float(NotNan<f64>),
+    MapI(usize, VecFormula),
 }
 
 impl std::str::FromStr for Constant {
@@ -51,6 +54,7 @@ impl fmt::Display for Constant {
             Constant::Empty => write!(f, "Empty"),
             Constant::Unit => write!(f, "Unit"),
             Constant::Float(float) => write!(f, "{:5.2}", float),
+            Constant::MapI(i, form) => write!(f, "MapI({}, {})", i, form),
         }
     }
 }
@@ -85,33 +89,54 @@ pub enum Op {
 struct Meta {
     cost: u64,
     best: RecExpr<Cad>,
+    list: Option<Vec<(NotNan<f64>, NotNan<f64>, NotNan<f64>)>>,
 }
 
 fn eval(op: Op, args: &[Constant]) -> Option<Constant> {
     use Constant::*;
+    let a = |i: usize| args[i].clone();
     match op {
         Op::Add => {
             assert_eq!(args.len(), 2);
-            match (args[0], args[1]) {
+            match (a(0), a(1)) {
                 (Float(f1), Float(f2)) => Some(Float(f1 + f2)),
                 _ => panic!(),
             }
         }
         Op::Mul => {
             assert_eq!(args.len(), 2);
-            match (args[0], args[1]) {
+            match (a(0), a(1)) {
                 (Float(f1), Float(f2)) => Some(Float(f1 * f2)),
                 _ => panic!(),
             }
         }
         Op::Div => {
             assert_eq!(args.len(), 2);
-            match (args[0], args[1]) {
+            match (a(0), a(1)) {
                 (Float(f1), Float(f2)) => Some(Float(f1 / f2)),
                 _ => panic!(),
             }
         }
         _ => None,
+    }
+}
+
+fn get_float(expr: &RecExpr<Cad>) -> NotNan<f64> {
+    match expr.as_ref() {
+        Expr::Constant(Constant::Float(f)) => f.clone(),
+        _ => panic!("Expected float, got {}", expr.to_sexp()),
+    }
+}
+
+fn get_vec(expr: &RecExpr<Cad>) -> Option<(NotNan<f64>, NotNan<f64>, NotNan<f64>)> {
+    if let Expr::Operator(Op::Vec, args) = expr.as_ref() {
+        assert_eq!(args.len(), 3);
+        let f0 = get_float(&args[0]);
+        let f1 = get_float(&args[1]);
+        let f2 = get_float(&args[2]);
+        Some((f0, f1, f2))
+    } else {
+        None
     }
 }
 
@@ -131,7 +156,7 @@ impl egg::egraph::Metadata<Cad> for Meta {
                 let const_args: Option<Vec<Constant>> = args
                     .iter()
                     .map(|meta| match meta.best.as_ref() {
-                        Expr::Constant(c) => Some(*c),
+                        Expr::Constant(c) => Some(c.clone()),
                         _ => None,
                     })
                     .collect();
@@ -144,15 +169,40 @@ impl egg::egraph::Metadata<Cad> for Meta {
             expr => expr,
         };
 
+        let list = match &expr {
+            Expr::Constant(Constant::Nil) => Some(vec![]),
+            Expr::Operator(Op::Cons, args) => {
+                assert_eq!(args.len(), 2);
+                get_vec(&args[0].best).map(|v| {
+                    let mut list = vec![v];
+                    list.extend(args[1].list.as_ref().unwrap().iter().cloned());
+                    list
+                })
+            }
+            _ => None,
+        };
+
         Self {
             best: expr.map_children(|c| c.best.clone()).into(),
             cost: Cad::cost(&expr.map_children(|c| c.cost)),
+            list,
         }
     }
 
     fn modify(eclass: &mut EClass<Cad, Self>) {
+        if let Some(list) = eclass.metadata.list.as_ref() {
+            if list.len() > 3 {
+                if let Some(formula) = solve(list) {
+                    println!("Found formula {:?}", formula);
+                    let i = list.len();
+                    eclass
+                        .nodes
+                        .push(Expr::Constant(Constant::MapI(i, formula)));
+                }
+            }
+        }
         match &eclass.metadata.best.as_ref() {
-            Expr::Constant(c) => eclass.nodes.push(Expr::Constant(*c)),
+            Expr::Constant(c) => eclass.nodes.push(Expr::Constant(c.clone())),
             Expr::Variable(v) => eclass.nodes.push(Expr::Variable(v.clone())),
             _ => (),
         }
@@ -336,10 +386,9 @@ where
 
         if applied == 0 {
             println!("Stopping early!");
-            break
+            break;
         }
     }
-
 
     let rules_time = start_time.elapsed();
     print_time("Rules time", rules_time);
@@ -389,10 +438,10 @@ fn cad_files() {
 
     let files = &[
         // "cads/soldering-fingers.csexp",
-        // "cads/tape.csexp",
+        "cads/tape.csexp",
         // "cads/dice.csexp",
         // "cads/dice-different.csexp",
-        "cads/gear_flat_inl.csexp",
+        // "cads/gear_flat_inl.csexp",
     ];
 
     for file in files {
