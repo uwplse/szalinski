@@ -1,4 +1,5 @@
 mod cad;
+mod rules;
 
 #[cfg(test)]
 mod tests {

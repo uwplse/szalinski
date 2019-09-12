@@ -12,14 +12,15 @@ use egg::{
 use log::*;
 use ordered_float::NotNan;
 use strum_macros::{Display, EnumString};
+use smallvec::SmallVec;
 
 type EGraph = egg::egraph::EGraph<Cad, Meta>;
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]
-struct Cad;
+pub struct Cad;
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone, Copy)]
-enum Constant {
+pub enum Constant {
     Unit,
     Empty,
     Nil,
@@ -55,7 +56,7 @@ impl fmt::Display for Constant {
 }
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone, EnumString, Display)]
-enum Op {
+pub enum Op {
     Float,
 
     Trans,
@@ -65,7 +66,9 @@ enum Op {
     Union,
     Diff,
 
+    MapTrans,
     FoldUnion,
+    Vec,
 
     Cons,
 
@@ -172,9 +175,12 @@ impl Language for Cad {
 
                     Op::Union => 10,
                     Op::Diff => 10,
+
                     Op::FoldUnion => 9,
+                    Op::MapTrans => 9,
 
                     Op::Cons => 3,
+                    Op::Vec => 0,
 
                     Op::Add => 3,
                     Op::Mul => 3,
@@ -188,80 +194,20 @@ impl Language for Cad {
     }
 }
 
-fn rw(name: &str, lhs: &str, rhs: &str) -> Rewrite<Cad> {
-    Cad.parse_rewrite(name, lhs, rhs).unwrap()
-}
-
-#[rustfmt::skip]
-fn rules() -> Vec<Rewrite<Cad>> {
-    vec![
-        rw("defloat", "(Float ?a)", "?a"),
-
-        rw("lift_union", "(Union ?a ?b)", "(FoldUnion Empty (Cons ?a (Cons ?b Nil)))"),
-        rw("union_rec", "(Union ?a (FoldUnion ?b ?c))", "(FoldUnion ?b (Cons ?a ?c))"),
-        // rw("union_rec2", "(Union (FoldUnion ?a ?b) ?c)", "(FoldUnion ?a (Cons ?c ?b))"),
-        rw("union_self", "(Union ?a ?a)", "?a"),
-
-        rw("union_commute", "(Union ?a ?b)", "(Union ?b ?a)"),
-
-        rw("union_trans",
-           "(Union (Trans ?x ?y ?z ?a) (Trans ?x ?y ?z ?b))",
-           "(Trans ?x ?y ?z (Union ?a ?b))"),
-
-        rw("diff_union",
-           "(Diff (Union ?a ?b) ?c)",
-           "(Union ?a (Diff ?b ?c))"),
-
-        rw("diff",
-           "(Diff (Diff ?a ?b) ?c)",
-           "(Diff ?a (Union ?b ?c))"),
-
-        // NOTE this explode the egraph
-        // rw("diff2",
-        //    "(Diff ?a (Union ?b ?c))",
-        //    "(Diff (Diff ?a ?b) ?c)"),
-
-        rw("combine_trans",
-           "(Trans ?x1 ?y1 ?z1 (Trans ?x2 ?y2 ?z2 ?a))",
-           "(Trans (+ ?x1 ?x2) (+ ?y1 ?y2) (+ ?z1 ?z2) ?a)"),
-        rw("no_trans", "(Trans 0 0 0 ?a)", "?a"),
-
-        rw("lift_scale",
-           "(Union (Scale ?x ?y ?z ?a) (Scale ?x ?y ?z ?b))",
-           "(Scale ?x ?y ?z (Union ?a ?b))"),
-
-        rw("scale_trans",
-           "(Scale ?a ?b ?c (Trans ?x ?y ?z ?m))",
-           "(Trans (* ?a ?x) (* ?b ?y) (* ?c ?z) (Scale ?a ?b ?c ?m))"),
-
-        rw("trans_scale",
-           "(Trans ?x ?y ?z (Scale ?a ?b ?c ?m))",
-           "(Scale ?a ?b ?c (Trans (/ ?x ?a) (/ ?y ?b) (/ ?z ?c) ?m))"),
-
-        rw("scale_rotate",
-           "(Scale ?a ?a ?a (Rotate ?x ?y ?z ?m))",
-           "(Rotate ?x ?y ?z (Scale ?a ?a ?a ?m))"),
-
-        rw("combine_rotate",
-           "(Rotate ?x1 ?y1 ?z1 (Rotate ?x2 ?y2 ?z2 ?a))",
-           "(Rotate (+ ?x1 ?x2) (+ ?y1 ?y2) (+ ?z1 ?z2) ?a)"),
-
-        rw("rotate_zero", "(Rotate 0 0 0 ?a)", "?a"),
-    ]
-}
-
 fn pretty(expr: &RecExpr<Cad>) -> RecExpr<Cad> {
     match expr.as_ref() {
         Expr::Operator(Op::Cons, args) => {
             assert_eq!(args.len(), 2);
-            let args = match pretty(&args[1]).as_ref() {
+            let args: SmallVec<[_; 2]> = args.iter().map(pretty).collect();
+            let args = match args[1].as_ref() {
                 Expr::Operator(Op::Cons, child_args) => {
                     let mut a = child_args.clone();
                     a.insert(0, args[0].clone());
                     a
                 }
                 Expr::Constant(Constant::Nil) => args.clone(),
-                _ => panic!(),
+                // _ => panic!("Cons of {}", p.to_sexp()),
+                _ => args.clone(),
             };
             Expr::Operator(Op::Cons, args)
         }
@@ -325,7 +271,7 @@ fn run_rules<M>(
 where
     M: Metadata<Cad>,
 {
-    let rules = rules();
+    let rules = crate::rules::rules();
     let start_time = Instant::now();
 
     'outer: for i in 0..iters {
@@ -380,13 +326,18 @@ where
         let rebuild_time = Instant::now();
         egraph.rebuild();
         print_time("Rebuild time", rebuild_time.elapsed());
+        println!(
+            "Size: n={}, e={}",
+            egraph.total_size(),
+            egraph.number_of_classes()
+        );
+
+        if applied == 0 {
+            println!("Stopping early!");
+            break
+        }
     }
 
-    println!(
-        "Final size: n={}, e={}",
-        egraph.total_size(),
-        egraph.number_of_classes()
-    );
 
     let rules_time = start_time.elapsed();
     print_time("Rules time", rules_time);
@@ -435,9 +386,10 @@ fn cad_files() {
     let _ = env_logger::builder().is_test(true).try_init();
 
     let files = &[
-        "cads/soldering-fingers.csexp",
+        // "cads/soldering-fingers.csexp",
         // "cads/tape.csexp",
-        // "cads/dice.csexp",
+        "cads/dice.csexp",
+        // "cads/dice-different.csexp",
         // "cads/gear_flat_inl.csexp",
     ];
 
@@ -449,7 +401,7 @@ fn cad_files() {
         let root = egraph.add_expr(&start_expr);
 
         let start = Instant::now();
-        run_rules(&mut egraph, root, 100, 1_000_000);
+        run_rules(&mut egraph, root, 100, 3_000_000);
         println!("Initial cost: {}", calculate_cost(&start_expr));
         print_time("Total time: ", start.elapsed());
     }
