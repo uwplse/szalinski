@@ -67,6 +67,7 @@ pub enum Op {
     Diff,
 
     MapTrans,
+    MapRotate,
     FoldUnion,
     Vec,
 
@@ -178,6 +179,7 @@ impl Language for Cad {
 
                     Op::FoldUnion => 9,
                     Op::MapTrans => 9,
+                    Op::MapRotate => 9,
 
                     Op::Cons => 3,
                     Op::Vec => 0,
@@ -388,9 +390,9 @@ fn cad_files() {
     let files = &[
         // "cads/soldering-fingers.csexp",
         // "cads/tape.csexp",
-        "cads/dice.csexp",
+        // "cads/dice.csexp",
         // "cads/dice-different.csexp",
-        // "cads/gear_flat_inl.csexp",
+        "cads/gear_flat_inl.csexp",
     ];
 
     for file in files {

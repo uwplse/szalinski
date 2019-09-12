@@ -49,6 +49,14 @@ pub fn rules() -> Vec<Rewrite<Cad>> {
         //    "(Cons (Trans ?x ?y ?z ?a) (Cons (Trans ?x2 ?y2 ?z2 ?a) ?list))",
         //    "(Cons (MapTrans (Cons (Vec ?x ?y ?z) (Cons (Vec ?x2 ?y2 ?z2) Nil))) ?list)"),
 
+        rw("nil_rotate",
+           "(Cons (Rotate ?x ?y ?z ?a) Nil)",
+           "(MapRotate (Cons (Vec ?x ?y ?z) Nil) ?a)"),
+
+        rw("cons_rotate",
+           "(Cons (Rotate ?x ?y ?z ?a) (MapRotate ?list ?a))",
+           "(MapRotate (Cons (Vec ?x ?y ?z) ?list) ?a)"),
+
         rw("diff_union",
            "(Diff (Union ?a ?b) ?c)",
            "(Union ?a (Diff ?b ?c))"),
