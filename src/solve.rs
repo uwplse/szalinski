@@ -116,6 +116,19 @@ fn deg1_test1() {
 }
 
 #[test]
+fn deg1_test2() {
+    let input = mk_test_vec(&[0.0, 0.0, 0.0, 0.0]);
+    let res = solve_deg1(&input).unwrap();
+    assert_eq!(res.a.into_inner(), 0.0);
+}
+
+#[test]
+fn deg1_fail() {
+    let input = mk_test_vec(&[0.0, 0.0, 0.0, 1.0]);
+    assert_eq!(solve_deg1(&input), None);
+}
+
+#[test]
 fn deg2_test1() {
     let input = mk_test_vec(&[0.0, 1.0, 4.0, 9.0]);
     let res = solve_deg2(&input).unwrap();
