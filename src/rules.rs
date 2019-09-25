@@ -3,7 +3,7 @@ use egg::{parse::ParsableLanguage, pattern::Rewrite};
 use crate::cad::Cad;
 
 fn rw(name: &str, lhs: &str, rhs: &str) -> Rewrite<Cad> {
-    Cad.parse_rewrite(name, lhs, rhs).unwrap()
+    Cad::parse_rewrite(name, lhs, rhs).unwrap()
 }
 
 pub fn slow_rules() -> Vec<Rewrite<Cad>> {

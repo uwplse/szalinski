@@ -15,7 +15,7 @@ smallvec = "0.6"
 
 [dependencies.egg]
 git = "https://github.com/mwillsey/egg.git"
-rev = "fc3bb9f2fabde6ea07ab89c9b37778ca31129703"
+rev = "fd963c48ba08ef4ee84b694ca1e5500cccb5107c"
 
 [dev-dependencies]
 env_logger = "0.6"

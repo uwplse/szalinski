@@ -3,10 +3,8 @@ use std::time::{Duration, Instant};
 
 use egg::{
     egraph::{EClass, Metadata},
-    expr::{Expr, Language, Name, QuestionMarkName, RecExpr},
-    extract::{calculate_cost, Extractor},
-    parse::ParsableLanguage,
-    pattern::Rewrite,
+    expr::{Expr, Language, RecExpr},
+    extract::Extractor,
 };
 
 use crate::solve::{solve, VecFormula};
@@ -14,53 +12,18 @@ use crate::solve::{solve, VecFormula};
 use log::*;
 use ordered_float::NotNan;
 use smallvec::SmallVec;
-use strum_macros::{Display, EnumString};
 
-type EGraph = egg::egraph::EGraph<Cad, Meta>;
-
-#[derive(Debug, PartialEq, Eq, Hash, Clone)]
-pub struct Cad;
+pub type EGraph = egg::egraph::EGraph<Cad, Meta>;
+pub type Num = NotNan<f64>;
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]
-pub enum Constant {
+pub enum Cad {
     Unit,
     Empty,
     Nil,
-    Float(NotNan<f64>),
+    Num(Num),
     MapI(usize, VecFormula),
-}
 
-impl std::str::FromStr for Constant {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, ()> {
-        if let Ok(v) = f64::from_str(s) {
-            let f = NotNan::new(v).unwrap();
-            return Ok(Constant::Float(f));
-        }
-
-        Ok(match s.trim() {
-            "Unit" => Constant::Unit,
-            "Empty" => Constant::Empty,
-            "Nil" => Constant::Nil,
-            _ => return Err(()),
-        })
-    }
-}
-
-impl fmt::Display for Constant {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            Constant::Nil => write!(f, "Nil"),
-            Constant::Empty => write!(f, "Empty"),
-            Constant::Unit => write!(f, "Unit"),
-            Constant::Float(float) => write!(f, "{:5.2}", float),
-            Constant::MapI(i, form) => write!(f, "MapI({}, {})", i, form),
-        }
-    }
-}
-
-#[derive(Debug, PartialEq, Eq, Hash, Clone, EnumString, Display)]
-pub enum Op {
     Float,
 
     Trans,
@@ -77,43 +40,109 @@ pub enum Op {
 
     Cons,
 
-    #[strum(serialize = "+")]
     Add,
-    #[strum(serialize = "*")]
     Mul,
-    #[strum(serialize = "/")]
     Div,
 }
 
+impl std::str::FromStr for Cad {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, ()> {
+        if let Ok(v) = f64::from_str(s) {
+            let f = NotNan::new(v).unwrap();
+            return Ok(Cad::Num(f));
+        }
+
+        Ok(match s.trim() {
+            "Unit" => Cad::Unit,
+            "Empty" => Cad::Empty,
+            "Nil" => Cad::Nil,
+
+            "Float" => Cad::Float,
+
+            "Trans" => Cad::Trans,
+            "Scale" => Cad::Scale,
+            "Rotate" => Cad::Rotate,
+
+            "Union" => Cad::Union,
+            "Diff" => Cad::Diff,
+
+            "MapTrans" => Cad::MapTrans,
+            "MapRotate" => Cad::MapRotate,
+            "FoldUnion" => Cad::FoldUnion,
+            "Vec" => Cad::Vec,
+
+            "Cons" => Cad::Cons,
+
+            "+" => Cad::Add,
+            "*" => Cad::Mul,
+            "/" => Cad::Div,
+
+            _ => return Err(()),
+        })
+    }
+}
+
+impl fmt::Display for Cad {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Cad::Nil => write!(f, "Nil"),
+            Cad::Empty => write!(f, "Empty"),
+            Cad::Unit => write!(f, "Unit"),
+            Cad::Num(float) => write!(f, "{:5.2}", float),
+            Cad::MapI(i, form) => write!(f, "MapI({}, {})", i, form),
+            Cad::Trans => write!(f, "Trans"),
+            Cad::Scale => write!(f, "Scale"),
+            Cad::Rotate => write!(f, "Rotate"),
+
+            Cad::Float => write!(f, "Float"),
+
+            Cad::Union => write!(f, "Union"),
+            Cad::Diff => write!(f, "Diff"),
+
+            Cad::MapTrans => write!(f, "MapTrans"),
+            Cad::MapRotate => write!(f, "MapRotate"),
+            Cad::FoldUnion => write!(f, "FoldUnion"),
+            Cad::Vec => write!(f, "Vec"),
+
+            Cad::Cons => write!(f, "Cons"),
+
+            Cad::Add => write!(f, "+"),
+            Cad::Mul => write!(f, "*"),
+            Cad::Div => write!(f, "/"),
+        }
+    }
+}
+
 #[derive(Debug, Clone)]
-struct Meta {
+pub struct Meta {
     cost: u64,
     best: RecExpr<Cad>,
     list: Option<Vec<(NotNan<f64>, NotNan<f64>, NotNan<f64>)>>,
 }
 
-fn eval(op: Op, args: &[Constant]) -> Option<Constant> {
-    use Constant::*;
+fn eval(op: Cad, args: &[Cad]) -> Option<Cad> {
+    use Cad::*;
     let a = |i: usize| args[i].clone();
     match op {
-        Op::Add => {
+        Add => {
             assert_eq!(args.len(), 2);
             match (a(0), a(1)) {
-                (Float(f1), Float(f2)) => Some(Float(f1 + f2)),
+                (Num(f1), Num(f2)) => Some(Num(f1 + f2)),
                 _ => panic!(),
             }
         }
-        Op::Mul => {
+        Mul => {
             assert_eq!(args.len(), 2);
             match (a(0), a(1)) {
-                (Float(f1), Float(f2)) => Some(Float(f1 * f2)),
+                (Num(f1), Num(f2)) => Some(Num(f1 * f2)),
                 _ => panic!(),
             }
         }
-        Op::Div => {
+        Div => {
             assert_eq!(args.len(), 2);
             match (a(0), a(1)) {
-                (Float(f1), Float(f2)) => Some(Float(f1 / f2)),
+                (Num(f1), Num(f2)) => Some(Num(f1 / f2)),
                 _ => panic!(),
             }
         }
@@ -122,14 +151,15 @@ fn eval(op: Op, args: &[Constant]) -> Option<Constant> {
 }
 
 fn get_float(expr: &RecExpr<Cad>) -> NotNan<f64> {
-    match expr.as_ref() {
-        Expr::Constant(Constant::Float(f)) => f.clone(),
+    match expr.as_ref().op {
+        Cad::Num(f) => f.clone(),
         _ => panic!("Expected float, got {}", expr.to_sexp()),
     }
 }
 
 fn get_vec(expr: &RecExpr<Cad>) -> Option<(NotNan<f64>, NotNan<f64>, NotNan<f64>)> {
-    if let Expr::Operator(Op::Vec, args) = expr.as_ref() {
+    if Cad::Vec == expr.as_ref().op {
+        let args = &expr.as_ref().children;
         assert_eq!(args.len(), 3);
         let f0 = get_float(&args[0]);
         let f1 = get_float(&args[1]);
@@ -151,27 +181,32 @@ impl egg::egraph::Metadata<Cad> for Meta {
     }
 
     fn make(expr: Expr<Cad, &Self>) -> Self {
-        let expr = match expr {
-            Expr::Operator(op, args) => {
-                let const_args: Option<Vec<Constant>> = args
-                    .iter()
-                    .map(|meta| match meta.best.as_ref() {
-                        Expr::Constant(c) => Some(c.clone()),
-                        _ => None,
-                    })
-                    .collect();
+        let expr = if expr.children.is_empty() {
+            expr
+        } else {
+            let args = &expr.children;
+            let const_args: Option<Vec<Cad>> = args
+                .iter()
+                .map(|meta| {
+                    let e = meta.best.as_ref();
+                    if e.children.is_empty() {
+                        Some(e.op.clone())
+                    } else {
+                        None
+                    }
+                })
+                .collect();
 
-                const_args
-                    .and_then(|a| eval(op.clone(), &a))
-                    .map(Expr::Constant)
-                    .unwrap_or_else(|| Expr::Operator(op, args))
-            }
-            expr => expr,
+            const_args
+                .and_then(|a| eval(expr.op.clone(), &a))
+                .map(Expr::unit)
+                .unwrap_or_else(|| Expr::new(expr.op.clone(), args.clone()))
         };
 
-        let list = match &expr {
-            Expr::Constant(Constant::Nil) => Some(vec![]),
-            Expr::Operator(Op::Cons, args) => {
+        let list = match &expr.op {
+            Cad::Nil => Some(vec![]),
+            Cad::Cons => {
+                let args = &expr.children;
                 assert_eq!(args.len(), 2);
                 get_vec(&args[0].best).map(|v| {
                     let mut list = vec![v];
@@ -184,7 +219,7 @@ impl egg::egraph::Metadata<Cad> for Meta {
 
         Self {
             best: expr.map_children(|c| c.best.clone()).into(),
-            cost: Cad::cost(&expr.map_children(|c| c.cost)),
+            cost: expr.map_children(|c| c.cost).cost(),
             list,
         }
     }
@@ -195,80 +230,74 @@ impl egg::egraph::Metadata<Cad> for Meta {
                 if let Some(formula) = solve(list) {
                     println!("Found formula {:?}", formula);
                     let i = list.len();
-                    eclass
-                        .nodes
-                        .push(Expr::Constant(Constant::MapI(i, formula)));
+                    eclass.nodes.push(Expr::unit(Cad::MapI(i, formula)));
                 }
             }
         }
-        match &eclass.metadata.best.as_ref() {
-            Expr::Constant(c) => eclass.nodes.push(Expr::Constant(c.clone())),
-            Expr::Variable(v) => eclass.nodes.push(Expr::Variable(v.clone())),
-            _ => (),
+        let best = eclass.metadata.best.as_ref();
+        if best.children.is_empty() {
+            eclass.nodes.push(Expr::unit(best.op.clone()))
         }
     }
 }
 
 impl Language for Cad {
-    type Constant = Constant;
-    type Operator = Op;
-    type Variable = Name;
-    type Wildcard = QuestionMarkName;
+    fn cost(&self, children: &[u64]) -> u64 {
+        use Cad::*;
+        let cost = match self {
+            Num(_) => 1,
+            MapI(_, _) => 1,
+            Unit | Empty | Nil => 1,
 
-    fn cost(node: &Expr<Self, u64>) -> u64 {
-        match node {
-            Expr::Constant(_) | Expr::Variable(_) => 1,
-            Expr::Operator(op, child_costs) => {
-                let cost = match op {
-                    Op::Trans => 10,
-                    Op::Scale => 10,
-                    Op::Rotate => 10,
+            Trans => 10,
+            Scale => 10,
+            Rotate => 10,
 
-                    Op::Union => 10,
-                    Op::Diff => 10,
+            Union => 10,
+            Diff => 10,
 
-                    Op::FoldUnion => 9,
-                    Op::MapTrans => 9,
-                    Op::MapRotate => 9,
+            FoldUnion => 9,
+            MapTrans => 9,
+            MapRotate => 9,
 
-                    Op::Cons => 3,
-                    Op::Vec => 0,
+            Cons => 3,
+            Vec => 0,
 
-                    Op::Add => 3,
-                    Op::Mul => 3,
-                    Op::Div => 3,
-                    Op::Float => 3,
-                };
+            Add => 3,
+            Mul => 3,
+            Div => 3,
+            Float => 3,
+        };
 
-                cost + child_costs.iter().sum::<u64>()
-            }
-        }
+        cost + children.iter().sum::<u64>()
     }
 }
 
 fn pretty(expr: &RecExpr<Cad>) -> RecExpr<Cad> {
-    match expr.as_ref() {
-        Expr::Operator(Op::Cons, args) => {
-            assert_eq!(args.len(), 2);
-            let args: SmallVec<[_; 2]> = args.iter().map(pretty).collect();
-            let args = match args[1].as_ref() {
-                Expr::Operator(Op::Cons, child_args) => {
-                    let mut a = child_args.clone();
-                    a.insert(0, args[0].clone());
-                    a
-                }
-                Expr::Constant(Constant::Nil) => args.clone(),
-                // _ => panic!("Cons of {}", p.to_sexp()),
-                _ => args.clone(),
-            };
-            Expr::Operator(Op::Cons, args)
-        }
-        e => e.map_children(|a| pretty(&a)),
+    let e = expr.as_ref();
+    if e.op == Cad::Cons {
+        let args = &e.children;
+        assert_eq!(args.len(), 2);
+        let args: SmallVec<[_; 2]> = args.iter().map(pretty).collect();
+        let e1 = args[1].as_ref();
+        let args = match e1.op {
+            Cad::Cons => {
+                let mut a = e1.children.clone();
+                a.insert(0, args[0].clone());
+                a
+            }
+            Cad::Nil => args.clone(),
+            // _ => panic!("Cons of {}", p.to_sexp()),
+            _ => args.clone(),
+        };
+        Expr::new(Cad::Cons, args)
+    } else {
+        e.map_children(|a| pretty(&a))
     }
     .into()
 }
 
-fn pretty_print(expr: &RecExpr<Cad>) -> String {
+pub fn pretty_print(expr: &RecExpr<Cad>) -> String {
     use std::fmt::{Result, Write};
     use symbolic_expressions::Sexp;
 
@@ -314,7 +343,7 @@ fn print_time(name: &str, duration: Duration) {
     );
 }
 
-fn run_rules<M>(
+pub fn run_rules<M>(
     egraph: &mut egg::egraph::EGraph<Cad, M>,
     root: u32,
     iters: usize,
@@ -398,62 +427,4 @@ where
     println!("Best ({})\n{}", best.cost, pretty_print(&best.expr));
 
     rules_time
-}
-
-#[test]
-fn cad_simple() {
-    let _ = env_logger::builder().is_test(true).try_init();
-    let start = "
-       (Union
-         (Trans 0 0 0  Unit)
-         (Union
-           (Trans  0 0 0  Unit)
-           (Trans  0 0 0  Unit)))";
-    let start_expr = Cad.parse_expr(start).unwrap();
-    println!("Expr: {:?}", start_expr);
-    let mut egraph = EGraph::default();
-    let root = egraph.add_expr(&start_expr);
-    run_rules(&mut egraph, root, 5, 20_000);
-}
-
-#[test]
-fn cad_simple2() {
-    let _ = env_logger::builder().is_test(true).try_init();
-    let start = "
-       (Union
-         (Trans  6 7 8  Unit)
-         (Union
-           (Trans  1 2 3  (Trans  5 5 5  Unit))
-           (Trans  4 4 4  (Trans  2 3 4  Unit))))";
-    let start_expr = Cad.parse_expr(start).unwrap();
-    println!("Expr: {:?}", start_expr);
-    let mut egraph = EGraph::default();
-    let root = egraph.add_expr(&start_expr);
-    run_rules(&mut egraph, root, 3, 20_000);
-}
-
-#[test]
-fn cad_files() {
-    let _ = env_logger::builder().is_test(true).try_init();
-
-    let files = &[
-        // "cads/soldering-fingers.csexp",
-        "cads/tape.csexp",
-        // "cads/dice.csexp",
-        // "cads/dice-different.csexp",
-        // "cads/gear_flat_inl.csexp",
-    ];
-
-    for file in files {
-        let start = std::fs::read_to_string(file).unwrap();
-        let start_expr = Cad.parse_expr(&start).unwrap();
-        println!("Expr: {:?}", start_expr);
-        let mut egraph = EGraph::default();
-        let root = egraph.add_expr(&start_expr);
-
-        let start = Instant::now();
-        run_rules(&mut egraph, root, 100, 3_000_000);
-        println!("Initial cost: {}", calculate_cost(&start_expr));
-        print_time("Total time: ", start.elapsed());
-    }
 }

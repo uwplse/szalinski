@@ -36,7 +36,7 @@ impl fmt::Display for Formula {
                     write!(f, "{:.2} * i + {:.2}", soln.a, soln.b)
                 }
             }
-            Formula::Deg2(soln) => write!(f, "foo"),
+            Formula::Deg2(_soln) => write!(f, "foo"),
         }
     }
 }
