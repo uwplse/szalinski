@@ -19,10 +19,13 @@ pub type Num = NotNan<f64>;
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]
 pub enum Cad {
     Unit,
+    Sphere,
+    Cylinder,
     Empty,
     Nil,
     Num(Num),
     MapI(usize, VecFormula),
+    Repeat,
 
     Float,
 
@@ -33,8 +36,7 @@ pub enum Cad {
     Union,
     Diff,
 
-    MapTrans,
-    MapRotate,
+    Map,
     FoldUnion,
     Vec,
 
@@ -55,8 +57,11 @@ impl std::str::FromStr for Cad {
 
         Ok(match s.trim() {
             "Unit" => Cad::Unit,
+            "Sphere" => Cad::Sphere,
+            "Cylinder" => Cad::Cylinder,
             "Empty" => Cad::Empty,
             "Nil" => Cad::Nil,
+            "Repeat" => Cad::Repeat,
 
             "Float" => Cad::Float,
 
@@ -67,8 +72,7 @@ impl std::str::FromStr for Cad {
             "Union" => Cad::Union,
             "Diff" => Cad::Diff,
 
-            "MapTrans" => Cad::MapTrans,
-            "MapRotate" => Cad::MapRotate,
+            "Map" => Cad::Map,
             "FoldUnion" => Cad::FoldUnion,
             "Vec" => Cad::Vec,
 
@@ -89,8 +93,18 @@ impl fmt::Display for Cad {
             Cad::Nil => write!(f, "Nil"),
             Cad::Empty => write!(f, "Empty"),
             Cad::Unit => write!(f, "Unit"),
-            Cad::Num(float) => write!(f, "{:5.2}", float),
+            Cad::Sphere => write!(f, "Sphere"),
+            Cad::Cylinder => write!(f, "Cylinder"),
+            Cad::Num(float) => {
+                if float.fract() == 0.0 {
+                    write!(f, "{:3.0}", float)
+                } else {
+                    write!(f, "{:5.2}", float)
+                }
+            }
             Cad::MapI(i, form) => write!(f, "MapI({}, {})", i, form),
+            Cad::Repeat => write!(f, "Repeat"),
+
             Cad::Trans => write!(f, "Trans"),
             Cad::Scale => write!(f, "Scale"),
             Cad::Rotate => write!(f, "Rotate"),
@@ -100,8 +114,7 @@ impl fmt::Display for Cad {
             Cad::Union => write!(f, "Union"),
             Cad::Diff => write!(f, "Diff"),
 
-            Cad::MapTrans => write!(f, "MapTrans"),
-            Cad::MapRotate => write!(f, "MapRotate"),
+            Cad::Map => write!(f, "Map"),
             Cad::FoldUnion => write!(f, "FoldUnion"),
             Cad::Vec => write!(f, "Vec"),
 
@@ -208,11 +221,15 @@ impl egg::egraph::Metadata<Cad> for Meta {
             Cad::Cons => {
                 let args = &expr.children;
                 assert_eq!(args.len(), 2);
-                get_vec(&args[0].best).map(|v| {
+                let v = get_vec(&args[0].best);
+                let rest = args[1].list.as_ref();
+                if let (Some(v), Some(rest)) = (v, rest) {
                     let mut list = vec![v];
-                    list.extend(args[1].list.as_ref().unwrap().iter().cloned());
-                    list
-                })
+                    list.extend(rest.iter().cloned());
+                    Some(list)
+                } else {
+                    None
+                }
             }
             _ => None,
         };
@@ -247,7 +264,8 @@ impl Language for Cad {
         let cost = match self {
             Num(_) => 1,
             MapI(_, _) => 1,
-            Unit | Empty | Nil => 1,
+            Unit | Empty | Nil | Sphere | Cylinder => 1,
+            Repeat => 5,
 
             Trans => 10,
             Scale => 10,
@@ -257,8 +275,7 @@ impl Language for Cad {
             Diff => 10,
 
             FoldUnion => 9,
-            MapTrans => 9,
-            MapRotate => 9,
+            Map => 9,
 
             Cons => 3,
             Vec => 0,

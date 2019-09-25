@@ -34,13 +34,21 @@ pub fn rules() -> Vec<Rewrite<Cad>> {
            "(Union (Trans ?x ?y ?z ?a) (Trans ?x ?y ?z ?b))",
            "(Trans ?x ?y ?z (Union ?a ?b))"),
 
+        rw("nil_repeat",
+           "(Cons ?a Nil)",
+           "(Repeat 1 ?a)"),
+
+        rw("cons_repeat",
+           "(Cons ?a (Repeat ?n ?a))",
+           "(Repeat (+ ?n 1) ?a)"),
+
         rw("nil_trans",
            "(Cons (Trans ?x ?y ?z ?a) Nil)",
-           "(MapTrans (Cons (Vec ?x ?y ?z) Nil) ?a)"),
+           "(Map Trans (Cons (Vec ?x ?y ?z) Nil) (Cons ?a Nil))"),
 
         rw("cons_trans",
-           "(Cons (Trans ?x ?y ?z ?a) (MapTrans ?list ?a))",
-           "(MapTrans (Cons (Vec ?x ?y ?z) ?list) ?a)"),
+           "(Cons (Trans ?x ?y ?z ?a) (Map Trans ?args ?b))",
+           "(Map Trans (Cons (Vec ?x ?y ?z) ?args) (Cons ?a ?b))"),
 
         // rw("cons_trans2",
         //    "(Cons (Trans ?x ?y ?z ?a) (Cons (Trans ?x2 ?y2 ?z2 ?a) ?list))",
@@ -48,11 +56,11 @@ pub fn rules() -> Vec<Rewrite<Cad>> {
 
         rw("nil_rotate",
            "(Cons (Rotate ?x ?y ?z ?a) Nil)",
-           "(MapRotate (Cons (Vec ?x ?y ?z) Nil) ?a)"),
+           "(Map Rotate (Cons (Vec ?x ?y ?z) Nil) (Cons ?a Nil))"),
 
         rw("cons_rotate",
-           "(Cons (Rotate ?x ?y ?z ?a) (MapRotate ?list ?a))",
-           "(MapRotate (Cons (Vec ?x ?y ?z) ?list) ?a)"),
+           "(Cons (Rotate ?x ?y ?z ?a) (Map Rotate ?args ?b))",
+           "(Map Rotate (Cons (Vec ?x ?y ?z) ?args) (Cons ?a ?b))"),
 
         rw("diff_union",
            "(Diff (Union ?a ?b) ?c)",

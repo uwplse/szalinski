@@ -41,10 +41,10 @@ fn cad_files() {
 
     let files = &[
         // "cads/soldering-fingers.csexp",
-        "cads/tape.csexp",
+        // "cads/tape.csexp",
         // "cads/dice.csexp",
         // "cads/dice-different.csexp",
-        // "cads/gear_flat_inl.csexp",
+        "cads/gear_flat_inl.csexp",
     ];
 
     for file in files {
