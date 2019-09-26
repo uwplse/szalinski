@@ -35,28 +35,27 @@ fn cad_simple2() {
     run_rules(&mut egraph, root, 3, 20_000);
 }
 
-#[test]
-fn cad_files() {
-    let _ = env_logger::builder().is_test(true).try_init();
+macro_rules! test_file {
+    ($name:ident, $file:literal) => {
+        #[test]
+        fn $name() {
+            let _ = env_logger::builder().is_test(true).try_init();
+            let start = std::fs::read_to_string($file).unwrap();
+            let start_expr = Cad::parse_expr(&start).unwrap();
+            println!("Expr: {:?}", start_expr);
+            let mut egraph = EGraph::default();
+            let root = egraph.add_expr(&start_expr);
 
-    let files = &[
-        // "cads/soldering-fingers.csexp",
-        // "cads/tape.csexp",
-        // "cads/dice.csexp",
-        // "cads/dice-different.csexp",
-        "cads/gear_flat_inl.csexp",
-    ];
-
-    for file in files {
-        let start = std::fs::read_to_string(file).unwrap();
-        let start_expr = Cad::parse_expr(&start).unwrap();
-        println!("Expr: {:?}", start_expr);
-        let mut egraph = EGraph::default();
-        let root = egraph.add_expr(&start_expr);
-
-        let start = Instant::now();
-        run_rules(&mut egraph, root, 100, 3_000_000);
-        println!("Initial cost: {}", calculate_cost(&start_expr));
-        println!("Total time: {:?}", start.elapsed());
-    }
+            let start = Instant::now();
+            run_rules(&mut egraph, root, 100, 3_000_000);
+            println!("Initial cost: {}", calculate_cost(&start_expr));
+            println!("Total time: {:?}", start.elapsed());
+        }
+    };
 }
+
+test_file! {soldering_fingers, "cads/soldering-fingers.csexp" }
+test_file! {tape,              "cads/tape.csexp" }
+test_file! {dice_same,         "cads/dice.csexp" }
+test_file! {dice_different,    "cads/dice-different.csexp" }
+test_file! {gear,              "cads/gear_flat_inl.csexp" }
