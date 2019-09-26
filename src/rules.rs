@@ -1,19 +1,13 @@
-use egg::{parse::ParsableLanguage, pattern::Rewrite};
+use egg::{egraph::Metadata, parse::ParsableLanguage, pattern::Rewrite};
 
 use crate::cad::Cad;
 
-fn rw(name: &str, lhs: &str, rhs: &str) -> Rewrite<Cad> {
+fn rw<M: Metadata<Cad>>(name: &str, lhs: &str, rhs: &str) -> Rewrite<Cad, M> {
     Cad::parse_rewrite(name, lhs, rhs).unwrap()
 }
 
-pub fn slow_rules() -> Vec<Rewrite<Cad>> {
-    vec![
-        // rw("union_assoc", "(Union (Union ?a ?b) ?c)", "(Union ?a (Union ?b ?c))"),
-    ]
-}
-
 #[rustfmt::skip]
-pub fn rules() -> Vec<Rewrite<Cad>> {
+pub fn rules<M: Metadata<Cad>>() -> Vec<Rewrite<Cad, M>> {
     vec![
         rw("defloat", "(Float ?a)", "?a"),
 
