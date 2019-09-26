@@ -10,6 +10,7 @@ log = "0.4"
 ordered-float = "1"
 symbolic_expressions = "5.0.3"
 smallvec = "0.6"
+indexmap = "1"
 
 [dependencies.egg]
 git = "https://github.com/mwillsey/egg.git"

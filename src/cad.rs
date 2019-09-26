@@ -40,6 +40,7 @@ pub enum Cad {
     Vec,
 
     Cons,
+    Concat,
     List,
 
     Add,
@@ -77,6 +78,7 @@ impl std::str::FromStr for Cad {
             "Vec" => Cad::Vec,
 
             "Cons" => Cad::Cons,
+            "Concat" => Cad::Concat,
             "List" => Cad::List,
 
             "+" => Cad::Add,
@@ -120,6 +122,7 @@ impl fmt::Display for Cad {
             Cad::Vec => write!(f, "Vec"),
 
             Cad::Cons => write!(f, "Cons"),
+            Cad::Concat => write!(f, "Concat"),
             Cad::List => write!(f, "List"),
 
             Cad::Add => write!(f, "+"),
@@ -208,6 +211,14 @@ impl egg::egraph::Metadata<Cad> for Meta {
         if best.children.is_empty() {
             eclass.nodes.push(Expr::unit(best.op.clone()))
         }
+        // NOTE
+        // this prunes away any conses that are hanging around if
+        // there's already a list in the eclass
+        if eclass.nodes.iter().find(|e| e.op == Cad::List).is_some() {
+            let len = eclass.nodes.len();
+            eclass.nodes.retain(|e| e.op != Cad::Cons);
+            debug!("Dropped {} conses", len - eclass.nodes.len());
+        }
     }
 }
 
@@ -231,6 +242,7 @@ impl Language for Cad {
             Map => 9,
 
             Cons => 3,
+            Concat => 3,
             List => 3,
             Vec => 0,
 

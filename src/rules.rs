@@ -1,13 +1,17 @@
 use std::rc::Rc;
 
 use egg::{
-    egraph::{Metadata, AddResult},
-    expr::{Expr, RecExpr, QuestionMarkName, Id},
+    egraph::{AddResult, Metadata},
+    expr::{Expr, Id, QuestionMarkName, RecExpr},
     parse::ParsableLanguage,
     pattern::{Applier, Rewrite, WildMap},
 };
 
-use crate::cad::{Cad, Meta, EGraph, Num};
+use indexmap::IndexMap;
+use log::*;
+use smallvec::{smallvec, SmallVec};
+
+use crate::cad::{Cad, EGraph, Meta, Num};
 
 fn rw<M: Metadata<Cad>>(name: &str, lhs: &str, rhs: &str) -> Rewrite<Cad, M> {
     Cad::parse_rewrite(name, lhs, rhs).unwrap()
@@ -31,20 +35,20 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
         // rw("union_rec2", "(Union (FoldUnion ?a ?b) ?c)", "(FoldUnion ?a (Cons ?c ?b))"),
         rw("union_self", "(Union ?a ?a)", "?a"),
 
-        rw("union_commute", "(Union ?a ?b)", "(Union ?b ?a)"),
+        // rw("union_commute", "(Union ?a ?b)", "(Union ?b ?a)"),
         // rw("union_assoc", "(Union (Union ?a ?b) ?c)", "(Union ?a (Union ?b ?c))"),
 
         rw("union_trans",
            "(Union (Trans ?x ?y ?z ?a) (Trans ?x ?y ?z ?b))",
            "(Trans ?x ?y ?z (Union ?a ?b))"),
 
-        rw("nil_repeat",
-           "(Cons ?a Nil)",
-           "(Repeat 1 ?a)"),
+        // rw("nil_repeat",
+        //    "(List ?a)",
+        //    "(Repeat 1 ?a)"),
 
-        rw("cons_repeat",
-           "(Cons ?a (Repeat ?n ?a))",
-           "(Repeat (+ ?n 1) ?a)"),
+        // rw("cons_repeat",
+        //    "(Cons ?a (Repeat ?n ?a))",
+        //    "(Repeat (+ ?n 1) ?a)"),
 
         rw("nil_trans",
            "(Cons (Trans ?x ?y ?z ?a) Nil)",
@@ -124,7 +128,8 @@ fn get_float(expr: &RecExpr<Cad>) -> Num {
     }
 }
 
-fn get_vec(expr: &RecExpr<Cad>) -> Option<(Num, Num, Num)> {
+type Vec3 = (Num, Num, Num);
+fn get_vec(expr: &RecExpr<Cad>) -> Option<Vec3> {
     if Cad::Vec == expr.as_ref().op {
         let args = &expr.as_ref().children;
         assert_eq!(args.len(), 3);
@@ -137,29 +142,55 @@ fn get_vec(expr: &RecExpr<Cad>) -> Option<(Num, Num, Num)> {
     }
 }
 
-fn get_vec_list(egraph: &EGraph, ids: &[Id]) -> Option<Vec<(Num, Num, Num)>> {
-    ids.iter().map(|id| get_vec(&egraph[*id].metadata.best)).collect()
-}
-
 #[derive(Debug)]
 struct ListApplier {
-    var: QuestionMarkName
+    var: QuestionMarkName,
 }
 
 impl Applier<Cad, Meta> for ListApplier {
     fn apply(&self, egraph: &mut EGraph, map: &WildMap) -> Vec<AddResult> {
-
         let ids = &map[&self.var];
+        let bests: Vec<_> = ids
+            .iter()
+            .map(|&id| egraph[id].metadata.best.clone())
+            .collect();
         let mut results = vec![];
 
-        if let Some(vec_list) = get_vec_list(&egraph, ids) {
+        // try to solve a list
+        if let Some(vec_list) = bests.iter().map(get_vec).collect::<Option<Vec<Vec3>>>() {
             let len = vec_list.len();
             if len > 3 {
                 if let Some(formula) = crate::solve::solve(&vec_list) {
-                    println!("Found formula {:?}", formula);
+                    debug!("Found formula {:?}", formula);
                     let e = Expr::unit(Cad::MapI(len, formula));
                     results.push(egraph.add(e))
                 }
+            }
+        }
+
+        // insert repeats
+        if !ids.is_empty() && ids.iter().all(|id| ids[0] == *id) {
+            let n = Num::new(ids.len() as f64).unwrap();
+            let len = Expr::unit(Cad::Num(n));
+            let e = Expr::new(Cad::Repeat, smallvec![egraph.add(len).id, ids[0]]);
+            results.push(egraph.add(e))
+        }
+
+        // try to partition things by operator
+        let mut parts: IndexMap<Cad, SmallVec<_>> = Default::default();
+        for (&id, b) in ids.iter().zip(&bests) {
+            let op = b.as_ref().op.clone();
+            parts.entry(op).or_default().push(id);
+        }
+        if parts.len() > 1 {
+            if parts.values().any(|ids| ids.len() > 5) {
+                debug!("Partitioning: {:?}", parts);
+                let new_ids = parts
+                    .into_iter()
+                    .map(|(op, ids)| egraph.add(Expr::new(Cad::List, ids)).id)
+                    .collect();
+                let e = Expr::new(Cad::Concat, new_ids);
+                results.push(egraph.add(e))
             }
         }
 
