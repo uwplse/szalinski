@@ -2,16 +2,15 @@ use std::fmt;
 use std::time::{Duration, Instant};
 
 use egg::{
-    egraph::{EClass, Metadata},
+    egraph::EClass,
     expr::{Expr, Language, RecExpr},
     extract::Extractor,
 };
 
-use crate::solve::{solve, VecFormula};
+use crate::solve::VecFormula;
 
 use log::*;
 use ordered_float::NotNan;
-use smallvec::SmallVec;
 
 pub type EGraph = egg::egraph::EGraph<Cad, Meta>;
 pub type Num = NotNan<f64>;
@@ -41,6 +40,7 @@ pub enum Cad {
     Vec,
 
     Cons,
+    List,
 
     Add,
     Mul,
@@ -77,6 +77,7 @@ impl std::str::FromStr for Cad {
             "Vec" => Cad::Vec,
 
             "Cons" => Cad::Cons,
+            "List" => Cad::List,
 
             "+" => Cad::Add,
             "*" => Cad::Mul,
@@ -119,6 +120,7 @@ impl fmt::Display for Cad {
             Cad::Vec => write!(f, "Vec"),
 
             Cad::Cons => write!(f, "Cons"),
+            Cad::List => write!(f, "List"),
 
             Cad::Add => write!(f, "+"),
             Cad::Mul => write!(f, "*"),
@@ -129,9 +131,8 @@ impl fmt::Display for Cad {
 
 #[derive(Debug, Clone)]
 pub struct Meta {
-    cost: u64,
-    best: RecExpr<Cad>,
-    list: Option<Vec<(NotNan<f64>, NotNan<f64>, NotNan<f64>)>>,
+    pub cost: u64,
+    pub best: RecExpr<Cad>,
 }
 
 fn eval(op: Cad, args: &[Cad]) -> Option<Cad> {
@@ -160,26 +161,6 @@ fn eval(op: Cad, args: &[Cad]) -> Option<Cad> {
             }
         }
         _ => None,
-    }
-}
-
-fn get_float(expr: &RecExpr<Cad>) -> NotNan<f64> {
-    match expr.as_ref().op {
-        Cad::Num(f) => f.clone(),
-        _ => panic!("Expected float, got {}", expr.to_sexp()),
-    }
-}
-
-fn get_vec(expr: &RecExpr<Cad>) -> Option<(NotNan<f64>, NotNan<f64>, NotNan<f64>)> {
-    if Cad::Vec == expr.as_ref().op {
-        let args = &expr.as_ref().children;
-        assert_eq!(args.len(), 3);
-        let f0 = get_float(&args[0]);
-        let f1 = get_float(&args[1]);
-        let f2 = get_float(&args[2]);
-        Some((f0, f1, f2))
-    } else {
-        None
     }
 }
 
@@ -216,41 +197,13 @@ impl egg::egraph::Metadata<Cad> for Meta {
                 .unwrap_or_else(|| Expr::new(expr.op.clone(), args.clone()))
         };
 
-        let list = match &expr.op {
-            Cad::Nil => Some(vec![]),
-            Cad::Cons => {
-                let args = &expr.children;
-                assert_eq!(args.len(), 2);
-                let v = get_vec(&args[0].best);
-                let rest = args[1].list.as_ref();
-                if let (Some(v), Some(rest)) = (v, rest) {
-                    let mut list = vec![v];
-                    list.extend(rest.iter().cloned());
-                    Some(list)
-                } else {
-                    None
-                }
-            }
-            _ => None,
-        };
-
         Self {
             best: expr.map_children(|c| c.best.clone()).into(),
             cost: expr.map_children(|c| c.cost).cost(),
-            list,
         }
     }
 
     fn modify(eclass: &mut EClass<Cad, Self>) {
-        if let Some(list) = eclass.metadata.list.as_ref() {
-            if list.len() > 3 {
-                if let Some(formula) = solve(list) {
-                    println!("Found formula {:?}", formula);
-                    let i = list.len();
-                    eclass.nodes.push(Expr::unit(Cad::MapI(i, formula)));
-                }
-            }
-        }
         let best = eclass.metadata.best.as_ref();
         if best.children.is_empty() {
             eclass.nodes.push(Expr::unit(best.op.clone()))
@@ -278,6 +231,7 @@ impl Language for Cad {
             Map => 9,
 
             Cons => 3,
+            List => 3,
             Vec => 0,
 
             Add => 3,
@@ -290,35 +244,11 @@ impl Language for Cad {
     }
 }
 
-fn pretty(expr: &RecExpr<Cad>) -> RecExpr<Cad> {
-    let e = expr.as_ref();
-    if e.op == Cad::Cons {
-        let args = &e.children;
-        assert_eq!(args.len(), 2);
-        let args: SmallVec<[_; 2]> = args.iter().map(pretty).collect();
-        let e1 = args[1].as_ref();
-        let args = match e1.op {
-            Cad::Cons => {
-                let mut a = e1.children.clone();
-                a.insert(0, args[0].clone());
-                a
-            }
-            Cad::Nil => args.clone(),
-            // _ => panic!("Cons of {}", p.to_sexp()),
-            _ => args.clone(),
-        };
-        Expr::new(Cad::Cons, args)
-    } else {
-        e.map_children(|a| pretty(&a))
-    }
-    .into()
-}
-
 pub fn pretty_print(expr: &RecExpr<Cad>) -> String {
     use std::fmt::{Result, Write};
     use symbolic_expressions::Sexp;
 
-    let sexp = pretty(&expr).to_sexp();
+    let sexp = expr.to_sexp();
 
     fn pp(buf: &mut String, sexp: &Sexp, level: usize) -> Result {
         if let Sexp::List(list) = sexp {
@@ -351,24 +281,12 @@ pub fn pretty_print(expr: &RecExpr<Cad>) -> String {
     buf
 }
 
-fn print_time(name: &str, duration: Duration) {
-    println!(
-        "{}: {}.{:06}",
-        name,
-        duration.as_secs(),
-        duration.subsec_micros()
-    );
-}
-
-pub fn run_rules<M>(
-    egraph: &mut egg::egraph::EGraph<Cad, M>,
+pub fn run_rules(
+    egraph: &mut egg::egraph::EGraph<Cad, Meta>,
     root: u32,
     iters: usize,
     limit: usize,
-) -> Duration
-where
-    M: Metadata<Cad>,
-{
+) -> Duration {
     let rules = crate::rules::rules();
     let start_time = Instant::now();
 
@@ -390,7 +308,7 @@ where
             // egraph.rebuild();
         }
 
-        print_time("Search time", search_time.elapsed());
+        println!("Search time: {:?}", search_time.elapsed());
 
         let match_time = Instant::now();
 
@@ -419,11 +337,11 @@ where
             }
         }
 
-        print_time("Match time", match_time.elapsed());
+        println!("Match time: {:?}", match_time.elapsed());
 
         let rebuild_time = Instant::now();
         egraph.rebuild();
-        print_time("Rebuild time", rebuild_time.elapsed());
+        println!("Rebuild time: {:?}", rebuild_time.elapsed());
         println!(
             "Size: n={}, e={}",
             egraph.total_size(),
@@ -437,7 +355,7 @@ where
     }
 
     let rules_time = start_time.elapsed();
-    print_time("Rules time", rules_time);
+    println!("Rules time: {:?}", rules_time);
 
     let ext = Extractor::new(&egraph);
     let best = ext.find_best(root);

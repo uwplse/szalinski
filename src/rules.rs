@@ -1,15 +1,25 @@
-use egg::{egraph::Metadata, parse::ParsableLanguage, pattern::Rewrite};
+use std::rc::Rc;
 
-use crate::cad::Cad;
+use egg::{
+    egraph::{Metadata, AddResult},
+    expr::{Expr, RecExpr, QuestionMarkName, Id},
+    parse::ParsableLanguage,
+    pattern::{Applier, Rewrite, WildMap},
+};
+
+use crate::cad::{Cad, Meta, EGraph, Num};
 
 fn rw<M: Metadata<Cad>>(name: &str, lhs: &str, rhs: &str) -> Rewrite<Cad, M> {
     Cad::parse_rewrite(name, lhs, rhs).unwrap()
 }
 
 #[rustfmt::skip]
-pub fn rules<M: Metadata<Cad>>() -> Vec<Rewrite<Cad, M>> {
+pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
     vec![
         rw("defloat", "(Float ?a)", "?a"),
+
+        rw("list_nil", "Nil", "(List)"),
+        rw("list_cons", "(Cons ?a (List ?b...))", "(List ?a ?b...)"),
 
         rw("union_nil",
            "(Union ?a ?b)",
@@ -95,5 +105,64 @@ pub fn rules<M: Metadata<Cad>>() -> Vec<Rewrite<Cad, M>> {
            "(Rotate (+ ?x1 ?x2) (+ ?y1 ?y2) (+ ?z1 ?z2) ?a)"),
 
         rw("rotate_zero", "(Rotate 0 0 0 ?a)", "?a"),
+
+        Rewrite {
+            name: "listapplier".into(),
+            lhs: Cad::parse_pattern("(List ?items...)").unwrap(),
+            applier: Rc::new(ListApplier {
+                var: "?items...".parse().unwrap(),
+            }),
+            conditions: vec![],
+        }
     ]
+}
+
+fn get_float(expr: &RecExpr<Cad>) -> Num {
+    match expr.as_ref().op {
+        Cad::Num(f) => f.clone(),
+        _ => panic!("Expected float, got {}", expr.to_sexp()),
+    }
+}
+
+fn get_vec(expr: &RecExpr<Cad>) -> Option<(Num, Num, Num)> {
+    if Cad::Vec == expr.as_ref().op {
+        let args = &expr.as_ref().children;
+        assert_eq!(args.len(), 3);
+        let f0 = get_float(&args[0]);
+        let f1 = get_float(&args[1]);
+        let f2 = get_float(&args[2]);
+        Some((f0, f1, f2))
+    } else {
+        None
+    }
+}
+
+fn get_vec_list(egraph: &EGraph, ids: &[Id]) -> Option<Vec<(Num, Num, Num)>> {
+    ids.iter().map(|id| get_vec(&egraph[*id].metadata.best)).collect()
+}
+
+#[derive(Debug)]
+struct ListApplier {
+    var: QuestionMarkName
+}
+
+impl Applier<Cad, Meta> for ListApplier {
+    fn apply(&self, egraph: &mut EGraph, map: &WildMap) -> Vec<AddResult> {
+
+        let ids = &map[&self.var];
+        let mut results = vec![];
+
+        if let Some(vec_list) = get_vec_list(&egraph, ids) {
+            let len = vec_list.len();
+            if len > 3 {
+                if let Some(formula) = crate::solve::solve(&vec_list) {
+                    println!("Found formula {:?}", formula);
+                    let e = Expr::unit(Cad::MapI(len, formula));
+                    results.push(egraph.add(e))
+                }
+            }
+        }
+
+        results
+    }
 }

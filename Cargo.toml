@@ -13,7 +13,7 @@ smallvec = "0.6"
 
 [dependencies.egg]
 git = "https://github.com/mwillsey/egg.git"
-rev = "b77c500285eec9082b699a0e484ac281ea63cae6"
+rev = "db6d79ee561d9789350909b3688e811ea2ebd16b"
 # path = "/home/mwillsey/src/egg/egg"
 
 [dev-dependencies]
