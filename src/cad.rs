@@ -244,7 +244,7 @@ impl Language for Cad {
             Cons => 3,
             Concat => 3,
             List => 3,
-            Vec => 0,
+            Vec => 2,
 
             Add => 3,
             Mul => 3,

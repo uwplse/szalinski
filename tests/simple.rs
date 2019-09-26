@@ -58,4 +58,6 @@ test_file! {soldering_fingers, "cads/soldering-fingers.csexp" }
 test_file! {tape,              "cads/tape.csexp" }
 test_file! {dice_same,         "cads/dice.csexp" }
 test_file! {dice_different,    "cads/dice-different.csexp" }
-test_file! {gear,              "cads/gear_flat_inl.csexp" }
+test_file! {gear_inl,          "cads/gear_flat_inl.csexp" }
+test_file! {two_loops,         "cads/two-loops.csexp" }
+test_file! {wardrobe,          "cads/wardrobe.csexp" }

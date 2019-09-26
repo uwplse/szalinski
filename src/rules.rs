@@ -1,4 +1,4 @@
-use std::rc::Rc;
+use std::{fmt::Debug, hash::Hash, rc::Rc};
 
 use egg::{
     egraph::{AddResult, Metadata},
@@ -147,6 +147,32 @@ struct ListApplier {
     var: QuestionMarkName,
 }
 
+// NOTE
+// partitioning is unsound right now because it will reorder elements
+fn partition_list<F, K>(egraph: &mut EGraph, ids: &[Id], mut key_fn: F) -> Option<AddResult>
+where
+    F: FnMut(usize, Id) -> K,
+    K: Hash + Eq + Debug,
+{
+    let mut parts: IndexMap<K, SmallVec<_>> = Default::default();
+    for (i, &id) in ids.iter().enumerate() {
+        let key = key_fn(i, id);
+        parts.entry(key).or_default().push(id);
+    }
+    if parts.len() > 1 {
+        if parts.values().any(|ids| ids.len() > 2) {
+            debug!("Partitioning: {:?}", parts);
+            let new_ids = parts
+                .into_iter()
+                .map(|(op, ids)| egraph.add(Expr::new(Cad::List, ids)).id)
+                .collect();
+            let e = Expr::new(Cad::Concat, new_ids);
+            return Some(egraph.add(e));
+        }
+    }
+    None
+}
+
 impl Applier<Cad, Meta> for ListApplier {
     fn apply(&self, egraph: &mut EGraph, map: &WildMap) -> Vec<AddResult> {
         let ids = &map[&self.var];
@@ -159,14 +185,22 @@ impl Applier<Cad, Meta> for ListApplier {
         // try to solve a list
         if let Some(vec_list) = bests.iter().map(get_vec).collect::<Option<Vec<Vec3>>>() {
             let len = vec_list.len();
-            if len > 3 {
+            if len > 2 {
                 if let Some(formula) = crate::solve::solve(&vec_list) {
                     debug!("Found formula {:?}", formula);
                     let e = Expr::unit(Cad::MapI(len, formula));
                     results.push(egraph.add(e))
                 }
             }
+            // try to partition things by operator
+            results.extend(partition_list(egraph, ids, |i, _| {
+                vec_list[i].0
+            }));
         }
+        // try to partition things by operator
+        results.extend(partition_list(egraph, ids, |i, _| {
+            bests[i].as_ref().op.clone()
+        }));
 
         // insert repeats
         if !ids.is_empty() && ids.iter().all(|id| ids[0] == *id) {
@@ -174,24 +208,6 @@ impl Applier<Cad, Meta> for ListApplier {
             let len = Expr::unit(Cad::Num(n));
             let e = Expr::new(Cad::Repeat, smallvec![egraph.add(len).id, ids[0]]);
             results.push(egraph.add(e))
-        }
-
-        // try to partition things by operator
-        let mut parts: IndexMap<Cad, SmallVec<_>> = Default::default();
-        for (&id, b) in ids.iter().zip(&bests) {
-            let op = b.as_ref().op.clone();
-            parts.entry(op).or_default().push(id);
-        }
-        if parts.len() > 1 {
-            if parts.values().any(|ids| ids.len() > 5) {
-                debug!("Partitioning: {:?}", parts);
-                let new_ids = parts
-                    .into_iter()
-                    .map(|(op, ids)| egraph.add(Expr::new(Cad::List, ids)).id)
-                    .collect();
-                let e = Expr::new(Cad::Concat, new_ids);
-                results.push(egraph.add(e))
-            }
         }
 
         results
