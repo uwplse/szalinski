@@ -35,7 +35,8 @@ test_file! {file_soldering_old, 51, "cads/pldi2020-eval/input/soldering.csexp" }
 test_file! {file_soldering,    457, "cads/pldi2020-eval/input/soldering.csexp.failed" }
 test_file! {file_tape,          86, "cads/pldi2020-eval/input/tape.csexp" }
 test_file! {file_dice,         193, "cads/pldi2020-eval/input/dice.csexp" }
-test_file! {file_gear,         136, "cads/pldi2020-eval/input/gear_flat.csexp" }
+test_file! {file_gear_var,     136, "cads/pldi2020-eval/input/gear_flat.csexp" }
+test_file! {file_gear_inl,     186, "cads/pldi2020-eval/input/gear_flat.csexp.failed" }
 test_file! {file_wardrobe,     319, "cads/pldi2020-eval/input/wardrobe.csexp" }
 // test_file! {dice_different,    210, "cads/dice-different.csexp" }
 // test_file! {two_loops,          81, "cads/two-loops.csexp" }
