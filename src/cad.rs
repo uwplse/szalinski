@@ -45,6 +45,7 @@ pub enum Cad {
     Cons,
     Concat,
     List,
+    Unsort,
 
     Add,
     Mul,
@@ -80,6 +81,7 @@ impl std::str::FromStr for Cad {
             "Do" => Cad::Do,
             "FoldUnion" => Cad::FoldUnion,
             "Vec" => Cad::Vec,
+            "Unsort" => Cad::Unsort,
 
             "Cons" => Cad::Cons,
             "Concat" => Cad::Concat,
@@ -132,6 +134,7 @@ impl fmt::Display for Cad {
             Cad::Cons => write!(f, "Cons"),
             Cad::Concat => write!(f, "Concat"),
             Cad::List => write!(f, "List"),
+            Cad::Unsort => write!(f, "Unsort"),
 
             Cad::Add => write!(f, "+"),
             Cad::Mul => write!(f, "*"),
@@ -255,6 +258,7 @@ impl Language for Cad {
             Cons => 3,
             Concat => 3,
             List => 3,
+            Unsort => 3,
             Vec => 2,
 
             Add => 3,
@@ -321,8 +325,6 @@ pub fn run_rules(
         let search_time = Instant::now();
 
         let mut applied = 0;
-        let mut total_matches = 0;
-        let mut last_total_matches = 0;
         let mut matches = Vec::new();
         for rule in rules.iter() {
             let ms = rule.search(&egraph);
@@ -336,27 +338,15 @@ pub fn run_rules(
         let match_time = Instant::now();
 
         for m in matches {
-            let actually_matched = m.apply_with_limit(egraph, limit);
+            let actually_matched = m.apply_with_limit(egraph, limit).len();
             if egraph.total_size() > limit {
                 error!("Node limit exceeded. {} > {}", egraph.total_size(), limit);
                 break 'outer;
             }
 
-            applied += actually_matched.len();
-            total_matches += m.len();
-
-            // log the growth of the egraph
-            if total_matches - last_total_matches > 1000 {
-                last_total_matches = total_matches;
-                let elapsed = match_time.elapsed();
-                debug!(
-                    "nodes: {}, eclasses: {}, actual: {}, total: {}, us per match: {}",
-                    egraph.total_size(),
-                    egraph.number_of_classes(),
-                    applied,
-                    total_matches,
-                    elapsed.as_micros() / total_matches as u128
-                );
+            applied += actually_matched;
+            if actually_matched > 0 {
+                println!("Applied {} {} times", m.rewrite.name, actually_matched);
             }
         }
 

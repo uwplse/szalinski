@@ -46,6 +46,20 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
            "(Union (Trans ?x ?y ?z ?a) (Trans ?x ?y ?z ?b))",
            "(Trans ?x ?y ?z (Union ?a ?b))"),
 
+        // unsort propagation
+
+        rw("unsort_map",
+           "(Map ?op (Unsort ?perm ?params) (Unsort ?perm ?cads))",
+           "(Unsort ?perm (Map ?op ?params ?cads))"),
+
+        rw("unsort_repeat",
+           "(Map ?op (Unsort ?perm ?params) (Repeat ?n ?cad))",
+           "(Unsort ?perm (Map ?op ?params (Repeat ?n ?cad)))"),
+
+        rw("unsort_fold",
+           "(FoldUnion (Unsort ?perm ?x))",
+           "(FoldUnion ?x)"),
+
         // NOTE we do these rules in ListApplier now
         // rw("nil_repeat",
         //    "(List ?a)",
@@ -176,11 +190,7 @@ impl Applier<Cad, Meta> for ListApplier {
         if let Some(vec_list) = bests.iter().map(get_vec).collect::<Option<Vec<Vec3>>>() {
             let len = vec_list.len();
             if len > 2 {
-                if let Some(formula) = crate::solve::solve(&vec_list) {
-                    debug!("Found formula {:?}", formula);
-                    let e = Expr::unit(Cad::MapI(len, formula));
-                    results.push(egraph.add(e))
-                }
+                results.extend(crate::solve::solve(egraph, &vec_list));
             }
             // // try to partition things by operator
             // results.extend(partition_list(egraph, ids, |i, _| {

@@ -1,6 +1,11 @@
 use ordered_float::NotNan;
 use std::fmt;
 
+use smallvec::smallvec;
+
+use crate::cad::{Cad, EGraph};
+use egg::{egraph::AddResult, expr::Expr};
+
 pub type Float = NotNan<f64>;
 
 fn to_float(f: usize) -> Float {
@@ -53,7 +58,7 @@ struct Deg2 {
     c: Float,
 }
 
-fn solve_deg1(vs: &Vec<Float>) -> Option<Deg1> {
+fn solve_deg1(vs: &[Float]) -> Option<Deg1> {
     let i1 = to_float(0);
     let i2 = to_float(1);
     let o1 = vs[0];
@@ -68,7 +73,7 @@ fn solve_deg1(vs: &Vec<Float>) -> Option<Deg1> {
     }
 }
 
-fn solve_deg2(vs: &Vec<Float>) -> Option<Deg2> {
+fn solve_deg2(vs: &[Float]) -> Option<Deg2> {
     let i1 = to_float(0);
     let i2 = to_float(1);
     let i3 = to_float(2);
@@ -92,51 +97,93 @@ fn solve_deg2(vs: &Vec<Float>) -> Option<Deg2> {
     }
 }
 
-pub fn solve(list: &[(Float, Float, Float)]) -> Option<VecFormula> {
+fn solve_one(xs: &[Float], ys: &[Float], zs: &[Float]) -> Option<VecFormula> {
+    let x = solve_deg1(&xs).map(Formula::Deg1)?;
+    let y = solve_deg1(&ys).map(Formula::Deg1)?;
+    let z = solve_deg1(&zs).map(Formula::Deg1)?;
+    Some(VecFormula { x, y, z })
+}
+
+pub fn solve(egraph: &mut EGraph, list: &[(Float, Float, Float)]) -> Vec<AddResult> {
     let xs: Vec<Float> = list.iter().map(|v| v.0).collect();
     let ys: Vec<Float> = list.iter().map(|v| v.1).collect();
     let zs: Vec<Float> = list.iter().map(|v| v.2).collect();
 
-    let x = solve_deg1(&xs).map(Formula::Deg1)?;
-    let y = solve_deg1(&ys).map(Formula::Deg1)?;
-    let z = solve_deg1(&zs).map(Formula::Deg1)?;
+    let len = xs.len();
+    assert_eq!(len, ys.len());
+    assert_eq!(len, zs.len());
 
-    Some(VecFormula { x, y, z })
+    let mut results = vec![];
+
+    if let Some(formula) = solve_one(&xs, &ys, &zs) {
+        let e = Expr::unit(Cad::MapI(len, formula));
+        results.push(egraph.add(e));
+    }
+
+    let perms = [
+        permutation::sort(&xs[..]),
+        permutation::sort(&ys[..]),
+        permutation::sort(&zs[..]),
+    ];
+
+    for perm in &perms {
+        let xs = perm.apply_slice(&xs[..]);
+        let ys = perm.apply_slice(&ys[..]);
+        let zs = perm.apply_slice(&zs[..]);
+        if let Some(formula) = solve_one(&xs, &ys, &zs) {
+            let p = Cad::Variable(format!("{:?}", perm));
+            let e = Expr::new(
+                Cad::Unsort,
+                smallvec![
+                    egraph.add(Expr::unit(p)).id,
+                    egraph.add(Expr::unit(Cad::MapI(len, formula))).id,
+                ],
+            );
+            results.push(egraph.add(e));
+        }
+    }
+
+    results
 }
 
-fn mk_test_vec(v: &[f64]) -> Vec<Float> {
-    v.iter().map(|v| NotNan::new(*v).unwrap()).collect()
-}
+#[cfg(test)]
+mod tests {
+    use super::*;
 
-#[test]
-fn deg1_test1() {
-    let input = mk_test_vec(&[1.0, 2.0, 3.0, 4.0]);
-    let res = solve_deg1(&input).unwrap();
-    assert_eq!(res.a.into_inner(), 1.0);
-}
+    fn mk_test_vec(v: &[f64]) -> Vec<Float> {
+        v.iter().map(|v| NotNan::new(*v).unwrap()).collect()
+    }
 
-#[test]
-fn deg1_test2() {
-    let input = mk_test_vec(&[0.0, 0.0, 0.0, 0.0]);
-    let res = solve_deg1(&input).unwrap();
-    assert_eq!(res.a.into_inner(), 0.0);
-}
+    #[test]
+    fn deg1_test1() {
+        let input = mk_test_vec(&[1.0, 2.0, 3.0, 4.0]);
+        let res = solve_deg1(&input).unwrap();
+        assert_eq!(res.a.into_inner(), 1.0);
+    }
 
-#[test]
-fn deg1_fail() {
-    let input = mk_test_vec(&[0.0, 0.0, 0.0, 1.0]);
-    assert_eq!(solve_deg1(&input), None);
-}
+    #[test]
+    fn deg1_test2() {
+        let input = mk_test_vec(&[0.0, 0.0, 0.0, 0.0]);
+        let res = solve_deg1(&input).unwrap();
+        assert_eq!(res.a.into_inner(), 0.0);
+    }
 
-#[test]
-fn deg2_test1() {
-    let input = mk_test_vec(&[0.0, 1.0, 4.0, 9.0]);
-    let res = solve_deg2(&input).unwrap();
-    assert_eq!(res.a.into_inner(), 1.0);
-}
+    #[test]
+    fn deg1_fail() {
+        let input = mk_test_vec(&[0.0, 0.0, 0.0, 1.0]);
+        assert_eq!(solve_deg1(&input), None);
+    }
 
-#[test]
-fn deg2_fail() {
-    let input = mk_test_vec(&[0.0, 1.0, 14.0, 9.0]);
-    assert_eq!(solve_deg2(&input), None);
+    #[test]
+    fn deg2_test1() {
+        let input = mk_test_vec(&[0.0, 1.0, 4.0, 9.0]);
+        let res = solve_deg2(&input).unwrap();
+        assert_eq!(res.a.into_inner(), 1.0);
+    }
+
+    #[test]
+    fn deg2_fail() {
+        let input = mk_test_vec(&[0.0, 1.0, 14.0, 9.0]);
+        assert_eq!(solve_deg2(&input), None);
+    }
 }

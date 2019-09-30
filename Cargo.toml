@@ -11,10 +11,11 @@ ordered-float = "1"
 symbolic_expressions = "5.0.3"
 smallvec = "0.6"
 indexmap = "1"
+permutation = "0.2.5"
 
 [dependencies.egg]
 git = "https://github.com/mwillsey/egg.git"
-rev = "db6d79ee561d9789350909b3688e811ea2ebd16b"
+rev = "ece7bdfb4d818fcf4f31eb5af3a0dfffb8c4e371"
 # path = "/home/mwillsey/src/egg/egg"
 
 [dev-dependencies]
