@@ -192,15 +192,16 @@ impl Applier<Cad, Meta> for ListApplier {
                     results.push(egraph.add(e))
                 }
             }
-            // try to partition things by operator
-            results.extend(partition_list(egraph, ids, |i, _| {
-                vec_list[i].0
-            }));
+            // // try to partition things by operator
+            // results.extend(partition_list(egraph, ids, |i, _| {
+            //     vec_list[i].0
+            // }));
         }
-        // try to partition things by operator
-        results.extend(partition_list(egraph, ids, |i, _| {
-            bests[i].as_ref().op.clone()
-        }));
+
+        // // try to partition things by operator
+        // results.extend(partition_list(egraph, ids, |i, _| {
+        //     bests[i].as_ref().op.clone()
+        // }));
 
         // insert repeats
         if !ids.is_empty() && ids.iter().all(|id| ids[0] == *id) {
