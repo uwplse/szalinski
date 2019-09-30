@@ -36,7 +36,7 @@ fn cad_simple2() {
 }
 
 macro_rules! test_file {
-    ($name:ident, $file:literal) => {
+    ($name:ident, $cost:expr,  $file:literal) => {
         #[test]
         fn $name() {
             let _ = env_logger::builder().is_test(true).try_init();
@@ -47,17 +47,18 @@ macro_rules! test_file {
             let root = egraph.add_expr(&start_expr);
 
             let start = Instant::now();
-            run_rules(&mut egraph, root, 100, 3_000_000);
+            let best = run_rules(&mut egraph, root, 100, 3_000_000);
             println!("Initial cost: {}", calculate_cost(&start_expr));
             println!("Total time: {:?}", start.elapsed());
+            assert_eq!(best.cost, $cost);
         }
     };
 }
 
-test_file! {soldering_fingers, "cads/soldering-fingers.csexp" }
-test_file! {tape,              "cads/tape.csexp" }
-test_file! {dice_same,         "cads/dice.csexp" }
-test_file! {dice_different,    "cads/dice-different.csexp" }
-test_file! {gear_inl,          "cads/gear_flat_inl.csexp" }
-test_file! {two_loops,         "cads/two-loops.csexp" }
-test_file! {wardrobe,          "cads/wardrobe.csexp" }
+test_file! {soldering_fingers, 457, "cads/soldering-fingers.csexp" }
+test_file! {tape,               86, "cads/tape.csexp" }
+test_file! {dice_same,         193, "cads/dice.csexp" }
+test_file! {dice_different,    210, "cads/dice-different.csexp" }
+test_file! {gear_inl,          186, "cads/gear_flat_inl.csexp" }
+test_file! {two_loops,          81, "cads/two-loops.csexp" }
+test_file! {wardrobe,          319, "cads/wardrobe.csexp" }
