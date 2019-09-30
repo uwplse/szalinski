@@ -1,6 +1,0 @@
-(Union (Trans (Float -5)  (Float 2) (Float 2) (Scale (Float 0.75) (Float 0.75) (Float 0.75) Sphere))
-  (Union (Trans (Float -5)  (Float 2) (Float 0) (Scale (Float 0.75) (Float 0.75) (Float 0.75) Sphere))
-  (Union (Trans (Float -5)  (Float 2) (Float -2) (Scale (Float 0.75) (Float 0.75) (Float 0.75) Sphere))
-  (Union (Trans (Float -5)  (Float -2) (Float 2) (Scale (Float 0.75) (Float 0.75) (Float 0.75) Sphere))
-  (Union (Trans (Float -5)  (Float -2) (Float 0) (Scale (Float 0.75) (Float 0.75) (Float 0.75) Sphere))
-         (Trans (Float -5)  (Float -2) (Float -2) (Scale (Float 0.75) (Float 0.75) (Float 0.75) Sphere)))))))
