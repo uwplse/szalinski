@@ -68,9 +68,13 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
         //    "(Diff ?a (Union ?b ?c))",
         //    "(Diff (Diff ?a ?b) ?c)"),
 
-        rw("combine_op",
-           "(Do ?op (Vec ?a ?b ?c) (Do ?op (Vec ?d ?e ?f) ?cad))",
-           "(Do ?op (Vec (+ ?a ?d) (+ ?b ?e) (+ ?c ?f)) ?cad)"),
+        // NOTE these explode graph on cads/pldi2020-eval/input/cnc_endmills_holder_nohull.csexp
+        // rw("combine_trans",
+        //    "(Trans ?a ?b ?c (Trans ?d ?e ?f ?cad))",
+        //    "(Trans (+ ?a ?d) (+ ?b ?e) (+ ?c ?f) ?cad)"),
+        // rw("combine_rotate",
+        //    "(Rotate ?a ?b ?c (Rotate ?d ?e ?f ?cad))",
+        //    "(Rotate (+ ?a ?d) (+ ?b ?e) (+ ?c ?f) ?cad)"),
 
         rw("lift_op",
            "(Union (Do ?op ?params ?a) (Do ?op ?params ?b))",
