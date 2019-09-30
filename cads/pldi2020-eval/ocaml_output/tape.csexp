@@ -1,0 +1,6 @@
+(Diff (Trans (Float -57) (Float -3) (Float 3) Unit)
+ (Fold (FunNm MkUnion) Empty
+  (Mapi (Var i)
+   ((FunNm Trans)
+    ((Float -51) (Float -5) (Add (Float 6) (Mul (Float 16) (Var i)))))
+   (Repeat Unit 10))))

@@ -1,0 +1,12 @@
+(Diff (Scale (Float 20) (Float 20) (Float 3) Unit)
+ (Fold (FunNm MkUnion) Empty
+  (Fold
+   (Fun (Var i)
+    (Fold
+     (Fun (Var j)
+      (Trans (Add (Float 15) (Mul (Float -10) (Var i)))
+       (Add (Float 5) (Mul (Float 10) (Var j))) (Float 1.5)
+       (Scale (Float 3) (Float 3) (Float 3) Hexagon)))
+     Nil (Cons (Int 0) (Cons (Int 1) Nil))))
+   Nil (Cons (Int 0) (Cons (Int 1) Nil)))))
+

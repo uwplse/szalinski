@@ -1,0 +1,7 @@
+(Union
+  (Union
+    (Scale (Float 69.5000000000) (Float 28.0000000000) (Float 1.2000000000)(Trans (Float -0.5000000000) (Float -0.5000000000) (Float -0.5000000000) Unit ))
+    (Diff
+    (Trans (Float 0.0000000000) (Float 0.0000000000) (Float 1.2000000000)(Scale (Float 66.9500000000) (Float 25.3000000000) (Float 4.8000000000)(Trans (Float -0.5000000000) (Float -0.5000000000) (Float -0.5000000000) Unit )))
+    (Trans (Float 0.0000000000) (Float 0.0000000000) (Float 1.2000000000)(Scale (Float 64.7000000000) (Float 23.2000000000) (Float 4.8000000000)(Trans (Float -0.5000000000) (Float -0.5000000000) (Float -0.5000000000) Unit ))))
+  ) Empty )

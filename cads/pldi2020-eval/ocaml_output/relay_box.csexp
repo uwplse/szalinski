@@ -1,0 +1,8 @@
+(Fold (FunNm MkUnion) Empty
+ (Cons
+  (Scale (Float 0) (Float 0) (Float 1.2)
+   (Trans (Float -0.5) (Float -0.5) (Float -0.5) Unit))
+  (Cons
+   (Scale (Float 69.5) (Float 28) (Float 1.2)
+    (Trans (Float -0.5) (Float -0.5) (Float -0.5) Unit))
+   Nil)))

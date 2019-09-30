@@ -1,0 +1,13 @@
+let a = helix 20 3 1 40 in
+union a (rotateZ 180 a)
+
+where
+
+let helix h t r n =
+  let aux i x = trans (0, 0, i * h / n) x in
+  let u = trans (r, 0, 0) unit3 in
+  n |> range
+    |> map (mul (360 * t / n))
+    |> map (flip rotateZ u)
+    |> mapi aux
+    |> fold union empty3

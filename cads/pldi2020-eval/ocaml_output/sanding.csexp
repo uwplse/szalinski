@@ -1,0 +1,5 @@
+(Fold (FunNm MkUnion) Empty
+ (Mapi (Var i)
+  ((FunNm Trans)
+   ((Float 0) (Add (Float 0) (Mul (Float 26.6) (Var i))) (Float 0)))
+  (Repeat External 6)))

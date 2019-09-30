@@ -1,0 +1,57 @@
+(Union
+ (Trans (Float 0) (Float 11) (Float 0)
+  (Diff (Scale (Float 50) (Float 50) (Float 1) Cylinder)
+   (Scale (Float 35) (Float 35) (Float 1) Cylinder)))
+ (Union
+  (Union
+   (Trans (Float -35) (Float 46) (Float 0)
+    (Scale (Float 17) (Float 0.5) (Float 17) Unit))
+   (Union
+    (Trans (Float -45) (Float 29) (Float 0)
+     (Scale (Float 17) (Float 0.5) (Float 17) Unit))
+    (Fold (FunNm MkUnion) Empty
+     (Mapi (Var i)
+      ((FunNm Trans)
+       ((Add (Float -50)
+         (Add (Mul (Float 2.52) (Var i))
+          (Mul (Float 2.49) (Mul (Var i) (Var i)))))
+        (Add (Float 12) (Mul (Float -17) (Var i))) (Float 0)))
+      (Mapi (Var i) ((FunNm Scale) ((Float 17) (Float 0.5) (Float 17)))
+       (Repeat Unit 3))))))
+  (Diff
+   (Trans (Float -7) (Float -39) (Float 0)
+    (Scale (Float 60) (Float 100) (Float 30) Unit))
+   (Union
+    (Trans (Float -6) (Float -37) (Float 5)
+     (Scale (Float 58) (Float 12) (Float 30) Unit))
+    (Union
+     (Trans (Float -6) (Float -23) (Float 5)
+      (Scale (Float 58) (Float 12) (Float 30) Unit))
+     (Union
+      (Trans (Float 30) (Float -9) (Float 5)
+       (Scale (Float 22) (Float 12) (Float 30) Unit))
+      (Union
+       (Trans (Float 30) (Float 5) (Float 5)
+        (Scale (Float 22) (Float 12) (Float 30) Unit))
+       (Fold (FunNm MkUnion) Empty
+        (Mapi (Var i)
+         ((FunNm Trans)
+          ((Add (Float 30)
+            (Add (Mul (Float 17.98) (Var i))
+             (Mul (Float -18) (Mul (Var i) (Var i)))))
+           (Add (Float 19)
+            (Add (Mul (Float 42) (Var i))
+             (Mul (Float -28) (Mul (Var i) (Var i)))))
+           (Float 5)))
+         (Mapi (Var i)
+          ((FunNm Scale)
+           ((Add (Float 22)
+             (Add (Mul (Float -5.98) (Var i))
+              (Mul (Float 6) (Mul (Var i) (Var i)))))
+            (Add (Float 12)
+             (Add (Mul (Float 1.5) (Var i))
+              (Mul (Float 13.5) (Mul (Var i) (Var i)))))
+            (Add (Float 30)
+             (Add (Mul (Float -9.98) (Var i))
+              (Mul (Float 10) (Mul (Var i) (Var i)))))))
+          (Repeat Unit 3)))))))))))

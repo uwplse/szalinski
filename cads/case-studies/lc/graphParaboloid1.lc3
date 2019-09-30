@@ -1,0 +1,20 @@
+let func x y =
+  x*x + y*y
+in
+graph func -3 -3 5 5 5 5
+
+where
+
+let graph f x0 y0 dx dy nx ny =
+  nx |> range
+     |> map (flip div nx)
+     |> map (mul dx)
+     |> map (add x0)
+     |> map (fun x ->
+               ny |> range
+                  |> map (flip div ny)
+                  |> map (mul dy)
+                  |> map (add y0)
+                  |> map (fun y -> trans (x, y, 0) (scale (dx / nx, dy / ny, f x y) unit3))
+                  |> fold union empty3)
+     |> fold union empty3

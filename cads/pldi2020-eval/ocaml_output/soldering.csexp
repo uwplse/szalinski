@@ -1,0 +1,6 @@
+(Diff External
+ (Fold (FunNm MkUnion) Empty
+  (Mapi (Var i)
+   ((FunNm Trans)
+    ((Float 0) (Add (Float 11) (Mul (Float 9) (Var i))) (Float 0)))
+   (Repeat Chopper 5))))

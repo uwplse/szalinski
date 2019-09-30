@@ -1,0 +1,11 @@
+(Diff
+  External
+  (Union
+    (Trans (Float 0) (Float 11) (Float 0) Chopper)
+    (Union
+      (Trans (Float 0) (Float 20) (Float 0) Chopper)
+      (Union
+        (Trans (Float 0) (Float 29) (Float 0) Chopper)
+        (Union
+          (Trans (Float 0) (Float 38) (float 0) Chopper)
+          (Trans (Float 0) (Float 47) (float 0) Chopper))))))

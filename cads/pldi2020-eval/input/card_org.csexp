@@ -1,0 +1,16 @@
+(Union
+  (Trans (Float 0.0) (Float 0.0) (Float 0.0) External)
+  (Union
+  (Trans (Float 0.0) (Float 20.0) (Float 0.0) External)
+  (Union
+  (Trans (Float 0.0) (Float 40.0) (Float 0.0) External)
+  (Union
+  (Trans (Float 0.0) (Float 60.0) (Float 0.0) External)
+  (Union
+  (Trans (Float 0.0) (Float 80.0) (Float 0.0) External)
+  (Union
+  (Trans (Float 0.0) (Float 100.0) (Float 0.0) External)
+  (Union
+  (Trans (Float 0.0) (Float 120.0) (Float 0.0) External)
+  (Trans (Float 0.0) (Float 140.0) (Float 0.0) External))))))))
+

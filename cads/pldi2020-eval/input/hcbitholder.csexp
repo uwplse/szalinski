@@ -1,0 +1,6 @@
+(Diff (Scale (Float 20) (Float 20) (Float 3) Unit)
+ (Union (Trans (Float 15) (Float 5) (Float 1.5) (Scale (Float 3.0) (Float 3.0) (Float 3.0) Hexagon))
+  (Union (Trans (Float 15) (Float 15) (Float 1.5) (Scale (Float 3.0) (Float 3.0) (Float 3.0) Hexagon))
+   (Union (Trans (Float 5) (Float 5) (Float 1.5) (Scale (Float 3.0) (Float 3.0) (Float 3.0) Hexagon))
+    (Trans (Float 5) (Float 15) (Float 1.5) (Scale (Float 3.0) (Float 3.0) (Float 3.0) Hexagon))))))
+ 

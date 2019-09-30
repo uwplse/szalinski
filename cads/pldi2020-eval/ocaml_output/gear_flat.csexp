@@ -1,0 +1,6 @@
+(Diff (Diff (Union (Scale (Float 80) (Float 80) (Float 100) Cylinder) (Scale
+(Float 120) (Float 120) (Float 50) Cylinder)) (Trans (Float 0) (Float 0) (Float
+-1) (Scale (Float 25) (Float 25) (Float 102) Cylinder))) (Fold (FunNm MkUnion)
+Empty (Mapi (Var i) ((FunNm Rotate) ((Float 0) (Float 0) (Div (Mul (Float 360)
+(Var i)) (Float 60)))) (Mapi (Var i) ((FunNm Trans) ((Float 125) (Float 0)
+(Float 0))) (Repeat Tooth 60)))))
