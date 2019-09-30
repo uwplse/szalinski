@@ -23,6 +23,8 @@ pub enum Cad {
     Empty,
     Nil,
     Num(Num),
+    Variable(String),
+
     MapI(usize, VecFormula),
     Repeat,
 
@@ -87,7 +89,10 @@ impl std::str::FromStr for Cad {
             "*" => Cad::Mul,
             "/" => Cad::Div,
 
-            _ => return Err(()),
+            s => {
+                println!("Parsing a variable: {}", s);
+                Cad::Variable(s.into())
+            }
         })
     }
 }
@@ -131,6 +136,8 @@ impl fmt::Display for Cad {
             Cad::Add => write!(f, "+"),
             Cad::Mul => write!(f, "*"),
             Cad::Div => write!(f, "/"),
+
+            Cad::Variable(s) => write!(f, "var'{}'", s),
         }
     }
 }
@@ -254,6 +261,8 @@ impl Language for Cad {
             Mul => 3,
             Div => 3,
             Float => 3,
+
+            Variable(_) => 3,
         };
 
         cost + children.iter().sum::<u64>()
