@@ -1,10 +1,10 @@
 use std::fmt;
-use std::time::{Duration, Instant};
+use std::time::Instant;
 
 use egg::{
     egraph::EClass,
     expr::{Expr, Language, RecExpr},
-    extract::Extractor,
+    extract::{CostExpr, Extractor},
 };
 
 use crate::solve::VecFormula;
@@ -36,6 +36,7 @@ pub enum Cad {
     Diff,
 
     Map,
+    Do,
     FoldUnion,
     Vec,
 
@@ -74,6 +75,7 @@ impl std::str::FromStr for Cad {
             "Diff" => Cad::Diff,
 
             "Map" => Cad::Map,
+            "Do" => Cad::Do,
             "FoldUnion" => Cad::FoldUnion,
             "Vec" => Cad::Vec,
 
@@ -118,6 +120,7 @@ impl fmt::Display for Cad {
             Cad::Diff => write!(f, "Diff"),
 
             Cad::Map => write!(f, "Map"),
+            Cad::Do => write!(f, "Do"),
             Cad::FoldUnion => write!(f, "FoldUnion"),
             Cad::Vec => write!(f, "Vec"),
 
@@ -240,6 +243,7 @@ impl Language for Cad {
 
             FoldUnion => 9,
             Map => 9,
+            Do => 3,
 
             Cons => 3,
             Concat => 3,
@@ -298,7 +302,7 @@ pub fn run_rules(
     root: u32,
     iters: usize,
     limit: usize,
-) -> Duration {
+) -> CostExpr<Cad> {
     let rules = crate::rules::rules();
     let start_time = Instant::now();
 
@@ -316,8 +320,6 @@ pub fn run_rules(
             if !ms.is_empty() {
                 matches.push(ms);
             }
-            // rule.run(&mut egraph);
-            // egraph.rebuild();
         }
 
         println!("Search time: {:?}", search_time.elapsed());
@@ -373,5 +375,5 @@ pub fn run_rules(
     let best = ext.find_best(root);
     println!("Best ({})\n{}", best.cost, pretty_print(&best.expr));
 
-    rules_time
+    best
 }

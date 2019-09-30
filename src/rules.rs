@@ -25,23 +25,28 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
         rw("list_nil", "Nil", "(List)"),
         rw("list_cons", "(Cons ?a (List ?b...))", "(List ?a ?b...)"),
 
-        rw("union_nil",
-           "(Union ?a ?b)",
-           "(FoldUnion Empty (Cons ?a (Cons ?b Nil)))"),
+        rw("union_nil", "(Union ?a ?b)", "(FoldUnion (Cons ?a (Cons ?b Nil)))"),
+        rw("union_cons", "(Union ?a (FoldUnion ?list))", "(FoldUnion (Cons ?a ?list))"),
 
-        rw("union_cons",
-           "(Union ?a (FoldUnion ?b ?c))",
-           "(FoldUnion ?b (Cons ?a ?c))"),
-        // rw("union_rec2", "(Union (FoldUnion ?a ?b) ?c)", "(FoldUnion ?a (Cons ?c ?b))"),
-        rw("union_self", "(Union ?a ?a)", "?a"),
+        rw("do_trans",  "(Trans  ?x ?y ?z ?a)", "(Do Trans  (Vec ?x ?y ?z) ?a)"),
+        rw("do_rotate", "(Rotate ?x ?y ?z ?a)", "(Do Rotate (Vec ?x ?y ?z) ?a)"),
+        rw("do_scale",  "(Scale  ?x ?y ?z ?a)", "(Do Scale  (Vec ?x ?y ?z) ?a)"),
+        rw("undo_trans",  "(Do Trans  (Vec ?x ?y ?z) ?a)", "(Trans  ?x ?y ?z ?a)"),
+        rw("undo_rotate", "(Do Rotate (Vec ?x ?y ?z) ?a)", "(Rotate ?x ?y ?z ?a)"),
+        rw("undo_scale",  "(Do Scale  (Vec ?x ?y ?z) ?a)", "(Scale  ?x ?y ?z ?a)"),
 
-        // rw("union_commute", "(Union ?a ?b)", "(Union ?b ?a)"),
-        // rw("union_assoc", "(Union (Union ?a ?b) ?c)", "(Union ?a (Union ?b ?c))"),
+        rw("map_nil",
+           "(Cons (Do ?op ?param ?cad) Nil)",
+           "(Map ?op (Cons ?param Nil) (Cons ?cad Nil))"),
+        rw("map_cons",
+           "(Cons (Do ?op ?param ?cad) (Map ?op ?params ?cads))",
+           "(Map ?op (Cons ?param ?params) (Cons ?cad ?cads))"),
 
         rw("union_trans",
            "(Union (Trans ?x ?y ?z ?a) (Trans ?x ?y ?z ?b))",
            "(Trans ?x ?y ?z (Union ?a ?b))"),
 
+        // NOTE we do these rules in ListApplier now
         // rw("nil_repeat",
         //    "(List ?a)",
         //    "(Repeat 1 ?a)"),
@@ -49,26 +54,6 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
         // rw("cons_repeat",
         //    "(Cons ?a (Repeat ?n ?a))",
         //    "(Repeat (+ ?n 1) ?a)"),
-
-        rw("nil_trans",
-           "(Cons (Trans ?x ?y ?z ?a) Nil)",
-           "(Map Trans (Cons (Vec ?x ?y ?z) Nil) (Cons ?a Nil))"),
-
-        rw("cons_trans",
-           "(Cons (Trans ?x ?y ?z ?a) (Map Trans ?args ?b))",
-           "(Map Trans (Cons (Vec ?x ?y ?z) ?args) (Cons ?a ?b))"),
-
-        // rw("cons_trans2",
-        //    "(Cons (Trans ?x ?y ?z ?a) (Cons (Trans ?x2 ?y2 ?z2 ?a) ?list))",
-        //    "(Cons (MapTrans (Cons (Vec ?x ?y ?z) (Cons (Vec ?x2 ?y2 ?z2) Nil))) ?list)"),
-
-        rw("nil_rotate",
-           "(Cons (Rotate ?x ?y ?z ?a) Nil)",
-           "(Map Rotate (Cons (Vec ?x ?y ?z) Nil) (Cons ?a Nil))"),
-
-        rw("cons_rotate",
-           "(Cons (Rotate ?x ?y ?z ?a) (Map Rotate ?args ?b))",
-           "(Map Rotate (Cons (Vec ?x ?y ?z) ?args) (Cons ?a ?b))"),
 
         rw("diff_union",
            "(Diff (Union ?a ?b) ?c)",
@@ -83,14 +68,17 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
         //    "(Diff ?a (Union ?b ?c))",
         //    "(Diff (Diff ?a ?b) ?c)"),
 
-        rw("combine_trans",
-           "(Trans ?x1 ?y1 ?z1 (Trans ?x2 ?y2 ?z2 ?a))",
-           "(Trans (+ ?x1 ?x2) (+ ?y1 ?y2) (+ ?z1 ?z2) ?a)"),
-        rw("no_trans", "(Trans 0 0 0 ?a)", "?a"),
+        rw("combine_op",
+           "(Do ?op (Vec ?a ?b ?c) (Do ?op (Vec ?d ?e ?f) ?cad))",
+           "(Do ?op (Vec (+ ?a ?d) (+ ?b ?e) (+ ?c ?f)) ?cad)"),
 
-        rw("lift_scale",
-           "(Union (Scale ?x ?y ?z ?a) (Scale ?x ?y ?z ?b))",
-           "(Scale ?x ?y ?z (Union ?a ?b))"),
+        rw("lift_op",
+           "(Union (Do ?op ?params ?a) (Do ?op ?params ?b))",
+           "(Do ?op ?params (Union ?a ?b))"),
+
+
+        rw("rotate_zero", "(Rotate 0 0 0 ?a)", "?a"),
+        rw("trans_zero", "(Trans 0 0 0 ?a)", "?a"),
 
         rw("scale_trans",
            "(Scale ?a ?b ?c (Trans ?x ?y ?z ?m))",
@@ -104,11 +92,9 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
            "(Scale ?a ?a ?a (Rotate ?x ?y ?z ?m))",
            "(Rotate ?x ?y ?z (Scale ?a ?a ?a ?m))"),
 
-        rw("combine_rotate",
-           "(Rotate ?x1 ?y1 ?z1 (Rotate ?x2 ?y2 ?z2 ?a))",
-           "(Rotate (+ ?x1 ?x2) (+ ?y1 ?y2) (+ ?z1 ?z2) ?a)"),
-
-        rw("rotate_zero", "(Rotate 0 0 0 ?a)", "?a"),
+        rw("rotate_scale",
+           "(Scale ?a ?a ?a (Rotate ?x ?y ?z ?m))",
+           "(Rotate ?x ?y ?z (Scale ?a ?a ?a ?m))"),
 
         Rewrite {
             name: "listapplier".into(),
