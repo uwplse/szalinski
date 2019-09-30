@@ -1,0 +1,545 @@
+(Diff (Scale (Float 60) (Float 120) (Float 30) Unit)
+ (Fold (FunNm MkUnion) Empty
+  (Fold
+   (Fun (Var i)
+    (Fold
+     (Fun (Var j)
+      (Trans (Add (Float 2) (Mul (Float 11.6) (Var i)))
+       (Add (Float 2) (Mul (Float 39.3) (Var j))) (Float 2.001)
+       (Scale (Float 96) (Float 37.33) (Float 28) Unit)))
+     Nil (Cons (Int 0) (Cons (Int 1) (Cons (Int 2) Nil)))))
+   Nil
+   (Cons (Int 0)
+    (Cons (Int 1) (Cons (Int 2) (Cons (Int 3) (Cons (Int 4) Nil))))))))
+ 
+(Diff (Scale (Float 60) (Float 120) (Float 30) Unit)
+ (Union
+  (Trans (Float 2) (Float 2) (Float 2.001)
+   (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+  (Union
+   (Trans (Float 2) (Float 41.3) (Float 2.001)
+    (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+   (Union
+    (Trans (Float 2) (Float 80.6) (Float 2.001)
+     (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+    (Fold (FunNm MkUnion) Empty
+     (Fold
+      (Fun (Var i)
+       (Fold
+        (Fun (Var j)
+         (Trans (Add (Float 13.59) (Mul (Float 11.6) (Var i)))
+          (Add (Float 2) (Mul (Float 39.3) (Var j))) (Float 2.001)
+          (Scale (Float 96) (Float 37.33) (Float 28) Unit)))
+        Nil (Cons (Int 0) (Cons (Int 1) (Cons (Int 2) Nil)))))
+      Nil (Cons (Int 0) (Cons (Int 1) (Cons (Int 2) (Cons (Int 3) Nil))))))))))
+ 
+(Diff (Scale (Float 60) (Float 120) (Float 30) Unit)
+ (Fold (FunNm MkUnion) Empty
+  (Cons
+   (Trans (Float 2) (Float 2) (Float 2.001)
+    (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+   (Cons
+    (Union
+     (Trans (Float 2) (Float 41.3) (Float 2.001)
+      (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+     (Union
+      (Trans (Float 2) (Float 80.6) (Float 2.001)
+       (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+      (Fold (FunNm MkUnion) Empty
+       (Fold
+        (Fun (Var i)
+         (Fold
+          (Fun (Var j)
+           (Trans (Add (Float 13.59) (Mul (Float 11.6) (Var i)))
+            (Add (Float 2) (Mul (Float 39.3) (Var j))) (Float 2.001)
+            (Scale (Float 96) (Float 37.33) (Float 28) Unit)))
+          Nil (Cons (Int 0) (Cons (Int 1) (Cons (Int 2) Nil)))))
+        Nil (Cons (Int 0) (Cons (Int 1) (Cons (Int 2) (Cons (Int 3) Nil))))))))
+    Nil))))
+ 
+(Diff (Scale (Float 60) (Float 120) (Float 30) Unit)
+ (Fold (FunNm MkUnion) Empty
+  (Cons
+   (Trans (Float 2) (Float 2) (Float 2.001)
+    (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+   (Cons
+    (Trans (Float 2) (Float 41.3) (Float 2.001)
+     (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+    (Cons
+     (Union
+      (Trans (Float 2) (Float 80.6) (Float 2.001)
+       (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+      (Fold (FunNm MkUnion) Empty
+       (Fold
+        (Fun (Var i)
+         (Fold
+          (Fun (Var j)
+           (Trans (Add (Float 13.59) (Mul (Float 11.6) (Var i)))
+            (Add (Float 2) (Mul (Float 39.3) (Var j))) (Float 2.001)
+            (Scale (Float 96) (Float 37.33) (Float 28) Unit)))
+          Nil (Cons (Int 0) (Cons (Int 1) (Cons (Int 2) Nil)))))
+        Nil (Cons (Int 0) (Cons (Int 1) (Cons (Int 2) (Cons (Int 3) Nil)))))))
+     Nil)))))
+ 
+(Diff (Scale (Float 60) (Float 120) (Float 30) Unit)
+ (Fold (FunNm MkUnion) Empty
+  (Cons
+   (Trans (Float 2) (Float 2) (Float 2.001)
+    (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+   (Cons
+    (Trans (Float 2) (Float 41.3) (Float 2.001)
+     (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+    (Cons
+     (Trans (Float 2) (Float 80.6) (Float 2.001)
+      (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+     (Cons
+      (Fold (FunNm MkUnion) Empty
+       (Fold
+        (Fun (Var i)
+         (Fold
+          (Fun (Var j)
+           (Trans (Add (Float 13.59) (Mul (Float 11.6) (Var i)))
+            (Add (Float 2) (Mul (Float 39.3) (Var j))) (Float 2.001)
+            (Scale (Float 96) (Float 37.33) (Float 28) Unit)))
+          Nil (Cons (Int 0) (Cons (Int 1) (Cons (Int 2) Nil)))))
+        Nil (Cons (Int 0) (Cons (Int 1) (Cons (Int 2) (Cons (Int 3) Nil))))))
+      Nil))))))
+ 
+(Diff (Scale (Float 60) (Float 120) (Float 30) Unit)
+ (Union
+  (Trans (Float 2) (Float 2) (Float 2.001)
+   (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+  (Fold (FunNm MkUnion) Empty
+   (Cons
+    (Trans (Float 2) (Float 41.3) (Float 2.001)
+     (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+    (Cons
+     (Union
+      (Trans (Float 2) (Float 80.6) (Float 2.001)
+       (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+      (Fold (FunNm MkUnion) Empty
+       (Fold
+        (Fun (Var i)
+         (Fold
+          (Fun (Var j)
+           (Trans (Add (Float 13.59) (Mul (Float 11.6) (Var i)))
+            (Add (Float 2) (Mul (Float 39.3) (Var j))) (Float 2.001)
+            (Scale (Float 96) (Float 37.33) (Float 28) Unit)))
+          Nil (Cons (Int 0) (Cons (Int 1) (Cons (Int 2) Nil)))))
+        Nil (Cons (Int 0) (Cons (Int 1) (Cons (Int 2) (Cons (Int 3) Nil)))))))
+     Nil)))))
+ 
+(Diff (Scale (Float 60) (Float 120) (Float 30) Unit)
+ (Union
+  (Trans (Float 2) (Float 2) (Float 2.001)
+   (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+  (Fold (FunNm MkUnion) Empty
+   (Cons
+    (Trans (Float 2) (Float 41.3) (Float 2.001)
+     (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+    (Cons
+     (Trans (Float 2) (Float 80.6) (Float 2.001)
+      (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+     (Cons
+      (Fold (FunNm MkUnion) Empty
+       (Fold
+        (Fun (Var i)
+         (Fold
+          (Fun (Var j)
+           (Trans (Add (Float 13.59) (Mul (Float 11.6) (Var i)))
+            (Add (Float 2) (Mul (Float 39.3) (Var j))) (Float 2.001)
+            (Scale (Float 96) (Float 37.33) (Float 28) Unit)))
+          Nil (Cons (Int 0) (Cons (Int 1) (Cons (Int 2) Nil)))))
+        Nil (Cons (Int 0) (Cons (Int 1) (Cons (Int 2) (Cons (Int 3) Nil))))))
+      Nil))))))
+ 
+(Diff (Scale (Float 60) (Float 120) (Float 30) Unit)
+ (Union
+  (Trans (Float 2) (Float 2) (Float 2.001)
+   (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+  (Union
+   (Trans (Float 2) (Float 41.3) (Float 2.001)
+    (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+   (Fold (FunNm MkUnion) Empty
+    (Cons
+     (Trans (Float 2) (Float 80.6) (Float 2.001)
+      (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+     (Cons
+      (Fold (FunNm MkUnion) Empty
+       (Fold
+        (Fun (Var i)
+         (Fold
+          (Fun (Var j)
+           (Trans (Add (Float 13.59) (Mul (Float 11.6) (Var i)))
+            (Add (Float 2) (Mul (Float 39.3) (Var j))) (Float 2.001)
+            (Scale (Float 96) (Float 37.33) (Float 28) Unit)))
+          Nil (Cons (Int 0) (Cons (Int 1) (Cons (Int 2) Nil)))))
+        Nil (Cons (Int 0) (Cons (Int 1) (Cons (Int 2) (Cons (Int 3) Nil))))))
+      Nil))))))
+ 
+(Diff (Scale (Float 60) (Float 120) (Float 30) Unit)
+ (Fold (FunNm MkUnion) Empty
+  (Cons
+   (Trans (Float 2) (Float 2) (Float 2.001)
+    (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+   (Cons
+    (Fold (FunNm MkUnion) Empty
+     (Cons
+      (Trans (Float 2) (Float 41.3) (Float 2.001)
+       (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+      (Cons
+       (Union
+        (Trans (Float 2) (Float 80.6) (Float 2.001)
+         (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+        (Fold (FunNm MkUnion) Empty
+         (Fold
+          (Fun (Var i)
+           (Fold
+            (Fun (Var j)
+             (Trans (Add (Float 13.59) (Mul (Float 11.6) (Var i)))
+              (Add (Float 2) (Mul (Float 39.3) (Var j))) (Float 2.001)
+              (Scale (Float 96) (Float 37.33) (Float 28) Unit)))
+            Nil (Cons (Int 0) (Cons (Int 1) (Cons (Int 2) Nil)))))
+          Nil
+          (Cons (Int 0) (Cons (Int 1) (Cons (Int 2) (Cons (Int 3) Nil)))))))
+       Nil)))
+    Nil))))
+ 
+(Diff (Scale (Float 60) (Float 120) (Float 30) Unit)
+ (Fold (FunNm MkUnion) Empty
+  (Cons
+   (Trans (Float 2) (Float 2) (Float 2.001)
+    (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+   (Cons
+    (Fold (FunNm MkUnion) Empty
+     (Cons
+      (Trans (Float 2) (Float 41.3) (Float 2.001)
+       (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+      (Cons
+       (Trans (Float 2) (Float 80.6) (Float 2.001)
+        (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+       (Cons
+        (Fold (FunNm MkUnion) Empty
+         (Fold
+          (Fun (Var i)
+           (Fold
+            (Fun (Var j)
+             (Trans (Add (Float 13.59) (Mul (Float 11.6) (Var i)))
+              (Add (Float 2) (Mul (Float 39.3) (Var j))) (Float 2.001)
+              (Scale (Float 96) (Float 37.33) (Float 28) Unit)))
+            Nil (Cons (Int 0) (Cons (Int 1) (Cons (Int 2) Nil)))))
+          Nil
+          (Cons (Int 0) (Cons (Int 1) (Cons (Int 2) (Cons (Int 3) Nil))))))
+        Nil))))
+    Nil))))
+ 
+(Diff (Scale (Float 60) (Float 120) (Float 30) Unit)
+ (Fold (FunNm MkUnion) Empty
+  (Cons
+   (Trans (Float 2) (Float 2) (Float 2.001)
+    (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+   (Cons
+    (Union
+     (Trans (Float 2) (Float 41.3) (Float 2.001)
+      (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+     (Fold (FunNm MkUnion) Empty
+      (Cons
+       (Trans (Float 2) (Float 80.6) (Float 2.001)
+        (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+       (Cons
+        (Fold (FunNm MkUnion) Empty
+         (Fold
+          (Fun (Var i)
+           (Fold
+            (Fun (Var j)
+             (Trans (Add (Float 13.59) (Mul (Float 11.6) (Var i)))
+              (Add (Float 2) (Mul (Float 39.3) (Var j))) (Float 2.001)
+              (Scale (Float 96) (Float 37.33) (Float 28) Unit)))
+            Nil (Cons (Int 0) (Cons (Int 1) (Cons (Int 2) Nil)))))
+          Nil
+          (Cons (Int 0) (Cons (Int 1) (Cons (Int 2) (Cons (Int 3) Nil))))))
+        Nil))))
+    Nil))))
+ 
+(Diff (Scale (Float 60) (Float 120) (Float 30) Unit)
+ (Fold (FunNm MkUnion) Empty
+  (Cons
+   (Trans (Float 2) (Float 2) (Float 2.001)
+    (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+   (Cons
+    (Trans (Float 2) (Float 41.3) (Float 2.001)
+     (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+    (Cons
+     (Fold (FunNm MkUnion) Empty
+      (Cons
+       (Trans (Float 2) (Float 80.6) (Float 2.001)
+        (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+       (Cons
+        (Fold (FunNm MkUnion) Empty
+         (Fold
+          (Fun (Var i)
+           (Fold
+            (Fun (Var j)
+             (Trans (Add (Float 13.59) (Mul (Float 11.6) (Var i)))
+              (Add (Float 2) (Mul (Float 39.3) (Var j))) (Float 2.001)
+              (Scale (Float 96) (Float 37.33) (Float 28) Unit)))
+            Nil (Cons (Int 0) (Cons (Int 1) (Cons (Int 2) Nil)))))
+          Nil
+          (Cons (Int 0) (Cons (Int 1) (Cons (Int 2) (Cons (Int 3) Nil))))))
+        Nil)))
+     Nil)))))
+ 
+(Diff (Scale (Float 60) (Float 120) (Float 30) Unit)
+ (Union
+  (Trans (Float 2) (Float 2) (Float 2.001)
+   (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+  (Fold (FunNm MkUnion) Empty
+   (Cons
+    (Trans (Float 2) (Float 41.3) (Float 2.001)
+     (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+    (Cons
+     (Fold (FunNm MkUnion) Empty
+      (Cons
+       (Trans (Float 2) (Float 80.6) (Float 2.001)
+        (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+       (Cons
+        (Fold (FunNm MkUnion) Empty
+         (Fold
+          (Fun (Var i)
+           (Fold
+            (Fun (Var j)
+             (Trans (Add (Float 13.59) (Mul (Float 11.6) (Var i)))
+              (Add (Float 2) (Mul (Float 39.3) (Var j))) (Float 2.001)
+              (Scale (Float 96) (Float 37.33) (Float 28) Unit)))
+            Nil (Cons (Int 0) (Cons (Int 1) (Cons (Int 2) Nil)))))
+          Nil
+          (Cons (Int 0) (Cons (Int 1) (Cons (Int 2) (Cons (Int 3) Nil))))))
+        Nil)))
+     Nil)))))
+ 
+(Diff (Scale (Float 60) (Float 120) (Float 30) Unit)
+ (Union
+  (Trans (Float 2) (Float 2) (Float 2.001)
+   (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+  (Union
+   (Trans (Float 2) (Float 41.3) (Float 2.001)
+    (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+   (Union
+    (Trans (Float 2) (Float 80.6) (Float 2.001)
+     (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+    (Union
+     (Trans (Float 13.6) (Float 2) (Float 2.001)
+      (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+     (Union
+      (Trans (Float 13.6) (Float 41.3) (Float 2.001)
+       (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+      (Union
+       (Trans (Float 13.6) (Float 80.6) (Float 2.001)
+        (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+       (Fold (FunNm MkUnion) Empty
+        (Fold
+         (Fun (Var i)
+          (Fold
+           (Fun (Var j)
+            (Trans (Add (Float 25.19) (Mul (Float 11.6) (Var i)))
+             (Add (Float 2) (Mul (Float 39.3) (Var j))) (Float 2.001)
+             (Scale (Float 96) (Float 37.33) (Float 28) Unit)))
+           Nil (Cons (Int 0) (Cons (Int 1) (Cons (Int 2) Nil)))))
+         Nil (Cons (Int 0) (Cons (Int 1) (Cons (Int 2) Nil))))))))))))
+ 
+(Diff (Scale (Float 60) (Float 120) (Float 30) Unit)
+ (Fold (FunNm MkUnion) Empty
+  (Cons
+   (Trans (Float 2) (Float 2) (Float 2.001)
+    (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+   (Cons
+    (Fold (FunNm MkUnion) Empty
+     (Cons
+      (Trans (Float 2) (Float 41.3) (Float 2.001)
+       (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+      (Cons
+       (Fold (FunNm MkUnion) Empty
+        (Cons
+         (Trans (Float 2) (Float 80.6) (Float 2.001)
+          (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+         (Cons
+          (Fold (FunNm MkUnion) Empty
+           (Fold
+            (Fun (Var i)
+             (Fold
+              (Fun (Var j)
+               (Trans (Add (Float 13.59) (Mul (Float 11.6) (Var i)))
+                (Add (Float 2) (Mul (Float 39.3) (Var j))) (Float 2.001)
+                (Scale (Float 96) (Float 37.33) (Float 28) Unit)))
+              Nil (Cons (Int 0) (Cons (Int 1) (Cons (Int 2) Nil)))))
+            Nil
+            (Cons (Int 0) (Cons (Int 1) (Cons (Int 2) (Cons (Int 3) Nil))))))
+          Nil)))
+       Nil)))
+    Nil))))
+ 
+(Diff (Scale (Float 60) (Float 120) (Float 30) Unit)
+ (Fold (FunNm MkUnion) Empty
+  (Cons
+   (Trans (Float 2) (Float 2) (Float 2.001)
+    (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+   (Cons
+    (Union
+     (Trans (Float 2) (Float 41.3) (Float 2.001)
+      (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+     (Union
+      (Trans (Float 2) (Float 80.6) (Float 2.001)
+       (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+      (Union
+       (Trans (Float 13.6) (Float 2) (Float 2.001)
+        (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+       (Union
+        (Trans (Float 13.6) (Float 41.3) (Float 2.001)
+         (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+        (Union
+         (Trans (Float 13.6) (Float 80.6) (Float 2.001)
+          (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+         (Fold (FunNm MkUnion) Empty
+          (Fold
+           (Fun (Var i)
+            (Fold
+             (Fun (Var j)
+              (Trans (Add (Float 25.19) (Mul (Float 11.6) (Var i)))
+               (Add (Float 2) (Mul (Float 39.3) (Var j))) (Float 2.001)
+               (Scale (Float 96) (Float 37.33) (Float 28) Unit)))
+             Nil (Cons (Int 0) (Cons (Int 1) (Cons (Int 2) Nil)))))
+           Nil (Cons (Int 0) (Cons (Int 1) (Cons (Int 2) Nil))))))))))
+    Nil))))
+ 
+(Diff (Scale (Float 60) (Float 120) (Float 30) Unit)
+ (Fold (FunNm MkUnion) Empty
+  (Cons
+   (Trans (Float 2) (Float 2) (Float 2.001)
+    (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+   (Cons
+    (Trans (Float 2) (Float 41.3) (Float 2.001)
+     (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+    (Cons
+     (Union
+      (Trans (Float 2) (Float 80.6) (Float 2.001)
+       (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+      (Union
+       (Trans (Float 13.6) (Float 2) (Float 2.001)
+        (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+       (Union
+        (Trans (Float 13.6) (Float 41.3) (Float 2.001)
+         (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+        (Union
+         (Trans (Float 13.6) (Float 80.6) (Float 2.001)
+          (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+         (Fold (FunNm MkUnion) Empty
+          (Fold
+           (Fun (Var i)
+            (Fold
+             (Fun (Var j)
+              (Trans (Add (Float 25.19) (Mul (Float 11.6) (Var i)))
+               (Add (Float 2) (Mul (Float 39.3) (Var j))) (Float 2.001)
+               (Scale (Float 96) (Float 37.33) (Float 28) Unit)))
+             Nil (Cons (Int 0) (Cons (Int 1) (Cons (Int 2) Nil)))))
+           Nil (Cons (Int 0) (Cons (Int 1) (Cons (Int 2) Nil)))))))))
+     Nil)))))
+ 
+(Diff (Scale (Float 60) (Float 120) (Float 30) Unit)
+ (Fold (FunNm MkUnion) Empty
+  (Cons
+   (Trans (Float 2) (Float 2) (Float 2.001)
+    (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+   (Cons
+    (Trans (Float 2) (Float 41.3) (Float 2.001)
+     (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+    (Cons
+     (Trans (Float 2) (Float 80.6) (Float 2.001)
+      (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+     (Cons
+      (Union
+       (Trans (Float 13.6) (Float 2) (Float 2.001)
+        (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+       (Union
+        (Trans (Float 13.6) (Float 41.3) (Float 2.001)
+         (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+        (Union
+         (Trans (Float 13.6) (Float 80.6) (Float 2.001)
+          (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+         (Fold (FunNm MkUnion) Empty
+          (Fold
+           (Fun (Var i)
+            (Fold
+             (Fun (Var j)
+              (Trans (Add (Float 25.19) (Mul (Float 11.6) (Var i)))
+               (Add (Float 2) (Mul (Float 39.3) (Var j))) (Float 2.001)
+               (Scale (Float 96) (Float 37.33) (Float 28) Unit)))
+             Nil (Cons (Int 0) (Cons (Int 1) (Cons (Int 2) Nil)))))
+           Nil (Cons (Int 0) (Cons (Int 1) (Cons (Int 2) Nil))))))))
+      Nil))))))
+ 
+(Diff (Scale (Float 60) (Float 120) (Float 30) Unit)
+ (Fold (FunNm MkUnion) Empty
+  (Cons
+   (Trans (Float 2) (Float 2) (Float 2.001)
+    (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+   (Cons
+    (Trans (Float 2) (Float 41.3) (Float 2.001)
+     (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+    (Cons
+     (Trans (Float 2) (Float 80.6) (Float 2.001)
+      (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+     (Cons
+      (Trans (Float 13.6) (Float 2) (Float 2.001)
+       (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+      (Cons
+       (Union
+        (Trans (Float 13.6) (Float 41.3) (Float 2.001)
+         (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+        (Union
+         (Trans (Float 13.6) (Float 80.6) (Float 2.001)
+          (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+         (Fold (FunNm MkUnion) Empty
+          (Fold
+           (Fun (Var i)
+            (Fold
+             (Fun (Var j)
+              (Trans (Add (Float 25.19) (Mul (Float 11.6) (Var i)))
+               (Add (Float 2) (Mul (Float 39.3) (Var j))) (Float 2.001)
+               (Scale (Float 96) (Float 37.33) (Float 28) Unit)))
+             Nil (Cons (Int 0) (Cons (Int 1) (Cons (Int 2) Nil)))))
+           Nil (Cons (Int 0) (Cons (Int 1) (Cons (Int 2) Nil)))))))
+       Nil)))))))
+ 
+(Diff (Scale (Float 60) (Float 120) (Float 30) Unit)
+ (Fold (FunNm MkUnion) Empty
+  (Cons
+   (Trans (Float 2) (Float 2) (Float 2.001)
+    (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+   (Cons
+    (Trans (Float 2) (Float 41.3) (Float 2.001)
+     (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+    (Cons
+     (Trans (Float 2) (Float 80.6) (Float 2.001)
+      (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+     (Cons
+      (Trans (Float 13.6) (Float 2) (Float 2.001)
+       (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+      (Cons
+       (Trans (Float 13.6) (Float 41.3) (Float 2.001)
+        (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+       (Cons
+        (Union
+         (Trans (Float 13.6) (Float 80.6) (Float 2.001)
+          (Scale (Float 96) (Float 37.33) (Float 28) Unit))
+         (Fold (FunNm MkUnion) Empty
+          (Fold
+           (Fun (Var i)
+            (Fold
+             (Fun (Var j)
+              (Trans (Add (Float 25.19) (Mul (Float 11.6) (Var i)))
+               (Add (Float 2) (Mul (Float 39.3) (Var j))) (Float 2.001)
+               (Scale (Float 96) (Float 37.33) (Float 28) Unit)))
+             Nil (Cons (Int 0) (Cons (Int 1) (Cons (Int 2) Nil)))))
+           Nil (Cons (Int 0) (Cons (Int 1) (Cons (Int 2) Nil))))))
+        Nil))))))))
+ 

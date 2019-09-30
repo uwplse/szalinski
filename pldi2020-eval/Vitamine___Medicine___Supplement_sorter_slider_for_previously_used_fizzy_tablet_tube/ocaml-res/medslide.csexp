@@ -1,0 +1,24 @@
+(Rotate (Float 0) (Float -90) (Float 0)
+ (Union
+  (Diff
+   (Union (Scale (Float 13) (Float 13) (Float 120) Cylinder)
+    (Trans (Float -30) (Float -50) (Float -1)
+     (Scale (Float 20) (Float 100) (Float 122) Unit)))
+   (Diff
+    (Fold (FunNm MkUnion) Empty
+     (Mapi (Var i)
+      ((FunNm Trans)
+       ((Float 0) (Float 0) (Add (Float 1) (Mul (Float 17) (Var i)))))
+      (Repeat
+       (Union (Scale (Float 12) (Float 12) (Float 16) Cylinder)
+        (Trans (Float 5) (Float -50) (Float 0)
+         (Scale (Float 50) (Float 100) (Float 16) Unit)))
+       7)))
+    (Trans (Float -10) (Float -50) (Float -1)
+     (Scale (Float 1) (Float 100) (Float 122) Unit))))
+  (Diff
+   (Trans (Float -5) (Float -3) (Float 120)
+    (Scale (Float 10) (Float 6) (Float 4) Unit))
+   (Trans (Float -11) (Float -3) (Float 121.5)
+    (Rotate (Float 0) (Float 90) (Float 0)
+     (Scale (Float 1.5) (Float 1.5) (Float 22) Cylinder))))))

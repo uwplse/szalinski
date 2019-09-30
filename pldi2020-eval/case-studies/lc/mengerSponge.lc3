@@ -1,0 +1,31 @@
+menger_sponge 1 1
+
+where
+
+let rec menger_sponge n length =
+  let new_len = length / 3 in
+  if n <= 0
+  then scale (length, length, length) unit3
+  else
+    let sub_unit = menger_sponge (n - 1) new_len in
+    let lvl1 =
+    union
+      (sub_unit)
+      (union (trans (new_len, 0, 0) sub_unit)
+        (union (trans (new_len * 2, 0, 0) sub_unit)
+          (union (trans (0, new_len, 0) sub_unit)
+            (union (trans (0, new_len * 2, 0) sub_unit)
+              (union (trans (new_len, new_len * 2, 0) sub_unit)
+                (union (trans (new_len * 2, new_len, 0) sub_unit)
+                    (trans (new_len * 2, new_len * 2, 0) sub_unit)
+                ))))))
+    in
+    let lvl2 =
+      union (trans (0, 0, new_len) sub_unit)
+        (union (trans (new_len * 2, 0, new_len) sub_unit)
+          (union (trans (0, new_len * 2, new_len) sub_unit)
+            (trans (new_len * 2, new_len * 2, new_len) sub_unit)
+          ))
+    in
+    let lvl3 = trans (0, 0, new_len * 2) lvl1 in
+    union lvl2 (union lvl1 lvl3)

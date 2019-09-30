@@ -1,0 +1,13 @@
+(Diff (Scale (Float 20) (Float 20) (Float 3) Unit)
+ (Fold (FunNm MkUnion) Empty
+  (Mapi (Var i)
+   ((FunNm Trans)
+    ((Add (Float 10)
+      (Mul (Float 7.07106781186)
+       (Sin (Add (Mul (Float 1.57079632679) (Var i)) (Float 5.49778714378)))))
+     (Add (Float 10)
+      (Mul (Float 7.07106781182)
+       (Sin (Add (Mul (Float 1.57079632679) (Var i)) (Float 3.92699081699)))))
+     (Float 1.5)))
+   (Mapi (Var i) ((FunNm Scale) ((Float 3) (Float 3) (Float 3)))
+    (Repeat Hexagon 4)))))

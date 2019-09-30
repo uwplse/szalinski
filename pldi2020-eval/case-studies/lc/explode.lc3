@@ -1,0 +1,12 @@
+cpy_explode unit3 1 1 2
+
+where
+
+let rec cpy_explode c w m d =
+  if d > 0 then
+    let two = union c (trans (w + m, 0, 0) c) in
+    let four = union two (trans (0, w + m, 0) two) in
+    let eight = union four (trans (0, 0, w + m) four) in
+    cpy_explode eight (w * 2 + m) m (d - 1)
+  else
+    c
