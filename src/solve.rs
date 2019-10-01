@@ -29,6 +29,7 @@ impl fmt::Display for VecFormula {
 enum Formula {
     Deg1(Deg1),
     Deg2(Deg2),
+    Trig(Trig),
 }
 
 impl fmt::Display for Formula {
@@ -41,7 +42,29 @@ impl fmt::Display for Formula {
                     write!(f, "{:.2} * i + {:.2}", soln.a, soln.b)
                 }
             }
-            Formula::Deg2(_soln) => write!(f, "foo"),
+            Formula::Deg2(soln) => {
+                // if a = 0 then it is just Deg1
+                if soln.b.into_inner() == 0.0 {
+                   write!(f, "{:.2} * i * i + {:.2}", soln.a, soln.c) 
+                }
+                else {
+                   write!(f, "{:.2} * i * i + {:.2} * i + {:.2}", soln.a, soln.b, soln.c) 
+                }
+            }
+            Formula::Trig(soln) => {
+                if soln.a.into_inner() == 0.0 {
+                    // TODO: not sure of this case 
+                    write!(f, "no trig solution: a = 0")
+                } else {
+                    if soln.b.into_inner() == 0.0 {
+                    // TODO: not sure of this case
+                        write!(f, "no trig solution: b = 0")
+                    }
+                    else {
+                        write!(f, "{:2} * Sin ({:2} * i + {:2})", soln.a, soln.b, soln.c)
+                    }
+                }
+            }
         }
     }
 }
@@ -53,6 +76,13 @@ struct Deg1 {
 }
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]
 struct Deg2 {
+    a: Float,
+    b: Float,
+    c: Float,
+}
+
+#[derive(Debug, PartialEq, Eq, Hash, Clone)]
+struct Trig {
     a: Float,
     b: Float,
     c: Float,
@@ -92,6 +122,33 @@ fn solve_deg2(vs: &[Float]) -> Option<Deg2> {
 
     if works {
         Some(Deg2 { a, b, c })
+    } else {
+        None
+    }
+}
+
+
+fn solve_trig(vs: &[Float]) -> Option<Trig> {
+    let mut a_init : Float = ordered_float::NotNan::from(1.414); // sqrt(2)
+    let mut b_init : Float = to_float(1);
+    let mut c_init : Float = ordered_float::NotNan::from(3.14159 / 4.0); // pi / 4
+    let mut ivs = vs.iter().enumerate();
+    let mut found = false;
+    let mut trials = 10;
+    // if no solution after 10 periods, give up.
+    while !found && trials > 0 {
+        if ivs.all(|(i, &v)| a_init * ((b_init * (3.14159 / 2.0) * (to_float(i))) + c_init).sin() == v) {
+            found = true;
+        } else {
+            b_init = b_init + to_float(1);
+        }
+        trials = trials - 1;
+    }
+    if found == true {
+        let a = a_init;
+        let b = b_init;
+        let c = c_init;
+        Some(Trig {a, b, c})
     } else {
         None
     }
@@ -185,5 +242,12 @@ mod tests {
     fn deg2_fail() {
         let input = mk_test_vec(&[0.0, 1.0, 14.0, 9.0]);
         assert_eq!(solve_deg2(&input), None);
+    }
+
+    #[test]
+    fn trig_test1() {
+        let input = mk_test_vec(&[1.0, 1.0, -1.0, -1.0]);
+        let res = solve_trig(&input).unwrap();
+        assert_eq!(res.b.into_inner(), 5.0);
     }
 }
