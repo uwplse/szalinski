@@ -8,6 +8,8 @@ use egg::{egraph::AddResult, expr::Expr};
 
 pub type Float = NotNan<f64>;
 
+static eps: f64 = 0.001;
+
 fn to_float(f: usize) -> Float {
     NotNan::new(f as f64).unwrap()
 }
@@ -45,22 +47,24 @@ impl fmt::Display for Formula {
             Formula::Deg2(soln) => {
                 // if a = 0 then it is just Deg1
                 if soln.b.into_inner() == 0.0 {
-                   write!(f, "{:.2} * i * i + {:.2}", soln.a, soln.c) 
-                }
-                else {
-                   write!(f, "{:.2} * i * i + {:.2} * i + {:.2}", soln.a, soln.b, soln.c) 
+                    write!(f, "{:.2} * i * i + {:.2}", soln.a, soln.c)
+                } else {
+                    write!(
+                        f,
+                        "{:.2} * i * i + {:.2} * i + {:.2}",
+                        soln.a, soln.b, soln.c
+                    )
                 }
             }
             Formula::Trig(soln) => {
                 if soln.a.into_inner() == 0.0 {
-                    // TODO: not sure of this case 
+                    // TODO: not sure of this case
                     write!(f, "no trig solution: a = 0")
                 } else {
                     if soln.b.into_inner() == 0.0 {
-                    // TODO: not sure of this case
+                        // TODO: not sure of this case
                         write!(f, "no trig solution: b = 0")
-                    }
-                    else {
+                    } else {
                         write!(f, "{:2} * Sin ({:2} * i + {:2})", soln.a, soln.b, soln.c)
                     }
                 }
@@ -96,7 +100,7 @@ fn solve_deg1(vs: &[Float]) -> Option<Deg1> {
     let b = (o1 * i2) - (o2 * i1) / (i2 - i1);
     let a = (o2 - b) / i2;
     let mut ivs = vs.iter().enumerate();
-    if ivs.all(|(i, &v)| a * to_float(i) + b == v) {
+    if ivs.all(|(i, &v)| a * to_float(i) + b + eps >= v || a * to_float(i) + b - eps <= v) {
         Some(Deg1 { a, b })
     } else {
         None
@@ -117,7 +121,7 @@ fn solve_deg2(vs: &[Float]) -> Option<Deg2> {
     let mut ivs = vs.iter().enumerate();
     let works = ivs.all(|(i, &v)| {
         let f = to_float(i);
-        a * f * f + b * f + c == v
+        a * f * f + b * f + c + eps >= v || a * f * f + b * f + c - eps <= v
     });
 
     if works {
@@ -127,28 +131,29 @@ fn solve_deg2(vs: &[Float]) -> Option<Deg2> {
     }
 }
 
-
 fn solve_trig(vs: &[Float]) -> Option<Trig> {
-    let mut a_init : Float = ordered_float::NotNan::from(1.414); // sqrt(2)
-    let mut b_init : Float = to_float(1);
-    let mut c_init : Float = ordered_float::NotNan::from(3.14159 / 4.0); // pi / 4
-    let mut ivs = vs.iter().enumerate();
+    let mut a_init: Float = std::f64::consts::SQRT_2.into();
+    let mut b_init: Float = to_float(1);
+    let mut c_init: Float = (std::f64::consts::PI / 4.0).into();
     let mut found = false;
     let mut trials = 10;
     // if no solution after 10 periods, give up.
     while !found && trials > 0 {
-        if ivs.all(|(i, &v)| a_init * ((b_init * (3.14159 / 2.0) * (to_float(i))) + c_init).sin() == v) {
+        if vs.iter().enumerate().all(|(i, &v)| {
+            a_init * ((b_init * (3.14159 / 2.0) * (to_float(i))) + c_init).sin() + eps >= v
+                || a_init * ((b_init * (3.14159 / 2.0) * (to_float(i))) + c_init).sin() - eps <= v
+        }) {
             found = true;
         } else {
             b_init = b_init + to_float(1);
+            trials = trials - 1;
         }
-        trials = trials - 1;
     }
     if found == true {
         let a = a_init;
         let b = b_init;
         let c = c_init;
-        Some(Trig {a, b, c})
+        Some(Trig { a, b, c })
     } else {
         None
     }
@@ -199,7 +204,6 @@ pub fn solve(egraph: &mut EGraph, list: &[(Float, Float, Float)]) -> Vec<AddResu
             results.push(egraph.add(e));
         }
     }
-
     results
 }
 
@@ -248,6 +252,6 @@ mod tests {
     fn trig_test1() {
         let input = mk_test_vec(&[1.0, 1.0, -1.0, -1.0]);
         let res = solve_trig(&input).unwrap();
-        assert_eq!(res.b.into_inner(), 5.0);
+        assert_eq!(res.b.into_inner(), 1.0);
     }
 }
