@@ -3,10 +3,8 @@ use std::fmt;
 
 use smallvec::smallvec;
 
-use crate::cad::{Cad, EGraph};
+use crate::cad::{Cad, EGraph, Num, Vec3};
 use egg::{egraph::AddResult, expr::Expr};
-
-pub type Float = NotNan<f64>;
 
 static EPSILON: f64 = 0.001;
 
@@ -14,7 +12,7 @@ fn float_eq(a: impl Into<f64>, b: impl Into<f64>) -> bool {
     (a.into() - b.into()).abs() < EPSILON
 }
 
-fn to_float(f: usize) -> Float {
+fn to_float(f: usize) -> Num {
     NotNan::new(f as f64).unwrap()
 }
 
@@ -65,17 +63,17 @@ impl fmt::Display for Formula {
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]
 struct Deg1 {
-    a: Float,
-    b: Float,
+    a: Num,
+    b: Num,
 }
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]
 struct Deg2 {
-    a: Float,
-    b: Float,
-    c: Float,
+    a: Num,
+    b: Num,
+    c: Num,
 }
 
-fn solve_deg1(vs: &[Float]) -> Option<Deg1> {
+fn solve_deg1(vs: &[Num]) -> Option<Deg1> {
     let i1 = to_float(0);
     let i2 = to_float(1);
     let o1 = vs[0];
@@ -90,7 +88,7 @@ fn solve_deg1(vs: &[Float]) -> Option<Deg1> {
     }
 }
 
-fn solve_deg2(vs: &[Float]) -> Option<Deg2> {
+fn solve_deg2(vs: &[Num]) -> Option<Deg2> {
     let i1 = to_float(0);
     let i2 = to_float(1);
     let i3 = to_float(2);
@@ -115,17 +113,17 @@ fn solve_deg2(vs: &[Float]) -> Option<Deg2> {
     }
 }
 
-fn solve_one(xs: &[Float], ys: &[Float], zs: &[Float]) -> Option<VecFormula> {
+fn solve_one(xs: &[Num], ys: &[Num], zs: &[Num]) -> Option<VecFormula> {
     let x = solve_deg1(&xs).map(Formula::Deg1)?;
     let y = solve_deg1(&ys).map(Formula::Deg1)?;
     let z = solve_deg1(&zs).map(Formula::Deg1)?;
     Some(VecFormula { x, y, z })
 }
 
-pub fn solve(egraph: &mut EGraph, list: &[(Float, Float, Float)]) -> Vec<AddResult> {
-    let xs: Vec<Float> = list.iter().map(|v| v.0).collect();
-    let ys: Vec<Float> = list.iter().map(|v| v.1).collect();
-    let zs: Vec<Float> = list.iter().map(|v| v.2).collect();
+fn solve_vec(egraph: &mut EGraph, list: &[Vec3]) -> Vec<AddResult> {
+    let xs: Vec<Num> = list.iter().map(|v| v.0).collect();
+    let ys: Vec<Num> = list.iter().map(|v| v.1).collect();
+    let zs: Vec<Num> = list.iter().map(|v| v.2).collect();
 
     let len = xs.len();
     assert_eq!(len, ys.len());
@@ -163,11 +161,17 @@ pub fn solve(egraph: &mut EGraph, list: &[(Float, Float, Float)]) -> Vec<AddResu
     results
 }
 
+// fn polarize(list: &[Vec3]) => Vec<Vec3>
+
+pub fn solve(egraph: &mut EGraph, list: &[Vec3]) -> Vec<AddResult> {
+    solve_vec(egraph, list)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
 
-    fn mk_test_vec(v: &[f64]) -> Vec<Float> {
+    fn mk_test_vec(v: &[f64]) -> Vec<Num> {
         v.iter().map(|v| NotNan::new(*v).unwrap()).collect()
     }
 

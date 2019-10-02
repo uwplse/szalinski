@@ -11,7 +11,7 @@ use indexmap::IndexMap;
 use log::*;
 use smallvec::{smallvec, SmallVec};
 
-use crate::cad::{Cad, EGraph, Meta, Num};
+use crate::cad::{Cad, EGraph, Meta, Num, Vec3};
 
 fn rw<M: Metadata<Cad>>(name: &str, lhs: &str, rhs: &str) -> Rewrite<Cad, M> {
     Cad::parse_rewrite(name, lhs, rhs).unwrap()
@@ -134,7 +134,6 @@ fn get_float(expr: &RecExpr<Cad>) -> Num {
     }
 }
 
-type Vec3 = (Num, Num, Num);
 fn get_vec(expr: &RecExpr<Cad>) -> Option<Vec3> {
     if Cad::Vec == expr.as_ref().op {
         let args = &expr.as_ref().children;

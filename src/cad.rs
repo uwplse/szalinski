@@ -14,6 +14,7 @@ use ordered_float::NotNan;
 
 pub type EGraph = egg::egraph::EGraph<Cad, Meta>;
 pub type Num = NotNan<f64>;
+pub type Vec3 = (Num, Num, Num);
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]
 pub enum Cad {
