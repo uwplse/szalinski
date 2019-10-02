@@ -4,7 +4,7 @@ use std::fmt;
 use smallvec::smallvec;
 
 use crate::cad::{Cad, EGraph, Num, Vec3};
-use egg::{egraph::AddResult, expr::Expr};
+use egg::{egraph::AddResult, expr::{Expr, Id}};
 
 static EPSILON: f64 = 0.001;
 
@@ -161,10 +161,44 @@ fn solve_vec(egraph: &mut EGraph, list: &[Vec3]) -> Vec<AddResult> {
     results
 }
 
-// fn polarize(list: &[Vec3]) => Vec<Vec3>
+fn polar_one(center: Vec3, v: Vec3) -> Vec3 {
+    let (x, y, z) = v;
+    let (a, b, c) = center;
+    let (xa, yb, zc) = (x - a, y - b, z - c);
+    let r = (xa * xa + yb * yb + zc * zc).sqrt();
+    println!("r: {}", r);
+    let zero = 0.0.into();
+    let theta = if xa == zero { 90.0 } else { (yb / xa).atan() };
+    let phi = if r == 0.0 { 0.0 } else { (zc / r).acos() };
+    (r.into(), theta.into(), phi.into())
+}
+
+fn polarize(list: &[Vec3]) -> (Vec3, Vec<Vec3>) {
+    let xc: Num = list.iter().map(|v| v.0.into_inner()).sum::<f64>().into();
+    let yc: Num = list.iter().map(|v| v.1.into_inner()).sum::<f64>().into();
+    let zc: Num = list.iter().map(|v| v.2.into_inner()).sum::<f64>().into();
+    let n = to_float(list.len());
+    let center = (xc / n, yc / n, zc / n);
+    let new_list = list.iter().map(|&v| polar_one(center, v)).collect();
+    (center, new_list)
+}
+
+fn add_vec(egraph: &mut EGraph, v: Vec3) -> Id {
+    let x = egraph.add(Expr::unit(Cad::Num(v.0))).id;
+    let y = egraph.add(Expr::unit(Cad::Num(v.1))).id;
+    let z = egraph.add(Expr::unit(Cad::Num(v.2))).id;
+    egraph.add(Expr::new(Cad::Vec, smallvec![x, y, z])).id
+}
 
 pub fn solve(egraph: &mut EGraph, list: &[Vec3]) -> Vec<AddResult> {
-    solve_vec(egraph, list)
+    let mut results = solve_vec(egraph, list);
+    println!("{:?}", list);
+    let (center, polar_list) = polarize(&list);
+    for res in solve_vec(egraph, &polar_list) {
+        let e = Expr::new(Cad::Unpolar, smallvec![add_vec(egraph, center), res.id]);
+        results.push(egraph.add(e));
+    }
+    results
 }
 
 #[cfg(test)]

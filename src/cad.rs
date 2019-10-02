@@ -47,6 +47,7 @@ pub enum Cad {
     Concat,
     List,
     Unsort,
+    Unpolar,
 
     Add,
     Mul,
@@ -83,6 +84,7 @@ impl std::str::FromStr for Cad {
             "FoldUnion" => Cad::FoldUnion,
             "Vec" => Cad::Vec,
             "Unsort" => Cad::Unsort,
+            "Unpolar" => Cad::Unpolar,
 
             "Cons" => Cad::Cons,
             "Concat" => Cad::Concat,
@@ -136,6 +138,7 @@ impl fmt::Display for Cad {
             Cad::Concat => write!(f, "Concat"),
             Cad::List => write!(f, "List"),
             Cad::Unsort => write!(f, "Unsort"),
+            Cad::Unpolar => write!(f, "Unpolar"),
 
             Cad::Add => write!(f, "+"),
             Cad::Mul => write!(f, "*"),
@@ -259,7 +262,7 @@ impl Language for Cad {
             Cons => 3,
             Concat => 3,
             List => 3,
-            Unsort => 3,
+            Unsort | Unpolar => 3,
             Vec => 2,
 
             Add => 3,
