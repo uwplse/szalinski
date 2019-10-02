@@ -228,14 +228,6 @@ impl egg::egraph::Metadata<Cad> for Meta {
         if best.children.is_empty() {
             eclass.nodes.push(Expr::unit(best.op.clone()))
         }
-        // NOTE
-        // this prunes away any conses that are hanging around if
-        // there's already a list in the eclass
-        if eclass.nodes.iter().find(|e| e.op == Cad::List).is_some() {
-            let len = eclass.nodes.len();
-            eclass.nodes.retain(|e| e.op != Cad::Cons);
-            debug!("Dropped {} conses", len - eclass.nodes.len());
-        }
     }
 }
 
