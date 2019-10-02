@@ -46,6 +46,8 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
            "(Union (Trans ?x ?y ?z ?a) (Trans ?x ?y ?z ?b))",
            "(Trans ?x ?y ?z (Union ?a ?b))"),
 
+        rw("union_same", "(Union ?a ?a)", "?a"),
+
         // unsort propagation
 
         rw("unsort_map",
