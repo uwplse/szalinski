@@ -1,0 +1,23 @@
+(Diff
+  (Union (Scale  80  80 100 Cylinder) (Scale 120 120  50 Cylinder))
+  (FoldUnion
+    (Cons
+      (Trans   0   0  -1 (Scale  25  25 102 Cylinder))
+      (Map
+        Rotate
+        (MapI  60 (Vec   0   0 (+   6 (* i   6))))
+        (Repeat
+           60
+          (Trans
+            125
+              0
+              0
+            (Scale
+               2.50
+                1
+                1
+              (Rotate
+                  0
+                  0
+                 45
+                (Trans   0   0  25 (Scale  10  10  52 Unit))))))))))

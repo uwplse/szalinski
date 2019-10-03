@@ -1,0 +1,11 @@
+(FoldUnion
+  (Map
+    TransPolar
+    (MapI   4 (Vec  2.12 (+ -135 (* i  90))  90))
+    (Repeat
+        4
+      (FoldUnion
+        (Map
+          TransPolar
+          (MapI   4 (Vec  0.71 (+ -135 (* i  90))  90))
+          (List Sphere Sphere Sphere Sphere))))))

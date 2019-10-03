@@ -37,3 +37,20 @@ macro_rules! micro {
 
 micro! {micro_union_same, "(Union a a)",  "a"}
 micro! {micro_lift_union, "(Union (Trans 1 1 1 a) (Trans 1 1 1 b))",  "(Trans 1 1 1 (Union a b))"}
+micro! {micro_mapi_deg1, "(List (Vec 1 0 0) (Vec 2 0 0) (Vec 3 0 0))",  "(MapI 3 (Vec (+ i 1) 0 0))"}
+micro! {micro_mapi_polar,
+"(List (Vec 0 -1 0) (Vec 1 0 0) (Vec 0 1 0) (Vec -1 0 0))",
+"(Unpolar 4
+            (Vec   0   0   0)
+            (MapI   4 (Vec   1 (+ -90 (* i  90))  90)))" }
+
+micro! {micro_fold_polar,
+"(Union (Trans  0 -1 0 Unit)
+         (Union (Trans  1  0 0 Unit)
+         (Union (Trans  0  1 0 Unit)
+                (Trans -1  0 0 Unit))))",
+"(FoldUnion
+            (Map
+                TransPolar
+                (MapI   4 (Vec   1 (+ -90 (* i  90))  90))
+                (Repeat   4 Unit)))" }

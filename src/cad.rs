@@ -26,12 +26,14 @@ pub enum Cad {
     Num(Num),
     Variable(String),
 
-    MapI(usize, VecFormula),
+    MapI,
+    ListVar(&'static str),
     Repeat,
 
     Float,
 
     Trans,
+    TransPolar,
     Scale,
     Rotate,
 
@@ -73,11 +75,17 @@ impl std::str::FromStr for Cad {
             "Float" => Cad::Float,
 
             "Trans" => Cad::Trans,
+            "TransPolar" => Cad::TransPolar,
             "Scale" => Cad::Scale,
             "Rotate" => Cad::Rotate,
 
             "Union" => Cad::Union,
             "Diff" => Cad::Diff,
+
+            "MapI" => Cad::MapI,
+            "i" => Cad::ListVar("i"),
+            "j" => Cad::ListVar("j"),
+            "k" => Cad::ListVar("k"),
 
             "Map" => Cad::Map,
             "Do" => Cad::Do,
@@ -111,16 +119,19 @@ impl fmt::Display for Cad {
             Cad::Sphere => write!(f, "Sphere"),
             Cad::Cylinder => write!(f, "Cylinder"),
             Cad::Num(float) => {
+                // write!(f, "{:.150}", float)
                 if float.fract() == 0.0 {
                     write!(f, "{:3.0}", float)
                 } else {
                     write!(f, "{:5.2}", float)
                 }
             }
-            Cad::MapI(i, form) => write!(f, "MapI({}, {})", i, form),
+            Cad::MapI => write!(f, "MapI"),
+            Cad::ListVar(s) => write!(f, "{}", s),
             Cad::Repeat => write!(f, "Repeat"),
 
             Cad::Trans => write!(f, "Trans"),
+            Cad::TransPolar => write!(f, "TransPolar"),
             Cad::Scale => write!(f, "Scale"),
             Cad::Rotate => write!(f, "Rotate"),
 
@@ -163,21 +174,21 @@ fn eval(op: Cad, args: &[Cad]) -> Option<Cad> {
             assert_eq!(args.len(), 2);
             match (a(0), a(1)) {
                 (Num(f1), Num(f2)) => Some(Num(f1 + f2)),
-                _ => panic!(),
+                _ => None,
             }
         }
         Mul => {
             assert_eq!(args.len(), 2);
             match (a(0), a(1)) {
                 (Num(f1), Num(f2)) => Some(Num(f1 * f2)),
-                _ => panic!(),
+                _ => None,
             }
         }
         Div => {
             assert_eq!(args.len(), 2);
             match (a(0), a(1)) {
                 (Num(f1), Num(f2)) => Some(Num(f1 / f2)),
-                _ => panic!(),
+                _ => None,
             }
         }
         _ => None,
@@ -236,16 +247,19 @@ impl Language for Cad {
         use Cad::*;
         let cost = match self {
             Num(_) => 1,
-            MapI(_, _) => 1,
             Unit | Empty | Nil | Sphere | Cylinder => 1,
             Repeat => 5,
 
             Trans => 10,
+            TransPolar => 10,
             Scale => 10,
             Rotate => 10,
 
             Union => 10,
             Diff => 10,
+
+            MapI => 1,
+            ListVar(_) => 1,
 
             FoldUnion => 9,
             Map => 9,

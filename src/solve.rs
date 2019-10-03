@@ -1,10 +1,14 @@
 use ordered_float::NotNan;
+use std::f64::consts;
 use std::fmt;
 
 use smallvec::smallvec;
 
 use crate::cad::{Cad, EGraph, Num, Vec3};
-use egg::{egraph::AddResult, expr::{Expr, Id}};
+use egg::{
+    egraph::AddResult,
+    expr::{Expr, Id},
+};
 
 static EPSILON: f64 = 0.001;
 
@@ -59,6 +63,30 @@ impl fmt::Display for Formula {
             }
         }
     }
+}
+
+impl Formula {
+    fn add_to_egraph(&self, egraph: &mut EGraph) -> Id {
+        match self {
+            Formula::Deg1(f) => {
+                let a = egraph.add(Expr::unit(Cad::Num(f.a))).id;
+                let b = egraph.add(Expr::unit(Cad::Num(f.b))).id;
+                let i = egraph.add(Expr::unit(Cad::ListVar("i"))).id;
+                let mul = egraph.add(Expr::new(Cad::Mul, smallvec![a, i])).id;
+                egraph.add(Expr::new(Cad::Add, smallvec![mul, b])).id
+            }
+            Formula::Deg2(f) => unimplemented!(),
+        }
+    }
+}
+
+fn add_mapi(egraph: &mut EGraph, n: usize, vf: VecFormula) -> AddResult {
+    let n = egraph.add(Expr::unit(Cad::Num(to_float(n)))).id;
+    let x = vf.x.add_to_egraph(egraph);
+    let y = vf.y.add_to_egraph(egraph);
+    let z = vf.z.add_to_egraph(egraph);
+    let vec = egraph.add(Expr::new(Cad::Vec, smallvec![x, y, z])).id;
+    egraph.add(Expr::new(Cad::MapI, smallvec![n, vec]))
 }
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]
@@ -121,6 +149,17 @@ fn solve_one(xs: &[Num], ys: &[Num], zs: &[Num]) -> Option<VecFormula> {
 }
 
 fn solve_vec(egraph: &mut EGraph, list: &[Vec3]) -> Vec<AddResult> {
+    // print!("Solving: [");
+    // for v in list {
+    //     print!("({:.2}, {:.2}, {:.2}), ", v.0, v.1, v.2);
+    // }
+    // println!("]");
+
+    if list.iter().all(|&v| v == list[0]) {
+        // don't infer here, it'll become a repeat
+        return vec![];
+    }
+
     let xs: Vec<Num> = list.iter().map(|v| v.0).collect();
     let ys: Vec<Num> = list.iter().map(|v| v.1).collect();
     let zs: Vec<Num> = list.iter().map(|v| v.2).collect();
@@ -132,8 +171,7 @@ fn solve_vec(egraph: &mut EGraph, list: &[Vec3]) -> Vec<AddResult> {
     let mut results = vec![];
 
     if let Some(formula) = solve_one(&xs, &ys, &zs) {
-        let e = Expr::unit(Cad::MapI(len, formula));
-        results.push(egraph.add(e));
+        results.push(add_mapi(egraph, len, formula));
     }
 
     let perms = [
@@ -143,16 +181,18 @@ fn solve_vec(egraph: &mut EGraph, list: &[Vec3]) -> Vec<AddResult> {
     ];
 
     for perm in &perms {
+        // println!("Trying sort {:?}", perm);
         let xs = perm.apply_slice(&xs[..]);
         let ys = perm.apply_slice(&ys[..]);
         let zs = perm.apply_slice(&zs[..]);
         if let Some(formula) = solve_one(&xs, &ys, &zs) {
+            // println!("Found with sort {:?}: {:?}", perm, formula);
             let p = Cad::Variable(format!("{:?}", perm));
             let e = Expr::new(
                 Cad::Unsort,
                 smallvec![
                     egraph.add(Expr::unit(p)).id,
-                    egraph.add(Expr::unit(Cad::MapI(len, formula))).id,
+                    add_mapi(egraph, len, formula).id,
                 ],
             );
             results.push(egraph.add(e));
@@ -166,10 +206,15 @@ fn polar_one(center: Vec3, v: Vec3) -> Vec3 {
     let (a, b, c) = center;
     let (xa, yb, zc) = (x - a, y - b, z - c);
     let r = (xa * xa + yb * yb + zc * zc).sqrt();
-    println!("r: {}", r);
-    let zero = 0.0.into();
-    let theta = if xa == zero { 90.0 } else { (yb / xa).atan() };
-    let phi = if r == 0.0 { 0.0 } else { (zc / r).acos() };
+    // println!("r: {}", r);
+    let theta = yb.atan2(*xa) * 180.0 / consts::PI;
+    let phi = if r == 0.0 {
+        0.0
+    } else {
+        (zc / r).acos() * 180.0 / consts::PI
+    };
+    // println!("xa: {} yb: {} zc: {}", xa, yb, zc);
+    // println!("r: {} t: {} p: {}", r, theta, phi);
     (r.into(), theta.into(), phi.into())
 }
 
@@ -183,19 +228,37 @@ fn polarize(list: &[Vec3]) -> (Vec3, Vec<Vec3>) {
     (center, new_list)
 }
 
+fn add_num(egraph: &mut EGraph, n: Num) -> Id {
+    static NS: &[f64] = &[consts::SQRT_2, 0.0, 90.0, 180.0, 270.0, 360.0];
+
+    for &known_n in NS {
+        if float_eq(n, known_n) {
+            return egraph.add(Expr::unit(Cad::Num(known_n.into()))).id;
+        }
+    }
+    egraph.add(Expr::unit(Cad::Num(n))).id
+}
+
 fn add_vec(egraph: &mut EGraph, v: Vec3) -> Id {
-    let x = egraph.add(Expr::unit(Cad::Num(v.0))).id;
-    let y = egraph.add(Expr::unit(Cad::Num(v.1))).id;
-    let z = egraph.add(Expr::unit(Cad::Num(v.2))).id;
+    let x = add_num(egraph, v.0);
+    let y = add_num(egraph, v.1);
+    let z = add_num(egraph, v.2);
     egraph.add(Expr::new(Cad::Vec, smallvec![x, y, z])).id
 }
 
 pub fn solve(egraph: &mut EGraph, list: &[Vec3]) -> Vec<AddResult> {
     let mut results = solve_vec(egraph, list);
-    println!("{:?}", list);
+    // println!("{:?}", list);
     let (center, polar_list) = polarize(&list);
     for res in solve_vec(egraph, &polar_list) {
-        let e = Expr::new(Cad::Unpolar, smallvec![add_vec(egraph, center), res.id]);
+        let e = Expr::new(
+            Cad::Unpolar,
+            smallvec![
+                add_num(egraph, to_float(list.len())),
+                add_vec(egraph, center),
+                res.id
+            ],
+        );
         results.push(egraph.add(e));
     }
     results

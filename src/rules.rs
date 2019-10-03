@@ -20,6 +20,17 @@ fn rw<M: Metadata<Cad>>(name: &str, lhs: &str, rhs: &str) -> Rewrite<Cad, M> {
 #[rustfmt::skip]
 pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
     vec![
+        // math rules
+
+        rw("add_comm", "(+ ?a ?b)", "(+ ?b ?a)"),
+        rw("add_zero", "(+ 0 ?a)", "?a"),
+
+        rw("mul_zero", "(* 0 ?a)", "0"),
+        rw("mul_one", "(* 1 ?a)", "?a"),
+        rw("mul_comm", "(* ?a ?b)", "(* ?b ?a)"),
+
+        // cad rules
+
         rw("defloat", "(Float ?a)", "?a"),
 
         rw("list_nil", "Nil", "(List)"),
@@ -27,13 +38,22 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
 
         rw("union_nil", "(Union ?a ?b)", "(FoldUnion (Cons ?a (Cons ?b Nil)))"),
         rw("union_cons", "(Union ?a (FoldUnion ?list))", "(FoldUnion (Cons ?a ?list))"),
+        rw("fold_repeat",
+           "(FoldUnion (Map ?op (Repeat ?n ?param) ?cads))",
+           "(Do ?op ?param (FoldUnion ?cads))"),
+
+        rw("fold_repeat",
+           "(FoldUnion (Map ?op (Repeat ?n ?param) ?cads))",
+           "(Do ?op ?param (FoldUnion ?cads))"),
 
         rw("do_trans",  "(Trans  ?x ?y ?z ?a)", "(Do Trans  (Vec ?x ?y ?z) ?a)"),
         rw("do_rotate", "(Rotate ?x ?y ?z ?a)", "(Do Rotate (Vec ?x ?y ?z) ?a)"),
         rw("do_scale",  "(Scale  ?x ?y ?z ?a)", "(Do Scale  (Vec ?x ?y ?z) ?a)"),
+        rw("do_transp", "(TransPolar ?x ?y ?z ?a)", "(Do TransPolar (Vec ?x ?y ?z) ?a)"),
         rw("undo_trans",  "(Do Trans  (Vec ?x ?y ?z) ?a)", "(Trans  ?x ?y ?z ?a)"),
         rw("undo_rotate", "(Do Rotate (Vec ?x ?y ?z) ?a)", "(Rotate ?x ?y ?z ?a)"),
         rw("undo_scale",  "(Do Scale  (Vec ?x ?y ?z) ?a)", "(Scale  ?x ?y ?z ?a)"),
+        rw("undo_transp", "(Do TransPolar  (Vec ?x ?y ?z) ?a)", "(TransPolar  ?x ?y ?z ?a)"),
 
         rw("map_nil",
            "(Cons (Do ?op ?param ?cad) Nil)",
@@ -61,6 +81,11 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
         rw("unsort_fold",
            "(FoldUnion (Unsort ?perm ?x))",
            "(FoldUnion ?x)"),
+
+        // unpolar
+        rw("unpolar_trans",
+           "(Map Trans (Unpolar ?n ?center ?params) ?cads)",
+           "(Map Trans (Repeat ?n ?center) (Map TransPolar ?params ?cads))"),
 
         // NOTE we do these rules in ListApplier now
         // rw("nil_repeat",
@@ -205,11 +230,14 @@ impl Applier<Cad, Meta> for ListApplier {
         // }));
 
         // insert repeats
-        if !ids.is_empty() && ids.iter().all(|id| ids[0] == *id) {
-            let n = Num::new(ids.len() as f64).unwrap();
-            let len = Expr::unit(Cad::Num(n));
-            let e = Expr::new(Cad::Repeat, smallvec![egraph.add(len).id, ids[0]]);
-            results.push(egraph.add(e))
+        if !ids.is_empty() {
+            let i0 = egraph.find(ids[0]);
+            if ids.iter().all(|id| i0 == egraph.find(*id)) {
+                let n = Num::new(ids.len() as f64).unwrap();
+                let len = Expr::unit(Cad::Num(n));
+                let e = Expr::new(Cad::Repeat, smallvec![egraph.add(len).id, i0]);
+                results.push(egraph.add(e))
+            }
         }
 
         results

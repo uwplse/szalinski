@@ -20,3 +20,4 @@ rev = "ece7bdfb4d818fcf4f31eb5af3a0dfffb8c4e371"
 
 [dev-dependencies]
 env_logger = "0.6"
+colored-diff = "0.2"

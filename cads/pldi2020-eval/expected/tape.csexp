@@ -1,0 +1,7 @@
+(Diff
+  (Trans -57  -3   3 (Scale   1   1   1 Unit))
+  (FoldUnion
+    (Map
+      Trans
+      (MapI  10 (Vec -51  -5 (+   6 (* i  16))))
+      (Repeat  10 (Scale   1   1   1 Unit)))))
