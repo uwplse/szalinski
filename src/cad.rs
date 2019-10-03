@@ -267,7 +267,7 @@ impl Language for Cad {
         let cost = match self {
             Num(_) => 1,
             Unit | Empty | Nil | Sphere | Cylinder | Hexagon => 1,
-            Repeat => 5,
+            Repeat => 1,
 
             Trans => 10,
             TransPolar => 10,

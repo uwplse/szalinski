@@ -31,7 +31,6 @@ macro_rules! test_file {
             println!("Testing {}", stringify!($name));
             let start = read_to_string($file).unwrap();
             let best = optimize(&start);
-            assert_eq!(best.cost, $cost);
 
             let outfile = $file.replace("input/", "expected/");
             if let Ok(expected) = read_to_string(&outfile) {
@@ -41,23 +40,25 @@ macro_rules! test_file {
                 if actual != expected {
                     let diff = colored_diff::PrettyDifference {expected, actual};
                     panic!("Didn't match expected. {}", diff);
-                } else {
-                    eprintln!("Didn't find expected for {}", stringify!($name));
                 }
+            } else {
+                eprintln!("Didn't find expected for {}", stringify!($name));
             }
+
+            assert_eq!(best.cost, $cost);
         }
     };
 }
 
-test_file! {file_soldering,    477, "cads/pldi2020-eval/input/soldering.csexp" }
-test_file! {file_tape,          74, "cads/pldi2020-eval/input/tape.csexp" }
-test_file! {file_dice,         193, "cads/pldi2020-eval/input/dice.csexp" }
-test_file! {file_hcbit,         95, "cads/pldi2020-eval/input/hcbitholder.csexp" }
-test_file! {file_wardrobe,     319, "cads/pldi2020-eval/input/wardrobe.csexp" }
-test_file! {file_flower,        99, "cads/pldi2020-eval/input/flower.csexp" }
+test_file! {file_soldering,    465, "cads/pldi2020-eval/input/soldering.csexp" }
+test_file! {file_tape,          70, "cads/pldi2020-eval/input/tape.csexp" }
+test_file! {file_dice,         189, "cads/pldi2020-eval/input/dice.csexp" }
+test_file! {file_hcbit,         91, "cads/pldi2020-eval/input/hcbitholder.csexp" }
+test_file! {file_wardrobe,     311, "cads/pldi2020-eval/input/wardrobe.csexp" }
+test_file! {file_flower,        91, "cads/pldi2020-eval/input/flower.csexp" }
 
 // takes about 10 seconds in debug mode
-test_file! { #[ignore] file_gear,     193, "cads/pldi2020-eval/input/gear_flat.csexp" }
+test_file! { #[ignore] file_gear,     189, "cads/pldi2020-eval/input/gear_flat.csexp" }
 
 #[test]
 #[ignore]
