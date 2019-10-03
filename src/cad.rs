@@ -21,6 +21,7 @@ pub enum Cad {
     Unit,
     Sphere,
     Cylinder,
+    Hexagon,
     Empty,
     Nil,
     Num(Num),
@@ -39,10 +40,12 @@ pub enum Cad {
 
     Union,
     Diff,
+    Inter,
 
     Map,
     Do,
     FoldUnion,
+    FoldInter,
     Vec,
 
     Cons,
@@ -52,6 +55,7 @@ pub enum Cad {
     Unpolar,
 
     Add,
+    Sub,
     Mul,
     Div,
 }
@@ -68,6 +72,7 @@ impl std::str::FromStr for Cad {
             "Unit" => Cad::Unit,
             "Sphere" => Cad::Sphere,
             "Cylinder" => Cad::Cylinder,
+            "Hexagon" => Cad::Hexagon,
             "Empty" => Cad::Empty,
             "Nil" => Cad::Nil,
             "Repeat" => Cad::Repeat,
@@ -81,6 +86,7 @@ impl std::str::FromStr for Cad {
 
             "Union" => Cad::Union,
             "Diff" => Cad::Diff,
+            "Inter" => Cad::Inter,
 
             "MapI" => Cad::MapI,
             "i" => Cad::ListVar("i"),
@@ -90,6 +96,7 @@ impl std::str::FromStr for Cad {
             "Map" => Cad::Map,
             "Do" => Cad::Do,
             "FoldUnion" => Cad::FoldUnion,
+            "FoldInter" => Cad::FoldInter,
             "Vec" => Cad::Vec,
             "Unsort" => Cad::Unsort,
             "Unpolar" => Cad::Unpolar,
@@ -99,6 +106,7 @@ impl std::str::FromStr for Cad {
             "List" => Cad::List,
 
             "+" => Cad::Add,
+            "-" => Cad::Sub,
             "*" => Cad::Mul,
             "/" => Cad::Div,
 
@@ -118,6 +126,7 @@ impl fmt::Display for Cad {
             Cad::Unit => write!(f, "Unit"),
             Cad::Sphere => write!(f, "Sphere"),
             Cad::Cylinder => write!(f, "Cylinder"),
+            Cad::Hexagon => write!(f, "Hexagon"),
             Cad::Num(float) => {
                 // write!(f, "{:.150}", float)
                 if float.fract() == 0.0 {
@@ -139,10 +148,12 @@ impl fmt::Display for Cad {
 
             Cad::Union => write!(f, "Union"),
             Cad::Diff => write!(f, "Diff"),
+            Cad::Inter => write!(f, "Inter"),
 
             Cad::Map => write!(f, "Map"),
             Cad::Do => write!(f, "Do"),
             Cad::FoldUnion => write!(f, "FoldUnion"),
+            Cad::FoldInter => write!(f, "FoldInter"),
             Cad::Vec => write!(f, "Vec"),
 
             Cad::Cons => write!(f, "Cons"),
@@ -152,6 +163,7 @@ impl fmt::Display for Cad {
             Cad::Unpolar => write!(f, "Unpolar"),
 
             Cad::Add => write!(f, "+"),
+            Cad::Sub => write!(f, "-"),
             Cad::Mul => write!(f, "*"),
             Cad::Div => write!(f, "/"),
 
@@ -174,6 +186,13 @@ fn eval(op: Cad, args: &[Cad]) -> Option<Cad> {
             assert_eq!(args.len(), 2);
             match (a(0), a(1)) {
                 (Num(f1), Num(f2)) => Some(Num(f1 + f2)),
+                _ => None,
+            }
+        }
+        Sub => {
+            assert_eq!(args.len(), 2);
+            match (a(0), a(1)) {
+                (Num(f1), Num(f2)) => Some(Num(f1 - f2)),
                 _ => None,
             }
         }
@@ -247,7 +266,7 @@ impl Language for Cad {
         use Cad::*;
         let cost = match self {
             Num(_) => 1,
-            Unit | Empty | Nil | Sphere | Cylinder => 1,
+            Unit | Empty | Nil | Sphere | Cylinder | Hexagon => 1,
             Repeat => 5,
 
             Trans => 10,
@@ -257,11 +276,13 @@ impl Language for Cad {
 
             Union => 10,
             Diff => 10,
+            Inter => 10,
 
             MapI => 1,
             ListVar(_) => 1,
 
             FoldUnion => 9,
+            FoldInter => 9,
             Map => 9,
             Do => 3,
 
@@ -272,6 +293,7 @@ impl Language for Cad {
             Vec => 2,
 
             Add => 3,
+            Sub => 3,
             Mul => 3,
             Div => 3,
             Float => 3,

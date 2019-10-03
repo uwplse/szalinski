@@ -25,6 +25,8 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
         rw("add_comm", "(+ ?a ?b)", "(+ ?b ?a)"),
         rw("add_zero", "(+ 0 ?a)", "?a"),
 
+        rw("sub_zero", "(- ?a 0)", "?a"),
+
         rw("mul_zero", "(* 0 ?a)", "0"),
         rw("mul_one", "(* 1 ?a)", "?a"),
         rw("mul_comm", "(* ?a ?b)", "(* ?b ?a)"),
@@ -46,6 +48,9 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
            "(FoldUnion (Map ?op (Repeat ?n ?param) ?cads))",
            "(Do ?op ?param (FoldUnion ?cads))"),
 
+        rw("inter_nil", "(Inter ?a ?b)", "(FoldInter (Cons ?a (Cons ?b Nil)))"),
+        rw("inter_cons", "(Inter ?a (FoldInter ?list))", "(FoldInter (Cons ?a ?list))"),
+
         rw("do_trans",  "(Trans  ?x ?y ?z ?a)", "(Do Trans  (Vec ?x ?y ?z) ?a)"),
         rw("do_rotate", "(Rotate ?x ?y ?z ?a)", "(Do Rotate (Vec ?x ?y ?z) ?a)"),
         rw("do_scale",  "(Scale  ?x ?y ?z ?a)", "(Do Scale  (Vec ?x ?y ?z) ?a)"),
@@ -66,7 +71,13 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
            "(Union (Trans ?x ?y ?z ?a) (Trans ?x ?y ?z ?b))",
            "(Trans ?x ?y ?z (Union ?a ?b))"),
 
+        rw("inter_empty", "(Inter ?a Empty)", "Empty"),
+
+        // idempotent
         rw("union_same", "(Union ?a ?a)", "?a"),
+        rw("inter_same", "(Inter ?a ?a)", "?a"),
+
+        rw("inter_union", "(Inter ?a (Union ?a ?b))", "?a"),
 
         // unsort propagation
 
@@ -121,9 +132,9 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
            "(Union (Do ?op ?params ?a) (Do ?op ?params ?b))",
            "(Do ?op ?params (Union ?a ?b))"),
 
-
         rw("rotate_zero", "(Rotate 0 0 0 ?a)", "?a"),
         rw("trans_zero", "(Trans 0 0 0 ?a)", "?a"),
+        rw("scale_one", "(Scale 1 1 1 ?a)", "?a"),
 
         rw("scale_trans",
            "(Scale ?a ?b ?c (Trans ?x ?y ?z ?m))",
