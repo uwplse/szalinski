@@ -33,8 +33,9 @@ macro_rules! test_file {
             let best = optimize(&start);
 
             let outfile = $file.replace("input/", "expected/");
-            if let Ok(expected) = read_to_string(&outfile) {
-                let expected = expected.trim();
+            let expected = read_to_string(&outfile);
+            if outfile.contains("expected/") && expected.is_ok() {
+                let expected = &expected.unwrap().trim().to_string();
                 // trim trailing spaces because the pretty printer is dumb
                 let actual = &pretty_print(&best.expr).replace(" \n", "\n").trim().to_string();
                 if actual != expected {
