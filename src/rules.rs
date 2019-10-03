@@ -44,9 +44,9 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
            "(FoldUnion (Map ?op (Repeat ?n ?param) ?cads))",
            "(Do ?op ?param (FoldUnion ?cads))"),
 
-        rw("fold_repeat",
-           "(FoldUnion (Map ?op (Repeat ?n ?param) ?cads))",
-           "(Do ?op ?param (FoldUnion ?cads))"),
+        rw("fold_op",
+           "(FoldUnion (Do ?op ?param ?cad))",
+           "(Do ?op ?param (FoldUnion ?cad))"),
 
         rw("inter_nil", "(Inter ?a ?b)", "(FoldInter (Cons ?a (Cons ?b Nil)))"),
         rw("inter_cons", "(Inter ?a (FoldInter ?list))", "(FoldInter (Cons ?a ?list))"),
