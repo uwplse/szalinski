@@ -1,6 +1,110 @@
-(Union (Trans (Float 0.0) (Float 0.0) (Float 0.0) External)
-(Union (Trans (Float 0.0) (Float 26.6) (Float 0.0) External)
-(Union (Trans (Float 0.0) (Float 53.2) (Float 0.0) External)
-(Union (Trans (Float 0.0) (Float 79.8) (Float 0.0) External)
-(Union (Trans (Float 0.0) (Float 106.4) (Float 0.0) External)
-       (Trans (Float 0.0) (Float 133.0) (Float 0.0) External))))))
+(Union(Diff(Hull(Scale (Float 135.7500000000) (Float 177.6000000000) (Float
+1.2000000000) Unit ))(Union Empty (Union Empty (Union Empty (Union(Trans (Float
+17.0750000000) (Float 171.0000000000) (Float 0.0000000000)(Scale (Float
+6.6000000000) (Float 6.6000000000) (Float 1.4000000000)(Trans (Float
+0.0000000000) (Float 0.0000000000) (Float 0.5000000000) Cylinder
+)))(Union(Trans (Float 67.8750000000) (Float 171.0000000000) (Float
+0.0000000000)(Scale (Float 6.6000000000) (Float 6.6000000000) (Float
+1.4000000000)(Trans (Float 0.0000000000) (Float 0.0000000000) (Float
+0.5000000000) Cylinder )))(Trans (Float 118.6750000000) (Float 171.0000000000)
+(Float 0.0000000000)(Scale (Float 6.6000000000) (Float 6.6000000000) (Float
+1.4000000000)(Trans (Float 0.0000000000) (Float 0.0000000000) (Float
+0.5000000000) Cylinder )))))))))(Union(Union(Rotate (Float 0.0000000000) (Float
+0.0000000000) (Float 0.0000000000)(Rotate (Float 0.0000000000) (Float
+-0.0000000000) (Float 0.0000000000)(Rotate (Float 0.0000000000) (Float
+0.0000000000) (Float 0.0000000000)(Diff(Scale (Float 135.7500000000) (Float
+27.8000000000) (Float 127.0000000000) Unit )(Union(Trans (Float 1.2000000000)
+(Float 1.2000000000) (Float 1.2000000000)(Scale (Float 133.3500000000) (Float
+25.4000000000) (Float 127.0000000000) Unit ))(Trans (Float 67.8750000000)
+(Float 0.0000000000) (Float 127.0000000000)(Rotate (Float 0.0000000000) (Float
+0.0000000000) (Float 0.0000000000)(Rotate (Float 0.0000000000) (Float
+-0.0000000000) (Float 0.0000000000)(Rotate (Float -90.0000000000) (Float
+0.0000000000) (Float 0.0000000000)(Hull(Union(Scale (Float 63.5000000000)
+(Float 63.5000000000) (Float 27.9000000000)(Trans (Float 0.0000000000) (Float
+0.0000000000) (Float 0.5000000000) Cylinder ))(Trans (Float 0.0000000000)
+(Float 88.1250000000) (Float 0.0000000000)(Scale (Float 63.5000000000) (Float
+63.5000000000) (Float 27.9000000000)(Trans (Float 0.0000000000) (Float
+0.0000000000) (Float 0.5000000000) Cylinder ))))))))))))))(Union(Trans (Float
+0.0000000000) (Float 26.6000000000) (Float 0.0000000000)(Diff(Scale (Float
+135.7500000000) (Float 27.8000000000) (Float 127.0000000000) Unit )(Union(Trans
+(Float 1.2000000000) (Float 1.2000000000) (Float 1.2000000000)(Scale (Float
+133.3500000000) (Float 25.4000000000) (Float 127.0000000000) Unit ))(Trans
+(Float 67.8750000000) (Float 0.0000000000) (Float 127.0000000000)(Rotate (Float
+0.0000000000) (Float 0.0000000000) (Float 0.0000000000)(Rotate (Float
+0.0000000000) (Float -0.0000000000) (Float 0.0000000000)(Rotate (Float
+-90.0000000000) (Float 0.0000000000) (Float 0.0000000000)(Hull(Union(Scale
+(Float 63.5000000000) (Float 63.5000000000) (Float 27.9000000000)(Trans (Float
+0.0000000000) (Float 0.0000000000) (Float 0.5000000000) Cylinder ))(Trans
+(Float 0.0000000000) (Float 88.1250000000) (Float 0.0000000000)(Scale (Float
+63.5000000000) (Float 63.5000000000) (Float 27.9000000000)(Trans (Float
+0.0000000000) (Float 0.0000000000) (Float 0.5000000000) Cylinder
+))))))))))))(Union(Trans (Float 0.0000000000) (Float 53.2000000000) (Float
+0.0000000000)(Diff(Scale (Float 135.7500000000) (Float 27.8000000000) (Float
+127.0000000000) Unit )(Union(Trans (Float 1.2000000000) (Float 1.2000000000)
+(Float 1.2000000000)(Scale (Float 133.3500000000) (Float 25.4000000000) (Float
+127.0000000000) Unit ))(Trans (Float 67.8750000000) (Float 0.0000000000) (Float
+127.0000000000)(Rotate (Float 0.0000000000) (Float 0.0000000000) (Float
+0.0000000000)(Rotate (Float 0.0000000000) (Float -0.0000000000) (Float
+0.0000000000)(Rotate (Float -90.0000000000) (Float 0.0000000000) (Float
+0.0000000000)(Hull(Union(Scale (Float 63.5000000000) (Float 63.5000000000)
+(Float 27.9000000000)(Trans (Float 0.0000000000) (Float 0.0000000000) (Float
+0.5000000000) Cylinder ))(Trans (Float 0.0000000000) (Float 88.1250000000)
+(Float 0.0000000000)(Scale (Float 63.5000000000) (Float 63.5000000000) (Float
+27.9000000000)(Trans (Float 0.0000000000) (Float 0.0000000000) (Float
+0.5000000000) Cylinder ))))))))))))(Union(Trans (Float 0.0000000000) (Float
+79.8000000000) (Float 0.0000000000)(Diff(Scale (Float 135.7500000000) (Float
+27.8000000000) (Float 127.0000000000) Unit )(Union(Trans (Float 1.2000000000)
+(Float 1.2000000000) (Float 1.2000000000)(Scale (Float 133.3500000000) (Float
+25.4000000000) (Float 127.0000000000) Unit ))(Trans (Float 67.8750000000)
+(Float 0.0000000000) (Float 127.0000000000)(Rotate (Float 0.0000000000) (Float
+0.0000000000) (Float 0.0000000000)(Rotate (Float 0.0000000000) (Float
+-0.0000000000) (Float 0.0000000000)(Rotate (Float -90.0000000000) (Float
+0.0000000000) (Float 0.0000000000)(Hull(Union(Scale (Float 63.5000000000)
+(Float 63.5000000000) (Float 27.9000000000)(Trans (Float 0.0000000000) (Float
+0.0000000000) (Float 0.5000000000) Cylinder ))(Trans (Float 0.0000000000)
+(Float 88.1250000000) (Float 0.0000000000)(Scale (Float 63.5000000000) (Float
+63.5000000000) (Float 27.9000000000)(Trans (Float 0.0000000000) (Float
+0.0000000000) (Float 0.5000000000) Cylinder ))))))))))))(Union(Trans (Float
+0.0000000000) (Float 106.4000000000) (Float 0.0000000000)(Diff(Scale (Float
+135.7500000000) (Float 27.8000000000) (Float 127.0000000000) Unit )(Union(Trans
+(Float 1.2000000000) (Float 1.2000000000) (Float 1.2000000000)(Scale (Float
+133.3500000000) (Float 25.4000000000) (Float 127.0000000000) Unit ))(Trans
+(Float 67.8750000000) (Float 0.0000000000) (Float 127.0000000000)(Rotate (Float
+0.0000000000) (Float 0.0000000000) (Float 0.0000000000)(Rotate (Float
+0.0000000000) (Float -0.0000000000) (Float 0.0000000000)(Rotate (Float
+-90.0000000000) (Float 0.0000000000) (Float 0.0000000000)(Hull(Union(Scale
+(Float 63.5000000000) (Float 63.5000000000) (Float 27.9000000000)(Trans (Float
+0.0000000000) (Float 0.0000000000) (Float 0.5000000000) Cylinder ))(Trans
+(Float 0.0000000000) (Float 88.1250000000) (Float 0.0000000000)(Scale (Float
+63.5000000000) (Float 63.5000000000) (Float 27.9000000000)(Trans (Float
+0.0000000000) (Float 0.0000000000) (Float 0.5000000000) Cylinder
+))))))))))))(Trans (Float 0.0000000000) (Float 133.0000000000) (Float
+0.0000000000)(Diff(Scale (Float 135.7500000000) (Float 27.8000000000) (Float
+127.0000000000) Unit )(Union(Trans (Float 1.2000000000) (Float 1.2000000000)
+(Float 1.2000000000)(Scale (Float 133.3500000000) (Float 25.4000000000) (Float
+127.0000000000) Unit ))(Trans (Float 67.8750000000) (Float 0.0000000000) (Float
+127.0000000000)(Rotate (Float 0.0000000000) (Float 0.0000000000) (Float
+0.0000000000)(Rotate (Float 0.0000000000) (Float -0.0000000000) (Float
+0.0000000000)(Rotate (Float -90.0000000000) (Float 0.0000000000) (Float
+0.0000000000)(Hull(Union(Scale (Float 63.5000000000) (Float 63.5000000000)
+(Float 27.9000000000)(Trans (Float 0.0000000000) (Float 0.0000000000) (Float
+0.5000000000) Cylinder ))(Trans (Float 0.0000000000) (Float 88.1250000000)
+(Float 0.0000000000)(Scale (Float 63.5000000000) (Float 63.5000000000) (Float
+27.9000000000)(Trans (Float 0.0000000000) (Float 0.0000000000) (Float
+0.5000000000) Cylinder )))))))))))))))))(Union Empty (Union(Trans (Float
+0.2000000000) (Float 0.0000000000) (Float -0.2000000000) Empty )(Union Empty
+(Union(Trans (Float -0.2000000000) (Float 0.0000000000) (Float -0.2000000000)
+Empty )(Union Empty (Union(Trans (Float 0.2000000000) (Float 0.0000000000)
+(Float -0.2000000000) Empty )(Union Empty (Union(Trans (Float -0.2000000000)
+(Float 0.0000000000) (Float -0.2000000000) Empty )(Union Empty (Union(Trans
+(Float 0.2000000000) (Float 0.0000000000) (Float -0.2000000000) Empty )(Union
+Empty (Union(Trans (Float -0.2000000000) (Float 0.0000000000) (Float
+-0.2000000000) Empty )(Union Empty (Union(Trans (Float 0.2000000000) (Float
+0.0000000000) (Float -0.2000000000) Empty )(Union Empty (Union(Trans (Float
+-0.2000000000) (Float 0.0000000000) (Float -0.2000000000) Empty )(Union Empty
+(Union(Trans (Float 0.2000000000) (Float 0.0000000000) (Float -0.2000000000)
+Empty )(Union Empty (Union(Trans (Float -0.2000000000) (Float 0.0000000000)
+(Float -0.2000000000) Empty )(Union Empty (Union(Trans (Float 0.2000000000)
+(Float 0.0000000000) (Float -0.2000000000) Empty )(Union Empty (Trans (Float
+-0.2000000000) (Float 0.0000000000) (Float -0.2000000000) Empty
+))))))))))))))))))))))))))
