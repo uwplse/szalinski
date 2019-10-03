@@ -288,7 +288,7 @@ impl Language for Cad {
 
             Cons => 3,
             Concat => 3,
-            List => 3,
+            List => 10,
             Unsort | Unpolar => 3,
             Vec => 2,
 
