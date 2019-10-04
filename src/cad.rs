@@ -1,7 +1,9 @@
 use std::fmt;
+use std::str::FromStr;
 use std::time::Instant;
 
 use egg::{
+    define_term,
     egraph::EClass,
     expr::{Expr, Language, RecExpr},
     extract::{CostExpr, Extractor},
@@ -14,158 +16,84 @@ pub type EGraph = egg::egraph::EGraph<Cad, Meta>;
 
 pub type Vec3 = (Num, Num, Num);
 
-#[derive(Debug, PartialEq, Eq, Hash, Clone)]
-pub enum Cad {
-    Unit,
-    Sphere,
-    Cylinder,
-    Hexagon,
-    Empty,
-    Nil,
-    Num(Num),
-    Variable(String),
-
-    MapI,
-    ListVar(&'static str),
-    Repeat,
-
-    Float,
-
-    Trans,
-    TransPolar,
-    Scale,
-    Rotate,
-
-    Union,
-    Diff,
-    Inter,
-
-    Map,
-    Do,
-    FoldUnion,
-    FoldInter,
-    Vec,
-
-    Cons,
-    Concat,
-    List,
-    Unsort,
-    Unpolar,
-
-    Add,
-    Sub,
-    Mul,
-    Div,
-}
-
-impl std::str::FromStr for Cad {
+#[derive(PartialEq, Eq, Hash, Debug, Clone)]
+pub struct ListVar(pub &'static str);
+impl FromStr for ListVar {
     type Err = ();
-    fn from_str(s: &str) -> Result<Self, ()> {
-        if let Ok(f) = f64::from_str(s) {
-            return Ok(Cad::Num(f.into()));
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "i" => Ok(ListVar("i")),
+            "j" => Ok(ListVar("j")),
+            "k" => Ok(ListVar("k")),
+            _ => Err(()),
         }
-
-        Ok(match s.trim() {
-            "Unit" => Cad::Unit,
-            "Sphere" => Cad::Sphere,
-            "Cylinder" => Cad::Cylinder,
-            "Hexagon" => Cad::Hexagon,
-            "Empty" => Cad::Empty,
-            "Nil" => Cad::Nil,
-            "Repeat" => Cad::Repeat,
-
-            "Float" => Cad::Float,
-
-            "Trans" => Cad::Trans,
-            "TransPolar" => Cad::TransPolar,
-            "Scale" => Cad::Scale,
-            "Rotate" => Cad::Rotate,
-
-            "Union" => Cad::Union,
-            "Diff" => Cad::Diff,
-            "Inter" => Cad::Inter,
-
-            "MapI" => Cad::MapI,
-            "i" => Cad::ListVar("i"),
-            "j" => Cad::ListVar("j"),
-            "k" => Cad::ListVar("k"),
-
-            "Map" => Cad::Map,
-            "Do" => Cad::Do,
-            "FoldUnion" => Cad::FoldUnion,
-            "FoldInter" => Cad::FoldInter,
-            "Vec" => Cad::Vec,
-            "Unsort" => Cad::Unsort,
-            "Unpolar" => Cad::Unpolar,
-
-            "Cons" => Cad::Cons,
-            "Concat" => Cad::Concat,
-            "List" => Cad::List,
-
-            "+" => Cad::Add,
-            "-" => Cad::Sub,
-            "*" => Cad::Mul,
-            "/" => Cad::Div,
-
-            s => {
-                println!("Parsing a variable: {}", s);
-                Cad::Variable(s.into())
-            }
-        })
+    }
+}
+impl fmt::Display for ListVar {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.0)
     }
 }
 
-impl fmt::Display for Cad {
+#[derive(PartialEq, Eq, Hash, Debug, Clone)]
+pub struct Variable(pub String);
+impl FromStr for Variable {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        println!("Parsing a variable: {}", s);
+        Ok(Variable(s.into()))
+    }
+}
+impl fmt::Display for Variable {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            Cad::Nil => write!(f, "Nil"),
-            Cad::Empty => write!(f, "Empty"),
-            Cad::Unit => write!(f, "Unit"),
-            Cad::Sphere => write!(f, "Sphere"),
-            Cad::Cylinder => write!(f, "Cylinder"),
-            Cad::Hexagon => write!(f, "Hexagon"),
-            Cad::Num(num) => {
-                write!(f, "{}", num)
-                // if float.fract() == 0.0 {
-                //     write!(f, "{:3.0}", float)
-                // } else {
-                //     write!(f, "{:5.2}", float)
-                // }
-            }
-            Cad::MapI => write!(f, "MapI"),
-            Cad::ListVar(s) => write!(f, "{}", s),
-            Cad::Repeat => write!(f, "Repeat"),
+        write!(f, "{}", self.0)
+    }
+}
 
-            Cad::Trans => write!(f, "Trans"),
-            Cad::TransPolar => write!(f, "TransPolar"),
-            Cad::Scale => write!(f, "Scale"),
-            Cad::Rotate => write!(f, "Rotate"),
+define_term! {
+    #[derive(Debug, PartialEq, Eq, Hash, Clone)]
+    pub enum Cad {
+        Unit = "Unit",
+        Sphere = "Sphere",
+        Cylinder = "Cylinder",
+        Hexagon = "Hexagon",
+        Empty = "Empty",
+        Nil = "Nil",
+        Num(Num),
 
-            Cad::Float => write!(f, "Float"),
+        MapI = "MapI",
+        ListVar(ListVar),
+        Repeat = "Repeat",
 
-            Cad::Union => write!(f, "Union"),
-            Cad::Diff => write!(f, "Diff"),
-            Cad::Inter => write!(f, "Inter"),
+        Float = "Float",
 
-            Cad::Map => write!(f, "Map"),
-            Cad::Do => write!(f, "Do"),
-            Cad::FoldUnion => write!(f, "FoldUnion"),
-            Cad::FoldInter => write!(f, "FoldInter"),
-            Cad::Vec => write!(f, "Vec"),
+        Trans = "Trans",
+        TransPolar = "TransPolar",
+        Scale = "Scale",
+        Rotate = "Rotate",
 
-            Cad::Cons => write!(f, "Cons"),
-            Cad::Concat => write!(f, "Concat"),
-            Cad::List => write!(f, "List"),
-            Cad::Unsort => write!(f, "Unsort"),
-            Cad::Unpolar => write!(f, "Unpolar"),
+        Union = "Union",
+        Diff = "Diff",
+        Inter = "Inter",
 
-            Cad::Add => write!(f, "+"),
-            Cad::Sub => write!(f, "-"),
-            Cad::Mul => write!(f, "*"),
-            Cad::Div => write!(f, "/"),
+        Map = "Map",
+        Do = "Do",
+        FoldUnion = "FoldUnion",
+        FoldInter = "FoldInter",
+        Vec = "Vec",
 
-            Cad::Variable(s) => write!(f, "var'{}'", s),
-        }
+        Cons = "Cons",
+        Concat = "Concat",
+        List = "List",
+        Unsort = "Unsort",
+        Unpolar = "Unpolar",
+
+        Add = "+",
+        Sub = "-",
+        Mul = "*",
+        Div = "/",
+
+        Variable(Variable),
     }
 }
 

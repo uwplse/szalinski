@@ -1,4 +1,5 @@
 use std::fmt;
+use std::str::FromStr;
 
 #[derive(PartialOrd, Ord, PartialEq, Eq, Hash, Default, Clone, Copy)]
 pub struct Num(ordered_float::NotNan<f64>);
@@ -35,6 +36,13 @@ impl From<usize> for Num {
 }
 
 // core traits
+
+impl FromStr for Num {
+    type Err = ordered_float::ParseNotNanError<std::num::ParseFloatError>;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        s.parse().map(Num)
+    }
+}
 
 impl fmt::Display for Num {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {

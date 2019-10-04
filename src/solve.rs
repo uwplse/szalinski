@@ -3,7 +3,7 @@ use std::f64::consts;
 use smallvec::smallvec;
 
 use crate::{
-    cad::{Cad, EGraph, Vec3},
+    cad::{Cad, EGraph, ListVar, Variable, Vec3},
     num::Num,
 };
 use egg::{
@@ -34,7 +34,7 @@ impl Formula {
             Formula::Deg1(f) => {
                 let a = egraph.add(Expr::unit(Cad::Num(f.a.into()))).id;
                 let b = egraph.add(Expr::unit(Cad::Num(f.b.into()))).id;
-                let i = egraph.add(Expr::unit(Cad::ListVar("i"))).id;
+                let i = egraph.add(Expr::unit(Cad::ListVar(ListVar("i")))).id;
                 let mul = egraph.add(Expr::new(Cad::Mul, smallvec![a, i])).id;
                 egraph.add(Expr::new(Cad::Add, smallvec![mul, b])).id
             }
@@ -148,7 +148,7 @@ fn solve_vec(egraph: &mut EGraph, list: &[Vec3]) -> Vec<AddResult> {
         let zs = perm.apply_slice(&zs[..]);
         if let Some(formula) = solve_one(&xs, &ys, &zs) {
             // println!("Found with sort {:?}: {:?}", perm, formula);
-            let p = Cad::Variable(format!("{:?}", perm));
+            let p = Cad::Variable(Variable(format!("{:?}", perm)));
             let e = Expr::new(
                 Cad::Unsort,
                 smallvec![
