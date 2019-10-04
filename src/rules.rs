@@ -11,7 +11,10 @@ use indexmap::IndexMap;
 use log::*;
 use smallvec::{smallvec, SmallVec};
 
-use crate::cad::{Cad, EGraph, Meta, Num, Vec3};
+use crate::{
+    cad::{Cad, EGraph, Meta, Vec3},
+    num::Num,
+};
 
 fn rw<M: Metadata<Cad>>(name: &str, lhs: &str, rhs: &str) -> Rewrite<Cad, M> {
     Cad::parse_rewrite(name, lhs, rhs).unwrap()
@@ -244,8 +247,7 @@ impl Applier<Cad, Meta> for ListApplier {
         if !ids.is_empty() {
             let i0 = egraph.find(ids[0]);
             if ids.iter().all(|id| i0 == egraph.find(*id)) {
-                let n = Num::new(ids.len() as f64).unwrap();
-                let len = Expr::unit(Cad::Num(n));
+                let len = Expr::unit(Cad::Num(ids.len().into()));
                 let e = Expr::new(Cad::Repeat, smallvec![egraph.add(len).id, i0]);
                 results.push(egraph.add(e))
             }

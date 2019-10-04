@@ -7,13 +7,11 @@ use egg::{
     extract::{CostExpr, Extractor},
 };
 
-use crate::solve::VecFormula;
+use crate::num::{num, Num};
 
 use log::*;
-use ordered_float::NotNan;
-
 pub type EGraph = egg::egraph::EGraph<Cad, Meta>;
-pub type Num = NotNan<f64>;
+
 pub type Vec3 = (Num, Num, Num);
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]
@@ -63,9 +61,8 @@ pub enum Cad {
 impl std::str::FromStr for Cad {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, ()> {
-        if let Ok(v) = f64::from_str(s) {
-            let f = NotNan::new(v).unwrap();
-            return Ok(Cad::Num(f));
+        if let Ok(f) = f64::from_str(s) {
+            return Ok(Cad::Num(f.into()));
         }
 
         Ok(match s.trim() {
@@ -127,13 +124,13 @@ impl fmt::Display for Cad {
             Cad::Sphere => write!(f, "Sphere"),
             Cad::Cylinder => write!(f, "Cylinder"),
             Cad::Hexagon => write!(f, "Hexagon"),
-            Cad::Num(float) => {
-                // write!(f, "{:.150}", float)
-                if float.fract() == 0.0 {
-                    write!(f, "{:3.0}", float)
-                } else {
-                    write!(f, "{:5.2}", float)
-                }
+            Cad::Num(num) => {
+                write!(f, "{}", num)
+                // if float.fract() == 0.0 {
+                //     write!(f, "{:3.0}", float)
+                // } else {
+                //     write!(f, "{:5.2}", float)
+                // }
             }
             Cad::MapI => write!(f, "MapI"),
             Cad::ListVar(s) => write!(f, "{}", s),
@@ -185,28 +182,28 @@ fn eval(op: Cad, args: &[Cad]) -> Option<Cad> {
         Add => {
             assert_eq!(args.len(), 2);
             match (a(0), a(1)) {
-                (Num(f1), Num(f2)) => Some(Num(f1 + f2)),
+                (Num(f1), Num(f2)) => Some(Num(num(f1.to_f64() + f2.to_f64()))),
                 _ => None,
             }
         }
         Sub => {
             assert_eq!(args.len(), 2);
             match (a(0), a(1)) {
-                (Num(f1), Num(f2)) => Some(Num(f1 - f2)),
+                (Num(f1), Num(f2)) => Some(Num(num(f1.to_f64() - f2.to_f64()))),
                 _ => None,
             }
         }
         Mul => {
             assert_eq!(args.len(), 2);
             match (a(0), a(1)) {
-                (Num(f1), Num(f2)) => Some(Num(f1 * f2)),
+                (Num(f1), Num(f2)) => Some(Num(num(f1.to_f64() * f2.to_f64()))),
                 _ => None,
             }
         }
         Div => {
             assert_eq!(args.len(), 2);
             match (a(0), a(1)) {
-                (Num(f1), Num(f2)) => Some(Num(f1 / f2)),
+                (Num(f1), Num(f2)) => Some(Num(num(f1.to_f64() / f2.to_f64()))),
                 _ => None,
             }
         }

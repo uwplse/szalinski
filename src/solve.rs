@@ -1,76 +1,39 @@
-use ordered_float::NotNan;
 use std::f64::consts;
-use std::fmt;
 
 use smallvec::smallvec;
 
-use crate::cad::{Cad, EGraph, Num, Vec3};
+use crate::{
+    cad::{Cad, EGraph, Vec3},
+    num::Num,
+};
 use egg::{
     egraph::AddResult,
     expr::{Expr, Id},
 };
 
-static EPSILON: f64 = 0.001;
-
-fn float_eq(a: impl Into<f64>, b: impl Into<f64>) -> bool {
-    (a.into() - b.into()).abs() < EPSILON
+fn f(u: usize) -> f64 {
+    u as f64
 }
 
-fn to_float(f: usize) -> Num {
-    NotNan::new(f as f64).unwrap()
-}
-
-#[derive(Debug, PartialEq, Eq, Hash, Clone)]
+#[derive(Debug, PartialEq)]
 pub struct VecFormula {
     x: Formula,
     y: Formula,
     z: Formula,
 }
 
-impl fmt::Display for VecFormula {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{{ x: {}, y: {}, z: {} }}", self.x, self.y, self.z)
-    }
-}
-
-#[derive(Debug, PartialEq, Eq, Hash, Clone)]
+#[derive(Debug, PartialEq)]
 enum Formula {
     Deg1(Deg1),
     Deg2(Deg2),
-}
-
-impl fmt::Display for Formula {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            Formula::Deg1(soln) => {
-                if soln.a.into_inner() == 0.0 {
-                    write!(f, "{}", soln.b)
-                } else {
-                    write!(f, "{:.2} * i + {:.2}", soln.a, soln.b)
-                }
-            }
-            Formula::Deg2(soln) => {
-                // if a = 0 then it is just Deg1
-                if soln.b.into_inner() == 0.0 {
-                    write!(f, "{:.2} * i * i + {:.2}", soln.a, soln.c)
-                } else {
-                    write!(
-                        f,
-                        "{:.2} * i * i + {:.2} * i + {:.2}",
-                        soln.a, soln.b, soln.c
-                    )
-                }
-            }
-        }
-    }
 }
 
 impl Formula {
     fn add_to_egraph(&self, egraph: &mut EGraph) -> Id {
         match self {
             Formula::Deg1(f) => {
-                let a = egraph.add(Expr::unit(Cad::Num(f.a))).id;
-                let b = egraph.add(Expr::unit(Cad::Num(f.b))).id;
+                let a = egraph.add(Expr::unit(Cad::Num(f.a.into()))).id;
+                let b = egraph.add(Expr::unit(Cad::Num(f.b.into()))).id;
                 let i = egraph.add(Expr::unit(Cad::ListVar("i"))).id;
                 let mul = egraph.add(Expr::new(Cad::Mul, smallvec![a, i])).id;
                 egraph.add(Expr::new(Cad::Add, smallvec![mul, b])).id
@@ -81,7 +44,7 @@ impl Formula {
 }
 
 fn add_mapi(egraph: &mut EGraph, n: usize, vf: VecFormula) -> AddResult {
-    let n = egraph.add(Expr::unit(Cad::Num(to_float(n)))).id;
+    let n = egraph.add(Expr::unit(Cad::Num(n.into()))).id;
     let x = vf.x.add_to_egraph(egraph);
     let y = vf.y.add_to_egraph(egraph);
     let z = vf.z.add_to_egraph(egraph);
@@ -89,27 +52,28 @@ fn add_mapi(egraph: &mut EGraph, n: usize, vf: VecFormula) -> AddResult {
     egraph.add(Expr::new(Cad::MapI, smallvec![n, vec]))
 }
 
-#[derive(Debug, PartialEq, Eq, Hash, Clone)]
+#[derive(Debug, PartialEq)]
 struct Deg1 {
-    a: Num,
-    b: Num,
+    a: f64,
+    b: f64,
 }
-#[derive(Debug, PartialEq, Eq, Hash, Clone)]
+
+#[derive(Debug, PartialEq)]
 struct Deg2 {
-    a: Num,
-    b: Num,
-    c: Num,
+    a: f64,
+    b: f64,
+    c: f64,
 }
 
 fn solve_deg1(vs: &[Num]) -> Option<Deg1> {
-    let i1 = to_float(0);
-    let i2 = to_float(1);
-    let o1 = vs[0];
-    let o2 = vs[1];
+    let i1 = 0.0;
+    let i2 = 1.0;
+    let o1 = vs[0].to_f64();
+    let o2 = vs[1].to_f64();
     let b = (o1 * i2) - (o2 * i1) / (i2 - i1);
     let a = (o2 - b) / i2;
     let mut ivs = vs.iter().enumerate();
-    if ivs.all(|(i, &v)| float_eq(a * to_float(i) + b, v)) {
+    if ivs.all(|(i, &v)| v.is_close(a * f(i) + b)) {
         Some(Deg1 { a, b })
     } else {
         None
@@ -117,22 +81,19 @@ fn solve_deg1(vs: &[Num]) -> Option<Deg1> {
 }
 
 fn solve_deg2(vs: &[Num]) -> Option<Deg2> {
-    let i1 = to_float(0);
-    let i2 = to_float(1);
-    let i3 = to_float(2);
-    let o1 = vs[0];
-    let o2 = vs[1];
-    let o3 = vs[2];
+    let i1 = 0.0;
+    let i2 = 1.0;
+    let i3 = 2.0;
+    let o1 = vs[0].to_f64();
+    let o2 = vs[1].to_f64();
+    let o3 = vs[2].to_f64();
     let a = (((o2 * i3) - (o3 * i2)) - ((i2 - i3) * (((o1 * i2) - (o2 * i1)) / (i1 - i2))))
         / ((i2 - i3) * ((i2 * i3) - (i1 * i2)));
     let c = (a * i1 * i2) - (((o1 * i2) - (o2 * i1)) / (i1 - i2));
     let b = (o3 - c - (a * i3 * i3)) / i3;
     let mut ivs = vs.iter().enumerate();
 
-    let works = ivs.all(|(i, &v)| {
-        let f = to_float(i);
-        float_eq(a * f * f + b * f + c, v)
-    });
+    let works = ivs.all(|(i, &v)| v.is_close(a * f(i * i) + b * f(i) + c));
 
     if works {
         Some(Deg2 { a, b, c })
@@ -201,13 +162,13 @@ fn solve_vec(egraph: &mut EGraph, list: &[Vec3]) -> Vec<AddResult> {
     results
 }
 
-fn polar_one(center: Vec3, v: Vec3) -> Vec3 {
-    let (x, y, z) = v;
+fn polar_one(center: (f64, f64, f64), v: Vec3) -> Vec3 {
+    let (x, y, z) = (v.0.to_f64(), v.1.to_f64(), v.2.to_f64());
     let (a, b, c) = center;
     let (xa, yb, zc) = (x - a, y - b, z - c);
     let r = (xa * xa + yb * yb + zc * zc).sqrt();
     // println!("r: {}", r);
-    let theta = yb.atan2(*xa) * 180.0 / consts::PI;
+    let theta = yb.atan2(xa) * 180.0 / consts::PI;
     let phi = if r == 0.0 {
         0.0
     } else {
@@ -219,20 +180,21 @@ fn polar_one(center: Vec3, v: Vec3) -> Vec3 {
 }
 
 fn polarize(list: &[Vec3]) -> (Vec3, Vec<Vec3>) {
-    let xc: Num = list.iter().map(|v| v.0.into_inner()).sum::<f64>().into();
-    let yc: Num = list.iter().map(|v| v.1.into_inner()).sum::<f64>().into();
-    let zc: Num = list.iter().map(|v| v.2.into_inner()).sum::<f64>().into();
-    let n = to_float(list.len());
+    let xc = list.iter().map(|v| v.0.to_f64()).sum::<f64>();
+    let yc = list.iter().map(|v| v.1.to_f64()).sum::<f64>();
+    let zc = list.iter().map(|v| v.2.to_f64()).sum::<f64>();
+    let n = f(list.len());
     let center = (xc / n, yc / n, zc / n);
     let new_list = list.iter().map(|&v| polar_one(center, v)).collect();
-    (center, new_list)
+    let num_center = (center.0.into(), center.1.into(), center.2.into());
+    (num_center, new_list)
 }
 
 fn add_num(egraph: &mut EGraph, n: Num) -> Id {
     static NS: &[f64] = &[consts::SQRT_2, 0.0, 90.0, 180.0, 270.0, 360.0];
 
     for &known_n in NS {
-        if float_eq(n, known_n) {
+        if n == known_n.into() {
             return egraph.add(Expr::unit(Cad::Num(known_n.into()))).id;
         }
     }
@@ -254,7 +216,7 @@ pub fn solve(egraph: &mut EGraph, list: &[Vec3]) -> Vec<AddResult> {
         let e = Expr::new(
             Cad::Unpolar,
             smallvec![
-                add_num(egraph, to_float(list.len())),
+                add_num(egraph, list.len().into()),
                 add_vec(egraph, center),
                 res.id
             ],
@@ -269,21 +231,21 @@ mod tests {
     use super::*;
 
     fn mk_test_vec(v: &[f64]) -> Vec<Num> {
-        v.iter().map(|v| NotNan::new(*v).unwrap()).collect()
+        v.iter().map(|&v| v.into()).collect()
     }
 
     #[test]
     fn deg1_test1() {
         let input = mk_test_vec(&[1.0, 2.0, 3.0, 4.0]);
         let res = solve_deg1(&input).unwrap();
-        assert_eq!(res.a.into_inner(), 1.0);
+        assert_eq!(res.a, 1.0);
     }
 
     #[test]
     fn deg1_test2() {
         let input = mk_test_vec(&[0.0, 0.0, 0.0, 0.0]);
         let res = solve_deg1(&input).unwrap();
-        assert_eq!(res.a.into_inner(), 0.0);
+        assert_eq!(res.a, 0.0);
     }
 
     #[test]
@@ -296,7 +258,7 @@ mod tests {
     fn deg2_test1() {
         let input = mk_test_vec(&[0.0, 1.0, 4.0, 9.0]);
         let res = solve_deg2(&input).unwrap();
-        assert_eq!(res.a.into_inner(), 1.0);
+        assert_eq!(res.a, 1.0);
     }
 
     #[test]
