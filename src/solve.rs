@@ -3,7 +3,7 @@ use std::f64::consts;
 use smallvec::smallvec;
 
 use crate::{
-    cad::{Cad, EGraph, ListVar, Variable, Vec3},
+    cad::{Cad, EGraph, ListVar as LV, Variable, Vec3},
     num::Num,
 };
 use egg::{
@@ -28,17 +28,34 @@ enum Formula {
     Deg2(Deg2),
 }
 
+macro_rules! eadd {
+    ($egraph:expr, $op:expr) => {$egraph.add(Expr::unit($op)).id};
+    ($egraph:expr, $op:expr, $($arg:expr),*) => {
+        $egraph.add(Expr::new($op, smallvec![$($arg),*])).id
+    };
+}
+
 impl Formula {
-    fn add_to_egraph(&self, egraph: &mut EGraph) -> Id {
+    fn add_to_egraph(&self, e: &mut EGraph) -> Id {
+        use Cad::*;
+        let i = eadd!(e, ListVar(LV("i")));
         match self {
             Formula::Deg1(f) => {
-                let a = egraph.add(Expr::unit(Cad::Num(f.a.into()))).id;
-                let b = egraph.add(Expr::unit(Cad::Num(f.b.into()))).id;
-                let i = egraph.add(Expr::unit(Cad::ListVar(ListVar("i")))).id;
-                let mul = egraph.add(Expr::new(Cad::Mul, smallvec![a, i])).id;
-                egraph.add(Expr::new(Cad::Add, smallvec![mul, b])).id
+                let a = eadd!(e, Num(f.a.into()));
+                let b = eadd!(e, Num(f.b.into()));
+                let mul = eadd!(e, Mul, a, i);
+                eadd!(e, Add, mul, b)
             }
-            Formula::Deg2(f) => unimplemented!(),
+            Formula::Deg2(f) => {
+                let a = eadd!(e, Num(f.a.into()));
+                let b = eadd!(e, Num(f.b.into()));
+                let c = eadd!(e, Num(f.c.into()));
+                let ii = eadd!(e, Mul, i, i);
+                let a2 = eadd!(e, Mul, a, ii);
+                let b1 = eadd!(e, Mul, b, i);
+                let ab = eadd!(e, Add, a2, b1);
+                eadd!(e, Add, ab, c)
+            }
         }
     }
 }
@@ -96,16 +113,28 @@ fn solve_deg2(vs: &[Num]) -> Option<Deg2> {
     let works = ivs.all(|(i, &v)| v.is_close(a * f(i * i) + b * f(i) + c));
 
     if works {
+        // dbg!(
         Some(Deg2 { a, b, c })
+    // )
     } else {
         None
     }
 }
 
+fn solve_list_fn(xs: &[Num]) -> Option<Formula> {
+    if let Some(sol1) = solve_deg1(&xs) {
+        return Some(Formula::Deg1(sol1));
+    }
+    if xs.len() > 3 {
+        return solve_deg2(&xs).map(Formula::Deg2);
+    }
+    None
+}
+
 fn solve_one(xs: &[Num], ys: &[Num], zs: &[Num]) -> Option<VecFormula> {
-    let x = solve_deg1(&xs).map(Formula::Deg1)?;
-    let y = solve_deg1(&ys).map(Formula::Deg1)?;
-    let z = solve_deg1(&zs).map(Formula::Deg1)?;
+    let x = solve_list_fn(xs)?;
+    let y = solve_list_fn(ys)?;
+    let z = solve_list_fn(zs)?;
     Some(VecFormula { x, y, z })
 }
 

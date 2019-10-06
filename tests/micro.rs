@@ -1,10 +1,6 @@
-use std::fs::{read_dir, read_to_string};
 use std::time::Instant;
 
-use egg::{
-    extract::{calculate_cost, CostExpr},
-    parse::ParsableLanguage,
-};
+use egg::{extract::calculate_cost, parse::ParsableLanguage};
 use szalinski_egg::cad::{run_rules, Cad, EGraph};
 
 macro_rules! micro {
@@ -21,7 +17,7 @@ macro_rules! micro {
             let root = egraph.add_expr(&start_expr);
 
             let start = Instant::now();
-            let best = run_rules(&mut egraph, root, 100, 3_000_000);
+            let _best = run_rules(&mut egraph, root, 100, 3_000_000);
             println!("Initial cost: {}", init_cost);
             println!("Total time: {:?}", start.elapsed());
 

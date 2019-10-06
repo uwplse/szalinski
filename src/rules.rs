@@ -193,6 +193,7 @@ struct ListApplier {
 
 // NOTE
 // partitioning is unsound right now because it will reorder elements
+#[allow(dead_code)]
 fn partition_list<F, K>(egraph: &mut EGraph, ids: &[Id], mut key_fn: F) -> Option<AddResult>
 where
     F: FnMut(usize, Id) -> K,
@@ -208,7 +209,7 @@ where
             debug!("Partitioning: {:?}", parts);
             let new_ids = parts
                 .into_iter()
-                .map(|(op, ids)| egraph.add(Expr::new(Cad::List, ids)).id)
+                .map(|(_op, ids)| egraph.add(Expr::new(Cad::List, ids)).id)
                 .collect();
             let e = Expr::new(Cad::Concat, new_ids);
             return Some(egraph.add(e));
