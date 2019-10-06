@@ -230,43 +230,6 @@ impl Language for Cad {
     }
 }
 
-pub fn pretty_print(expr: &RecExpr<Cad>) -> String {
-    use std::fmt::{Result, Write};
-    use symbolic_expressions::Sexp;
-
-    let sexp = expr.to_sexp();
-
-    fn pp(buf: &mut String, sexp: &Sexp, level: usize) -> Result {
-        if let Sexp::List(list) = sexp {
-            let indent = sexp.to_string().len() > 80;
-            write!(buf, "(")?;
-
-            for (i, val) in list.iter().enumerate() {
-                if indent && i > 0 {
-                    write!(buf, "\n")?;
-                    for _ in 0..level {
-                        write!(buf, "  ")?;
-                    }
-                }
-                pp(buf, val, level + 1)?;
-                if i < list.len() - 1 {
-                    write!(buf, " ")?;
-                }
-            }
-
-            write!(buf, ")")?;
-            Ok(())
-        } else {
-            // I don't care about quotes
-            write!(buf, "{}", sexp.to_string().trim_matches('"'))
-        }
-    }
-
-    let mut buf = String::new();
-    pp(&mut buf, &sexp, 1).unwrap();
-    buf
-}
-
 pub fn run_rules(
     egraph: &mut egg::egraph::EGraph<Cad, Meta>,
     root: u32,
@@ -329,7 +292,7 @@ pub fn run_rules(
 
     let ext = Extractor::new(&egraph);
     let best = ext.find_best(root);
-    println!("Best ({})\n{}", best.cost, pretty_print(&best.expr));
+    println!("Best ({})\n{}", best.cost, best.expr.pretty(60));
 
     best
 }

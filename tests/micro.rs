@@ -5,7 +5,7 @@ use egg::{
     extract::{calculate_cost, CostExpr},
     parse::ParsableLanguage,
 };
-use szalinski_egg::cad::{pretty_print, run_rules, Cad, EGraph};
+use szalinski_egg::cad::{run_rules, Cad, EGraph};
 
 macro_rules! micro {
     ($name:ident, $start:expr, $end:expr) => {
@@ -15,7 +15,7 @@ macro_rules! micro {
             let _ = env_logger::builder().is_test(true).try_init();
             let start_expr = Cad::parse_expr($start).unwrap();
             let init_cost = calculate_cost(&start_expr);
-            println!("Start ({})\n{}", init_cost, pretty_print(&start_expr));
+            println!("Start ({})\n{}", init_cost, start_expr.pretty(80));
 
             let mut egraph = EGraph::default();
             let root = egraph.add_expr(&start_expr);

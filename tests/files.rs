@@ -5,13 +5,13 @@ use egg::{
     extract::{calculate_cost, CostExpr},
     parse::ParsableLanguage,
 };
-use szalinski_egg::cad::{pretty_print, run_rules, Cad, EGraph};
+use szalinski_egg::cad::{run_rules, Cad, EGraph};
 
 fn optimize(s: &str) -> CostExpr<Cad> {
     let _ = env_logger::builder().is_test(true).try_init();
     let start_expr = Cad::parse_expr(s).unwrap();
     let init_cost = calculate_cost(&start_expr);
-    println!("Start ({})\n{}", init_cost, pretty_print(&start_expr));
+    println!("Start ({})\n{}", init_cost, start_expr.pretty(80));
 
     let mut egraph = EGraph::default();
     let root = egraph.add_expr(&start_expr);
@@ -36,8 +36,7 @@ macro_rules! test_file {
             let expected = read_to_string(&outfile);
             if outfile.contains("expected/") && expected.is_ok() {
                 let expected = &expected.unwrap().trim().to_string();
-                // trim trailing spaces because the pretty printer is dumb
-                let actual = &pretty_print(&best.expr).replace(" \n", "\n").trim().to_string();
+                let actual = &best.expr.pretty(80).trim().to_string();
                 if actual != expected {
                     let diff = colored_diff::PrettyDifference {expected, actual};
                     panic!("Didn't match expected. {}", diff);

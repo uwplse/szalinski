@@ -15,7 +15,7 @@ permutation = "0.2.5"
 
 [dependencies.egg]
 git = "https://github.com/mwillsey/egg.git"
-rev = "ece7bdfb4d818fcf4f31eb5af3a0dfffb8c4e371"
+rev = "b3ae4dd6d915928e1795eb45719461bcdddd45b1"
 # path = "/home/mwillsey/src/egg/egg"
 
 [dev-dependencies]
