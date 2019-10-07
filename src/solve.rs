@@ -3,8 +3,9 @@ use std::f64::consts;
 use smallvec::smallvec;
 
 use crate::{
-    cad::{Cad, EGraph, ListVar as LV, Variable, Vec3},
+    cad::{Cad, EGraph, ListVar as LV, Vec3},
     num::Num,
+    permute::Permutation,
 };
 use egg::{
     egraph::AddResult,
@@ -165,19 +166,19 @@ fn solve_vec(egraph: &mut EGraph, list: &[Vec3]) -> Vec<AddResult> {
     }
 
     let perms = [
-        permutation::sort(&xs[..]),
-        permutation::sort(&ys[..]),
-        permutation::sort(&zs[..]),
+        Permutation::sort(&xs),
+        Permutation::sort(&ys),
+        Permutation::sort(&zs),
     ];
 
     for perm in &perms {
         // println!("Trying sort {:?}", perm);
-        let xs = perm.apply_slice(&xs[..]);
-        let ys = perm.apply_slice(&ys[..]);
-        let zs = perm.apply_slice(&zs[..]);
+        let xs = perm.apply(&xs);
+        let ys = perm.apply(&ys);
+        let zs = perm.apply(&zs);
         if let Some(formula) = solve_one(&xs, &ys, &zs) {
             // println!("Found with sort {:?}: {:?}", perm, formula);
-            let p = Cad::Variable(Variable(format!("{:?}", perm)));
+            let p = Cad::Permutation(perm.clone());
             let e = Expr::new(
                 Cad::Unsort,
                 smallvec![
@@ -239,7 +240,7 @@ fn add_vec(egraph: &mut EGraph, v: Vec3) -> Id {
 
 pub fn solve(egraph: &mut EGraph, list: &[Vec3]) -> Vec<AddResult> {
     let mut results = solve_vec(egraph, list);
-    // println!("{:?}", list);
+    // println!("Solving {:?} -> {:?}", list, results);
     let (center, polar_list) = polarize(&list);
     for res in solve_vec(egraph, &polar_list) {
         let e = Expr::new(
@@ -294,5 +295,13 @@ mod tests {
     fn deg2_fail() {
         let input = mk_test_vec(&[0.0, 1.0, 14.0, 9.0]);
         assert_eq!(solve_deg2(&input), None);
+    }
+
+    #[test]
+    fn test_solve() {
+        let xs = mk_test_vec(&[-6.0, -6.0, -6.0]);
+        let ys = mk_test_vec(&[-37.0, -23.0, -9.0]);
+        let zs = mk_test_vec(&[5.0, 5.0, 5.0]);
+        assert_ne!(solve_one(&xs, &ys, &zs), None);
     }
 }

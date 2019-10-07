@@ -9,7 +9,10 @@ use egg::{
     extract::{CostExpr, Extractor},
 };
 
-use crate::num::{num, Num};
+use crate::{
+    num::{num, Num},
+    permute::Permutation,
+};
 
 use log::*;
 pub type EGraph = egg::egraph::EGraph<Cad, Meta>;
@@ -87,6 +90,7 @@ define_term! {
         List = "List",
         Unsort = "Unsort",
         Unpolar = "Unpolar",
+        Permutation(Permutation),
 
         Add = "+",
         Sub = "-",
@@ -214,7 +218,7 @@ impl Language for Cad {
             Cons => 3,
             Concat => 3,
             List => 10,
-            Unsort | Unpolar => 3,
+            Unsort | Unpolar | Permutation(_) => 3,
             Vec => 2,
 
             Add => 3,
