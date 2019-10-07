@@ -218,14 +218,14 @@ impl Language for Cad {
             Cons => 3,
             Concat => 3,
             List => 10,
-            Unsort | Unpolar | Permutation(_) => 3,
+            Unsort | Unpolar | Permutation(_) => 50,
             Vec => 2,
 
-            Add => 3,
-            Sub => 3,
-            Mul => 3,
-            Div => 3,
-            Float => 3,
+            Add => 1,
+            Sub => 1,
+            Mul => 1,
+            Div => 1,
+            Float => 1,
 
             Variable(_) => 3,
         };

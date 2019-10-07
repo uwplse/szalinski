@@ -50,19 +50,19 @@ macro_rules! test_file {
     };
 }
 
-test_file! {file_soldering,    476, "cads/pldi2020-eval/input/soldering.csexp" }
-test_file! {file_tape,          70, "cads/pldi2020-eval/input/tape.csexp" }
+test_file! {file_soldering,    472, "cads/pldi2020-eval/input/soldering.csexp" }
+test_file! {file_tape,          66, "cads/pldi2020-eval/input/tape.csexp" }
 test_file! {file_dice,         196, "cads/pldi2020-eval/input/dice.csexp" }
-test_file! {file_hcbit,         96, "cads/pldi2020-eval/input/hcbitholder.csexp" }
+test_file! {file_hcbit,         92, "cads/pldi2020-eval/input/hcbitholder.csexp" }
 test_file! {file_wardrobe,     337, "cads/pldi2020-eval/input/wardrobe.csexp" }
-test_file! {file_flower,        91, "cads/pldi2020-eval/input/flower.csexp" }
+test_file! {file_flower,        83, "cads/pldi2020-eval/input/flower.csexp" }
 test_file! {file_pinheader,    278, "cads/pldi2020-eval/input/pinheader.csexp" }
 
 test_file! {file_icsg_011,     177, "cads/inverse-csg-solution/011/sketch_final.csexp" }
 test_file! {file_icsg_039,    3759, "cads/inverse-csg-solution/039/sketch_final.csexp" }
 
 // takes about 10 seconds in debug mode
-test_file! { #[ignore] file_gear,     189, "cads/pldi2020-eval/input/gear_flat.csexp" }
+test_file! { #[ignore] file_gear,     185, "cads/pldi2020-eval/input/gear_flat.csexp" }
 
 #[test]
 #[ignore]
