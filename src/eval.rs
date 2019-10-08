@@ -129,8 +129,8 @@ impl<'a> fmt::Display for Scad<'a> {
             Cad::Hexagon => write!(f, "cylinder();"),
             Cad::Trans => write!(f, "translate({}) {}", child(0), child(1)),
             Cad::TransPolar => write!(f, "translate({}) {}", child(0), child(1)),
-            Cad::Scale => write!(f, "scale() {{ {} {} }}", child(0), child(1)),
-            Cad::Rotate => write!(f, "rotate() {{ {} {} }}", child(0), child(1)),
+            Cad::Scale => write!(f, "scale ({}) {}", child(0), child(1)),
+            Cad::Rotate => write!(f, "rotate ({}) {}", child(0), child(1)),
             Cad::Union => write!(f, "union () {{ {} {} }}", child(0), child(1)),
             Cad::Inter => write!(f, "intersection () {{ {} {} }}", child(0), child(1)),
             Cad::Diff => write!(f, "difference () {{ {} {} }}", child(0), child(1)),
@@ -167,15 +167,14 @@ fn eval_affine() {
     assert_eq!(output, input);
 }
 
-// #[test]
-// fn scad_foldunion() {
-//     let fx = rec!(Cad::Add, rec!(Cad::Mul, rec!(Cad::Num(2.into())), rec!(Cad::Variable(Variable("i".into())))), rec!(Cad::Num(3.into())));
-//     let fy = rec!(Cad::Num(5.into()));
-//     let fz = rec!(Cad::Num(7.into()));
-//     let mapi = rec!(Cad::MapI, rec!(Cad::Num(3.into())), rec!(Cad::Vec, fx, fy, fz));
-//     let map = rec!(Cad::Map, rec!(Cad::TransPolar), mapi, rec!(Cad::Repeat, rec!(Cad::Num(3.into())), rec!(Cad::Sphere)));
-//     let input = rec!(Cad::FoldUnion, map);
-//     let output = eval(&input);
-//     println!("{}", Scad(&input));
-//     assert_eq!(output, input);
-// }
+#[test]
+fn scad_foldunion() {
+    let fx = rec!(Cad::Add, rec!(Cad::Mul, rec!(Cad::Num(2.into())), rec!(Cad::Variable(Variable("i".into())))), rec!(Cad::Num(3.into())));
+    let fy = rec!(Cad::Num(5.into()));
+    let fz = rec!(Cad::Num(7.into()));
+    let mapi = rec!(Cad::MapI, rec!(Cad::Num(3.into())), rec!(Cad::Vec, fx, fy, fz));
+    let map = rec!(Cad::Map, rec!(Cad::TransPolar), mapi, rec!(Cad::Repeat, rec!(Cad::Num(3.into())), rec!(Cad::Sphere)));
+    let input = rec!(Cad::FoldUnion, map);
+    let output = eval(&input);
+    assert_eq!(format!("{}", Scad(&input)), format!("{}", Scad(&output)));
+}
