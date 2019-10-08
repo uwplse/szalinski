@@ -35,6 +35,13 @@ impl From<usize> for Num {
     }
 }
 
+impl From<i32> for Num {
+    fn from(i: i32) -> Num {
+        let f = i as f64;
+        f.into()
+    }
+}
+
 // core traits
 
 impl FromStr for Num {
