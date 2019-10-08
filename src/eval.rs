@@ -1,21 +1,12 @@
 use std::fmt;
-use std::time::Instant;
 
 use smallvec::smallvec;
 
 use egg::{
-    egraph::EClass,
-    expr::{Expr, Language, RecExpr},
-    extract::{CostExpr, Extractor},
+    expr::{Expr, RecExpr},
 };
 
-use crate::solve::VecFormula;
-
-use log::*;
-use ordered_float::NotNan;
-
 use crate::cad::*;
-use crate::num::*;
 
 macro_rules! rec {
     ($op:expr) => {RecExpr::from(Expr::unit($op))};
@@ -35,8 +26,8 @@ fn get_num(expr: &RecExpr<Cad>) -> f64 {
 fn eval_fun(expr: &RecExpr<Cad>, i: usize) -> f64 {
     let expr = expr.as_ref();
     match &expr.op {
-        Cad::Num(num) => get_num(&rec!(expr.op.clone())),
-        Cad::Variable(v) => i as f64,
+        Cad::Num(_) => get_num(&rec!(expr.op.clone())),
+        Cad::Variable(_) => i as f64,
         Cad::Add => {
             let a = expr.children[0].clone();
             let b = expr.children[1].clone();
