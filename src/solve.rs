@@ -260,48 +260,51 @@ pub fn solve(egraph: &mut EGraph, list: &[Vec3]) -> Vec<AddResult> {
 mod tests {
     use super::*;
 
-    fn mk_test_vec(v: &[f64]) -> Vec<Num> {
-        v.iter().map(|&v| v.into()).collect()
+    macro_rules! nums {
+        ($($e:expr),*$(,)?) => {{
+            let vec: Vec<Num> = vec![$($e.into()),*];
+            vec
+        }}
     }
 
     #[test]
     fn deg1_test1() {
-        let input = mk_test_vec(&[1.0, 2.0, 3.0, 4.0]);
+        let input = nums![1, 2, 3, 4];
         let res = solve_deg1(&input).unwrap();
         assert_eq!(res.a, 1.0);
     }
 
     #[test]
     fn deg1_test2() {
-        let input = mk_test_vec(&[0.0, 0.0, 0.0, 0.0]);
+        let input = nums![0, 0, 0, 0];
         let res = solve_deg1(&input).unwrap();
         assert_eq!(res.a, 0.0);
     }
 
     #[test]
     fn deg1_fail() {
-        let input = mk_test_vec(&[0.0, 0.0, 0.0, 1.0]);
+        let input = nums![0, 0, 0, 1];
         assert_eq!(solve_deg1(&input), None);
     }
 
     #[test]
     fn deg2_test1() {
-        let input = mk_test_vec(&[0.0, 1.0, 4.0, 9.0]);
+        let input = nums![0, 1, 4, 9];
         let res = solve_deg2(&input).unwrap();
         assert_eq!(res.a, 1.0);
     }
 
     #[test]
     fn deg2_fail() {
-        let input = mk_test_vec(&[0.0, 1.0, 14.0, 9.0]);
+        let input = nums![0, 1, 14, 9];
         assert_eq!(solve_deg2(&input), None);
     }
 
     #[test]
     fn test_solve() {
-        let xs = mk_test_vec(&[-6.0, -6.0, -6.0]);
-        let ys = mk_test_vec(&[-37.0, -23.0, -9.0]);
-        let zs = mk_test_vec(&[5.0, 5.0, 5.0]);
+        let xs = nums![-6, -6, -6];
+        let ys = nums![-37, -23, -9];
+        let zs = nums![5, 5, 5];
         assert_ne!(solve_one(&xs, &ys, &zs), None);
     }
 }
