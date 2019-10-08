@@ -247,66 +247,6 @@ where
     return Some(res);
 }
 
-// // this partition only partitions the most popular out
-// #[allow(dead_code)]
-// fn partition_list<F, K>(egraph: &mut EGraph, ids: &[Id], mut key_fn: F) -> Option<AddResult>
-// where
-//     F: FnMut(usize, Id) -> K,
-//     K: Hash + Eq + Debug + Clone,
-// {
-//     let mut parts: IndexMap<K, usize> = Default::default();
-//     for (i, &id) in ids.iter().enumerate() {
-//         let key = key_fn(i, id);
-//         *parts.entry(key).or_default() += 1;
-//     }
-
-//     // find the largest common key but only if its big enough and
-//     // there are other partitions
-//     let k = parts.keys().cloned().max_by_key(|k| parts[k])?;
-//     let n = parts[&k];
-//     let percent = n as f64 / parts.len() as f64;
-//     if parts.len() <= 1 || n < 3 || percent < 0.40 {
-//         return None;
-//     }
-
-//     let mut ids0 = smallvec![];
-//     let mut ids1 = smallvec![];
-//     let mut order0 = vec![];
-//     let mut order1 = vec![];
-//     for (i, &id) in ids.iter().enumerate() {
-//         if k == key_fn(i, id) {
-//             order0.push(i);
-//             ids0.push(id);
-//         } else {
-//             order1.push(i);
-//             ids1.push(id);
-//         }
-//     }
-
-//     let list0 = egraph.add(Expr::new(Cad::List, ids0)).id;
-//     let list1 = egraph.add(Expr::new(Cad::List, ids1)).id;
-//     let concat = egraph.add(Expr::new(Cad::Concat, smallvec![list0, list1]));
-
-//     order0.extend(order1);
-//     let order = order0;
-
-//     let res = if order.iter().enumerate().all(|(i0, i1)| i0 == *i1) {
-//         concat
-//     } else {
-//         let p = Cad::Permutation(Permutation::from_vec(order));
-//         let e = Expr::new(
-//             Cad::Unsort,
-//             smallvec![egraph.add(Expr::unit(p)).id, concat.id],
-//         );
-//         egraph.add(e)
-//     };
-
-//     if !res.was_there {
-//         // println!("Partition by {:?}: {:?}", k, parts);
-//     }
-//     return Some(res);
-// }
-
 impl Applier<Cad, Meta> for ListApplier {
     fn apply(&self, egraph: &mut EGraph, map: &WildMap) -> Vec<AddResult> {
         let ids = &map[&self.var];
