@@ -54,9 +54,10 @@ test_file! {file_soldering,    472, "cads/pldi2020-eval/input/soldering.csexp" }
 test_file! {file_tape,          66, "cads/pldi2020-eval/input/tape.csexp" }
 test_file! {file_dice,         196, "cads/pldi2020-eval/input/dice.csexp" }
 test_file! {file_hcbit,         92, "cads/pldi2020-eval/input/hcbitholder.csexp" }
-test_file! {file_wardrobe,     337, "cads/pldi2020-eval/input/wardrobe.csexp" }
+test_file! {file_wardrobe,     315, "cads/pldi2020-eval/input/wardrobe.csexp" }
 test_file! {file_flower,        83, "cads/pldi2020-eval/input/flower.csexp" }
-test_file! {file_pinheader,    278, "cads/pldi2020-eval/input/pinheader.csexp" }
+test_file! {file_pinheader,     93, "cads/pldi2020-eval/input/pinheader.csexp" }
+test_file! {file_cnc_endmills_holder_nohull, 146, "cads/pldi2020-eval/input/cnc_endmills_holder_nohull.csexp" }
 
 test_file! {file_icsg_011,     177, "cads/inverse-csg-solution/011/sketch_final.csexp" }
 test_file! {file_icsg_039,    3759, "cads/inverse-csg-solution/039/sketch_final.csexp" }

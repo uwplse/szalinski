@@ -14,6 +14,7 @@ use smallvec::{smallvec, SmallVec};
 use crate::{
     cad::{Cad, EGraph, Meta, Vec3},
     num::Num,
+    permute::Permutation,
 };
 
 fn rw<M: Metadata<Cad>>(name: &str, lhs: &str, rhs: &str) -> Rewrite<Cad, M> {
@@ -34,12 +35,18 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
         rw("mul_one", "(* 1 ?a)", "?a"),
         rw("mul_comm", "(* ?a ?b)", "(* ?b ?a)"),
 
-        // cad rules
+        // list rules
 
         rw("defloat", "(Float ?a)", "?a"),
 
         rw("list_nil", "Nil", "(List)"),
         rw("list_cons", "(Cons ?a (List ?b...))", "(List ?a ?b...)"),
+
+        // rw("concat_lists", "(Concat (List ?a...) (List ?b...))", "(List ?a... ?b...)"),
+        // rw("concat_concat_l", "(Concat (Concat ?a ?b) ?c)", "(Concat ?a (Concat ?b ?c))"),
+        // rw("concat_concat_r", "(Concat ?a (Concat ?b ?c))", "(Concat (Concat ?a ?b) ?c)"),
+
+        // cad rules
 
         rw("union_nil", "(Union ?a ?b)", "(FoldUnion (Cons ?a (Cons ?b Nil)))"),
         rw("union_cons", "(Union ?a (FoldUnion ?list))", "(FoldUnion (Cons ?a ?list))"),
@@ -83,6 +90,16 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
         rw("inter_union", "(Inter ?a (Union ?a ?b))", "?a"),
 
         // unsort propagation
+
+        // rw("unsort_unsort", // FIXME UNSOUND
+        //    "(Unsort ?perm (Unsort ?perm2 ?list))",
+        //    "(Unsort ?perm ?list)"),
+        // rw("unsort_concat_l", // FIXME UNSOUND
+        //    "(Concat (Unsort ?perm ?list1) ?list2)",
+        //    "(Unsort ?perm (Concat ?list1 ?list2))"),
+        // rw("unsort_concat_r", // FIXME UNSOUND
+        //    "(Concat ?list1 (Unsort ?perm ?list2))",
+        //    "(Unsort ?perm (Concat ?list1 ?list2))"),
 
         rw("unsort_map",
            "(Map ?op (Unsort ?perm ?params) (Unsort ?perm ?cads))",
@@ -191,32 +208,104 @@ struct ListApplier {
     var: QuestionMarkName,
 }
 
-// NOTE
-// partitioning is unsound right now because it will reorder elements
-#[allow(dead_code)]
+// this partition will partition all at once
 fn partition_list<F, K>(egraph: &mut EGraph, ids: &[Id], mut key_fn: F) -> Option<AddResult>
 where
     F: FnMut(usize, Id) -> K,
-    K: Hash + Eq + Debug,
+    K: Hash + Eq + Debug + Clone,
 {
-    let mut parts: IndexMap<K, SmallVec<_>> = Default::default();
+    type Pair<T> = (Vec<usize>, SmallVec<T>);
+    let mut parts: IndexMap<K, Pair<_>> = Default::default();
     for (i, &id) in ids.iter().enumerate() {
         let key = key_fn(i, id);
-        parts.entry(key).or_default().push(id);
+        let (is, ids) = parts.entry(key).or_default();
+        is.push(i);
+        ids.push(id);
     }
-    if parts.len() > 1 {
-        if parts.values().any(|ids| ids.len() > 2) {
-            debug!("Partitioning: {:?}", parts);
-            let new_ids = parts
-                .into_iter()
-                .map(|(_op, ids)| egraph.add(Expr::new(Cad::List, ids)).id)
-                .collect();
-            let e = Expr::new(Cad::Concat, new_ids);
-            return Some(egraph.add(e));
-        }
+
+    let mut order = Vec::new();
+    let mut list_ids = smallvec![];
+    for (_, (is, ids)) in parts.into_iter() {
+        order.extend(is);
+        list_ids.push(egraph.add(Expr::new(Cad::List, ids)).id);
     }
-    None
+    let concat = egraph.add(Expr::new(Cad::Concat, list_ids));
+    let res = if order.iter().enumerate().all(|(i0, i1)| i0 == *i1) {
+        concat
+    } else {
+        let p = Cad::Permutation(Permutation::from_vec(order));
+        let e = Expr::new(
+            Cad::Unsort,
+            smallvec![egraph.add(Expr::unit(p)).id, concat.id],
+        );
+        egraph.add(e)
+    };
+
+    if !res.was_there {
+        // println!("Partition by {:?}: {:?}", k, parts);
+    }
+    return Some(res);
 }
+
+// // this partition only partitions the most popular out
+// #[allow(dead_code)]
+// fn partition_list<F, K>(egraph: &mut EGraph, ids: &[Id], mut key_fn: F) -> Option<AddResult>
+// where
+//     F: FnMut(usize, Id) -> K,
+//     K: Hash + Eq + Debug + Clone,
+// {
+//     let mut parts: IndexMap<K, usize> = Default::default();
+//     for (i, &id) in ids.iter().enumerate() {
+//         let key = key_fn(i, id);
+//         *parts.entry(key).or_default() += 1;
+//     }
+
+//     // find the largest common key but only if its big enough and
+//     // there are other partitions
+//     let k = parts.keys().cloned().max_by_key(|k| parts[k])?;
+//     let n = parts[&k];
+//     let percent = n as f64 / parts.len() as f64;
+//     if parts.len() <= 1 || n < 3 || percent < 0.40 {
+//         return None;
+//     }
+
+//     let mut ids0 = smallvec![];
+//     let mut ids1 = smallvec![];
+//     let mut order0 = vec![];
+//     let mut order1 = vec![];
+//     for (i, &id) in ids.iter().enumerate() {
+//         if k == key_fn(i, id) {
+//             order0.push(i);
+//             ids0.push(id);
+//         } else {
+//             order1.push(i);
+//             ids1.push(id);
+//         }
+//     }
+
+//     let list0 = egraph.add(Expr::new(Cad::List, ids0)).id;
+//     let list1 = egraph.add(Expr::new(Cad::List, ids1)).id;
+//     let concat = egraph.add(Expr::new(Cad::Concat, smallvec![list0, list1]));
+
+//     order0.extend(order1);
+//     let order = order0;
+
+//     let res = if order.iter().enumerate().all(|(i0, i1)| i0 == *i1) {
+//         concat
+//     } else {
+//         let p = Cad::Permutation(Permutation::from_vec(order));
+//         let e = Expr::new(
+//             Cad::Unsort,
+//             smallvec![egraph.add(Expr::unit(p)).id, concat.id],
+//         );
+//         egraph.add(e)
+//     };
+
+//     if !res.was_there {
+//         // println!("Partition by {:?}: {:?}", k, parts);
+//     }
+//     return Some(res);
+// }
 
 impl Applier<Cad, Meta> for ListApplier {
     fn apply(&self, egraph: &mut EGraph, map: &WildMap) -> Vec<AddResult> {
@@ -233,16 +322,28 @@ impl Applier<Cad, Meta> for ListApplier {
             if len > 2 {
                 results.extend(crate::solve::solve(egraph, &vec_list));
             }
-            // // try to partition things by operator
-            // results.extend(partition_list(egraph, ids, |i, _| {
-            //     vec_list[i].0
-            // }));
+            // try to partition things by coordinate
+            results.extend(partition_list(egraph, ids, |i, _| vec_list[i].0));
+            results.extend(partition_list(egraph, ids, |i, _| vec_list[i].1));
+            results.extend(partition_list(egraph, ids, |i, _| vec_list[i].2));
+            results.extend(partition_list(egraph, ids, |i, _| {
+                (vec_list[i].0, vec_list[i].1)
+            }));
+            results.extend(partition_list(egraph, ids, |i, _| {
+                (vec_list[i].0, vec_list[i].2)
+            }));
+            results.extend(partition_list(egraph, ids, |i, _| {
+                (vec_list[i].1, vec_list[i].2)
+            }));
         }
 
-        // // try to partition things by operator
-        // results.extend(partition_list(egraph, ids, |i, _| {
-        //     bests[i].as_ref().op.clone()
-        // }));
+        // try to partition things by eclass
+        results.extend(partition_list(egraph, ids, |i, _| ids[i]));
+
+        // try to partition things by operator
+        results.extend(partition_list(egraph, ids, |i, _| {
+            bests[i].as_ref().op.clone()
+        }));
 
         // insert repeats
         if !ids.is_empty() {
@@ -254,6 +355,10 @@ impl Applier<Cad, Meta> for ListApplier {
             }
         }
 
+        debug!(
+            "ListApplier added {}",
+            results.iter().filter(|r| !r.was_there).count()
+        );
         results
     }
 }
