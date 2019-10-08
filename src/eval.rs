@@ -169,11 +169,28 @@ fn eval_affine() {
 
 #[test]
 fn scad_foldunion() {
-    let fx = rec!(Cad::Add, rec!(Cad::Mul, rec!(Cad::Num(2.into())), rec!(Cad::Variable(Variable("i".into())))), rec!(Cad::Num(3.into())));
+    let fx = rec!(
+        Cad::Add,
+        rec!(
+            Cad::Mul,
+            rec!(Cad::Num(2.into())),
+            rec!(Cad::Variable(Variable("i".into())))
+        ),
+        rec!(Cad::Num(3.into()))
+    );
     let fy = rec!(Cad::Num(5.into()));
     let fz = rec!(Cad::Num(7.into()));
-    let mapi = rec!(Cad::MapI, rec!(Cad::Num(3.into())), rec!(Cad::Vec, fx, fy, fz));
-    let map = rec!(Cad::Map, rec!(Cad::TransPolar), mapi, rec!(Cad::Repeat, rec!(Cad::Num(3.into())), rec!(Cad::Sphere)));
+    let mapi = rec!(
+        Cad::MapI,
+        rec!(Cad::Num(3.into())),
+        rec!(Cad::Vec, fx, fy, fz)
+    );
+    let map = rec!(
+        Cad::Map,
+        rec!(Cad::TransPolar),
+        mapi,
+        rec!(Cad::Repeat, rec!(Cad::Num(3.into())), rec!(Cad::Sphere))
+    );
     let input = rec!(Cad::FoldUnion, map);
     let output = eval(&input);
     assert_eq!(format!("{}", Scad(&input)), format!("{}", Scad(&output)));
