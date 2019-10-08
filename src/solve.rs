@@ -1,6 +1,7 @@
 use std::f64::consts;
 
-use smallvec::smallvec;
+use indexmap::IndexMap;
+use smallvec::{smallvec, SmallVec};
 
 use crate::{
     cad::{Cad, EGraph, ListVar as LV, Vec3},
@@ -37,9 +38,8 @@ macro_rules! eadd {
 }
 
 impl Formula {
-    fn add_to_egraph(&self, e: &mut EGraph) -> Id {
+    fn add_to_egraph(&self, e: &mut EGraph, i: Id) -> Id {
         use Cad::*;
-        let i = eadd!(e, ListVar(LV("i")));
         match self {
             Formula::Deg1(f) => {
                 let a = eadd!(e, Num(f.a.into()));
@@ -59,15 +59,6 @@ impl Formula {
             }
         }
     }
-}
-
-fn add_mapi(egraph: &mut EGraph, n: usize, vf: VecFormula) -> AddResult {
-    let n = egraph.add(Expr::unit(Cad::Num(n.into()))).id;
-    let x = vf.x.add_to_egraph(egraph);
-    let y = vf.y.add_to_egraph(egraph);
-    let z = vf.z.add_to_egraph(egraph);
-    let vec = egraph.add(Expr::new(Cad::Vec, smallvec![x, y, z])).id;
-    egraph.add(Expr::new(Cad::MapI, smallvec![n, vec]))
 }
 
 #[derive(Debug, PartialEq)]
@@ -132,11 +123,49 @@ fn solve_list_fn(xs: &[Num]) -> Option<Formula> {
     None
 }
 
-fn solve_one(xs: &[Num], ys: &[Num], zs: &[Num]) -> Option<VecFormula> {
-    let x = solve_list_fn(xs)?;
-    let y = solve_list_fn(ys)?;
-    let z = solve_list_fn(zs)?;
-    Some(VecFormula { x, y, z })
+fn solve_and_add(egraph: &mut EGraph, xs: &[Num], ys: &[Num], zs: &[Num]) -> Option<AddResult> {
+    let mut by_chunk = IndexMap::<usize, Vec<_>>::default();
+    by_chunk.entry(chunk_length(xs)).or_default().push((0, xs));
+    by_chunk.entry(chunk_length(ys)).or_default().push((1, ys));
+    by_chunk.entry(chunk_length(zs)).or_default().push((2, zs));
+    by_chunk.sort_by(|k1, _, k2, _| k2.cmp(k1));
+
+    let inners: Vec<usize> = (0..by_chunk.len())
+        .map(|i| by_chunk.get_index(i + 1).map(|(k, _)| *k).unwrap_or(1))
+        .collect();
+
+    let vars = &[
+        Cad::ListVar(LV("i")),
+        Cad::ListVar(LV("j")),
+        Cad::ListVar(LV("k")),
+    ];
+    let mut inserted = vec![None; 3];
+
+    for (((&chunk_len, lists), inner), var) in by_chunk.iter().zip(&inners).zip(vars) {
+        for (index, list) in lists {
+            let slice = &list[..chunk_len];
+            let nums = unrun(slice, *inner)?;
+            let fun = solve_list_fn(&nums)?;
+            let var_id = egraph.add(Expr::unit(var.clone())).id;
+            inserted[*index] = Some(fun.add_to_egraph(egraph, var_id));
+        }
+    }
+
+    let mut children: SmallVec<_> = by_chunk
+        .keys()
+        .zip(&inners)
+        .map(|(n, inner)| {
+            let len = n / inner;
+            egraph.add(Expr::unit(Cad::Num(len.into()))).id
+        })
+        .collect();
+    let x = inserted[0].unwrap();
+    let y = inserted[1].unwrap();
+    let z = inserted[2].unwrap();
+    let vec = egraph.add(Expr::new(Cad::Vec, smallvec![x, y, z])).id;
+    children.push(vec);
+    let map = egraph.add(Expr::new(Cad::MapI, children));
+    Some(map)
 }
 
 fn solve_vec(egraph: &mut EGraph, list: &[Vec3]) -> Vec<AddResult> {
@@ -161,9 +190,7 @@ fn solve_vec(egraph: &mut EGraph, list: &[Vec3]) -> Vec<AddResult> {
 
     let mut results = vec![];
 
-    if let Some(formula) = solve_one(&xs, &ys, &zs) {
-        results.push(add_mapi(egraph, len, formula));
-    }
+    results.extend(solve_and_add(egraph, &xs, &ys, &zs));
 
     let perms = [
         Permutation::sort(&xs),
@@ -176,15 +203,12 @@ fn solve_vec(egraph: &mut EGraph, list: &[Vec3]) -> Vec<AddResult> {
         let xs = perm.apply(&xs);
         let ys = perm.apply(&ys);
         let zs = perm.apply(&zs);
-        if let Some(formula) = solve_one(&xs, &ys, &zs) {
+        if let Some(added_mapi) = solve_and_add(egraph, &xs, &ys, &zs) {
             // println!("Found with sort {:?}: {:?}", perm, formula);
             let p = Cad::Permutation(perm.clone());
             let e = Expr::new(
                 Cad::Unsort,
-                smallvec![
-                    egraph.add(Expr::unit(p)).id,
-                    add_mapi(egraph, len, formula).id,
-                ],
+                smallvec![egraph.add(Expr::unit(p)).id, added_mapi.id,],
             );
             results.push(egraph.add(e));
         }
@@ -256,6 +280,36 @@ pub fn solve(egraph: &mut EGraph, list: &[Vec3]) -> Vec<AddResult> {
     results
 }
 
+fn chunk_length(list: &[Num]) -> usize {
+    if list.iter().all(|&x| x == list[0]) {
+        return list.len();
+    }
+
+    for n in 2..list.len() {
+        if list.len() % n == 0 {
+            if list
+                .chunks_exact(n)
+                .skip(1)
+                .all(|chunk| &list[..n] == chunk)
+            {
+                return n;
+            }
+        }
+    }
+
+    list.len()
+}
+
+fn unrun(list: &[Num], n: usize) -> Option<Vec<Num>> {
+    assert_eq!(list.len() % n, 0);
+    let all_same = |slice: &[Num]| slice.iter().all(|&x| x == slice[0]);
+    if list.chunks_exact(n).all(all_same) {
+        Some(list.iter().copied().step_by(n).collect())
+    } else {
+        None
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -265,6 +319,26 @@ mod tests {
             let vec: Vec<Num> = vec![$($e.into()),*];
             vec
         }}
+    }
+
+    #[test]
+    fn test_chunk_length() {
+        let nums = nums![0, 0, 0];
+        assert_eq!(chunk_length(&nums), 3);
+        let nums = nums![1, 2, 3, 4];
+        assert_eq!(chunk_length(&nums), 4);
+        let nums = nums![1, 2, 3, 1, 2, 3];
+        assert_eq!(chunk_length(&nums), 3);
+        let nums = nums![1, 2, 3, 1, 2, 3, 1, 2, 4];
+        assert_eq!(chunk_length(&nums), 9);
+    }
+
+    #[test]
+    fn test_unrun() {
+        let nums = nums![0, 0, 1, 1, 2, 2];
+        assert_eq!(unrun(&nums, 2), Some(nums![0, 1, 2]));
+        let nums = nums![0, 0, 0, 1, 1, 1];
+        assert_eq!(unrun(&nums, 3), Some(nums![0, 1]));
     }
 
     #[test]
@@ -298,13 +372,5 @@ mod tests {
     fn deg2_fail() {
         let input = nums![0, 1, 14, 9];
         assert_eq!(solve_deg2(&input), None);
-    }
-
-    #[test]
-    fn test_solve() {
-        let xs = nums![-6, -6, -6];
-        let ys = nums![-37, -23, -9];
-        let zs = nums![5, 5, 5];
-        assert_ne!(solve_one(&xs, &ys, &zs), None);
     }
 }

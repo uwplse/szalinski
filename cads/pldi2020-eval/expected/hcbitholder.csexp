@@ -1,11 +1,7 @@
 (Diff
   (Scale  20  20   3 Unit)
-  (Trans
-     10
-     10
-     1.50
-    (FoldUnion
-      (Map
-        TransPolar
-        (MapI   4 (Vec  7.07 (+ -135 (* i  90))  90))
-        (Repeat   4 (Scale   3   3   3 Hexagon))))))
+  (FoldUnion
+    (Map
+      Trans
+      (MapI   2   2 (Vec (+  15 (* i -10)) (+   5 (* j  10))  1.50))
+      (Repeat   4 (Scale   3   3   3 Hexagon)))))

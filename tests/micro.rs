@@ -50,3 +50,14 @@ micro! {micro_fold_polar,
                 TransPolar
                 (MapI   4 (Vec   1 (+ -90 (* i  90))  90))
                 (Repeat   4 Unit)))" }
+
+micro! {loop2d,
+"(List
+   (Vec 10 1 0)
+   (Vec 10 2 0)
+   (Vec 10 3 0)
+   (Vec 20 1 0)
+   (Vec 20 2 0)
+   (Vec 20 3 0))",
+"(MapI 2 3
+  (Vec (+  10 (* i  10)) (+   1 j)   0))" }

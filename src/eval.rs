@@ -2,9 +2,7 @@ use std::fmt;
 
 use smallvec::smallvec;
 
-use egg::{
-    expr::{Expr, RecExpr},
-};
+use egg::expr::{Expr, RecExpr};
 
 use crate::cad::*;
 
