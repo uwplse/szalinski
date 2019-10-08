@@ -2,7 +2,7 @@ use std::fmt;
 use std::str::FromStr;
 
 #[derive(PartialOrd, Ord, PartialEq, Eq, Hash, Default, Clone, Copy)]
-pub struct Num(ordered_float::NotNan<f64>);
+pub struct Num(pub ordered_float::NotNan<f64>);
 
 const EPSILON: f64 = 0.001;
 
