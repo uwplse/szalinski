@@ -209,12 +209,64 @@ fn polar_one(center: (f64, f64, f64), v: Vec3) -> Vec3 {
     (r.into(), theta.into(), phi.into())
 }
 
+// k = (((x1 - x3) * (x1^2 + y1^2 - x2^2 - y2^2)) - ((x1 - x2) * (x1^2 + y1^2 - x3^2 - y3^2))) / (2 (x1y3 - x1y2 + x2y1 - x3y1 + x3y2 - x2y3))
+// h = x1^2 + y1^2 - x2^2 - y2^2 - (2k * (y1 - y2)) / 2 * (x1 - x2)
+// r = sqrt ((x1 - h)^2 + (y1 - k)^2)
+
+// NOTE: only when zs are the same for now
+fn circ_center(xs: Vec<f64>, ys: Vec<f64>, zs: Vec<f64>) -> (f64, f64, f64) {
+    let k_numer = ((xs[0] - xs[2])
+        * ((xs[0] * xs[0]) + (ys[0] * ys[0]) - (xs[1] * xs[1]) - (ys[1] * ys[1])))
+        - ((xs[0] - xs[1])
+            * ((xs[0] * xs[0]) + (ys[0] * ys[0]) - (xs[2] * xs[2]) - (ys[2] * ys[2])));
+    let k_denom = 2.0
+        * ((xs[0] * ys[2]) - (xs[0] * ys[1]) + (xs[1] * ys[0]) - (xs[2] * ys[0]) + (xs[2] * ys[1])
+            - (xs[1] * ys[2]));
+    println!("k_numer: {}", k_numer);
+    println!("k_denom: {}", k_denom);
+    let k = k_numer / k_denom;
+    println!("k: {}", k);
+    let k = k_numer / k_denom;
+    println!("xs[0]: {}", xs[0]);
+    println!("ys[0]: {}", ys[0]);
+    println!("xs[1]: {}", xs[1]);
+    println!("ys[1]: {}", ys[1]);
+    let h_numer = (xs[0] * xs[0]) + (ys[0] * ys[0])
+        - (xs[1] * xs[1])
+        - (ys[1] * ys[1])
+        - (2.0 * k * (ys[0] - ys[1]));
+
+    let h_denom = if xs[0] != xs[1] {
+        2.0 * (xs[0] - xs[1])
+    } else {
+        2.0 * (xs[0] - xs[2])
+    };
+    println!("h_numer: {}", h_numer);
+    println!("h_denom: {}", h_denom);
+    let h = h_numer / h_denom;
+    //let r = f64::sqrt(f64::powi(xs[0] - h, 2) + f64::powi(ys[0] - k, 2));
+    (h, k, zs[0])
+}
+
+// TODO
+fn collinear(xs: &Vec<f64>, ys: &Vec<f64>, zs: &Vec<f64>) -> bool {
+    true
+}
+
 fn polarize(list: &[Vec3]) -> (Vec3, Vec<Vec3>) {
     let xc = list.iter().map(|v| v.0.to_f64()).sum::<f64>();
     let yc = list.iter().map(|v| v.1.to_f64()).sum::<f64>();
     let zc = list.iter().map(|v| v.2.to_f64()).sum::<f64>();
     let n = f(list.len());
-    let center = (xc / n, yc / n, zc / n);
+    let mut center = (0.0, 0.0, 0.0);
+    let xs: Vec<f64> = list.iter().map(|v| v.0.to_f64()).collect();
+    let ys: Vec<f64> = list.iter().map(|v| v.1.to_f64()).collect();
+    let zs: Vec<f64> = list.iter().map(|v| v.2.to_f64()).collect();
+    if zs.iter().all(|v| v.clone() == zs[0].clone()) && !(collinear(&xs, &ys, &zs)) {
+        center = circ_center(xs, ys, zs);
+    } else {
+        center = (xc / n, yc / n, zc / n);
+    }
     let new_list = list.iter().map(|&v| polar_one(center, v)).collect();
     let num_center = (center.0.into(), center.1.into(), center.2.into());
     (num_center, new_list)
