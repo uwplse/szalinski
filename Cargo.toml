@@ -14,9 +14,14 @@ indexmap = "1"
 
 [dependencies.egg]
 git = "https://github.com/mwillsey/egg.git"
-rev = "b3ae4dd6d915928e1795eb45719461bcdddd45b1"
+rev = "e4eb89e6ce7b9a5c1bef8a4e59efd9a5d3bb5468"
 # path = "/home/mwillsey/src/egg/egg"
 
 [dev-dependencies]
 env_logger = "0.6"
 colored-diff = "0.2"
+
+[profile.release]
+debug = true
+[profile.bench]
+debug = true

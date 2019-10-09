@@ -1,4 +1,4 @@
-use std::{fmt::Debug, hash::Hash, rc::Rc};
+use std::{fmt::Debug, hash::Hash};
 
 use egg::{
     egraph::{AddResult, Metadata},
@@ -172,14 +172,13 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
            "(Scale ?a ?a ?a (Rotate ?x ?y ?z ?m))",
            "(Rotate ?x ?y ?z (Scale ?a ?a ?a ?m))"),
 
-        Rewrite {
-            name: "listapplier".into(),
-            lhs: Cad::parse_pattern("(List ?items...)").unwrap(),
-            applier: Rc::new(ListApplier {
+        Rewrite::new (
+            "listapplier",
+            Cad::parse_pattern("(List ?items...)").unwrap(),
+            ListApplier {
                 var: "?items...".parse().unwrap(),
-            }),
-            conditions: vec![],
-        }
+            },
+        )
     ]
 }
 
