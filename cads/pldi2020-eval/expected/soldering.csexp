@@ -1,0 +1,46 @@
+(Union
+  (FoldUnion
+    (Map
+      Rotate
+      (Cons (Vec   0   0   0) (Repeat   1 (Vec   0   0 180)))
+      (Repeat
+          2
+        (Diff
+          (Scale 33.50  57   5 Unit)
+          (Trans 22.50  -1  -1 (Rotate   0   0 -12.00 (Scale 100 100 100 Unit)))))))
+  (Diff
+    (FoldUnion
+      (Map
+        Rotate
+        (Cons (Vec   0   0   0) (Repeat   1 (Vec   0   0 180)))
+        (Repeat
+            2
+          (Diff
+            (Trans
+              14.50
+                0
+                0
+              (Rotate   0   0 -5.50 (Scale  12  56  40 Unit)))
+            (Trans 19.10  -1  -1 (Rotate   0   0 -11.50 (Scale  15 102 102 Unit)))))))
+    (FoldUnion
+      (Cons
+        (FoldUnion
+          (Cons
+            (Trans -50  -1 22.50 (Rotate 15.00   0   0 (Scale 100 100 100 Unit)))
+            (Cons
+              (Trans -100  -1  -1 (Scale 200  4.50 100 Unit))
+              (Repeat   1 (Trans -100 53.50  -1 (Scale 200  10 100 Unit))))))
+        (Map
+          Trans
+          (MapI   5 (Vec   0 (+  11 (* i   9))   0))
+          (Repeat
+              5
+            (Trans
+                0
+                0
+               79
+              (Rotate
+                 45
+                  0
+                  0
+                (Scale  67  10  10 (Trans -0.50 -0.50 -0.50 Unit))))))))))

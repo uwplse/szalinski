@@ -1,0 +1,10 @@
+(Diff
+  (Scale 50.80  5.08   6 Unit)
+  (FoldUnion
+    (Map
+      Trans
+      (MapI
+         20
+          2
+        (Vec (+  0.27 (* i  2.54)) (+  0.77 (* j  2.54))  0.50))
+      (Repeat  40 (Scale   2  1.06   6 Unit)))))
