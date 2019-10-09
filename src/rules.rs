@@ -164,13 +164,13 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
            "(Trans ?x ?y ?z (Scale ?a ?b ?c ?m))",
            "(Scale ?a ?b ?c (Trans (/ ?x ?a) (/ ?y ?b) (/ ?z ?c) ?m))"),
 
-        // rw("scale_rotate",
-        //    "(Scale ?a ?a ?a (Rotate ?x ?y ?z ?m))",
-        //    "(Rotate ?x ?y ?z (Scale ?a ?a ?a ?m))"),
+        rw("scale_rotate",
+           "(Scale ?a ?a ?a (Rotate ?x ?y ?z ?m))",
+           "(Rotate ?x ?y ?z (Scale ?a ?a ?a ?m))"),
 
-        // rw("rotate_scale",
-        //    "(Scale ?a ?a ?a (Rotate ?x ?y ?z ?m))",
-        //    "(Rotate ?x ?y ?z (Scale ?a ?a ?a ?m))"),
+        rw("rotate_scale",
+           "(Scale ?a ?a ?a (Rotate ?x ?y ?z ?m))",
+           "(Rotate ?x ?y ?z (Scale ?a ?a ?a ?m))"),
 
         Rewrite::new (
             "listapplier",
