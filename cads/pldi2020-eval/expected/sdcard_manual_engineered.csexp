@@ -1,0 +1,27 @@
+(Diff
+  (Scale  59  30  30 Unit)
+  (FoldUnion
+    (Map
+      Trans
+      (Cons
+        (Vec   0   2   4)
+        (Concat
+          (List
+            (Vec   3   2   2)
+            (Vec  10   2   2)
+            (Vec  17   2   2)
+            (Vec  23   2   2)
+            (Vec  29   2   2)
+            (Vec  35   2   2)
+            (Vec  41   2   2)
+            (Vec  47   2   2)
+            (Vec  53   2   2))
+          (MapI   9 (Vec (+   7 (* i   6))   2   4))))
+      (Map
+        Scale
+        (Cons
+          (Vec   4  30  22)
+          (Concat
+            (Repeat   9 (Vec   4  30  26))
+            (Repeat   9 (Vec   4  30  22))))
+        (Repeat  19 Unit)))))

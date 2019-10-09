@@ -1,0 +1,67 @@
+(FoldUnion
+  (Concat
+    (Repeat
+        1
+      (Diff
+        (Hull (Scale 135.75 177.60  1.20 Unit))
+        (FoldUnion
+          (Concat
+            (Repeat   3 Empty)
+            (Map
+              Trans
+              (MapI   3 (Vec (+ 17.07 (* i 50.80)) 171   0))
+              (Repeat
+                  3
+                (Scale  6.60  6.60  1.40 (Trans   0   0  0.50 Cylinder))))))))
+    (Repeat
+        1
+      (FoldUnion
+        (Cons
+          (Diff
+            (Scale 135.75 27.80 127 Unit)
+            (Union
+              (Trans  1.20  1.20  1.20 (Scale 133.35 25.40 127 Unit))
+              (Trans
+                67.88
+                  0
+                127
+                (Rotate
+                  -90
+                    0
+                    0
+                  (Hull
+                    (Scale
+                      63.50
+                      63.50
+                      27.90
+                      (Union
+                        (Trans   0   0  0.50 Cylinder)
+                        (Trans   0  1.39   0 (Trans   0   0  0.50 Cylinder)))))))))
+          (Map
+            Trans
+            (MapI   5 (Vec   0 (+ 26.60 (* i 26.60))   0))
+            (Repeat
+                5
+              (Diff
+                (Scale 135.75 27.80 127 Unit)
+                (Union
+                  (Trans  1.20  1.20  1.20 (Scale 133.35 25.40 127 Unit))
+                  (Trans
+                    67.88
+                      0
+                    127
+                    (Rotate
+                      -90
+                        0
+                        0
+                      (Hull
+                        (Scale
+                          63.50
+                          63.50
+                          27.90
+                          (Union
+                            (Trans   0   0  0.50 Cylinder)
+                            (Trans   0  1.39   0 (Trans   0   0  0.50 Cylinder))))))))))))))
+    (Repeat  12 Empty)
+    (Repeat   6 (Trans  0.20   0 -0.20 Empty))
+    (Repeat   6 (Trans -0.20   0 -0.20 Empty))))
