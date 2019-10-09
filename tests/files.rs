@@ -59,7 +59,7 @@ test_file! {file_hcbit,         84, "cads/pldi2020-eval/input/hcbitholder.csexp"
 test_file! {file_wardrobe,     315, "cads/pldi2020-eval/input/wardrobe.csexp" }
 test_file! {file_flower,        83, "cads/pldi2020-eval/input/flower.csexp" }
 test_file! {file_pinheader,     84, "cads/pldi2020-eval/input/pinheader.csexp" }
-test_file! {file_cnc_endmill,  119, "cads/pldi2020-eval/input/cnc_endmill_with_hull.csexp" }
+test_file! {file_cnc_endmill,  119, "cads/pldi2020-eval/input/cnc_endmill_nohull.csexp" }
 test_file! {file_card_org,     100, "cads/pldi2020-eval/input/card_org.csexp" }
 test_file! {file_compose_card, 147, "cads/pldi2020-eval/input/composition_card.csexp" }
 test_file! {file_med_slide,    369, "cads/pldi2020-eval/input/medslide.csexp" }
