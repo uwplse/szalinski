@@ -60,7 +60,7 @@ test_file! {file_flower,        83, "cads/pldi2020-eval/input/flower.csexp" }
 test_file! {file_pinheader,     84, "cads/pldi2020-eval/input/pinheader.csexp" }
 test_file! {file_cnc_endmill,  119, "cads/pldi2020-eval/input/cnc_endmills_holder_nohull.csexp" }
 test_file! {file_card_org,     100, "cads/pldi2020-eval/input/card_org.csexp" }
-test_file! {file_compose_card, 100, "cads/pldi2020-eval/input/composition_card.csexp" }
+test_file! {file_compose_card, 147, "cads/pldi2020-eval/input/composition_card.csexp" }
 test_file! {file_med_slide,    100, "cads/pldi2020-eval/input/medslide.csexp" }
 test_file! {file_nintendo,     100, "cads/pldi2020-eval/input/nintendo.csexp" }
 test_file! {file_relay_box,    100, "cads/pldi2020-eval/input/relay_box.csexp" }
