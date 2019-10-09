@@ -8,6 +8,4 @@
     (Map
       Trans
       (MapI   4   4 (Vec (* i  17) (* j  17)  14))
-      (Repeat
-         16
-        (Scale  12  12  22 (Trans -0.50 -0.50 -0.50 Unit))))))
+      (Repeat  16 (Scale  12  12  22 (Trans -0.50 -0.50 -0.50 Unit))))))
