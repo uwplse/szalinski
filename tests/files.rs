@@ -37,6 +37,7 @@ macro_rules! test_file {
             if outfile.contains("expected/") && expected.is_ok() {
                 let expected = &expected.unwrap().trim().to_string();
                 let actual = &best.expr.pretty(80).trim().to_string();
+                println!("{}", actual);
                 if actual != expected {
                     let diff = colored_diff::PrettyDifference {expected, actual};
                     panic!("Didn't match expected. {}", diff);
@@ -58,14 +59,14 @@ test_file! {file_hcbit,         84, "cads/pldi2020-eval/input/hcbitholder.csexp"
 test_file! {file_wardrobe,     315, "cads/pldi2020-eval/input/wardrobe.csexp" }
 test_file! {file_flower,        83, "cads/pldi2020-eval/input/flower.csexp" }
 test_file! {file_pinheader,     84, "cads/pldi2020-eval/input/pinheader.csexp" }
-test_file! {file_cnc_endmill,  119, "cads/pldi2020-eval/input/cnc_endmills_holder_nohull.csexp" }
+test_file! {file_cnc_endmill,  119, "cads/pldi2020-eval/input/cnc_endmill_with_hull.csexp" }
 test_file! {file_card_org,     100, "cads/pldi2020-eval/input/card_org.csexp" }
 test_file! {file_compose_card, 147, "cads/pldi2020-eval/input/composition_card.csexp" }
-test_file! {file_med_slide,    100, "cads/pldi2020-eval/input/medslide.csexp" }
-test_file! {file_nintendo,     100, "cads/pldi2020-eval/input/nintendo.csexp" }
-test_file! {file_relay_box,    100, "cads/pldi2020-eval/input/relay_box.csexp" }
-test_file! {file_sanding,      100, "cads/pldi2020-eval/input/sanding.csexp" }
-test_file! {file_sdcard,       100, "cads/pldi2020-eval/input/sdcard.csexp" }
+test_file! {file_med_slide,    369, "cads/pldi2020-eval/input/medslide.csexp" }
+test_file! {file_nintendo,     218, "cads/pldi2020-eval/input/nintendo.csexp" }
+test_file! {file_relay_box,    232, "cads/pldi2020-eval/input/relay_box.csexp" }
+test_file! {file_sanding,      504, "cads/pldi2020-eval/input/sanding.csexp" }
+test_file! {file_sd_manual,    176, "cads/pldi2020-eval/input/sdcard_manual_engineered.csexp" }
 
 
 //test_file! {file_icsg_011,     177, "cads/inverse-csg-solution/011/sketch_final.csexp" }
