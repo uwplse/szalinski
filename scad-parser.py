@@ -1,18 +1,20 @@
 #!/usr/bin/env python3
 
+import pprint
 from lark import Lark, Transformer
 
 parser = Lark(r"""
     program: instr*
 
-    instr:
+    ?instr: object
          | "group();" -> empty_group
          | "group()" _scope -> group
          | "union()" _scope -> union
          | "difference()" _scope -> diff
+         | "intersection()" _scope -> inter
          | "multmatrix(" mat ")" _scope -> matrix
 
-    _scope: "{" (instr | object)* "}"
+    _scope: "{" instr* "}"
 
     num: NUMBER
     ?ident: /\$?[a-z][a-zA-Z0-9]*/
@@ -68,8 +70,7 @@ class SexpTransformer(Transformer):
     def program(self, args):
         debug('program', args)
         nonempty = [group for group in args if group]
-        assert len(nonempty) == 1
-        return nonempty[0]
+        return foldup('Union', nonempty)
 
     def empty_group(self, args): return None
     def group(self, args):
@@ -83,6 +84,7 @@ class SexpTransformer(Transformer):
     def num  (self, args): return float(args[0])
 
     def union(self, args): return foldup('Union', args)
+    def inter(self, args): return foldup('Intersection', args)
     def diff (self, args): return foldup('Diff',  args)
 
     def matrix(self, args):
@@ -110,30 +112,33 @@ class SexpTransformer(Transformer):
 
         raise ValueError('Unexpected object {}, args: {}'.format(op, args))
 
-def pretty_print(sexp, current=0, step=2, limit=80):
-    if type(sexp) is not list:
-        return str(sexp)
-
-    op, *args = sexp
-    assert type(op) is str
-    assert type(args) is list
-    pp_args = [pretty_print(a) for a in args]
-    s = '(' + ' '.join([op] + pp_args) + ')'
-    if current + len(s) < limit:
-        return s
-    current += step
-    indent = ' ' * current
-    pp_args = [pretty_print(a, current=current) for a in args]
-    s = '(' + ('\n' + indent).join([op] + pp_args) + ')'
-    return s
+def pretty_print(sexp, indent=2):
+    return pprint.pformat(sexp, indent=indent) \
+                 .replace(',', '')  \
+                 .replace('[', '(') \
+                 .replace(']', ')') \
+                 .replace("'", '')
 
 if __name__ == "__main__":
     import sys
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument('-o', '--output')
+    ap.add_argument('input')
+    args = ap.parse_args()
 
-    s = sys.stdin.read()
+    with open(args.input) as f:
+        s = f.read()
+
     tree = parser.parse(s)
     debug(tree.pretty())
     sexp = SexpTransformer().transform(tree)
     debug('done')
     debug(sexp)
-    print(pretty_print(sexp))
+
+    pp = pretty_print(sexp)
+    if args.output:
+        with open(args.output, 'wt') as f:
+            f.write(pp)
+    else:
+        print(pp)
