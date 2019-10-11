@@ -1,0 +1,28 @@
+(Diff
+  (Trans
+    -11
+    -11
+     -3
+    (Hull
+      (FoldUnion
+        (Map
+          Trans
+          (MapI
+              2
+              2
+            (Vec (+   5 (* j  63)) (+   5 (* i  63)) 12.50))
+          (Repeat   4 (Scale  10  10  25 Cylinder))))))
+  (FoldUnion
+    (Map
+      Trans
+      (MapI   4 (Vec 19.50 (+  -6 (* i  17))   3))
+      (Repeat
+          4
+        (FoldUnion
+          (Map
+            TransPolar
+            (MapI
+                2
+                2
+              (Vec (+  8.50 (* i  17)) (+ 180 (* j -180))  90))
+            (Repeat   4 (Scale  12  12  22 Unit))))))))
