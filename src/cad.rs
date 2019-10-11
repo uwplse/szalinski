@@ -61,6 +61,7 @@ define_term! {
         Cylinder = "Cylinder",
         Hexagon = "Hexagon",
         Empty = "Empty",
+        Hull = "Hull",
         Nil = "Nil",
         Num(Num),
 
@@ -195,7 +196,7 @@ impl Language for Cad {
         use Cad::*;
         let cost = match self {
             Num(_) => 1,
-            Unit | Empty | Nil | Sphere | Cylinder | Hexagon => 1,
+            Unit | Empty | Nil | Sphere | Cylinder | Hexagon | Hull => 1,
             Repeat => 1,
 
             Trans => 10,
