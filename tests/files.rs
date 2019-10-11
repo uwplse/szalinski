@@ -66,7 +66,7 @@ test_file! {file_compose_card, 147, "cads/pldi2020-eval/input/composition_card.c
 test_file! {file_med_slide,    369, "cads/pldi2020-eval/input/medslide.csexp" }
 test_file! {file_nintendo,     218, "cads/pldi2020-eval/input/nintendo.csexp" }
 test_file! {file_relay_box,    232, "cads/pldi2020-eval/input/relay_box.csexp" }
-test_file! {file_sanding,      504, "cads/pldi2020-eval/input/sanding.csexp" }
+test_file! {file_sanding,      498, "cads/pldi2020-eval/input/sanding.csexp" }
 test_file! {file_sd_manual,    176, "cads/pldi2020-eval/input/sdcard_manual_engineered.csexp" }
 
 //test_file! {file_icsg_011,     177, "cads/inverse-csg-solution/011/sketch_final.csexp" }
