@@ -1,10 +1,15 @@
+use std::f64::consts;
+
 use std::fmt;
+use std::fs::{read_dir, read_to_string};
 
 use smallvec::smallvec;
 
 use egg::expr::{Expr, RecExpr};
+use egg::{parse::ParsableLanguage};
 
-use crate::cad::*;
+use crate::cad::{Cad};
+use crate::cad::Variable;
 
 macro_rules! rec {
     ($op:expr) => {RecExpr::from(Expr::unit($op))};
@@ -21,27 +26,43 @@ fn get_num(expr: &RecExpr<Cad>) -> f64 {
     }
 }
 
+// from (r, theta, phi) to (x, y, z)
+// x=rsinϕcosθ
+// y=rsinϕsinθ
+// z=rcosϕ
+// https://keisan.casio.com/exec/system/1359534351
+fn to_cartesian (v: (f64, f64, f64)) -> (f64, f64, f64) {
+    let r = v.0;
+    let th = v.1;
+    let ph = v.2;
+    let x = r * ph.sin() * th.cos();
+    let y = r * ph.sin() * th.cos();
+    let z = r * ph.cos();
+    (x, y, z)
+}
+
 fn eval_fun(expr: &RecExpr<Cad>, i: usize) -> f64 {
     let expr = expr.as_ref();
     match &expr.op {
         Cad::Num(_) => get_num(&rec!(expr.op.clone())),
         Cad::Variable(_) => i as f64,
+        Cad::ListVar(_) => i as f64,
         Cad::Add => {
             let a = expr.children[0].clone();
             let b = expr.children[1].clone();
             eval_fun(&a, i) + eval_fun(&b, i)
-        }
+        },
         Cad::Mul => {
             let a = expr.children[0].clone();
             let b = expr.children[1].clone();
             eval_fun(&a, i) * eval_fun(&b, i)
-        }
+        },
         // TODO sub and div
-        _ => panic!("Cannot evaluate non-arithmetic functions"),
+        _ => panic!("Cannot evaluate non-arithmetic functions: {}", expr.op),
     }
 }
 
-fn eval_mapi(expr: &RecExpr<Cad>) -> Vec<(f64, f64, f64)> {
+fn eval_mapi(op: &Cad, expr: &RecExpr<Cad>) -> Vec<(f64, f64, f64)> {
     let mapi = expr.as_ref();
     let mut v = Vec::new();
     let n = mapi.children[0].clone();
@@ -50,8 +71,16 @@ fn eval_mapi(expr: &RecExpr<Cad>) -> Vec<(f64, f64, f64)> {
     let y = vec.children[1].clone();
     let z = vec.children[2].clone();
     for i in 0..(get_num(&n) as usize) {
-        let res = (eval_fun(&x, i), eval_fun(&y, i), eval_fun(&z, i));
-        v.push(res);
+        let (fx, fy, fz) = (eval_fun(&x, i), eval_fun(&y, i), eval_fun(&z, i));
+        match op {
+            Cad::TransPolar => {
+                let (px, py, pz) = to_cartesian ((fx, fy, fz));
+                v.push((px, py, pz));
+            }
+            _ => {
+            v.push((fx, fy, fz));
+            }
+        }
     }
     v
 }
@@ -63,6 +92,7 @@ pub fn cads_to_union(cs: Vec<RecExpr<Cad>>) -> RecExpr<Cad> {
     }
     cad
 }
+
 
 pub fn eval(expr: &RecExpr<Cad>) -> RecExpr<Cad> {
     let expr = expr.as_ref();
@@ -86,7 +116,7 @@ pub fn eval(expr: &RecExpr<Cad>) -> RecExpr<Cad> {
         Cad::Map => {
             let op = &expr.children[0].as_ref().op;
             let mapi = &expr.children[1];
-            let fs = eval_mapi(&mapi);
+            let fs = eval_mapi(op, &mapi);
             let rep = &expr.children[2];
             let c = eval(&rep.as_ref().children[1]);
             let mut v = Vec::new();
@@ -98,7 +128,7 @@ pub fn eval(expr: &RecExpr<Cad>) -> RecExpr<Cad> {
                 v.push(rec!(op.clone(), a, c.clone()));
             }
             cads_to_union(v)
-        }
+        },
         _ => RecExpr::from(expr.clone()),
     }
 }
@@ -134,6 +164,22 @@ impl<'a> fmt::Display for Scad<'a> {
         }
     }
 }
+
+macro_rules! test_eval {
+    ($name:ident, $file:literal, $end:literal) => {
+        #[test]
+        fn $name() {
+            println!("Testing {}", stringify!($name));
+            let input = read_to_string($file).unwrap();
+            let start = Cad::parse_expr(&input).unwrap();
+            let res = Scad(&start);
+            println!("res: {}", res);
+            assert_eq!(format!("{}", res), format!("{}", $end));
+        }
+    };
+}
+
+//test_eval! {box_flat, "cads/pldi2020-eval/expected/flower.csexp", "" }
 
 #[test]
 fn eval_prim() {
