@@ -37,7 +37,6 @@ macro_rules! test_file {
             if outfile.contains("expected/") && expected.is_ok() {
                 let expected = &expected.unwrap().trim().to_string();
                 let actual = &best.expr.pretty(80).trim().to_string();
-                println!("{}", actual);
                 if actual != expected {
                     let diff = colored_diff::PrettyDifference {expected, actual};
                     panic!("Didn't match expected. {}", diff);
