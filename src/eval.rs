@@ -32,11 +32,14 @@ fn get_num(expr: &RecExpr<Cad>) -> f64 {
 // z=rcosϕ
 // https://keisan.casio.com/exec/system/1359534351
 fn to_cartesian (v: (f64, f64, f64)) -> (f64, f64, f64) {
+    fn to_rad (deg: f64) -> f64 {
+        deg * std::f64::consts::PI / 180.0
+    }
     let r = v.0;
-    let th = v.1;
-    let ph = v.2;
+    let th = to_rad(v.1);
+    let ph = to_rad(v.2);
     let x = r * ph.sin() * th.cos();
-    let y = r * ph.sin() * th.cos();
+    let y = r * ph.sin() * th.sin();
     let z = r * ph.cos();
     (x, y, z)
 }
@@ -149,7 +152,6 @@ impl<'a> fmt::Display for Scad<'a> {
             Cad::Hexagon => write!(f, "cylinder();"),
             Cad::Hull => write!(f, "hull() {{ {} }}", child(0)),
             Cad::Trans => write!(f, "translate({}) {}", child(0), child(1)),
-            Cad::TransPolar => write!(f, "translate({}) {}", child(0), child(1)),
             Cad::Scale => write!(f, "scale ({}) {}", child(0), child(1)),
             Cad::Rotate => write!(f, "rotate ({}) {}", child(0), child(1)),
             Cad::Union => write!(f, "union () {{ {} {} }}", child(0), child(1)),
@@ -166,20 +168,33 @@ impl<'a> fmt::Display for Scad<'a> {
 }
 
 macro_rules! test_eval {
-    ($name:ident, $file:literal, $end:literal) => {
+    ($name:ident, $file:literal) => {
         #[test]
         fn $name() {
             println!("Testing {}", stringify!($name));
             let input = read_to_string($file).unwrap();
+            let outfile = $file.replace("expected/", "scad-output/");
+            let output = read_to_string(&outfile);
             let start = Cad::parse_expr(&input).unwrap();
-            let res = Scad(&start);
-            println!("res: {}", res);
-            assert_eq!(format!("{}", res), format!("{}", $end));
+            let res = format!("{}", Scad(&start)).trim().to_string();
+            let actual = res.trim();
+            if outfile.contains("scad-output/") && output.is_ok() {
+                let expected = &output.unwrap().trim().to_string();
+                if actual != expected {
+                    let diff = colored_diff::PrettyDifference {expected, actual};
+                    panic!("Didn't match expected. {}", diff)
+                }
+                assert_eq!(actual, expected);
+            } else {
+                eprintln!("Didn't find expected scad for {}", stringify!($name));
+            }
         }
     };
 }
 
-//test_eval! {box_flat, "cads/pldi2020-eval/expected/flower.csexp", "" }
+//test_eval! {box_flat, "cads/pldi2020-eval/expected/box_flat.csexp", "" }
+test_eval! {flower, "cads/pldi2020-eval/expected/flower.csexp" }
+//test_eval! {cnc, "cads/pldi2020-eval/expected/cnc_endmill_nohull.csexp" }
 
 #[test]
 fn eval_prim() {
