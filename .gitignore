@@ -3,3 +3,10 @@
 Cargo.lock
 .DS_Store
 .vscode
+
+# profiling
+perf.data*
+flame.svg
+
+# output
+out
