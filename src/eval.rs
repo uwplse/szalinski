@@ -1,14 +1,14 @@
 use std::f64::consts;
 
+use smallvec::smallvec;
 use std::fmt;
 use std::fs::{read_dir, read_to_string};
-
-use smallvec::smallvec;
 
 use egg::expr::{Expr, RecExpr};
 use egg::parse::ParsableLanguage;
 
 use crate::cad::Cad;
+use crate::cad::ListVar;
 use crate::cad::Variable;
 
 macro_rules! rec {
@@ -64,60 +64,79 @@ fn eval_fun(expr: &RecExpr<Cad>, i: usize) -> f64 {
     }
 }
 
-fn eval_mapi(op: &Cad, expr: &RecExpr<Cad>) -> Vec<(f64, f64, f64)> {
+fn eval_vecs(op: &Cad, expr: &RecExpr<Cad>) -> Vec<(f64, f64, f64)> {
     let mapi = expr.as_ref();
-    let mut v = Vec::new();
-    if mapi.children.len() == 2 {
-        let n = mapi.children[0].clone();
-        let vec = mapi.children[1].as_ref();
-        let x = vec.children[0].clone();
-        let y = vec.children[1].clone();
-        let z = vec.children[2].clone();
-        for i in 0..(get_num(&n) as usize) {
-            let (fx, fy, fz) = (eval_fun(&x, i), eval_fun(&y, i), eval_fun(&z, i));
+    match &mapi.op {
+        Cad::Repeat => {
+            let mut v = Vec::new();
+            let n = get_num(&mapi.children[0].clone());
+            let vc = mapi.children[1].as_ref();
+            let x = get_num(&vc.children[0].clone());
+            let y = get_num(&vc.children[1].clone());
+            let z = get_num(&vc.children[2].clone());
             match op {
                 Cad::TransPolar => {
-                    let (px, py, pz) = to_cartesian((fx, fy, fz));
-                    v.push((px, py, pz));
+                    for _i in 0..n as usize {
+                        let (x, y, z) = to_cartesian((x, y, z));
+                        v.push((x, y, z));
+                    }
                 }
-                _ => {
-                    v.push((fx, fy, fz));
+                _ =>  {
+                    for _i in 0..n as usize {
+                        v.push((x, y, z));
+                    }
                 }
             }
-        }
-    } else if mapi.children.len() == 3 {
-        let nx = mapi.children[0].clone();
-        let ny = mapi.children[1].clone();
-        let vec = mapi.children[2].as_ref();
-        let x = vec.children[0].clone();
-        let y = vec.children[1].clone();
-        let z = vec.children[2].clone();
-        for i in 0..(get_num(&nx) as usize) {
-            for j in 0..(get_num(&ny) as usize) {
-                let (fx, fy, fz) = (eval_fun(&x, i), eval_fun(&y, j), eval_fun(&z, i));
+            v
+        },
+        Cad::List => {
+            let mut v = Vec::new();
+            let vs = mapi.children.clone();
+            for i in 0..vs.len() {
+                let vc = vs[i].as_ref();
+                let x = get_num(&vc.children[0].clone());
+                let y = get_num(&vc.children[1].clone());
+                let z = get_num(&vc.children[2].clone());
                 match op {
                     Cad::TransPolar => {
-                        let (px, py, pz) = to_cartesian((fx, fy, fz));
-                        v.push((px, py, pz));
+                        let (x, y, z) = to_cartesian((x, y, z));
+                        v.push((x, y, z));
                     }
                     _ => {
-                        v.push((fx, fy, fz));
+                        v.push((x, y, z));
                     }
                 }
             }
-        }
-    } else {
-        let nx = mapi.children[0].clone();
-        let ny = mapi.children[1].clone();
-        let nz = mapi.children[2].clone();
-        let vec = mapi.children[3].as_ref();
-        let x = vec.children[0].clone();
-        let y = vec.children[1].clone();
-        let z = vec.children[2].clone();
-        for i in 0..(get_num(&nx) as usize) {
-            for j in 0..(get_num(&ny) as usize) {
-                for k in 0..(get_num(&nz) as usize) {
-                    let (fx, fy, fz) = (eval_fun(&x, i), eval_fun(&y, j), eval_fun(&z, k));
+            v
+        },
+        Cad::Cons => {
+            let hd = mapi.children[0].as_ref();
+            let tl = mapi.children[1].clone();
+            let mut v: Vec<(f64, f64, f64)> = eval_vecs(op, &tl);
+            let x = get_num(&hd.children[0].clone());
+            let y = get_num(&hd.children[1].clone());
+            let z = get_num(&hd.children[2].clone());
+            match op  {
+                Cad::TransPolar => {
+                    let (x, y, z) = to_cartesian((x, y, z));
+                    v.push((x, y, z));
+                }
+                _ => {
+                    v.push((x, y, z));
+                }
+            }
+            v
+        },
+        Cad::MapI => {
+            let mut v = Vec::new();
+            if mapi.children.len() == 2 {
+                let n = mapi.children[0].clone();
+                let vec = mapi.children[1].as_ref();
+                let x = vec.children[0].clone();
+                let y = vec.children[1].clone();
+                let z = vec.children[2].clone();
+                for i in 0..(get_num(&n) as usize) {
+                    let (fx, fy, fz) = (eval_fun(&x, i), eval_fun(&y, i), eval_fun(&z, i));
                     match op {
                         Cad::TransPolar => {
                             let (px, py, pz) = to_cartesian((fx, fy, fz));
@@ -128,18 +147,90 @@ fn eval_mapi(op: &Cad, expr: &RecExpr<Cad>) -> Vec<(f64, f64, f64)> {
                         }
                     }
                 }
+            } else if mapi.children.len() == 3 {
+                let nx = mapi.children[0].clone();
+                let ny = mapi.children[1].clone();
+                let vec = mapi.children[2].as_ref();
+                let x = vec.children[0].clone();
+                let y = vec.children[1].clone();
+                let z = vec.children[2].clone();
+                for i in 0..(get_num(&nx) as usize) {
+                    for j in 0..(get_num(&ny) as usize) {
+                        let (fx, fy, fz) = (eval_fun(&x, i), eval_fun(&y, j), eval_fun(&z, i));
+                        match op {
+                            Cad::TransPolar => {
+                                let (px, py, pz) = to_cartesian((fx, fy, fz));
+                                v.push((px, py, pz));
+                            }
+                            _ => {
+                                v.push((fx, fy, fz));
+                            }
+                        }
+                    }
+                }
+            } else {
+                let nx = mapi.children[0].clone();
+                let ny = mapi.children[1].clone();
+                let nz = mapi.children[2].clone();
+                let vec = mapi.children[3].as_ref();
+                let x = vec.children[0].clone();
+                let y = vec.children[1].clone();
+                let z = vec.children[2].clone();
+                for i in 0..(get_num(&nx) as usize) {
+                    for j in 0..(get_num(&ny) as usize) {
+                        for k in 0..(get_num(&nz) as usize) {
+                            let (fx, fy, fz) = (eval_fun(&x, i), eval_fun(&y, j), eval_fun(&z, k));
+                            match op {
+                                Cad::TransPolar => {
+                                    let (px, py, pz) = to_cartesian((fx, fy, fz));
+                                    v.push((px, py, pz));
+                                }
+                                _ => {
+                                    v.push((fx, fy, fz));
+                                }
+                            }
+                        }
+                    }
+                }
             }
+            v
         }
+        Cad::Concat => {
+            let cs = mapi.children.clone();
+            let mut vs = Vec::new();
+            for i in 0..(cs.len()) {
+                let mut v = eval_vecs(op, &cs[i]);
+                vs.append(&mut v);
+            }
+            vs
+        },
+        _ => panic!("eval_vecs: not a mapi, list, cons, repeat, or concat "),
     }
-    v
 }
 
-pub fn cads_to_union(cs: Vec<RecExpr<Cad>>) -> RecExpr<Cad> {
+fn cads_to_union(cs: Vec<RecExpr<Cad>>) -> RecExpr<Cad> {
     let mut cad = rec!(Cad::Empty);
     for c in cs {
         cad = rec!(Cad::Union, c, cad);
     }
     cad
+}
+
+fn union_to_cads(c: RecExpr<Cad>) -> Vec<RecExpr<Cad>> {
+    let c = c.as_ref();
+    match &c.op {
+        Cad::Empty => {
+            vec![rec!(Cad::Empty)]
+        }
+        Cad::Union => {
+            let c1 = c.children[0].clone();
+            let c2 = c.children[1].clone();
+            let mut v = union_to_cads(c2);
+            v.push(c1);
+            v
+        }
+        _ => panic!("union_to_cads: not a union"),
+    }
 }
 
 pub fn eval(expr: &RecExpr<Cad>) -> RecExpr<Cad> {
@@ -185,24 +276,46 @@ pub fn eval(expr: &RecExpr<Cad>) -> RecExpr<Cad> {
         Cad::Diff => rec!(Cad::Diff, eval(&arg(0)), eval(&arg(1))),
         Cad::Inter => rec!(Cad::Inter, eval(&arg(0)), eval(&arg(1))),
         Cad::Union => rec!(Cad::Union, eval(&arg(0)), eval(&arg(1))),
-        Cad::Repeat => rec!(Cad::Repeat, eval(&arg(0)), eval(&arg(1))),
+        Cad::Repeat => {
+            let mut v = Vec::new();
+            let n = get_num(&eval(&arg(0)));
+            let c = eval(&arg(1)).clone();
+            for _i in 0..(n as usize) {
+                v.push(c.clone());
+            }
+            cads_to_union(v)
+        }
         Cad::FoldUnion => eval(&expr.children[0]),
+        Cad::Cons => rec!(Cad::Union, eval(&arg(0)), eval(&arg(1))),
+        Cad::Concat => {
+            let mut l1 = union_to_cads(eval(&arg(0)).clone());
+            let mut l2 = union_to_cads(eval(&arg(1)).clone());
+            l1.append(&mut l2);
+            cads_to_union(l1)
+        },
         Cad::Map => {
             let op = &expr.children[0].as_ref().op;
-            let mapi = &expr.children[1];
-            let fs = eval_mapi(op, &mapi);
-            let rep = &expr.children[2];
-            let c = eval(&rep.as_ref().children[1]);
+            let mapi_list_cons = &expr.children[1];
+            let fs = eval_vecs(op, &mapi_list_cons);
+            let cads = eval(&expr.children[2]);
+            let cs = union_to_cads(cads.clone());
+            // NOTE: first element is always Empty due to union_to_cads, so remove it.
+            // TODO: should clean this up.
+            let mut ne_cs = Vec::new();
+            for i in 1..(cs.len()) {
+                ne_cs.push(cs[i].clone())
+            }
+            assert_eq!(ne_cs.len(), fs.len());
             let mut v = Vec::new();
             for i in 0..fs.len() {
                 let vx = rec!(Cad::Num(fs[i].0.into()));
                 let vy = rec!(Cad::Num(fs[i].1.into()));
                 let vz = rec!(Cad::Num(fs[i].2.into()));
-                v.push(rec!(op.clone(), vx, vy, vz, c.clone()));
+                v.push(rec!(op.clone(), vx, vy, vz, ne_cs[i].clone()));
             }
             cads_to_union(v)
         }
-        _ => RecExpr::from(expr.clone()),
+        _ => panic!("EVAL TODO"),
     }
 }
 
@@ -221,7 +334,7 @@ impl<'a> fmt::Display for Scad<'a> {
             Cad::Mul => write!(f, "{} * {}", child(0), child(1)),
             Cad::Div => write!(f, "{} / {}", child(0), child(1)),
             Cad::Empty => write!(f, "sphere(r=0);"),
-            Cad::Unit => write!(f, "cube();"),
+            Cad::Unit => write!(f, "cube(center = true);"),
             Cad::Sphere => write!(f, "sphere($fn = 50);"),
             Cad::Cylinder => write!(f, "cylinder($fn = 50);"),
             Cad::Hexagon => write!(f, "cylinder();"),
@@ -267,12 +380,14 @@ macro_rules! test_eval {
             let outfile = $file.replace("expected/", "scad-output/");
             let output = read_to_string(&outfile);
             let start = Cad::parse_expr(&input).unwrap();
-            let res = format!("{}", Scad(&start)).trim().to_string();
-            let actual = res.trim();
+            let actual = format!("{}", Scad(&start)).trim().to_string();
             println!("{}", actual);
             if outfile.contains("scad-output/") && output.is_ok() {
-                let expected = &output.unwrap().trim().to_string();
+                let expected = &output.unwrap();
+                let expected = expected.trim().to_string();
                 if actual != expected {
+                    let actual = actual.as_ref();
+                    let expected = expected.as_ref();
                     let diff = colored_diff::PrettyDifference { expected, actual };
                     panic!("Didn't match expected. {}", diff)
                 }
@@ -284,9 +399,25 @@ macro_rules! test_eval {
     };
 }
 
-test_eval! {eval_box_flat, "cads/pldi2020-eval/expected/box_flat.csexp" }
 test_eval! {eval_flower, "cads/pldi2020-eval/expected/flower.csexp" }
-test_eval! {eval_cnc, "cads/pldi2020-eval/expected/cnc_endmill_nohull.csexp" }
+test_eval! {eval_cnc_hull, "cads/pldi2020-eval/expected/cnc_endmill_with_hull.csexp" }
+test_eval! {eval_dice, "cads/pldi2020-eval/expected/dice.csexp" }
+test_eval! {eval_gear, "cads/pldi2020-eval/expected/gear_flat.csexp" }
+test_eval! {eval_hcbit, "cads/pldi2020-eval/expected/hcbitholder.csexp" }
+// commented ones are wrong due to hand written csexps as inputs
+// test_eval! {eval_box_flat, "cads/pldi2020-eval/expected/box_flat.csexp" }
+// test_eval! {eval_compose, "cads/pldi2020-eval/expected/composition_card.csexp" }
+// test_eval! {eval_med, "cads/pldi2020-eval/expected/medslide.csexp" }
+// test_eval! {eval_nintendo, "cads/pldi2020-eval/expected/nintendo.csexp" }
+// test_eval! {eval_pin, "cads/pldi2020-eval/expected/pinheader.csexp" }
+// test_eval! {eval_relay, "cads/pldi2020-eval/expected/relay_box.csexp" }
+// test_eval! {eval_sand, "cads/pldi2020-eval/expected/sanding.csexp" }
+// test_eval! {eval_tape, "cads/pldi2020-eval/expected/tape.csexp" }
+// test_eval! {eval_solder, "cads/pldi2020-eval/expected/soldering.csexp" }
+// test_eval! {eval_sdcard, "cads/pldi2020-eval/expected/sdcard_manual_engineered.csexp" }
+// test_eval! {eval_wardrobe, "cads/pldi2020-eval/expected/wardrobe.csexp" }
+
+//test_eval! {eval_cnc, "cads/pldi2020-eval/expected/cnc_endmill_nohull.csexp" } // color diff issue
 
 #[test]
 fn eval_prim() {
@@ -299,12 +430,9 @@ fn eval_prim() {
 fn eval_affine1() {
     let input = rec!(
         Cad::Trans,
-        rec!(
-            Cad::Vec,
-            rec!(Cad::Num(2.into())),
-            rec!(Cad::Num(3.into())),
-            rec!(Cad::Num(5.into()))
-        ),
+        rec!(Cad::Num(2.into())),
+        rec!(Cad::Num(3.into())),
+        rec!(Cad::Num(5.into())),
         rec!(Cad::Unit)
     );
     let output = eval(&input);
@@ -315,17 +443,12 @@ fn eval_affine1() {
 fn eval_affine2() {
     let input = rec!(
         Cad::Scale,
-        rec!(
-            Cad::Vec,
-            rec!(Cad::Num(2.into())),
-            rec!(Cad::Num(3.into())),
-            rec!(Cad::Num(5.into()))
-        ),
+        rec!(Cad::Num(2.into())),
+        rec!(Cad::Num(3.into())),
+        rec!(Cad::Num(5.into())),
         rec!(Cad::Unit)
     );
     let output = eval(&input);
-    let f = format!("{}", Scad(&output));
-    println!("{}", f);
     assert_eq!(output, input);
 }
 
@@ -336,7 +459,7 @@ fn scad_foldunion() {
         rec!(
             Cad::Mul,
             rec!(Cad::Num(2.into())),
-            rec!(Cad::Variable(Variable("i".into())))
+            rec!(Cad::ListVar(ListVar(&"i")))
         ),
         rec!(Cad::Num(3.into()))
     );
