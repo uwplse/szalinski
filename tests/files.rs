@@ -52,9 +52,9 @@ macro_rules! test_file {
 
 test_file! {file_soldering,    472, "cads/pldi2020-eval/input/soldering.csexp" }
 test_file! {file_tape,          66, "cads/pldi2020-eval/input/tape.csexp" }
-test_file! {file_dice,         196, "cads/pldi2020-eval/input/dice.csexp" }
+test_file! {file_dice,         183, "cads/pldi2020-eval/input/dice.csexp" }
 
-test_file! {file_hcbit,         84, "cads/pldi2020-eval/input/hcbitholder.csexp" }
+test_file! {file_hcbit,         97, "cads/pldi2020-eval/input/hcbitholder.csexp" }
 test_file! {file_wardrobe,     315, "cads/pldi2020-eval/input/wardrobe.csexp" }
 test_file! {file_flower,        83, "cads/pldi2020-eval/input/flower.csexp" }
 test_file! {file_pinheader,     84, "cads/pldi2020-eval/input/pinheader.csexp" }

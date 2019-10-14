@@ -1,5 +1,5 @@
 (Diff
-  (Scale  20  20   3 Unit)
+  (Trans  10  10  1.50 (Scale  20  20   3 Unit))
   (FoldUnion
     (Map
       Trans

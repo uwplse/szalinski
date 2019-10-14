@@ -1,4 +1,4 @@
-(Diff (Scale (Float 20) (Float 20) (Float 3) Unit)
+(Diff (Trans  10  10  1.50 (Scale  20  20   3 Unit))
  (Fold (FunNm MkUnion) Empty
   (Mapi (Var i)
    ((FunNm Trans)
