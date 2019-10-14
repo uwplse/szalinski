@@ -154,10 +154,34 @@ pub fn eval(expr: &RecExpr<Cad>) -> RecExpr<Cad> {
         Cad::Num(f) => rec!(Cad::Num(*f)),
         Cad::Vec => rec!(Cad::Vec, eval(&arg(0)), eval(&arg(1)), eval(&arg(2))),
         Cad::Hull => rec!(Cad::Hull, eval(&arg(0))),
-        Cad::Trans => rec!(Cad::Trans, eval(&arg(0)), eval(&arg(1)), eval(&arg(2)), eval(&arg(3))),
-        Cad::TransPolar => rec!(Cad::Trans, eval(&arg(0)), eval(&arg(1)), eval(&arg(2)), eval(&arg(3))),
-        Cad::Scale => rec!(Cad::Scale, eval(&arg(0)), eval(&arg(1)), eval(&arg(2)), eval(&arg(3))),
-        Cad::Rotate => rec!(Cad::Rotate, eval(&arg(0)), eval(&arg(1)), eval(&arg(2)), eval(&arg(3))),
+        Cad::Trans => rec!(
+            Cad::Trans,
+            eval(&arg(0)),
+            eval(&arg(1)),
+            eval(&arg(2)),
+            eval(&arg(3))
+        ),
+        Cad::TransPolar => rec!(
+            Cad::Trans,
+            eval(&arg(0)),
+            eval(&arg(1)),
+            eval(&arg(2)),
+            eval(&arg(3))
+        ),
+        Cad::Scale => rec!(
+            Cad::Scale,
+            eval(&arg(0)),
+            eval(&arg(1)),
+            eval(&arg(2)),
+            eval(&arg(3))
+        ),
+        Cad::Rotate => rec!(
+            Cad::Rotate,
+            eval(&arg(0)),
+            eval(&arg(1)),
+            eval(&arg(2)),
+            eval(&arg(3))
+        ),
         Cad::Diff => rec!(Cad::Diff, eval(&arg(0)), eval(&arg(1))),
         Cad::Inter => rec!(Cad::Inter, eval(&arg(0)), eval(&arg(1))),
         Cad::Union => rec!(Cad::Union, eval(&arg(0)), eval(&arg(1))),
@@ -202,9 +226,30 @@ impl<'a> fmt::Display for Scad<'a> {
             Cad::Cylinder => write!(f, "cylinder($fn = 50);"),
             Cad::Hexagon => write!(f, "cylinder();"),
             Cad::Hull => write!(f, "hull() {{ {} }}", child(0)),
-            Cad::Trans => write!(f, "translate ([{}, {}, {}]) {}", child(0), child(1), child(2), child(3)),
-            Cad::Scale => write!(f, "scale ([{}, {}, {}]) {}", child(0), child(1), child(2), child(3)),
-            Cad::Rotate => write!(f, "rotate ([{}, {}, {}]) {}", child(0), child(1), child(2), child(3)),
+            Cad::Trans => write!(
+                f,
+                "translate ([{}, {}, {}]) {}",
+                child(0),
+                child(1),
+                child(2),
+                child(3)
+            ),
+            Cad::Scale => write!(
+                f,
+                "scale ([{}, {}, {}]) {}",
+                child(0),
+                child(1),
+                child(2),
+                child(3)
+            ),
+            Cad::Rotate => write!(
+                f,
+                "rotate ([{}, {}, {}]) {}",
+                child(0),
+                child(1),
+                child(2),
+                child(3)
+            ),
             Cad::Union => write!(f, "union () {{ {} {} }}", child(0), child(1)),
             Cad::Inter => write!(f, "intersection () {{ {} {} }}", child(0), child(1)),
             Cad::Diff => write!(f, "difference () {{ {} {} }}", child(0), child(1)),
@@ -283,7 +328,6 @@ fn eval_affine2() {
     println!("{}", f);
     assert_eq!(output, input);
 }
-
 
 #[test]
 fn scad_foldunion() {
