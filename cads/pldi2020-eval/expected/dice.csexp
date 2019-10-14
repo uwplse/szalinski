@@ -1,5 +1,5 @@
 (Diff
-  (Trans  -5  -5  -5 (Scale  10  10  10 Unit))
+  (Scale  10  10  10 Unit)
   (FoldUnion
     (Map
       Trans
