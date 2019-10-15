@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-use std::io::{Read, Result, Write};
+use std::io::{Result, Write};
 
 use pest::{iterators::Pair, Parser};
 use pest_derive::Parser;
@@ -116,11 +116,19 @@ fn mkdict(args: Pair<Rule>) -> HashMap<String, Pair<Rule>> {
         .collect()
 }
 
+macro_rules! matrix_assert {
+    ($a:expr, $b:expr) => {
+        if !eps($a, $b) {
+            return None;
+        }
+    };
+}
+
 fn get_scale(mat: &[Vec<f64>]) -> Option<(f64, f64, f64)> {
     for i in 0..4 {
         for j in 0..4 {
-            if i != j && !eps(mat[i][j], 0.0) {
-                return None;
+            if i != j {
+                matrix_assert!(mat[i][j], 0.0);
             }
         }
     }
@@ -131,12 +139,31 @@ fn get_scale(mat: &[Vec<f64>]) -> Option<(f64, f64, f64)> {
 fn get_trans(mat: &[Vec<f64>]) -> Option<(f64, f64, f64)> {
     for i in 0..4 {
         for j in 0..4 {
-            let x = mat[i][j];
-            if (i == j && !eps(x, 1.0)) || (i != j && j != 3 && !eps(x, 0.0)) {
-                return None;
+            if i == j {
+                matrix_assert!(mat[i][j], 1.0);
+            } else if j != 3 {
+                matrix_assert!(mat[i][j], 0.0);
             }
         }
     }
+    Some((mat[0][3], mat[1][3], mat[2][3]))
+}
+
+fn get_rotate(mat: &[Vec<f64>]) -> Option<(f64, f64, f64)> {
+    matrix_assert!(mat[1][0], -mat[0][1]);
+    matrix_assert!(mat[2][0], -mat[0][2]);
+    matrix_assert!(mat[2][1], -mat[1][2]);
+
+    assert_eq!(mat[3][0], 0.0);
+    assert_eq!(mat[3][1], 0.0);
+    assert_eq!(mat[3][2], 0.0);
+
+    assert_eq!(mat[0][3], 0.0);
+    assert_eq!(mat[1][3], 0.0);
+    assert_eq!(mat[2][3], 0.0);
+
+    assert_eq!(mat[3][3], 1.0);
+    // FIXME this is definitely not right
     Some((mat[0][3], mat[1][3], mat[2][3]))
 }
 
@@ -170,9 +197,22 @@ fn write_csg(w: &mut impl Write, depth: usize, pair: Pair<Rule>) -> Result<()> {
                 write!(w, "(Scale {} {} {}", x, y, z)?;
             } else if let Some((x, y, z)) = get_trans(&mat) {
                 write!(w, "(Trans {} {} {}", x, y, z)?;
+            } else if let Some((x, y, z)) = get_rotate(&mat) {
+                write!(w, "(Rotate {} {} {}", x, y, z)?;
             } else {
-                println!("Unknown transform {:?}", mat);
-                write!(w, "(Matrix")?;
+                #[rustfmt::skip]
+                panic!(
+                    "Unknown transform: [
+  [{} {} {} {}],
+  [{} {} {} {}],
+  [{} {} {} {}],
+  [{} {} {} {}]
+]",
+                    mat[0][0], mat[0][1], mat[0][2], mat[0][3],
+                    mat[1][0], mat[1][1], mat[1][2], mat[1][3],
+                    mat[2][0], mat[2][1], mat[2][2], mat[2][3],
+                    mat[3][0], mat[3][1], mat[3][2], mat[3][3],
+                );
             }
             indent(w, d)?;
             write_op(w, d, "Union", args)?;
@@ -216,11 +256,17 @@ fn write_csg(w: &mut impl Write, depth: usize, pair: Pair<Rule>) -> Result<()> {
 }
 
 fn main() {
-    let stdin = std::io::stdin();
-    let stdout = std::io::stdout();
-    let mut s = String::new();
-    stdin.lock().read_to_string(&mut s).unwrap();
-    parse(&mut stdout.lock(), &s).unwrap();
+    let args: Vec<String> = std::env::args().collect();
+    if args.len() != 3 {
+        panic!("Usage: parse-csg <input> <output>")
+    }
+    let input = std::fs::read_to_string(&args[1]).expect("failed to read input");
+    let mut output = vec![];
+    parse(&mut output, &input).unwrap();
+    std::fs::File::create(&args[2])
+        .expect("failed to open output")
+        .write_all(&output)
+        .expect("failed to write");
 }
 
 fn parse(w: &mut impl Write, s: &str) -> Result<()> {
