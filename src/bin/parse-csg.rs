@@ -1,10 +1,7 @@
 use std::collections::HashMap;
-use std::fmt::Write;
+use std::io::{Read, Result, Write};
 
-use pest::{
-    iterators::{Pair, Pairs},
-    Parser,
-};
+use pest::{iterators::Pair, Parser};
 use pest_derive::Parser;
 
 #[derive(Parser)]
@@ -44,11 +41,12 @@ use pest_derive::Parser;
 "#]
 pub struct CSGParser;
 
-fn indent(buf: &mut String, depth: usize) {
-    buf.push('\n');
+fn indent(w: &mut impl Write, depth: usize) -> Result<()> {
+    write!(w, "\n")?;
     for _ in 0..depth {
-        buf.push_str("  ");
+        write!(w, "  ")?;
     }
+    Ok(())
 }
 
 fn eps(a: f64, b: f64) -> bool {
@@ -56,42 +54,39 @@ fn eps(a: f64, b: f64) -> bool {
 }
 
 fn write_op<'a>(
+    w: &mut impl Write,
     depth: usize,
-    buf: &mut String,
     name: &str,
     ps: impl IntoIterator<Item = Pair<'a, Rule>>,
-) -> std::fmt::Result {
+) -> Result<()> {
     let mut ps: Vec<_> = ps.into_iter().collect();
     ps.reverse();
 
-    fn fold(d: usize, buf: &mut String, name: &str, v: &mut Vec<Pair<Rule>>) -> std::fmt::Result {
+    fn fold(w: &mut impl Write, d: usize, name: &str, v: &mut Vec<Pair<Rule>>) -> Result<()> {
         if v.is_empty() {
             return Ok(());
         }
 
         if v.len() == 1 {
-            return write_csg(d, v.pop().unwrap(), buf);
+            return write_csg(w, d, v.pop().unwrap());
         }
 
-        buf.push('(');
-        buf.push_str(name);
-
-        indent(buf, d);
-        write_csg(d, v.pop().unwrap(), buf)?;
+        write!(w, "({}", name)?;
+        indent(w, d)?;
+        write_csg(w, d, v.pop().unwrap())?;
 
         if v.len() == 1 {
-            indent(buf, d);
-            write_csg(d, v.pop().unwrap(), buf)?;
+            indent(w, d)?;
+            write_csg(w, d, v.pop().unwrap())?;
         } else if v.len() > 1 {
-            indent(buf, d);
-            fold(d + 1, buf, name, v)?;
+            indent(w, d)?;
+            fold(w, d + 1, name, v)?;
         }
 
-        buf.push(')');
-        Ok(())
+        write!(w, ")")
     }
 
-    fold(depth, buf, name, &mut ps)
+    fold(w, depth, name, &mut ps)
 }
 
 fn float(p: Pair<Rule>) -> f64 {
@@ -145,22 +140,21 @@ fn get_trans(mat: &[Vec<f64>]) -> Option<(f64, f64, f64)> {
     Some((mat[0][3], mat[1][3], mat[2][3]))
 }
 
-fn write_csg(depth: usize, pair: Pair<Rule>, buf: &mut String) -> std::fmt::Result {
+fn write_csg(w: &mut impl Write, depth: usize, pair: Pair<Rule>) -> Result<()> {
     let rule = pair.as_rule();
     let mut args = pair.into_inner();
     let d = depth + 1;
 
     match rule {
-        Rule::group => write_op(d, buf, "Union", args),
-        Rule::union => write_op(d, buf, "Union", args),
-        Rule::diff => write_op(d, buf, "Diff", args),
-        Rule::inter => write_op(d, buf, "Inter", args),
+        Rule::group => write_op(w, d, "Union", args),
+        Rule::union => write_op(w, d, "Union", args),
+        Rule::diff => write_op(w, d, "Diff", args),
+        Rule::inter => write_op(w, d, "Inter", args),
         Rule::hull => {
-            write!(buf, "(Hull")?;
-            indent(buf, d);
-            write_op(d, buf, "Union", args)?;
-            buf.push(')');
-            Ok(())
+            write!(w, "(Hull")?;
+            indent(w, d)?;
+            write_op(w, d, "Union", args)?;
+            write!(w, ")")
         }
         Rule::matrix => {
             let mat = args.next().unwrap();
@@ -173,26 +167,25 @@ fn write_csg(depth: usize, pair: Pair<Rule>, buf: &mut String) -> std::fmt::Resu
                 .collect();
 
             if let Some((x, y, z)) = get_scale(&mat) {
-                write!(buf, "(Scale {} {} {}", x, y, z)?;
+                write!(w, "(Scale {} {} {}", x, y, z)?;
             } else if let Some((x, y, z)) = get_trans(&mat) {
-                write!(buf, "(Trans {} {} {}", x, y, z)?;
+                write!(w, "(Trans {} {} {}", x, y, z)?;
             } else {
                 println!("Unknown transform {:?}", mat);
-                write!(buf, "(Matrix")?;
+                write!(w, "(Matrix")?;
             }
-            indent(buf, d);
-            write_op(d, buf, "Union", args)?;
-            buf.push(')');
-            Ok(())
+            indent(w, d)?;
+            write_op(w, d, "Union", args)?;
+            write!(w, ")")
         }
 
         Rule::sphere => {
             let dict = mkdict(args.next().unwrap());
             let r = float(dict["r"].clone());
             if r == 1.0 {
-                write!(buf, "Sphere")
+                write!(w, "Sphere")
             } else {
-                write!(buf, "(Scale {} {} {} Sphere)", r, r, r)
+                write!(w, "(Scale {} {} {} Sphere)", r, r, r)
             }
         }
 
@@ -200,9 +193,9 @@ fn write_csg(depth: usize, pair: Pair<Rule>, buf: &mut String) -> std::fmt::Resu
             let dict = mkdict(args.next().unwrap());
             let (x, y, z) = vec3(dict["size"].clone());
             if (x, y, x) == (1.0, 1.0, 1.0) {
-                write!(buf, "Cube")
+                write!(w, "Cube")
             } else {
-                write!(buf, "(Scale {} {} {} Cube)", x, y, z)
+                write!(w, "(Scale {} {} {} Cube)", x, y, z)
             }
         }
         Rule::cylinder => {
@@ -211,9 +204,9 @@ fn write_csg(depth: usize, pair: Pair<Rule>, buf: &mut String) -> std::fmt::Resu
             let r1 = float(dict["r1"].clone());
             let r2 = float(dict["r2"].clone());
             if (h, r1, r2) == (1.0, 1.0, 1.0) {
-                write!(buf, "Cylinder")
+                write!(w, "Cylinder")
             } else if r1 == r2 {
-                write!(buf, "(Scale {} {} {} Cylinder)", h, r1, r2)
+                write!(w, "(Scale {} {} {} Cylinder)", h, r1, r2)
             } else {
                 panic!("its a cone")
             }
@@ -223,25 +216,15 @@ fn write_csg(depth: usize, pair: Pair<Rule>, buf: &mut String) -> std::fmt::Resu
 }
 
 fn main() {
-    use std::io::Write;
-    let args: Vec<String> = std::env::args().collect();
-    if args.len() != 3 {
-        panic!("Please pass two arguments: input and output")
-    }
-    let s = parse_file(&args[1]);
-    let path = &args[2];
-    if path == "-" {
-        println!("{}", s);
-    } else {
-        let mut file = std::fs::File::create(&args[2]).unwrap();
-        file.write_all(s.as_bytes()).expect("write failed");
-    }
+    let stdin = std::io::stdin();
+    let stdout = std::io::stdout();
+    let mut s = String::new();
+    stdin.lock().read_to_string(&mut s).unwrap();
+    parse(&mut stdout.lock(), &s).unwrap();
 }
 
-fn parse_file(path: &str) -> String {
-    let unparsed_file =
-        std::fs::read_to_string(path).unwrap_or_else(|_| panic!("cannot read file {}", path));
-    let program = CSGParser::parse(Rule::program, &unparsed_file)
+fn parse(w: &mut impl Write, s: &str) -> Result<()> {
+    let program = CSGParser::parse(Rule::program, s)
         .expect("failed parse")
         .next()
         .expect("no programs");
@@ -249,13 +232,12 @@ fn parse_file(path: &str) -> String {
     let mut top_level: Vec<_> = program.into_inner().collect();
     let eoi = top_level.pop().unwrap();
     assert_eq!(eoi.as_rule(), Rule::EOI);
-    let mut s = String::new();
-    write_op(0, &mut s, "Union", top_level).unwrap();
-    s
+    write_op(w, 0, "Union", top_level)
 }
 
 #[test]
 fn test_file() {
-    let s = parse_file("test.csg");
-    println!("{}", s);
+    let stdout = std::io::stdout();
+    let s = std::fs::read_to_string("test.csg").unwrap();
+    parse(&mut stdout.lock(), &s).unwrap();
 }
