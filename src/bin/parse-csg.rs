@@ -30,7 +30,7 @@ use pest_derive::Parser;
 
     num = {
        "-"? ~ ASCII_DIGIT+ ~ ("." ~ ASCII_DIGIT*)?
-       ~ ("e" ~ "-"? ~ ASCII_DIGIT+)?
+       ~ ("e" ~ ("-" | "+")? ~ ASCII_DIGIT+)?
     }
     vec4 = { "[" ~ num ~ "," ~ num ~ "," ~ num ~ "," ~ num ~ "]" }
     mat  =  { "[" ~ vec4 ~ "," ~ vec4 ~ "," ~ vec4 ~ "," ~ vec4 ~ "]" }
