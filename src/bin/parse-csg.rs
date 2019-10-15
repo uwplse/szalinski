@@ -51,9 +51,16 @@ fn indent(buf: &mut String, depth: usize) {
     }
 }
 
+fn eps(a: f64, b: f64) -> bool {
+    (a - b).abs() < 0.001
+}
 
-fn write_op<'a>(depth: usize, buf: &mut String, name: &str, ps:
-            impl IntoIterator<Item = Pair<'a, Rule>>) -> std::fmt::Result {
+fn write_op<'a>(
+    depth: usize,
+    buf: &mut String,
+    name: &str,
+    ps: impl IntoIterator<Item = Pair<'a, Rule>>,
+) -> std::fmt::Result {
     let mut ps: Vec<_> = ps.into_iter().collect();
     ps.reverse();
 
@@ -117,7 +124,7 @@ fn mkdict(args: Pair<Rule>) -> HashMap<String, Pair<Rule>> {
 fn get_scale(mat: &[Vec<f64>]) -> Option<(f64, f64, f64)> {
     for i in 0..4 {
         for j in 0..4 {
-            if i != j && mat[i][j] != 0.0 {
+            if i != j && !eps(mat[i][j], 0.0) {
                 return None;
             }
         }
@@ -130,7 +137,7 @@ fn get_trans(mat: &[Vec<f64>]) -> Option<(f64, f64, f64)> {
     for i in 0..4 {
         for j in 0..4 {
             let x = mat[i][j];
-            if (i == j && x != 1.0) || (i != j && j != 3 && x != 0.0) {
+            if (i == j && !eps(x, 1.0)) || (i != j && j != 3 && !eps(x, 0.0)) {
                 return None;
             }
         }
