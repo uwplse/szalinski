@@ -1,0 +1,64 @@
+height = 0.6;
+width = 40.2;
+
+difference()
+{
+    union()
+    {
+        hull()
+        {
+            translate([0,0,0])
+                cube([2,110,0.3]);
+            translate([5,10,0])
+                cube([2,1,2]);
+            translate([5,110,0])
+                cube([2,1,3]);
+            translate([15,110,0])
+                cube([2,1,3]);
+        }
+        hull()
+        {
+            translate([0,100,0])
+                cube([50,10+width,2.5+height]);
+            translate([3,103,2.5+height])
+                cube([44,4+width,1]);
+        }
+    }
+    union()
+    {
+        hull()
+        {
+            translate([12.5,102+width,0])
+                cylinder(d=3,h=3);
+            translate([25,108,0])
+                cylinder(d=3,h=3);
+            translate([37.5,102+width,0])
+                cylinder(d=3,h=3);
+        }
+        hull()
+        {
+            translate([5,108,0])
+                cylinder(d=3,h=3);
+            translate([5,102+width,0])
+                cylinder(d=3,h=3);
+            translate([18,108,0])
+                cylinder(d=3,h=3);
+        }
+        hull()
+        {
+            translate([45,108,0])
+                cylinder(d=3,h=3);
+            translate([45,102+width,0])
+                cylinder(d=3,h=3);
+            translate([32,108,0])
+                cylinder(d=3,h=3);
+        }
+        hull()
+        {
+            translate([0,105,2])
+                cube([50,width,height]);
+            translate([0,108,4.5+height])
+                cube([50,width-6,0.1]);
+        }
+    }
+}

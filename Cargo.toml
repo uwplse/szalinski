@@ -12,6 +12,9 @@ symbolic_expressions = "5.0.3"
 smallvec = "0.6"
 indexmap = "1"
 
+pest = "2"
+pest_derive = "2"
+
 [dependencies.egg]
 git = "https://github.com/mwillsey/egg.git"
 rev = "e4eb89e6ce7b9a5c1bef8a4e59efd9a5d3bb5468"
