@@ -417,7 +417,6 @@ test_eval! {eval_hcbit, "cads/pldi2020-eval/expected/hcbitholder.csexp" }
 // test_eval! {eval_sdcard, "cads/pldi2020-eval/expected/sdcard_manual_engineered.csexp" }
 // test_eval! {eval_wardrobe, "cads/pldi2020-eval/expected/wardrobe.csexp" }
 
-//test_eval! {eval_cnc, "cads/pldi2020-eval/expected/cnc_endmill_nohull.csexp" } // color diff issue
 
 #[test]
 fn eval_prim() {
