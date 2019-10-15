@@ -1,8 +1,0 @@
-(Union
-  (Diff(Scale (Float 120.0000000000) (Float 95.0000000000) (Float 2.5000000000) Unit )
-       (Trans (Float 10.0000000000) (Float 10.0000000000) (Float 0.0000000000)(Scale (Float 100.0000000000) (Float 75.0000000000) (Float 2.5000000000) Unit )))
-  (Union
-  (Trans (Float 0.0000000000) (Float 34.9750000000) (Float 0.0000000000)(Scale (Float 120.0000000000) (Float 1.0000000000) (Float 1.0000000000) Unit ))
-  (Union(Trans (Float 0.0000000000) (Float 59.9500000000) (Float 0.0000000000)(Scale (Float 120.0000000000) (Float 1.0000000000) (Float 1.0000000000) Unit ))
-  (Union(Trans (Float 43.3000000000) (Float 0.0000000000) (Float 0.0000000000)(Scale (Float 1.0000000000) (Float 95.0000000000) (Float 1.0000000000) Unit ))
-        (Trans (Float 76.6000000000) (Float 0.0000000000) (Float 0.0000000000)(Scale (Float 1.0000000000) (Float 95.0000000000) (Float 1.0000000000) Unit ))))))
