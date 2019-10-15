@@ -17,7 +17,7 @@ out/%.csg: inputs/%.scad
 
 out/%.csexp: out/%.csg target/debug/parse-csg
 	@mkdir -p $(dir $@)
-	./target/debug/parse-csg $< $@
+	./target/debug/parse-csg < $< > $@
 
 target/debug/parse-csg: src/bin/parse-csg.rs
 	cargo build
