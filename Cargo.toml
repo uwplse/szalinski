@@ -15,13 +15,14 @@ indexmap = "1"
 pest = "2"
 pest_derive = "2"
 
+env_logger = "0.6"
+
 [dependencies.egg]
 git = "https://github.com/mwillsey/egg.git"
 rev = "e4eb89e6ce7b9a5c1bef8a4e59efd9a5d3bb5468"
 # path = "/home/mwillsey/src/egg/egg"
 
 [dev-dependencies]
-env_logger = "0.6"
 colored-diff = "0.2"
 
 [profile.release]

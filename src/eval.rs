@@ -375,13 +375,13 @@ macro_rules! test_eval {
     ($name:ident, $file:literal) => {
         #[test]
         fn $name() {
-            println!("Testing {}", stringify!($name));
+            debug!("Testing {}", stringify!($name));
             let input = read_to_string($file).unwrap();
             let outfile = $file.replace("expected/", "scad-output/");
             let output = read_to_string(&outfile);
             let start = Cad::parse_expr(&input).unwrap();
             let actual = format!("{}", Scad(&start)).trim().to_string();
-            println!("{}", actual);
+            debug!("{}", actual);
             if outfile.contains("scad-output/") && output.is_ok() {
                 let expected = &output.unwrap();
                 let expected = expected.trim().to_string();
@@ -393,7 +393,7 @@ macro_rules! test_eval {
                 }
                 assert_eq!(actual, expected);
             } else {
-                eprintln!("Didn't find expected scad for {}", stringify!($name));
+                warn!("Didn't find expected scad for {}", stringify!($name));
             }
         }
     };

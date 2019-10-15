@@ -43,7 +43,7 @@ pub struct Variable(pub String);
 impl FromStr for Variable {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        println!("Parsing a variable: {}", s);
+        warn!("Parsing a variable: {}", s);
         Ok(Variable(s.into()))
     }
 }
@@ -245,7 +245,7 @@ pub fn run_rules(
     let start_time = Instant::now();
 
     'outer: for i in 0..iters {
-        println!("\n\nIteration {}\n", i);
+        info!("\n\nIteration {}\n", i);
 
         let search_time = Instant::now();
 
@@ -258,7 +258,7 @@ pub fn run_rules(
             }
         }
 
-        println!("Search time: {:?}", search_time.elapsed());
+        info!("Search time: {:?}", search_time.elapsed());
 
         let match_time = Instant::now();
 
@@ -271,33 +271,33 @@ pub fn run_rules(
 
             applied += actually_matched;
             if actually_matched > 0 {
-                println!("Applied {} {} times", m.rewrite.name, actually_matched);
+                info!("Applied {} {} times", m.rewrite.name, actually_matched);
             }
         }
 
-        println!("Match time: {:?}", match_time.elapsed());
+        info!("Match time: {:?}", match_time.elapsed());
 
         let rebuild_time = Instant::now();
         egraph.rebuild();
-        println!("Rebuild time: {:?}", rebuild_time.elapsed());
-        println!(
+        info!("Rebuild time: {:?}", rebuild_time.elapsed());
+        info!(
             "Size: n={}, e={}",
             egraph.total_size(),
             egraph.number_of_classes()
         );
 
         if applied == 0 {
-            println!("Stopping early!");
+            info!("Stopping early!");
             break;
         }
     }
 
     let rules_time = start_time.elapsed();
-    println!("Rules time: {:?}", rules_time);
+    info!("Rules time: {:?}", rules_time);
 
     let ext = Extractor::new(&egraph);
     let best = ext.find_best(root);
-    println!("Best ({})\n{}", best.cost, best.expr.pretty(60));
+    info!("Best ({})\n{}", best.cost, best.expr.pretty(60));
 
     best
 }
