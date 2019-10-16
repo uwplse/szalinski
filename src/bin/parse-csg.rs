@@ -150,10 +150,6 @@ fn get_trans(mat: &[Vec<f64>]) -> Option<(f64, f64, f64)> {
 }
 
 fn get_rotate(mat: &[Vec<f64>]) -> Option<(f64, f64, f64)> {
-    matrix_assert!(mat[1][0], -mat[0][1]);
-    matrix_assert!(mat[2][0], -mat[0][2]);
-    matrix_assert!(mat[2][1], -mat[1][2]);
-
     assert_eq!(mat[3][0], 0.0);
     assert_eq!(mat[3][1], 0.0);
     assert_eq!(mat[3][2], 0.0);
@@ -163,8 +159,25 @@ fn get_rotate(mat: &[Vec<f64>]) -> Option<(f64, f64, f64)> {
     assert_eq!(mat[2][3], 0.0);
 
     assert_eq!(mat[3][3], 1.0);
-    // FIXME this is definitely not right
-    Some((mat[0][3], mat[1][3], mat[2][3]))
+
+    let (x, y, z) = if eps(mat[2][0].abs(), 1.0) {
+        let atan = mat[0][1].atan2(mat[0][2]);
+        let (y, x) = if mat[2][0] < 0.0 {
+            (90.0, atan)
+        } else {
+            (270.0, -atan)
+        };
+        (x, y, 0.0)
+    } else {
+        let y = -mat[2][0].asin();
+        let cosy = y.cos();
+        let x = (mat[2][1] / cosy).atan2(mat[2][2] / cosy);
+        let z = (mat[1][0] / cosy).atan2(mat[0][0] / cosy);
+        (x, y, z)
+    };
+
+    let r2deg = |f| 180.0 * f / std::f64::consts::PI;
+    Some((r2deg(x), r2deg(y), r2deg(z)))
 }
 
 fn write_csg(w: &mut impl Write, depth: usize, pair: Pair<Rule>) -> Result<()> {
