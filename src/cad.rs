@@ -56,7 +56,7 @@ impl fmt::Display for Variable {
 define_term! {
     #[derive(Debug, PartialEq, Eq, Hash, Clone)]
     pub enum Cad {
-        Unit = "Unit",
+        Cube = "Cube",
         Sphere = "Sphere",
         Cylinder = "Cylinder",
         Hexagon = "Hexagon",
@@ -64,6 +64,7 @@ define_term! {
         Hull = "Hull",
         Nil = "Nil",
         Num(Num),
+        Bool(bool),
 
         MapI = "MapI",
         ListVar(ListVar),
@@ -84,7 +85,7 @@ define_term! {
         Do = "Do",
         FoldUnion = "FoldUnion",
         FoldInter = "FoldInter",
-        Vec = "Vec",
+        Vec3 = "Vec3",
 
         Cons = "Cons",
         Concat = "Concat",
@@ -196,7 +197,8 @@ impl Language for Cad {
         use Cad::*;
         let cost = match self {
             Num(_) => 1,
-            Unit | Empty | Nil | Sphere | Cylinder | Hexagon | Hull => 1,
+            Bool(_) => 1,
+            Cube | Empty | Nil | Sphere | Cylinder | Hexagon | Hull => return 1,
             Repeat => 1,
 
             Trans => 10,
@@ -220,7 +222,7 @@ impl Language for Cad {
             Concat => 3,
             List => 10,
             Unsort | Unpolar | Permutation(_) => 50,
-            Vec => 2,
+            Vec3 => 2,
 
             Add => 1,
             Sub => 1,

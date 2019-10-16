@@ -237,13 +237,13 @@ pub fn eval(expr: &RecExpr<Cad>) -> RecExpr<Cad> {
     let expr = expr.as_ref();
     let arg = |i: usize| expr.children[i].clone();
     match &expr.op {
-        Cad::Unit => rec!(Cad::Unit),
+        Cad::Cube => rec!(Cad::Cube),
         Cad::Sphere => rec!(Cad::Sphere),
         Cad::Cylinder => rec!(Cad::Cylinder),
         Cad::Hexagon => rec!(Cad::Hexagon),
         Cad::Empty => rec!(Cad::Empty),
         Cad::Num(f) => rec!(Cad::Num(*f)),
-        Cad::Vec => rec!(Cad::Vec, eval(&arg(0)), eval(&arg(1)), eval(&arg(2))),
+        Cad::Vec3 => rec!(Cad::Vec3, eval(&arg(0)), eval(&arg(1)), eval(&arg(2))),
         Cad::Hull => rec!(Cad::Hull, eval(&arg(0))),
         Cad::Trans => rec!(
             Cad::Trans,
@@ -328,13 +328,13 @@ impl<'a> fmt::Display for Scad<'a> {
         let child = |i: usize| Scad(&expr.children[i]);
         match expr.op {
             Cad::Num(float) => write!(f, "{}", float),
-            Cad::Vec => write!(f, "[{}, {}, {}]", child(0), child(1), child(2)),
+            Cad::Vec3 => write!(f, "[{}, {}, {}]", child(0), child(1), child(2)),
             Cad::Add => write!(f, "{} + {}", child(0), child(1)),
             Cad::Sub => write!(f, "{} - {}", child(0), child(1)),
             Cad::Mul => write!(f, "{} * {}", child(0), child(1)),
             Cad::Div => write!(f, "{} / {}", child(0), child(1)),
             Cad::Empty => write!(f, "sphere(r=0);"),
-            Cad::Unit => write!(f, "cube(center = true);"),
+            Cad::Cube => write!(f, "cube(center = true);"),
             Cad::Sphere => write!(f, "sphere($fn = 50);"),
             Cad::Cylinder => write!(f, "cylinder($fn = 50);"),
             Cad::Hexagon => write!(f, "cylinder();"),
@@ -432,7 +432,7 @@ fn eval_affine1() {
         rec!(Cad::Num(2.into())),
         rec!(Cad::Num(3.into())),
         rec!(Cad::Num(5.into())),
-        rec!(Cad::Unit)
+        rec!(Cad::Cube)
     );
     let output = eval(&input);
     assert_eq!(output, input);
@@ -445,7 +445,7 @@ fn eval_affine2() {
         rec!(Cad::Num(2.into())),
         rec!(Cad::Num(3.into())),
         rec!(Cad::Num(5.into())),
-        rec!(Cad::Unit)
+        rec!(Cad::Cube)
     );
     let output = eval(&input);
     assert_eq!(output, input);

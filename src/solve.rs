@@ -162,7 +162,7 @@ fn solve_and_add(egraph: &mut EGraph, xs: &[Num], ys: &[Num], zs: &[Num]) -> Opt
     let x = inserted[0].unwrap();
     let y = inserted[1].unwrap();
     let z = inserted[2].unwrap();
-    let vec = egraph.add(Expr::new(Cad::Vec, smallvec![x, y, z])).id;
+    let vec = egraph.add(Expr::new(Cad::Vec3, smallvec![x, y, z])).id;
     children.push(vec);
     let map = egraph.add(Expr::new(Cad::MapI, children));
     Some(map)
@@ -259,7 +259,7 @@ fn add_vec(egraph: &mut EGraph, v: Vec3) -> Id {
     let x = add_num(egraph, v.0);
     let y = add_num(egraph, v.1);
     let z = add_num(egraph, v.2);
-    egraph.add(Expr::new(Cad::Vec, smallvec![x, y, z])).id
+    egraph.add(Expr::new(Cad::Vec3, smallvec![x, y, z])).id
 }
 
 pub fn solve(egraph: &mut EGraph, list: &[Vec3]) -> Vec<AddResult> {

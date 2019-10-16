@@ -1,5 +1,5 @@
 tgt=target/release
-diff=git diff --no-index --word-diff=color --ignore-space-at-eol
+diff=git --no-pager diff --no-index --word-diff=color --ignore-space-at-eol
 
 rust-src=$(shell find src/ -type f)
 
