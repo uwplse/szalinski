@@ -53,40 +53,60 @@ fn eps(a: f64, b: f64) -> bool {
     (a - b).abs() < 0.001
 }
 
+enum FoldDir {
+    Left,
+    Right,
+}
+
 fn write_op<'a>(
     w: &mut impl Write,
     depth: usize,
     name: &str,
     ps: impl IntoIterator<Item = Pair<'a, Rule>>,
+    dir: FoldDir,
 ) -> Result<()> {
-    let mut ps: Vec<_> = ps.into_iter().collect();
-    ps.reverse();
+    use std::collections::VecDeque;
 
-    fn fold(w: &mut impl Write, d: usize, name: &str, v: &mut Vec<Pair<Rule>>) -> Result<()> {
-        if v.is_empty() {
-            return Ok(());
+    fn fold(
+        w: &mut impl Write,
+        d: usize,
+        name: &str,
+        v: &mut VecDeque<Pair<Rule>>,
+        dir: FoldDir,
+    ) -> Result<()> {
+        match (v.len(), dir) {
+            (0, _) => Ok(()),
+            (1, _) => write_csg(w, d, v.pop_front().unwrap()),
+            (2, _) => {
+                write!(w, "({}", name)?;
+                indent(w, d)?;
+                write_csg(w, d, v.pop_front().unwrap())?;
+                indent(w, d)?;
+                write_csg(w, d, v.pop_front().unwrap())?;
+                write!(w, ")")
+            }
+            (_, FoldDir::Left) => {
+                write!(w, "({}", name)?;
+                let p = v.pop_back().unwrap();
+                indent(w, d)?;
+                fold(w, d, name, v, FoldDir::Left)?;
+                indent(w, d)?;
+                write_csg(w, d, p)?;
+                write!(w, ")")
+            }
+            (_, FoldDir::Right) => {
+                write!(w, "({}", name)?;
+                indent(w, d)?;
+                write_csg(w, d, v.pop_front().unwrap())?;
+                indent(w, d)?;
+                fold(w, d, name, v, FoldDir::Right)?;
+                write!(w, ")")
+            }
         }
-
-        if v.len() == 1 {
-            return write_csg(w, d, v.pop().unwrap());
-        }
-
-        write!(w, "({}", name)?;
-        indent(w, d)?;
-        write_csg(w, d, v.pop().unwrap())?;
-
-        if v.len() == 1 {
-            indent(w, d)?;
-            write_csg(w, d, v.pop().unwrap())?;
-        } else if v.len() > 1 {
-            indent(w, d)?;
-            fold(w, d + 1, name, v)?;
-        }
-
-        write!(w, ")")
     }
 
-    fold(w, depth, name, &mut ps)
+    let mut ps: VecDeque<_> = ps.into_iter().collect();
+    fold(w, depth, name, &mut ps, dir)
 }
 
 fn float(p: Pair<Rule>) -> f64 {
@@ -176,7 +196,14 @@ fn get_rotate(mat: &[Vec<f64>]) -> Option<(f64, f64, f64)> {
         (x, y, z)
     };
 
-    let r2deg = |f| 180.0 * f / std::f64::consts::PI;
+    let r2deg = |f| {
+        let d = 180.0 * f / std::f64::consts::PI;
+        if d < 0.0 {
+            d + 360.0
+        } else {
+            d
+        }
+    };
     Some((r2deg(x), r2deg(y), r2deg(z)))
 }
 
@@ -185,15 +212,17 @@ fn write_csg(w: &mut impl Write, depth: usize, pair: Pair<Rule>) -> Result<()> {
     let mut args = pair.into_inner();
     let d = depth + 1;
 
+    use FoldDir::*;
+
     match rule {
-        Rule::group => write_op(w, d, "Union", args),
-        Rule::union => write_op(w, d, "Union", args),
-        Rule::diff => write_op(w, d, "Diff", args),
-        Rule::inter => write_op(w, d, "Inter", args),
+        Rule::group => write_op(w, d, "Union", args, Right),
+        Rule::union => write_op(w, d, "Union", args, Right),
+        Rule::diff => write_op(w, d, "Diff", args, Left),
+        Rule::inter => write_op(w, d, "Inter", args, Right),
         Rule::hull => {
             write!(w, "(Hull")?;
             indent(w, d)?;
-            write_op(w, d, "Union", args)?;
+            write_op(w, d, "Union", args, Right)?;
             write!(w, ")")
         }
         Rule::matrix => {
@@ -206,12 +235,12 @@ fn write_csg(w: &mut impl Write, depth: usize, pair: Pair<Rule>) -> Result<()> {
                 })
                 .collect();
 
-            if let Some((x, y, z)) = get_scale(&mat) {
-                write!(w, "(Scale {} {} {}", x, y, z)?;
-            } else if let Some((x, y, z)) = get_trans(&mat) {
-                write!(w, "(Trans {} {} {}", x, y, z)?;
+            if let Some((x, y, z)) = get_trans(&mat) {
+                write!(w, "(Trans (Vec3 {} {} {})", x, y, z)?;
+            } else if let Some((x, y, z)) = get_scale(&mat) {
+                write!(w, "(Scale (Vec3 {} {} {})", x, y, z)?;
             } else if let Some((x, y, z)) = get_rotate(&mat) {
-                write!(w, "(Rotate {} {} {}", x, y, z)?;
+                write!(w, "(Rotate (Vec3 {} {} {})", x, y, z)?;
             } else {
                 #[rustfmt::skip]
                 panic!(
@@ -228,41 +257,46 @@ fn write_csg(w: &mut impl Write, depth: usize, pair: Pair<Rule>) -> Result<()> {
                 );
             }
             indent(w, d)?;
-            write_op(w, d, "Union", args)?;
+            write_op(w, d, "Union", args, Right)?;
             write!(w, ")")
         }
 
         Rule::sphere => {
-            let dict = mkdict(args.next().unwrap());
-            let r = float(dict["r"].clone());
-            if r == 1.0 {
-                write!(w, "Sphere")
-            } else {
-                write!(w, "(Scale {} {} {} Sphere)", r, r, r)
-            }
+            let a = mkdict(args.next().unwrap());
+            write!(
+                w,
+                "(Sphere {} (Vec3 {} {} {}))",
+                a["r"].as_str(),
+                a["$fn"].as_str(),
+                a["$fa"].as_str(),
+                a["$fs"].as_str(),
+            )
         }
 
         Rule::cube => {
-            let dict = mkdict(args.next().unwrap());
-            let (x, y, z) = vec3(dict["size"].clone());
-            if (x, y, x) == (1.0, 1.0, 1.0) {
-                write!(w, "Cube")
-            } else {
-                write!(w, "(Scale {} {} {} Cube)", x, y, z)
-            }
+            let a = mkdict(args.next().unwrap());
+            let (x, y, z) = vec3(a["size"].clone());
+            write!(
+                w,
+                "(Cube (Vec3 {} {} {}) {})",
+                x,
+                y,
+                z,
+                a["center"].as_str(),
+            )
         }
         Rule::cylinder => {
-            let dict = mkdict(args.next().unwrap());
-            let h = float(dict["h"].clone());
-            let r1 = float(dict["r1"].clone());
-            let r2 = float(dict["r2"].clone());
-            if (h, r1, r2) == (1.0, 1.0, 1.0) {
-                write!(w, "Cylinder")
-            } else if r1 == r2 {
-                write!(w, "(Scale {} {} {} Cylinder)", h, r1, r2)
-            } else {
-                panic!("its a cone")
-            }
+            let a = mkdict(args.next().unwrap());
+            write!(
+                w,
+                "(Cylinder (Vec3 {} {} {}) (Vec3 {} {} {}))",
+                a["h"].as_str(),
+                a["r1"].as_str(),
+                a["r2"].as_str(),
+                a["$fn"].as_str(),
+                a["$fa"].as_str(),
+                a["$fs"].as_str(),
+            )
         }
         r => panic!(r#"Unexpected rule "{:?}""#, r),
     }
@@ -291,7 +325,7 @@ fn parse(w: &mut impl Write, s: &str) -> Result<()> {
     let mut top_level: Vec<_> = program.into_inner().collect();
     let eoi = top_level.pop().unwrap();
     assert_eq!(eoi.as_rule(), Rule::EOI);
-    write_op(w, 0, "Union", top_level)
+    write_op(w, 0, "Union", top_level, FoldDir::Right)
 }
 
 #[test]

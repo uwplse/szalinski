@@ -61,14 +61,14 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
         rw("inter_nil", "(Inter ?a ?b)", "(FoldInter (Cons ?a (Cons ?b Nil)))"),
         rw("inter_cons", "(Inter ?a (FoldInter ?list))", "(FoldInter (Cons ?a ?list))"),
 
-        rw("do_trans",  "(Trans  ?x ?y ?z ?a)", "(Do Trans  (Vec ?x ?y ?z) ?a)"),
-        rw("do_rotate", "(Rotate ?x ?y ?z ?a)", "(Do Rotate (Vec ?x ?y ?z) ?a)"),
-        rw("do_scale",  "(Scale  ?x ?y ?z ?a)", "(Do Scale  (Vec ?x ?y ?z) ?a)"),
-        rw("do_transp", "(TransPolar ?x ?y ?z ?a)", "(Do TransPolar (Vec ?x ?y ?z) ?a)"),
-        rw("undo_trans",  "(Do Trans  (Vec ?x ?y ?z) ?a)", "(Trans  ?x ?y ?z ?a)"),
-        rw("undo_rotate", "(Do Rotate (Vec ?x ?y ?z) ?a)", "(Rotate ?x ?y ?z ?a)"),
-        rw("undo_scale",  "(Do Scale  (Vec ?x ?y ?z) ?a)", "(Scale  ?x ?y ?z ?a)"),
-        rw("undo_transp", "(Do TransPolar  (Vec ?x ?y ?z) ?a)", "(TransPolar  ?x ?y ?z ?a)"),
+        rw("do_trans",   "(Trans      ?params ?a)", "(Do Trans       ?params ?a)"),
+        rw("do_scale",   "(Scale      ?params ?a)", "(Do Scale       ?params ?a)"),
+        rw("do_rotate",  "(Rotate     ?params ?a)", "(Do Rotate      ?params ?a)"),
+        rw("do_transp",  "(TransPolar ?params ?a)", "(Do TransPolar  ?params ?a)"),
+        rw("undo_trans",   "(Do Trans       ?params ?a)", "(Trans      ?params ?a)"),
+        rw("undo_scale",   "(Do Scale       ?params ?a)", "(Scale      ?params ?a)"),
+        rw("undo_rotate",  "(Do Rotate      ?params ?a)", "(Rotate     ?params ?a)"),
+        rw("undo_transp",  "(Do TransPolar  ?params ?a)", "(TransPolar ?params ?a)"),
 
         rw("map_nil",
            "(Cons (Do ?op ?param ?cad) Nil)",
@@ -152,22 +152,27 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
            "(Union (Do ?op ?params ?a) (Do ?op ?params ?b))",
            "(Do ?op ?params (Union ?a ?b))"),
 
+        rw("rotate_zero", "(Rotate (Vec3 0 0 0) ?a)", "(Trans (Vec3 0 0 0) ?a)"),
+        rw("scale_zero",  "(Scale  (Vec3 1 1 1) ?a)", "(Trans (Vec3 0 0 0) ?a)"),
+        rw("zero_rotate", "(Trans (Vec3 0 0 0) ?a)", "(Rotate (Vec3 0 0 0) ?a)"),
+
+        rw("scale_flip", "(Scale (Vec3 -1 -1 1) ?a)", "(Rotate (Vec3 0 0 180) ?a)"),
 
         rw("scale_trans",
-           "(Scale ?a ?b ?c (Trans ?x ?y ?z ?m))",
-           "(Trans (* ?a ?x) (* ?b ?y) (* ?c ?z) (Scale ?a ?b ?c ?m))"),
+           "(Scale (Vec3 ?a ?b ?c) (Trans (Vec3 ?x ?y ?z) ?m))",
+           "(Trans (Vec3 (* ?a ?x) (* ?b ?y) (* ?c ?z)) (Scale (Vec3 ?a ?b ?c) ?m))"),
 
         rw("trans_scale",
-           "(Trans ?x ?y ?z (Scale ?a ?b ?c ?m))",
-           "(Scale ?a ?b ?c (Trans (/ ?x ?a) (/ ?y ?b) (/ ?z ?c) ?m))"),
+           "(Trans (Vec3 ?x ?y ?z) (Scale (Vec3 ?a ?b ?c) ?m))",
+           "(Scale (Vec3 ?a ?b ?c) (Trans (Vec3 (/ ?x ?a) (/ ?y ?b) (/ ?z ?c)) ?m))"),
 
         rw("scale_rotate",
-           "(Scale ?a ?a ?a (Rotate ?x ?y ?z ?m))",
-           "(Rotate ?x ?y ?z (Scale ?a ?a ?a ?m))"),
+           "(Scale (Vec3 ?a ?a ?a) (Rotate (Vec3 ?x ?y ?z) ?m))",
+           "(Rotate (Vec3 ?x ?y ?z) (Scale (Vec3 ?a ?a ?a) ?m))"),
 
         rw("rotate_scale",
-           "(Scale ?a ?a ?a (Rotate ?x ?y ?z ?m))",
-           "(Rotate ?x ?y ?z (Scale ?a ?a ?a ?m))"),
+           "(Scale (Vec3 ?a ?a ?a) (Rotate (Vec3 ?x ?y ?z) ?m))",
+           "(Rotate (Vec3 ?x ?y ?z) (Scale (Vec3 ?a ?a ?a) ?m))"),
 
         Rewrite::new (
             "listapplier",
@@ -187,7 +192,7 @@ fn get_float(expr: &RecExpr<Cad>) -> Num {
 }
 
 fn get_vec(expr: &RecExpr<Cad>) -> Option<Vec3> {
-    if Cad::Vec == expr.as_ref().op {
+    if Cad::Vec3 == expr.as_ref().op {
         let args = &expr.as_ref().children;
         assert_eq!(args.len(), 3);
         let f0 = get_float(&args[0]);
@@ -210,6 +215,7 @@ where
     F: FnMut(usize, Id) -> K,
     K: Hash + Eq + Debug + Clone,
 {
+    return None;
     type Pair<T> = (Vec<usize>, SmallVec<T>);
     let mut parts: IndexMap<K, Pair<_>> = Default::default();
     for (i, &id) in ids.iter().enumerate() {
@@ -291,10 +297,6 @@ impl Applier<Cad, Meta> for ListApplier {
             }
         }
 
-        debug!(
-            "ListApplier added {}",
-            results.iter().filter(|r| !r.was_there).count()
-        );
         results
     }
 }
