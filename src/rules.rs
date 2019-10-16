@@ -152,9 +152,6 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
            "(Union (Do ?op ?params ?a) (Do ?op ?params ?b))",
            "(Do ?op ?params (Union ?a ?b))"),
 
-        rw("rotate_zero", "(Rotate 0 0 0 ?a)", "?a"),
-        rw("trans_zero", "(Trans 0 0 0 ?a)", "?a"),
-        rw("scale_one", "(Scale 1 1 1 ?a)", "?a"),
 
         rw("scale_trans",
            "(Scale ?a ?b ?c (Trans ?x ?y ?z ?m))",
