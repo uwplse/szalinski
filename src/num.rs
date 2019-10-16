@@ -4,7 +4,7 @@ use std::str::FromStr;
 #[derive(PartialOrd, Ord, PartialEq, Eq, Hash, Default, Clone, Copy)]
 pub struct Num(pub ordered_float::NotNan<f64>);
 
-const EPSILON: f64 = 0.001;
+const EPSILON: f64 = 0.1;
 
 pub fn num(n: impl Into<Num>) -> Num {
     n.into()
