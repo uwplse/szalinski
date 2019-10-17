@@ -53,31 +53,19 @@ fn eps(a: f64, b: f64) -> bool {
     (a - b).abs() < 0.001
 }
 
-enum FoldDir {
-    Left,
-    Right,
-}
-
 fn write_op<'a>(
     w: &mut impl Write,
     depth: usize,
     name: &str,
     ps: impl IntoIterator<Item = Pair<'a, Rule>>,
-    dir: FoldDir,
 ) -> Result<()> {
     use std::collections::VecDeque;
 
-    fn fold(
-        w: &mut impl Write,
-        d: usize,
-        name: &str,
-        v: &mut VecDeque<Pair<Rule>>,
-        dir: FoldDir,
-    ) -> Result<()> {
-        match (v.len(), dir) {
-            (0, _) => Ok(()),
-            (1, _) => write_csg(w, d, v.pop_front().unwrap()),
-            (2, _) => {
+    fn fold(w: &mut impl Write, d: usize, name: &str, v: &mut VecDeque<Pair<Rule>>) -> Result<()> {
+        match v.len() {
+            0 => Ok(()),
+            1 => write_csg(w, d, v.pop_front().unwrap()),
+            2 => {
                 write!(w, "({}", name)?;
                 indent(w, d)?;
                 write_csg(w, d, v.pop_front().unwrap())?;
@@ -85,28 +73,19 @@ fn write_op<'a>(
                 write_csg(w, d, v.pop_front().unwrap())?;
                 write!(w, ")")
             }
-            (_, FoldDir::Left) => {
-                write!(w, "({}", name)?;
-                let p = v.pop_back().unwrap();
-                indent(w, d)?;
-                fold(w, d, name, v, FoldDir::Left)?;
-                indent(w, d)?;
-                write_csg(w, d, p)?;
-                write!(w, ")")
-            }
-            (_, FoldDir::Right) => {
+            _ => {
                 write!(w, "({}", name)?;
                 indent(w, d)?;
                 write_csg(w, d, v.pop_front().unwrap())?;
                 indent(w, d)?;
-                fold(w, d, name, v, FoldDir::Right)?;
+                fold(w, d, name, v)?;
                 write!(w, ")")
             }
         }
     }
 
     let mut ps: VecDeque<_> = ps.into_iter().collect();
-    fold(w, depth, name, &mut ps, dir)
+    fold(w, depth, name, &mut ps)
 }
 
 fn float(p: Pair<Rule>) -> f64 {
@@ -212,17 +191,20 @@ fn write_csg(w: &mut impl Write, depth: usize, pair: Pair<Rule>) -> Result<()> {
     let mut args = pair.into_inner();
     let d = depth + 1;
 
-    use FoldDir::*;
-
     match rule {
-        Rule::group => write_op(w, d, "Union", args, Right),
-        Rule::union => write_op(w, d, "Union", args, Right),
-        Rule::diff => write_op(w, d, "Diff", args, Left),
-        Rule::inter => write_op(w, d, "Inter", args, Right),
+        Rule::group => write_op(w, d, "Union", args),
+        Rule::union => write_op(w, d, "Union", args),
+        Rule::diff => {
+            write!(w, "(Diff")?;
+            write_csg(w, d, args.next().unwrap())?;
+            write_op(w, d + 1, "Union", args)?;
+            write!(w, ")")
+        }
+        Rule::inter => write_op(w, d, "Inter", args),
         Rule::hull => {
             write!(w, "(Hull")?;
             indent(w, d)?;
-            write_op(w, d, "Union", args, Right)?;
+            write_op(w, d, "Union", args)?;
             write!(w, ")")
         }
         Rule::matrix => {
@@ -257,7 +239,7 @@ fn write_csg(w: &mut impl Write, depth: usize, pair: Pair<Rule>) -> Result<()> {
                 );
             }
             indent(w, d)?;
-            write_op(w, d, "Union", args, Right)?;
+            write_op(w, d, "Union", args)?;
             write!(w, ")")
         }
 
@@ -325,7 +307,7 @@ fn parse(w: &mut impl Write, s: &str) -> Result<()> {
     let mut top_level: Vec<_> = program.into_inner().collect();
     let eoi = top_level.pop().unwrap();
     assert_eq!(eoi.as_rule(), Rule::EOI);
-    write_op(w, 0, "Union", top_level, FoldDir::Right)
+    write_op(w, 0, "Union", top_level)
 }
 
 #[test]
