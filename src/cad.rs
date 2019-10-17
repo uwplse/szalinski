@@ -137,7 +137,14 @@ fn eval(op: Cad, args: &[Cad]) -> Option<Cad> {
         Div => {
             assert_eq!(args.len(), 2);
             match (a(0), a(1)) {
-                (Num(f1), Num(f2)) => Some(Num(num(f1.to_f64() / f2.to_f64()))),
+                (Num(f1), Num(f2)) => {
+                    let f = f1.to_f64() / f2.to_f64();
+                    if f.is_finite() {
+                        Some(Num(num(f)))
+                    } else {
+                        None
+                    }
+                },
                 _ => None,
             }
         }
