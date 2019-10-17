@@ -1,21 +1,21 @@
-(Diff
-  (Union
-    (Cylinder (Vec3 100  80  80) (Vec3  50  12   2))
-    (Cylinder (Vec3  50 120 120) (Vec3  50  12   2)))
-  (FoldUnion
-    (Cons
-      (Trans
-        (Vec3   0   0  -1)
-        (Cylinder (Vec3 102  25  25) (Vec3  50  12   2)))
-      (Map
-        Rotate
-        (MapI  60 (Vec3   0   0 (* i  6.00)))
-        (Repeat
-           60
-          (Trans
-            (Vec3 125   0   0)
-            (Scale
-              (Vec3  2.50   1   1)
-              (Rotate
-                (Vec3   0   0  45)
-                (Trans (Vec3   0   0  25) (Cube (Vec3  10  10  52) true))))))))))
+(Union
+  (Cylinder (Vec3 100  80  80) (Vec3  50  12   2))
+  (Diff
+    (Cylinder (Vec3  50 120 120) (Vec3  50  12   2))
+    (FoldUnion
+      (Cons
+        (Trans
+          (Vec3   0   0  -1)
+          (Cylinder (Vec3 102  25  25) (Vec3  50  12   2)))
+        (Map
+          Rotate
+          (MapI  60 (Vec3   0   0 (* i  6.00)))
+          (Repeat
+             60
+            (Trans
+              (Vec3 125   0   0)
+              (Scale
+                (Vec3  2.50   1   1)
+                (Rotate
+                  (Vec3   0   0  45)
+                  (Trans (Vec3   0   0  25) (Cube (Vec3  10  10  52) true)))))))))))
