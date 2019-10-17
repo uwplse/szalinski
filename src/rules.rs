@@ -37,8 +37,6 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
 
         // list rules
 
-        rw("defloat", "(Float ?a)", "?a"),
-
         rw("list_nil", "Nil", "(List)"),
         rw("list_cons", "(Cons ?a (List ?b...))", "(List ?a ?b...)"),
 
