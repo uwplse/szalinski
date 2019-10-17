@@ -63,7 +63,7 @@ fn write_op<'a>(
 
     fn fold(w: &mut impl Write, d: usize, name: &str, v: &mut VecDeque<Pair<Rule>>) -> Result<()> {
         match v.len() {
-            0 => Ok(()),
+            0 => panic!("Shouldn't hit zero"),
             1 => write_csg(w, d, v.pop_front().unwrap()),
             2 => {
                 write!(w, "({}", name)?;
@@ -85,7 +85,11 @@ fn write_op<'a>(
     }
 
     let mut ps: VecDeque<_> = ps.into_iter().collect();
-    fold(w, depth, name, &mut ps)
+    if ps.is_empty() {
+        write!(w, "Empty")
+    } else {
+        fold(w, depth, name, &mut ps)
+    }
 }
 
 fn float(p: Pair<Rule>) -> f64 {
@@ -195,10 +199,14 @@ fn write_csg(w: &mut impl Write, depth: usize, pair: Pair<Rule>) -> Result<()> {
         Rule::group => write_op(w, d, "Union", args),
         Rule::union => write_op(w, d, "Union", args),
         Rule::diff => {
-            write!(w, "(Diff")?;
-            write_csg(w, d, args.next().unwrap())?;
-            write_op(w, d + 1, "Union", args)?;
-            write!(w, ")")
+            if let Some(first) = args.next() {
+                write!(w, "(Diff")?;
+                write_csg(w, d, first)?;
+                write_op(w, d + 1, "Union", args)?;
+                write!(w, ")")
+            } else {
+                write!(w, "Empty")
+            }
         }
         Rule::inter => write_op(w, d, "Inter", args),
         Rule::hull => {
