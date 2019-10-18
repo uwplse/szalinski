@@ -1,12 +1,10 @@
 use std::fmt;
 use std::str::FromStr;
-use std::time::Instant;
 
 use egg::{
     define_term,
     egraph::EClass,
     expr::{Expr, Language, RecExpr},
-    extract::{CostExpr, Extractor},
 };
 
 use crate::{
@@ -16,6 +14,7 @@ use crate::{
 
 use log::*;
 pub type EGraph = egg::egraph::EGraph<Cad, Meta>;
+pub type Rewrite = egg::pattern::Rewrite<Cad, Meta>;
 
 pub type Vec3 = (Num, Num, Num);
 
@@ -144,7 +143,7 @@ fn eval(op: Cad, args: &[Cad]) -> Option<Cad> {
                     } else {
                         None
                     }
-                },
+                }
                 _ => None,
             }
         }
@@ -242,71 +241,4 @@ impl Language for Cad {
 
         cost + children.iter().sum::<u64>()
     }
-}
-
-pub fn run_rules(
-    egraph: &mut egg::egraph::EGraph<Cad, Meta>,
-    root: u32,
-    iters: usize,
-    limit: usize,
-) -> CostExpr<Cad> {
-    let rules = crate::rules::rules();
-    let start_time = Instant::now();
-
-    'outer: for i in 0..iters {
-        info!("\n\nIteration {}\n", i);
-
-        let search_time = Instant::now();
-
-        let mut applied = 0;
-        let mut matches = Vec::new();
-        for rule in rules.iter() {
-            let ms = rule.search(&egraph);
-            if !ms.is_empty() {
-                matches.push(ms);
-            }
-        }
-
-        info!("Search time: {:?}", search_time.elapsed());
-
-        let match_time = Instant::now();
-
-        for m in matches {
-            let actually_matched = m.apply_with_limit(egraph, limit).len();
-            if egraph.total_size() > limit {
-                error!("Node limit exceeded. {} > {}", egraph.total_size(), limit);
-                break 'outer;
-            }
-
-            applied += actually_matched;
-            if actually_matched > 0 {
-                info!("Applied {} {} times", m.rewrite.name, actually_matched);
-            }
-        }
-
-        info!("Match time: {:?}", match_time.elapsed());
-
-        let rebuild_time = Instant::now();
-        egraph.rebuild();
-        info!("Rebuild time: {:?}", rebuild_time.elapsed());
-        info!(
-            "Size: n={}, e={}",
-            egraph.total_size(),
-            egraph.number_of_classes()
-        );
-
-        if applied == 0 {
-            info!("Stopping early!");
-            break;
-        }
-    }
-
-    let rules_time = start_time.elapsed();
-    info!("Rules time: {:?}", rules_time);
-
-    let ext = Extractor::new(&egraph);
-    let best = ext.find_best(root);
-    info!("Best ({})\n{}", best.cost, best.expr.pretty(60));
-
-    best
 }
