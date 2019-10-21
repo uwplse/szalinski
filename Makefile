@@ -68,4 +68,4 @@ $(tgt)/optimize $(tgt)/parse-csg: $(rust-src)
 	cargo build --release
 
 out/compare_mesh: scripts/compare_mesh.cpp
-	$(CPP_FLAGS) $< -O2 -o $@
+	$(CC_WITH_FLAGS) $< -O2 -o $@
