@@ -125,9 +125,12 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
         //    "(Cons ?a (Repeat ?n ?a))",
         //    "(Repeat (+ ?n 1) ?a)"),
 
-        rw("diff_union",
+        rw("diff_push_union",
            "(Diff (Union ?a ?b) ?c)",
-           "(Union ?a (Diff ?b ?c))"),
+           "(Union (Diff ?a ?c) (Diff ?b ?c))"),
+        rw("diff_pull_union",
+           "(Union (Diff ?a ?c) (Diff ?b ?c))",
+           "(Diff (Union ?a ?b) ?c)"),
 
         rw("diff",
            "(Diff (Diff ?a ?b) ?c)",
