@@ -51,10 +51,9 @@ int main(int argc, char* argv[])
   if (strcmp(f3, "-v") == 0) {
     Mesh diff;
     CGAL::Polygon_mesh_processing::corefine_and_compute_difference(tm1, tm2, diff);
-    std::cout<<"volume: "<<CGAL::Polygon_mesh_processing::volume(diff)<<std::endl;
+    std::cout<<CGAL::Polygon_mesh_processing::volume(diff)<<std::endl;
   } else {
-    std::cout << "Approximated Hausdorff distance: "
-              << CGAL::Polygon_mesh_processing::approximate_Hausdorff_distance <TAG>(tm1, tm2, PMP::parameters::number_of_points_per_area_unit(1000))
+    std::cout << CGAL::Polygon_mesh_processing::approximate_Hausdorff_distance <TAG>(tm1, tm2, PMP::parameters::number_of_points_per_area_unit(1000))
               << std::endl;
   }
 }
