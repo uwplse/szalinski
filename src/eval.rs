@@ -1,3 +1,4 @@
+use log::*;
 use std::f64::consts;
 
 use smallvec::smallvec;
@@ -23,6 +24,15 @@ fn get_num(expr: &RecExpr<Cad>) -> f64 {
     match expr.op {
         Cad::Num(num) => num.0.into_inner() as f64,
         _ => panic!("Not a num"), // is panic the right thing?
+    }
+}
+
+fn get_vec3_nums(expr: &RecExpr<Cad>) -> (f64, f64, f64) {
+    let expr = expr.as_ref();
+    let arg = |i: usize| expr.children[i].clone();
+    match expr.op {
+        Cad::Vec3 => (get_num(&arg(0)), get_num(&arg(1)), get_num(&arg(2))),
+        _ => panic!("Not a vec3"), // is panic the right thing?
     }
 }
 
@@ -81,14 +91,14 @@ fn eval_vecs(op: &Cad, expr: &RecExpr<Cad>) -> Vec<(f64, f64, f64)> {
                         v.push((x, y, z));
                     }
                 }
-                _ =>  {
+                _ => {
                     for _i in 0..n as usize {
                         v.push((x, y, z));
                     }
                 }
             }
             v
-        },
+        }
         Cad::List => {
             let mut v = Vec::new();
             let vs = mapi.children.clone();
@@ -108,7 +118,7 @@ fn eval_vecs(op: &Cad, expr: &RecExpr<Cad>) -> Vec<(f64, f64, f64)> {
                 }
             }
             v
-        },
+        }
         Cad::Cons => {
             let hd = mapi.children[0].as_ref();
             let tl = mapi.children[1].clone();
@@ -116,7 +126,7 @@ fn eval_vecs(op: &Cad, expr: &RecExpr<Cad>) -> Vec<(f64, f64, f64)> {
             let x = get_num(&hd.children[0].clone());
             let y = get_num(&hd.children[1].clone());
             let z = get_num(&hd.children[2].clone());
-            match op  {
+            match op {
                 Cad::TransPolar => {
                     let (x, y, z) = to_cartesian((x, y, z));
                     v.push((x, y, z));
@@ -126,7 +136,7 @@ fn eval_vecs(op: &Cad, expr: &RecExpr<Cad>) -> Vec<(f64, f64, f64)> {
                 }
             }
             v
-        },
+        }
         Cad::MapI => {
             let mut v = Vec::new();
             if mapi.children.len() == 2 {
@@ -203,7 +213,7 @@ fn eval_vecs(op: &Cad, expr: &RecExpr<Cad>) -> Vec<(f64, f64, f64)> {
                 vs.append(&mut v);
             }
             vs
-        },
+        }
         _ => panic!("eval_vecs: not a mapi, list, cons, repeat, or concat "),
     }
 }
@@ -219,9 +229,7 @@ fn cads_to_union(cs: Vec<RecExpr<Cad>>) -> RecExpr<Cad> {
 fn union_to_cads(c: RecExpr<Cad>) -> Vec<RecExpr<Cad>> {
     let c = c.as_ref();
     match &c.op {
-        Cad::Empty => {
-            vec![rec!(Cad::Empty)]
-        }
+        Cad::Empty => vec![rec!(Cad::Empty)],
         Cad::Union => {
             let c1 = c.children[0].clone();
             let c2 = c.children[1].clone();
@@ -237,9 +245,10 @@ pub fn eval(expr: &RecExpr<Cad>) -> RecExpr<Cad> {
     let expr = expr.as_ref();
     let arg = |i: usize| expr.children[i].clone();
     match &expr.op {
-        Cad::Cube => rec!(Cad::Cube),
-        Cad::Sphere => rec!(Cad::Sphere),
-        Cad::Cylinder => rec!(Cad::Cylinder),
+        Cad::Bool(b) => rec!(Cad::Bool(*b)),
+        Cad::Cube => rec!(Cad::Cube, eval(&arg(0)), eval(&arg(1))),
+        Cad::Sphere => rec!(Cad::Sphere, eval(&arg(0)), eval(&arg(1))),
+        Cad::Cylinder => rec!(Cad::Cylinder, eval(&arg(0)), eval(&arg(1))),
         Cad::Hexagon => rec!(Cad::Hexagon),
         Cad::Empty => rec!(Cad::Empty),
         Cad::Num(f) => rec!(Cad::Num(*f)),
@@ -292,7 +301,7 @@ pub fn eval(expr: &RecExpr<Cad>) -> RecExpr<Cad> {
             let mut l2 = union_to_cads(eval(&arg(1)).clone());
             l1.append(&mut l2);
             cads_to_union(l1)
-        },
+        }
         Cad::Map => {
             let op = &expr.children[0].as_ref().op;
             let mapi_list_cons = &expr.children[1];
@@ -325,18 +334,36 @@ impl<'a> fmt::Display for Scad<'a> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let expr = eval(self.0);
         let expr = expr.as_ref();
+        let arg = |i: usize| expr.children[i].clone();
         let child = |i: usize| Scad(&expr.children[i]);
         match expr.op {
             Cad::Num(float) => write!(f, "{}", float),
+            Cad::Bool(b) => write!(f, "center = {}", b),
             Cad::Vec3 => write!(f, "[{}, {}, {}]", child(0), child(1), child(2)),
             Cad::Add => write!(f, "{} + {}", child(0), child(1)),
             Cad::Sub => write!(f, "{} - {}", child(0), child(1)),
             Cad::Mul => write!(f, "{} * {}", child(0), child(1)),
             Cad::Div => write!(f, "{} / {}", child(0), child(1)),
             Cad::Empty => write!(f, "sphere(r=0);"),
-            Cad::Cube => write!(f, "cube(center = true);"),
-            Cad::Sphere => write!(f, "sphere($fn = 50);"),
-            Cad::Cylinder => write!(f, "cylinder($fn = 50);"),
+            Cad::Cube => write!(f, "cube({}, {});", child(0), child(1)),
+            Cad::Sphere => write!(
+                f,
+                "sphere(r = {}, $fn = {}, $fa = {}, $fs = {});",
+                child(0),
+                get_vec3_nums(&arg(1)).0,
+                get_vec3_nums(&arg(1)).1,
+                get_vec3_nums(&arg(1)).2
+            ),
+            Cad::Cylinder => write!(
+                f,
+                "cylinder(h = {}, r1 = {}, r2 = {}, $fn = {}, $fa = {}, $fs = {});",
+                get_vec3_nums(&arg(0)).0,
+                get_vec3_nums(&arg(0)).1,
+                get_vec3_nums(&arg(0)).2,
+                get_vec3_nums(&arg(1)).0,
+                get_vec3_nums(&arg(1)).1,
+                get_vec3_nums(&arg(1)).2
+            ),
             Cad::Hexagon => write!(f, "cylinder();"),
             Cad::Hull => write!(f, "hull() {{ {} }}", child(0)),
             Cad::Trans => write!(
@@ -377,7 +404,7 @@ macro_rules! test_eval {
         fn $name() {
             debug!("Testing {}", stringify!($name));
             let input = read_to_string($file).unwrap();
-            let outfile = $file.replace("expected/", "scad-output/");
+            let outfile = $file.replace("expected/", "scad-output");
             let output = read_to_string(&outfile);
             let start = Cad::parse_expr(&input).unwrap();
             let actual = format!("{}", Scad(&start)).trim().to_string();
@@ -399,11 +426,11 @@ macro_rules! test_eval {
     };
 }
 
-test_eval! {eval_flower, "cads/pldi2020-eval/expected/flower.csexp" }
-test_eval! {eval_cnc_hull, "cads/pldi2020-eval/expected/cnc_endmill_with_hull.csexp" }
-test_eval! {eval_dice, "cads/pldi2020-eval/expected/dice.csexp" }
-test_eval! {eval_gear, "cads/pldi2020-eval/expected/gear_flat.csexp" }
-test_eval! {eval_hcbit, "cads/pldi2020-eval/expected/hcbitholder.csexp" }
+test_eval! {eval_flower,   "out/case_studies/flower.csexp.opt" }
+test_eval! {eval_cnc_hull, "out/case_studies/cnc_endmill_with_hull.csexp.opt" }
+test_eval! {eval_dice,     "out/case_studies/dice.csexp.opt" }
+test_eval! {eval_gear,     "out/case_studies/gear_flat.csexp.opt" }
+test_eval! {eval_hcbit,    "out/case_studies/hcbitholder.csexp.opt" }
 // commented ones are wrong due to hand written csexps as inputs
 // test_eval! {eval_box_flat, "cads/pldi2020-eval/expected/box_flat.csexp" }
 // test_eval! {eval_compose, "cads/pldi2020-eval/expected/composition_card.csexp" }
@@ -416,7 +443,6 @@ test_eval! {eval_hcbit, "cads/pldi2020-eval/expected/hcbitholder.csexp" }
 // test_eval! {eval_solder, "cads/pldi2020-eval/expected/soldering.csexp" }
 // test_eval! {eval_sdcard, "cads/pldi2020-eval/expected/sdcard_manual_engineered.csexp" }
 // test_eval! {eval_wardrobe, "cads/pldi2020-eval/expected/wardrobe.csexp" }
-
 
 #[test]
 fn eval_prim() {
@@ -467,7 +493,7 @@ fn scad_foldunion() {
     let mapi = rec!(
         Cad::MapI,
         rec!(Cad::Num(3.into())),
-        rec!(Cad::Vec, fx, fy, fz)
+        rec!(Cad::Vec3, fx, fy, fz)
     );
     let map = rec!(
         Cad::Map,
