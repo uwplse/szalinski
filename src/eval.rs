@@ -27,6 +27,15 @@ fn get_num(expr: &RecExpr<Cad>) -> f64 {
     }
 }
 
+fn get_vec3_comps(expr: &RecExpr<Cad>) -> (RecExpr<Cad>, RecExpr<Cad>, RecExpr<Cad>) {
+    let expr = expr.as_ref();
+    let arg = |i: usize| expr.children[i].clone();
+    match expr.op {
+        Cad::Vec3 => (arg(0), arg(1), arg(2)),
+        _ => panic!("Not a vec3"), // is panic the right thing?
+    }
+}
+
 fn get_vec3_nums(expr: &RecExpr<Cad>) -> (f64, f64, f64) {
     let expr = expr.as_ref();
     let arg = |i: usize| expr.children[i].clone();
@@ -80,10 +89,10 @@ fn eval_vecs(op: &Cad, expr: &RecExpr<Cad>) -> Vec<(f64, f64, f64)> {
         Cad::Repeat => {
             let mut v = Vec::new();
             let n = get_num(&mapi.children[0].clone());
-            let vc = mapi.children[1].as_ref();
-            let x = get_num(&vc.children[0].clone());
-            let y = get_num(&vc.children[1].clone());
-            let z = get_num(&vc.children[2].clone());
+            let vc = mapi.children[1].clone();
+            let x = get_vec3_nums(&vc.clone()).0;
+            let y = get_vec3_nums(&vc.clone()).1;
+            let z = get_vec3_nums(&vc.clone()).2;
             match op {
                 Cad::TransPolar => {
                     for _i in 0..n as usize {
@@ -103,10 +112,10 @@ fn eval_vecs(op: &Cad, expr: &RecExpr<Cad>) -> Vec<(f64, f64, f64)> {
             let mut v = Vec::new();
             let vs = mapi.children.clone();
             for i in 0..vs.len() {
-                let vc = vs[i].as_ref();
-                let x = get_num(&vc.children[0].clone());
-                let y = get_num(&vc.children[1].clone());
-                let z = get_num(&vc.children[2].clone());
+                let vc = vs[i].clone();
+                let x = get_vec3_nums(&vc.clone()).0;
+                let y = get_vec3_nums(&vc.clone()).1;
+                let z = get_vec3_nums(&vc.clone()).2;
                 match op {
                     Cad::TransPolar => {
                         let (x, y, z) = to_cartesian((x, y, z));
@@ -120,12 +129,12 @@ fn eval_vecs(op: &Cad, expr: &RecExpr<Cad>) -> Vec<(f64, f64, f64)> {
             v
         }
         Cad::Cons => {
-            let hd = mapi.children[0].as_ref();
+            let hd = mapi.children[0].clone();
             let tl = mapi.children[1].clone();
             let mut v: Vec<(f64, f64, f64)> = eval_vecs(op, &tl);
-            let x = get_num(&hd.children[0].clone());
-            let y = get_num(&hd.children[1].clone());
-            let z = get_num(&hd.children[2].clone());
+            let x = get_vec3_nums(&hd.clone()).0;
+            let y = get_vec3_nums(&hd.clone()).1;
+            let z = get_vec3_nums(&hd.clone()).2;
             match op {
                 Cad::TransPolar => {
                     let (x, y, z) = to_cartesian((x, y, z));
@@ -141,10 +150,10 @@ fn eval_vecs(op: &Cad, expr: &RecExpr<Cad>) -> Vec<(f64, f64, f64)> {
             let mut v = Vec::new();
             if mapi.children.len() == 2 {
                 let n = mapi.children[0].clone();
-                let vec = mapi.children[1].as_ref();
-                let x = vec.children[0].clone();
-                let y = vec.children[1].clone();
-                let z = vec.children[2].clone();
+                let vec = mapi.children[1].clone();
+                let x = get_vec3_comps(&vec.clone()).0;
+                let y = get_vec3_comps(&vec.clone()).1;
+                let z = get_vec3_comps(&vec.clone()).2;
                 for i in 0..(get_num(&n) as usize) {
                     let (fx, fy, fz) = (eval_fun(&x, i), eval_fun(&y, i), eval_fun(&z, i));
                     match op {
@@ -160,10 +169,10 @@ fn eval_vecs(op: &Cad, expr: &RecExpr<Cad>) -> Vec<(f64, f64, f64)> {
             } else if mapi.children.len() == 3 {
                 let nx = mapi.children[0].clone();
                 let ny = mapi.children[1].clone();
-                let vec = mapi.children[2].as_ref();
-                let x = vec.children[0].clone();
-                let y = vec.children[1].clone();
-                let z = vec.children[2].clone();
+                let vec = mapi.children[2].clone();
+                let x = get_vec3_comps(&vec.clone()).0;
+                let y = get_vec3_comps(&vec.clone()).1;
+                let z = get_vec3_comps(&vec.clone()).2;
                 for i in 0..(get_num(&nx) as usize) {
                     for j in 0..(get_num(&ny) as usize) {
                         let (fx, fy, fz) = (eval_fun(&x, i), eval_fun(&y, j), eval_fun(&z, i));
@@ -182,10 +191,10 @@ fn eval_vecs(op: &Cad, expr: &RecExpr<Cad>) -> Vec<(f64, f64, f64)> {
                 let nx = mapi.children[0].clone();
                 let ny = mapi.children[1].clone();
                 let nz = mapi.children[2].clone();
-                let vec = mapi.children[3].as_ref();
-                let x = vec.children[0].clone();
-                let y = vec.children[1].clone();
-                let z = vec.children[2].clone();
+                let vec = mapi.children[3].clone();
+                let x = get_vec3_comps(&vec.clone()).0;
+                let y = get_vec3_comps(&vec.clone()).1;
+                let z = get_vec3_comps(&vec.clone()).2;
                 for i in 0..(get_num(&nx) as usize) {
                     for j in 0..(get_num(&ny) as usize) {
                         for k in 0..(get_num(&nz) as usize) {
@@ -254,34 +263,10 @@ pub fn eval(expr: &RecExpr<Cad>) -> RecExpr<Cad> {
         Cad::Num(f) => rec!(Cad::Num(*f)),
         Cad::Vec3 => rec!(Cad::Vec3, eval(&arg(0)), eval(&arg(1)), eval(&arg(2))),
         Cad::Hull => rec!(Cad::Hull, eval(&arg(0))),
-        Cad::Trans => rec!(
-            Cad::Trans,
-            eval(&arg(0)),
-            eval(&arg(1)),
-            eval(&arg(2)),
-            eval(&arg(3))
-        ),
-        Cad::TransPolar => rec!(
-            Cad::Trans,
-            eval(&arg(0)),
-            eval(&arg(1)),
-            eval(&arg(2)),
-            eval(&arg(3))
-        ),
-        Cad::Scale => rec!(
-            Cad::Scale,
-            eval(&arg(0)),
-            eval(&arg(1)),
-            eval(&arg(2)),
-            eval(&arg(3))
-        ),
-        Cad::Rotate => rec!(
-            Cad::Rotate,
-            eval(&arg(0)),
-            eval(&arg(1)),
-            eval(&arg(2)),
-            eval(&arg(3))
-        ),
+        Cad::Trans => rec!( Cad::Trans, eval(&arg(0)), eval(&arg(1))),
+        Cad::TransPolar => rec!( Cad::Trans, eval(&arg(0)), eval(&arg(1))),
+        Cad::Scale => rec!( Cad::Scale, eval(&arg(0)), eval(&arg(1))),
+        Cad::Rotate => rec!( Cad::Rotate, eval(&arg(0)), eval(&arg(1))),
         Cad::Diff => rec!(Cad::Diff, eval(&arg(0)), eval(&arg(1))),
         Cad::Inter => rec!(Cad::Inter, eval(&arg(0)), eval(&arg(1))),
         Cad::Union => rec!(Cad::Union, eval(&arg(0)), eval(&arg(1))),
@@ -320,7 +305,8 @@ pub fn eval(expr: &RecExpr<Cad>) -> RecExpr<Cad> {
                 let vx = rec!(Cad::Num(fs[i].0.into()));
                 let vy = rec!(Cad::Num(fs[i].1.into()));
                 let vz = rec!(Cad::Num(fs[i].2.into()));
-                v.push(rec!(op.clone(), vx, vy, vz, ne_cs[i].clone()));
+                let vec3 = rec!(Cad::Vec3, vx, vy, vz);
+                v.push(rec!(op.clone(), vec3, ne_cs[i].clone()));
             }
             cads_to_union(v)
         }
@@ -328,7 +314,7 @@ pub fn eval(expr: &RecExpr<Cad>) -> RecExpr<Cad> {
     }
 }
 
-struct Scad<'a>(&'a RecExpr<Cad>);
+pub struct Scad<'a>(pub &'a RecExpr<Cad>);
 
 impl<'a> fmt::Display for Scad<'a> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -366,30 +352,9 @@ impl<'a> fmt::Display for Scad<'a> {
             ),
             Cad::Hexagon => write!(f, "cylinder();"),
             Cad::Hull => write!(f, "hull() {{ {} }}", child(0)),
-            Cad::Trans => write!(
-                f,
-                "translate ([{}, {}, {}]) {}",
-                child(0),
-                child(1),
-                child(2),
-                child(3)
-            ),
-            Cad::Scale => write!(
-                f,
-                "scale ([{}, {}, {}]) {}",
-                child(0),
-                child(1),
-                child(2),
-                child(3)
-            ),
-            Cad::Rotate => write!(
-                f,
-                "rotate ([{}, {}, {}]) {}",
-                child(0),
-                child(1),
-                child(2),
-                child(3)
-            ),
+            Cad::Trans => write!( f, "translate ({}) {}", child(0), child(1)),
+            Cad::Scale => write!( f, "scale ({}) {}", child(0), child(1)),
+            Cad::Rotate => write!( f, "rotate ({}) {}", child(0), child(1)),
             Cad::Union => write!(f, "union () {{ {} {} }}", child(0), child(1)),
             Cad::Inter => write!(f, "intersection () {{ {} {} }}", child(0), child(1)),
             Cad::Diff => write!(f, "difference () {{ {} {} }}", child(0), child(1)),
