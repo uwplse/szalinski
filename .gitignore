@@ -10,3 +10,7 @@ flame.svg
 
 # output
 out
+
+# gcc
+env.txt
+compare_mesh
