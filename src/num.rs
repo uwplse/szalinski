@@ -57,7 +57,7 @@ impl fmt::Display for Num {
         if float.fract() == 0.0 {
             write!(f, "{:3.0}", float)
         } else {
-            write!(f, "{:5.2}", float)
+            write!(f, "{:5.10}", float)
         }
     }
 }
