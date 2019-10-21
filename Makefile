@@ -1,4 +1,4 @@
-CPP_FLAGS ?= -lCGAL -lgmp -lmpfr
+CC_WITH_FLAGS ?= g++ -lCGAL -lgmp -lmpfr
 
 tgt=target/release
 diff=git --no-pager diff --no-index --word-diff=color --ignore-space-at-eol
@@ -68,4 +68,4 @@ $(tgt)/optimize $(tgt)/parse-csg: $(rust-src)
 	cargo build --release
 
 out/compare_mesh: scripts/compare_mesh.cpp
-	g++ $(CPP_FLAGS) $< -O2 -o $@
+	$(CPP_FLAGS) $< -O2 -o $@
