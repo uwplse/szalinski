@@ -235,6 +235,8 @@ fn cads_to_union(cs: Vec<RecExpr<Cad>>) -> RecExpr<Cad> {
     cad
 }
 
+
+
 fn union_to_cads(c: RecExpr<Cad>) -> Vec<RecExpr<Cad>> {
     let c = c.as_ref();
     match &c.op {
@@ -247,6 +249,29 @@ fn union_to_cads(c: RecExpr<Cad>) -> Vec<RecExpr<Cad>> {
             v
         }
         _ => panic!("union_to_cads: not a union"),
+    }
+}
+
+fn eval_list_cons(expr: &RecExpr<Cad>) -> Vec<RecExpr<Cad>> {
+    let e = expr.as_ref();
+    let arg = |i: usize| e.children[i].clone();
+    match &e.op {
+        Cad::Cons => {
+            let hd = arg(0);
+            let tl = arg(1);
+            let mut list = eval_list_cons(&hd);
+            list.append(& mut eval_list_cons(&tl));
+            list
+        },
+        Cad::List => {
+            let l = e.children.len();
+            let mut vs = Vec::new();
+            for i in 0..l  as usize {
+                 vs.push(eval_list_cons(&e.children[i]));
+            }
+            vs.into_iter().flat_map(|list| list).collect()
+        },
+        _ => vec![expr.clone()],
     }
 }
 
@@ -279,8 +304,17 @@ pub fn eval(expr: &RecExpr<Cad>) -> RecExpr<Cad> {
             }
             cads_to_union(v)
         }
-        Cad::FoldUnion => eval(&expr.children[0]),
-        Cad::Cons => rec!(Cad::Union, eval(&arg(0)), eval(&arg(1))),
+        Cad::FoldUnion => {
+            let cs = eval_list_cons(&expr.children[0]);
+            eval(&cads_to_union(cs))
+        },
+        Cad::FoldInter => {
+            let mut cs = eval_list_cons(&expr.children[0]);
+            let hd = cs[0].clone();
+			let tl = cs.split_off(1);
+            let rest = cads_to_union(tl);
+            eval(&rec! (Cad::Inter, hd, rest))
+        }
         Cad::Concat => {
             let mut l1 = union_to_cads(eval(&arg(0)).clone());
             let mut l2 = union_to_cads(eval(&arg(1)).clone());
@@ -311,6 +345,7 @@ pub fn eval(expr: &RecExpr<Cad>) -> RecExpr<Cad> {
             cads_to_union(v)
         }
         cad => panic!("EVAL TODO: {:?}", cad),
+        //{error!("EVAL TODO: {:?}", cad); rec!(Cad::Empty)}
     }
 }
 
