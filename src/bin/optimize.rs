@@ -6,6 +6,7 @@ use serde::Serialize;
 
 use egg::{extract::{calculate_cost, Extractor}, parse::ParsableLanguage};
 use szalinski_egg::cad::{Rewrite, Cad, EGraph};
+use szalinski_egg::eval::Scad;
 
 #[derive(Serialize)]
 pub struct IterationResult {
@@ -86,6 +87,7 @@ pub struct RunResult {
     pub final_expr: String,
     pub final_cost: u64,
     pub extract_time: f64,
+    pub final_scad: String
 }
 
 pub fn optimize(
@@ -120,11 +122,14 @@ pub fn optimize(
         let f = ext.find_best(root);
         (f.cost, f.expr.pretty(80))
     };
+    let to_scad_in = Cad::parse_expr(&final_expr).unwrap();
+    let final_scad = format!("{}", Scad(&to_scad_in));
     let extract_time = extract_time.elapsed().as_secs_f64();
     info!("Extract time: {}", extract_time);
     info!("Initial cost: {}", initial_cost);
     info!("Final cost: {}", final_cost);
     info!("Final: {}", final_expr);
+    info!("Final Scad: {}", final_scad);
 
     RunResult {
         initial_expr,
@@ -133,6 +138,7 @@ pub fn optimize(
         final_cost,
         final_expr,
         extract_time,
+        final_scad,
     }
 }
 
