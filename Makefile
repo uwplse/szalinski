@@ -3,12 +3,12 @@ diff=git --no-pager diff --no-index --word-diff=color --ignore-space-at-eol
 
 rust-src=$(shell find src/ -type f)
 
-scads=$(shell find inputs/ -type f -name "*.scad")
+scads=$(shell find inputs -type f -name "*.scad")
 csgs=$(scads:inputs/%.scad=out/%.csg)
 csexps=$(scads:inputs/%.scad=out/%.csexp)
 jsons=$(scads:inputs/%.scad=out/%.json)
 
-expected=$(shell find inputs/ -type f -name "*.expected")
+expected=$(shell find inputs -type f -name "*.expected")
 checked=$(expected:inputs/%.expected=out/%.checked)
 
 everything=$(jsons) $(checked)
