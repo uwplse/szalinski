@@ -310,7 +310,7 @@ pub fn eval(expr: &RecExpr<Cad>) -> RecExpr<Cad> {
             }
             cads_to_union(v)
         }
-        _ => panic!("EVAL TODO"),
+        cad => panic!("EVAL TODO: {:?}", cad),
     }
 }
 
