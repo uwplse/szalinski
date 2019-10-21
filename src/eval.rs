@@ -330,9 +330,9 @@ impl<'a> fmt::Display for Scad<'a> {
             Cad::Sub => write!(f, "{} - {}", child(0), child(1)),
             Cad::Mul => write!(f, "{} * {}", child(0), child(1)),
             Cad::Div => write!(f, "{} / {}", child(0), child(1)),
-            Cad::Empty => write!(f, "sphere(r=0);"),
-            Cad::Cube => write!(f, "cube({}, {});", child(0), child(1)),
-            Cad::Sphere => write!(
+            Cad::Empty => writeln!(f, "sphere(r=0);"),
+            Cad::Cube => writeln!(f, "cube({}, {});", child(0), child(1)),
+            Cad::Sphere => writeln!(
                 f,
                 "sphere(r = {}, $fn = {}, $fa = {}, $fs = {});",
                 child(0),
@@ -340,7 +340,7 @@ impl<'a> fmt::Display for Scad<'a> {
                 get_vec3_nums(&arg(1)).1,
                 get_vec3_nums(&arg(1)).2
             ),
-            Cad::Cylinder => write!(
+            Cad::Cylinder => writeln!(
                 f,
                 "cylinder(h = {}, r1 = {}, r2 = {}, $fn = {}, $fa = {}, $fs = {});",
                 get_vec3_nums(&arg(0)).0,
@@ -350,7 +350,7 @@ impl<'a> fmt::Display for Scad<'a> {
                 get_vec3_nums(&arg(1)).1,
                 get_vec3_nums(&arg(1)).2
             ),
-            Cad::Hexagon => write!(f, "cylinder();"),
+            Cad::Hexagon => writeln!(f, "cylinder();"),
             Cad::Hull => write!(f, "hull() {{ {} }}", child(0)),
             Cad::Trans => write!( f, "translate ({}) {}", child(0), child(1)),
             Cad::Scale => write!( f, "scale ({}) {}", child(0), child(1)),
