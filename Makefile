@@ -53,9 +53,9 @@ out/%.in.off: inputs/%.scad
 out/%.opt.off: out/%.opt.scad
 	openscad -o $@ $< 2>> out/openscad.log
 
-out/%.diff: out/compare_mesh out/%.in.off out/%.opt.off
+out/%.diff: scripts/check_diff.py out/compare_mesh out/%.in.off out/%.opt.off
 	out/compare_mesh out/$*.in.off out/$*.opt.off -v > $@ # -v for volume difference
-	python3 -c 'assert float(input()) == 0.0' < $@
+	./scripts/check_diff.py < $@
 
 out/%.checked: inputs/%.expected out/%
 	$(diff) inputs/$*.expected out/$*
