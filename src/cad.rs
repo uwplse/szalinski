@@ -222,7 +222,7 @@ impl Language for Cad {
             FoldUnion => 9,
             FoldInter => 9,
             Map => 9,
-            Do => 3,
+            Do => 30,
 
             Cons => 3,
             Concat => 3,
