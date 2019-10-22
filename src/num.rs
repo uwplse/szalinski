@@ -54,11 +54,7 @@ impl FromStr for Num {
 impl fmt::Display for Num {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let float = self.to_f64();
-        if float.fract() == 0.0 {
-            write!(f, "{:3.0}", float)
-        } else {
-            write!(f, "{:5.10}", float)
-        }
+        write!(f, "{}", float)
     }
 }
 
