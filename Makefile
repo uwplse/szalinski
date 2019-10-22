@@ -42,14 +42,16 @@ out/%.csg: inputs/%.scad
 out/%.csexp: out/%.csg $(tgt)/parse-csg
 	$(tgt)/parse-csg $< $@
 
-out/%.json out/%.csexp.opt: out/%.csexp $(tgt)/optimize
-	$(tgt)/optimize $< out/$*.json
-	jq -r .final_expr out/$*.json > out/$*.csexp.opt
+out/%.json: out/%.csexp $(tgt)/optimize
+	$(tgt)/optimize $< $@
+
+out/%.csexp.opt: out/%.json
+	jq -r .final_expr $< > $@
 
 out/%.opt.scad: out/%.json
 	jq -r .final_scad $< > $@
 
-out/%.in.off: inputs/%.scad
+out/%.in.off: out/%.csg
 	openscad -o $@ $< 2>> out/openscad.log
 
 out/%.opt.off: out/%.opt.scad
