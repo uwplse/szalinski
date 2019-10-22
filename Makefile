@@ -14,7 +14,7 @@ diffs=$(scads:inputs/%.scad=out/%.diff)
 expected=$(shell find inputs -type f -name "*.expected")
 checked=$(expected:inputs/%.expected=out/%.checked)
 
-everything=$(diffs) $(checked)
+everything=$(diffs)
 
 .PHONY: all compile-csgs compile-csexps case-studies checked unit-tests
 
@@ -28,6 +28,9 @@ checked: $(checked)
 
 case-studies: $(filter out/case-studies/%, $(everything))
 unit-tests: $(filter out/unit-tests/%, $(everything))
+
+# don't delete anything in the out directory please, Make
+.PRECIOUS: out/%.csg out/%.csexp out/%.json out/%.csexp.opt out/%.opt.scad out/%.in.off out/%.opt.off out/%.diff out/%.checked
 
 print-%:
 	@echo '$*=$($*)'
@@ -46,7 +49,6 @@ out/%.json out/%.csexp.opt: out/%.csexp $(tgt)/optimize
 out/%.opt.scad: out/%.json
 	jq -r .final_scad $< > $@
 
-.PRECIOUS: out/%.in.off
 out/%.in.off: inputs/%.scad
 	openscad -o $@ $< 2>> out/openscad.log
 
@@ -54,7 +56,7 @@ out/%.opt.off: out/%.opt.scad
 	openscad -o $@ $< 2>> out/openscad.log
 
 out/%.diff: scripts/check_diff.py out/compare_mesh out/%.in.off out/%.opt.off
-	out/compare_mesh out/$*.in.off out/$*.opt.off -v > $@ # -v for volume difference
+	out/compare_mesh out/$*.in.off out/$*.opt.off -h 1000 > $@ || rm $@
 	./scripts/check_diff.py < $@
 
 out/%.checked: inputs/%.expected out/%

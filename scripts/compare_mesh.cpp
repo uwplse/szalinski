@@ -45,9 +45,6 @@ int main(int argc, char* argv[])
     return EXIT_FAILURE;
   }
 
-  /* CGAL::Polygon_mesh_processing::isotropic_remeshing(tm1.faces(),.05, tm1); */
-  /* CGAL::Polygon_mesh_processing::isotropic_remeshing(tm2.faces(),.05, tm2); */
-
   if (strcmp(f3, "-v") == 0) {
     Mesh diff;
     CGAL::Polygon_mesh_processing::corefine_and_compute_difference(tm1, tm2, diff);
@@ -56,8 +53,21 @@ int main(int argc, char* argv[])
     double v_diff = CGAL::Polygon_mesh_processing::volume(diff);
     double normalized_v_diff = v_diff / std::max(v1, v2);
     std::cout<<normalized_v_diff<<std::endl;
+  } else if (strcmp(f3, "-h") == 0) {
+    if (argc < 5) {
+      std::cout << "Pass a number after h" << std::endl;
+      exit(1);
+    }
+    int n = std::stoi(argv[4]);
+    double d = CGAL::Polygon_mesh_processing::approximate_Hausdorff_distance<TAG>
+      (tm1,
+       tm2,
+       PMP::parameters::number_of_points_on_edges(n),
+       PMP::parameters::number_of_points_on_faces(n)
+       );
+    std::cout << d << std::endl;
   } else {
-    std::cout << CGAL::Polygon_mesh_processing::approximate_Hausdorff_distance <TAG>(tm1, tm2, PMP::parameters::number_of_points_per_area_unit(1000))
-              << std::endl;
+    std::cout << "Invalid arg" << std::endl;
+    exit(1);
   }
 }
