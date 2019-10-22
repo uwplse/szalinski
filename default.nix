@@ -15,6 +15,7 @@ pkgs.mkShell {
     (python3.withPackages (pp: [
       pp.matplotlib
     ]))
+    openscad
     cgal
     boost
     gmp
