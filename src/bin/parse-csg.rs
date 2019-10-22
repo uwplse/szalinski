@@ -164,11 +164,12 @@ fn get_rotate(mat: &[Vec<f64>]) -> Option<(f64, f64, f64)> {
     assert_eq!(mat[3][3], 1.0);
 
     let (x, y, z) = if eps(mat[2][0].abs(), 1.0) {
-        let atan = mat[0][1].atan2(mat[0][2]);
+        let atan = (mat[0][1]/mat[0][2]).atan();
+        // let atan = mat[0][1].atan2(mat[0][2]);
         let (y, x) = if mat[2][0] < 0.0 {
-            (90.0, atan)
+            (std::f64::consts::PI / 2.0, atan)
         } else {
-            (270.0, -atan)
+            (3.0 * std::f64::consts::PI / 2.0, -atan)
         };
         (x, y, 0.0)
     } else {
