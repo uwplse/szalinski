@@ -202,7 +202,9 @@ fn write_csg(w: &mut impl Write, depth: usize, pair: Pair<Rule>) -> Result<()> {
         Rule::diff => {
             if let Some(first) = args.next() {
                 write!(w, "(Diff")?;
+                indent(w, d)?;
                 write_csg(w, d, first)?;
+                indent(w, d)?;
                 write_op(w, d + 1, "Union", args)?;
                 write!(w, ")")
             } else {
