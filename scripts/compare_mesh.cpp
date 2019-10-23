@@ -83,7 +83,7 @@ int main(int argc, char* argv[])
     CGAL::Polygon_mesh_processing::corefine_and_compute_difference(tm1, tm2, diff);
     double v1 = CGAL::Polygon_mesh_processing::volume(tm1);
     double v2 = CGAL::Polygon_mesh_processing::volume(tm2);
-    double v_diff = 0; // CGAL::Polygon_mesh_processing::volume(diff);
+    double v_diff = CGAL::Polygon_mesh_processing::volume(diff);
     double normalized_v_diff = v_diff / std::max(v1, v2);
     out << normalized_v_diff << std::endl;
 
