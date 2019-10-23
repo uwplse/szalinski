@@ -29,9 +29,10 @@ in_offs: $(scads:inputs/%.scad=out/%.in.off)
 
 case-studies: $(filter out/case-studies/%, $(everything))
 unit-tests: $(filter out/unit-tests/%, $(everything))
+inverse-csg: $(filter out/inverse-csg/%, $(everything))
 
 # don't delete anything in the out directory please, Make
-.PRECIOUS: out/%.csg out/%.csexp out/%.json out/%.csexp.opt out/%.opt.scad out/%.in.off out/%.opt.off out/%.diff out/%.checked
+.PRECIOUS: out/%.csg out/%.csexp out/%.json out/%.csexp.opt out/%.opt.scad out/%.in.off out/%.opt.off out/%.checked
 
 print-%:
 	@echo '$*=$($*)'
@@ -59,8 +60,7 @@ out/%.opt.off: out/%.opt.scad out/%.csexp.opt
 	openscad -o $@ $< 2>> out/openscad.log
 
 out/%.diff: scripts/check_diff.py out/compare_mesh out/%.in.off out/%.opt.off
-	out/compare_mesh out/$*.in.off out/$*.opt.off -h 1000 > $@ || rm $@
-	./scripts/check_diff.py < $@ || rm $@
+	out/compare_mesh out/$*.in.off out/$*.opt.off $@ 1000 0.01
 
 out/%.checked: inputs/%.expected out/%
 	$(diff) inputs/$*.expected out/$*
