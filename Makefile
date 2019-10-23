@@ -25,6 +25,7 @@ diffs: $(diffs)
 compile-csgs: $(csgs)
 compile-csexps: $(csexps)
 checked: $(checked)
+in_offs: $(scads:inputs/%.scad=out/%.in.off)
 
 case-studies: $(filter out/case-studies/%, $(everything))
 unit-tests: $(filter out/unit-tests/%, $(everything))
@@ -54,12 +55,12 @@ out/%.opt.scad: out/%.json
 out/%.in.off: out/%.csg
 	openscad -o $@ $< 2>> out/openscad.log
 
-out/%.opt.off: out/%.opt.scad
+out/%.opt.off: out/%.opt.scad out/%.csexp.opt
 	openscad -o $@ $< 2>> out/openscad.log
 
 out/%.diff: scripts/check_diff.py out/compare_mesh out/%.in.off out/%.opt.off
 	out/compare_mesh out/$*.in.off out/$*.opt.off -h 1000 > $@ || rm $@
-	./scripts/check_diff.py < $@
+	./scripts/check_diff.py < $@ || rm $@
 
 out/%.checked: inputs/%.expected out/%
 	$(diff) inputs/$*.expected out/$*
