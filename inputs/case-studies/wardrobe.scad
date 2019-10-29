@@ -5,12 +5,12 @@ union() {
 difference() {
     translate([0, 11, 0]) {
     scale([50, 50, 1])
-    cylinder($fn = 60);
+    cylinder($fn = 50);
     }
 
     translate([0, 11, 0]) {
     scale([33, 33, 1])
-    cylinder($fn = 55);
+    cylinder($fn = 50);
     }
 }
 
