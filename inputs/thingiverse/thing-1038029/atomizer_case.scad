@@ -18,7 +18,7 @@ caseRadius = atomizerRadius+7;
 caseHeight = atomizerHeight+10;
 baseHeight = caseHeight/4;
 topHeight = caseHeight-5;
-$fn = 100;
+$fn = 50;
 
 ///////////////////////////////////////////////
 //                Renders                    //

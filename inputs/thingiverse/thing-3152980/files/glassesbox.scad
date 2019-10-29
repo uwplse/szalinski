@@ -7,7 +7,7 @@ bottom=true;
 notch=true;
 linkh=10;
 
-$fn=100;
+$fn=50;
 scale([1, 1.3, 1])
 if (bottom)
 {

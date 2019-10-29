@@ -17,7 +17,7 @@ axelDiameter = 5;
 margin = 3;
 
 /* [hidden] */
-$fn = 200;
+$fn = 50;
 fudge = 0.005;
 cutHeight = height + 2 * fudge;
 

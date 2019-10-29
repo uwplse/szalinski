@@ -61,7 +61,7 @@ module arms(h=10, ath=3, n=6, $fn=32) {
                 cylinder(r=4, h=h);
             }
             translate([0,0,1])
-            ring(r0=30, r1=50, h=h, $fn=72);
+            ring(r0=30, r1=50, h=h, $fn=50);
         }
     }
 
@@ -74,7 +74,7 @@ module spool_holder(d=60,h=10, ir=11+0.2, rth=5, ath, $fn=32) {
             scale([(d+4)/64,(d+4)/64,1]) arms(h=h, ath=ath, n=number_of_arms);
         }
         translate([0,0,-h/2])
-        cylinder(r=ir,h=h*2, $fn=72);
+        cylinder(r=ir,h=h*2, $fn=50);
 
     }
 }

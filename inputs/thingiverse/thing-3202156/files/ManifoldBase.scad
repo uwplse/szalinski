@@ -12,7 +12,7 @@ Positions = 3;
 DoubleSided = 1;
 
 // Circular segments detailing
-$fn=100;
+$fn=50;
 
 difference(){
     body();

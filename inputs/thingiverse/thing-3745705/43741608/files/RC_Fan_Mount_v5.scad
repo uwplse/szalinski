@@ -1,7 +1,7 @@
 /* (paramteric) Touring Car Fan Mount */
 
 //$fn=23;
-$fn=100;
+$fn=50;
 include <../Modules/Module_Rounded_Cube.scad>;
 include <../Modules/Module_Really_Rounded_Cube.scad>;
 include <../Modules/Module_Half_Rounded_Cube.scad>;

@@ -1,4 +1,4 @@
-$fn = 96;
+$fn = 50;
 
 part_to_generate = 3; // 1=top, 2=bottom, 3=both
 

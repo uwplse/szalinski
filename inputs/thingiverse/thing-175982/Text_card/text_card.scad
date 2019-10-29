@@ -147,7 +147,7 @@ difference () {
 	difference () {
 		cube ([corner_radius*2,corner_radius*2,plate_thickness+0.1]);
 		translate ([0,0,-0.1])
-		cylinder (r=corner_radius,h=plate_thickness+0.2,$fn=100);
+		cylinder (r=corner_radius,h=plate_thickness+0.2,$fn=50);
 	}
 
 	//Bottom Right
@@ -157,7 +157,7 @@ difference () {
 		translate ([0,-corner_radius*2,0])
 		cube ([corner_radius*2,corner_radius*2,plate_thickness+0.1]);
 		translate ([0,0,-0.1])
-		cylinder (r=corner_radius,h=plate_thickness+0.2,$fn=100);
+		cylinder (r=corner_radius,h=plate_thickness+0.2,$fn=50);
 	}
 
 	//Top Left
@@ -167,7 +167,7 @@ difference () {
 		translate ([-corner_radius*2,0,0])
 		cube ([corner_radius*2,corner_radius*2,plate_thickness+0.1]);
 		translate ([0,0,-0.1])
-		cylinder (r=corner_radius,h=plate_thickness+0.2,$fn=100);
+		cylinder (r=corner_radius,h=plate_thickness+0.2,$fn=50);
 	}
 
 	//Bottom Left
@@ -177,7 +177,7 @@ difference () {
 		translate ([-corner_radius*2,-corner_radius*2,0])
 		cube ([corner_radius*2,corner_radius*2,plate_thickness+0.1]);
 		translate ([0,0,-0.1])
-		cylinder (r=corner_radius,h=plate_thickness+0.2,$fn=100);
+		cylinder (r=corner_radius,h=plate_thickness+0.2,$fn=50);
 	}
 
 

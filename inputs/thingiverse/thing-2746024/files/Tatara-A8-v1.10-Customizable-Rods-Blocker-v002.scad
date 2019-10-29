@@ -32,7 +32,7 @@ eh_diam=0;//[0:0.05:7]
 if (eh_diam != 0) {
     difference() {
         flange_extra_space_hole(h,depth);
-        cylinder(h*3, d = eh_diam, center = true, $fn=128);
+        cylinder(h*3, d = eh_diam, center = true, $fn=50);
         }
     }    
 else {
@@ -48,14 +48,14 @@ module flange_extra_space_hole(h,depth){
         difference() {  
             basicshape(h);
             translate([0,0,h-depth]) 
-                cylinder(h, d = 8.2, center = false, $fn=128);
+                cylinder(h, d = 8.2, center = false, $fn=50);
         }
     }
     if (depth <= 0) {
         union (){
             basicshape(h);
             translate([0,0,h]) 
-                cylinder(-depth, d = 8.2, center = false, $fn=128);
+                cylinder(-depth, d = 8.2, center = false, $fn=50);
             }
     }    
 }  
@@ -65,23 +65,23 @@ module basicshape(h){
     difference() {  
         hull(){ // this is the main shape
         // make first clinder 
-         cylinder(h, d = 14, center = false, $fn=128);
+         cylinder(h, d = 14, center = false, $fn=50);
         // second cylinder and translate
         translate([-3,-10,0]) 
-            cylinder(h, d = 8, center = false, $fn=128);
+            cylinder(h, d = 8, center = false, $fn=50);
         //third cilinder and translate
         translate([10,3,0]) 
-            cylinder(h, d = 8, center = false, $fn=128);
+            cylinder(h, d = 8, center = false, $fn=50);
         }
         // round inner border
         translate([18.13333,-18.13333,0]) 
-            cylinder(h*3, r = 18.64435, center=true, $fn=256);
+            cylinder(h*3, r = 18.64435, center=true, $fn=50);
         // make first hole and translate
         translate([-3,-10,0]) 
-            cylinder(h*3, d = 3.2, center = true, $fn=128);
+            cylinder(h*3, d = 3.2, center = true, $fn=50);
         // make second hole and translate
         translate([10,3,0]) 
-            cylinder(h*3, d = 3.2, center = true, $fn=128);
+            cylinder(h*3, d = 3.2, center = true, $fn=50);
         // the wole depth
         }
     }

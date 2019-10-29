@@ -38,7 +38,7 @@ hull(){
     //shaft
     translate([0,Wedgewidth/2,Wedgewidth/2]){
 rotate(-90,[0,1,0]){
-cylinder(d=Wedgewidth,h=Wedgeshaft,$fn=100);
+cylinder(d=Wedgewidth,h=Wedgeshaft,$fn=50);
 }//end rotate
 }//end translate
 
@@ -46,14 +46,14 @@ cylinder(d=Wedgewidth,h=Wedgeshaft,$fn=100);
 //straight end
 translate([slope,Wedgewidth/2+a2,Wedgewidth/2]){
 rotate(-90,[0,1,0]){
-cylinder(d=Wedgewidth,h=Wedgeshaft+slope,$fn=100);
+cylinder(d=Wedgewidth,h=Wedgeshaft+slope,$fn=50);
  }//end rotate
 }//end translate 
 //sloped end
 rotate(angle,[0,0,1]){
 translate([0,Wedgewidth/2,Wedgewidth/2]){
     rotate(90,[0,1,0]){
-      cylinder(d=Wedgewidth,h=slope,,$fn=100);
+      cylinder(d=Wedgewidth,h=slope,,$fn=50);
     }//end rotate
     }//end translate
 }//end rotate
@@ -61,7 +61,7 @@ translate([0,Wedgewidth/2,Wedgewidth/2]){
 }//end hull
 //bore
 translate([-Wedgeshaft/2,Wedgewidth/2+a2/2,-safety/2])
-    cylinder(d=Hole,h=Wedgewidth+safety,$fn=100);
+    cylinder(d=Hole,h=Wedgewidth+safety,$fn=50);
 }//end difference
 //ears
 translate([0.5*Wedgelenght-Wedgeshaft,a2,0.5*earh]) {

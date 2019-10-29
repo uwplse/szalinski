@@ -9,7 +9,7 @@ module print_part(){
     
     translate([0,0,bar_height/2])
     intersection(){
-        cylinder(d=26.87,h=bar_height,center=true, $fn=200);
+        cylinder(d=26.87,h=bar_height,center=true, $fn=50);
         difference(){
             union(){
                 difference(){
@@ -41,7 +41,7 @@ module print_part(){
                 translate([7.5,-7.5,0])cube([4.5,4.5,bar_height],center=true);
                 cube([8,8,bar_height],center=true);
             }
-            cylinder(r=2.5,h=bar_height,center=true, $fn=200);
+            cylinder(r=2.5,h=bar_height,center=true, $fn=50);
         }
 }
 }

@@ -5,7 +5,7 @@
 // known issues: none.
 
 // adjust to increase/decrease polygon count at expense of processing time (above 100 is probably useless)
-$fn = 200; //
+$fn = 50; //
 
 smaSize = 8;
 smaSides = 6;

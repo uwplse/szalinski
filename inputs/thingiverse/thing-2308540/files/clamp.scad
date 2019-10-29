@@ -15,7 +15,7 @@ hole2offset=8;
 // radius of hole 2
 hole2radius=3.25; 
 
-$fn=100-0;  // round holes please
+$fn=50-0;  // round holes please
 
 bracesize=width;  // brace width and height
 

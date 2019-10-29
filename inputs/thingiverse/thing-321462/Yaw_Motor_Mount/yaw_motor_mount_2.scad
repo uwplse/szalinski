@@ -29,8 +29,8 @@ servo_length = 5.0; //Length of the servo mounting hole.
 yaw_mount();
 
 module motor_holes(distance, radius = 1.5) {
-	rotate ([0,0,90]) translate([distance / 2,0,0]) cylinder (h = 50, r=radius, center = true, $fn=100);
-	mirror([0,1,0]) rotate ([0,0,90]) translate([distance/2,0,0]) cylinder (h = 50, r=radius, center = true, $fn=100);
+	rotate ([0,0,90]) translate([distance / 2,0,0]) cylinder (h = 50, r=radius, center = true, $fn=50);
+	mirror([0,1,0]) rotate ([0,0,90]) translate([distance/2,0,0]) cylinder (h = 50, r=radius, center = true, $fn=50);
  }
 
 module motor_mount(radius) {
@@ -48,7 +48,7 @@ module motor_plate() {
 		union(){
 			hull()
 			{
-				rotate ([0,0,90]) translate([0,0,0]) cylinder (h = 4, r = motor_r, center = true, $fn=100);
+				rotate ([0,0,90]) translate([0,0,0]) cylinder (h = 4, r = motor_r, center = true, $fn=50);
 				translate(box_extend) tube_mount(servo_r, 5, 3, servo_wall);
 				mirror() translate(box_extend) tube_mount(servo_r, 5, 3, servo_wall);
 			}
@@ -69,13 +69,13 @@ module tube_mount(radius, length, offset=1.0, wall_t=1.0) {
 	cube_z = radius + wall_t + offset;
 	union() {
    		translate([-1*(radius+wall_t), -length, -cube_z]) cube([2*(radius + wall_t), length, cube_z]);
-		translate([0, -length/2, -cube_z]) rotate ([90,0,0]) cylinder (h = length, r=radius + wall_t, center = true, $fn=100);
+		translate([0, -length/2, -cube_z]) rotate ([90,0,0]) cylinder (h = length, r=radius + wall_t, center = true, $fn=50);
 	}
 }
 
 module tube_mount_hole(radius, length, offset=1.0, wall_t=1.0) {
 	cube_z = radius + wall_t + offset;
-	translate([0, -length/2, -cube_z]) rotate ([90,0,0]) cylinder (h = length + 1, r=radius, center = true, $fn=100);
+	translate([0, -length/2, -cube_z]) rotate ([90,0,0]) cylinder (h = length + 1, r=radius, center = true, $fn=50);
 }
 
 module yaw_mount() {
@@ -91,6 +91,6 @@ module yaw_mount() {
 		}
 
 		// shaft cutout
-		rotate ([0,0,0]) translate([0,0,0]) cylinder (h = 5, r=motor_shaft_diameter / 2, center = true, $fn=100);
+		rotate ([0,0,0]) translate([0,0,0]) cylinder (h = 5, r=motor_shaft_diameter / 2, center = true, $fn=50);
 	}
 }

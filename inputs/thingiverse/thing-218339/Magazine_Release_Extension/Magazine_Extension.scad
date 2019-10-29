@@ -1,4 +1,4 @@
-$fn = 200*1;
+$fn = 50*1;
 
 //The total height of this magazine release extension
 TOTAL_HEIGHT = 25.4;

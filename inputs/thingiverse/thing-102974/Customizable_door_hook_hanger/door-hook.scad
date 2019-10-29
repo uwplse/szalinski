@@ -33,7 +33,7 @@ inner_hook_buttress = 0; // [0:No,1:Yes]
 
 /* [Hidden] */
 
-$fn = 72;
+$fn = 50;
 thickness = hook_and_front_thickness;
 top_thickness = top_and_back_thickness;
 

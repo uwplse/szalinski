@@ -144,22 +144,22 @@ difference(){
 
     difference() {    
         translate([	CardLength + Tolerance, WallLength - Tolerance, BottomThickness]) cube(size = [WallThickness, CardWidth+2*Tolerance-2*WallLength, SupportHeight+WidthHeightChange]);
-        translate([CardLength + Tolerance, (CardWidth)/2, (SupportHeight*WidthRatio+BottomThickness+HoleOffset)+WidthOffset]) rotate([0, 90, 0]) cylinder($fn=180, WallThickness, HoleRadius*WidthRatio*WidthRadiusChange, HoleRadius*WidthRatio*WidthRadiusChange, false);
+        translate([CardLength + Tolerance, (CardWidth)/2, (SupportHeight*WidthRatio+BottomThickness+HoleOffset)+WidthOffset]) rotate([0, 90, 0]) cylinder($fn=50, WallThickness, HoleRadius*WidthRatio*WidthRadiusChange, HoleRadius*WidthRatio*WidthRadiusChange, false);
     }
     
     difference() {    
         translate([	0 - WallThickness - Tolerance, WallLength - Tolerance, BottomThickness]) cube(size = [WallThickness, CardWidth+2*Tolerance-2*WallLength, SupportHeight+WidthHeightChange]);
-        translate([0 - WallThickness - Tolerance, (CardWidth)/2, (SupportHeight*WidthRatio+BottomThickness+HoleOffset)+WidthOffset]) rotate([0, 90, 0]) cylinder($fn=180, WallThickness, HoleRadius*WidthRatio*WidthRadiusChange, HoleRadius*WidthRatio*WidthRadiusChange, false);
+        translate([0 - WallThickness - Tolerance, (CardWidth)/2, (SupportHeight*WidthRatio+BottomThickness+HoleOffset)+WidthOffset]) rotate([0, 90, 0]) cylinder($fn=50, WallThickness, HoleRadius*WidthRatio*WidthRadiusChange, HoleRadius*WidthRatio*WidthRadiusChange, false);
     }
                         
 // Length Support
     
     difference() {    
         translate([	WallLength - Tolerance, 0 - Tolerance - WallThickness, BottomThickness]) cube(size = [CardLength - 2 * WallLength + 2* Tolerance, WallThickness, SupportHeight]);
-        translate([CardLength/2, 0-Tolerance, SupportHeight+BottomThickness+HoleOffset]) rotate([90, 0, 0]) cylinder($fn=180, WallThickness, HoleRadius, HoleRadius, false);
+        translate([CardLength/2, 0-Tolerance, SupportHeight+BottomThickness+HoleOffset]) rotate([90, 0, 0]) cylinder($fn=50, WallThickness, HoleRadius, HoleRadius, false);
     }
     
     difference() {    
         translate([	WallLength - Tolerance, CardWidth+Tolerance, BottomThickness]) cube(size = [CardLength - 2 * WallLength + 2* Tolerance, WallThickness, SupportHeight]);
-        translate([CardLength/2, CardWidth+Tolerance+WallThickness, SupportHeight+BottomThickness+HoleOffset]) rotate([90, 0, 0]) cylinder($fn=180, WallThickness, HoleRadius, HoleRadius, false);
+        translate([CardLength/2, CardWidth+Tolerance+WallThickness, SupportHeight+BottomThickness+HoleOffset]) rotate([90, 0, 0]) cylinder($fn=50, WallThickness, HoleRadius, HoleRadius, false);
     }

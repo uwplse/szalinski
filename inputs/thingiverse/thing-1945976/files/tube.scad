@@ -1,5 +1,5 @@
 HEIGHT = 85;
-$fn = 100;
+$fn = 50;
 
 module Patterson_tank_tube () {
     BASE_D = 39.77;

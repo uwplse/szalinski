@@ -65,30 +65,30 @@ module main_module(){ //create module
                 
                //create vibration stand offs
                 //front
-                translate ([(x_dim/2),(y_dim/2),0]) rotate ([0,0,0]) cylinder(standoff_heighta,standoff_dia/2,standoff_dia/2,$fn=60,true);
-                translate ([-(x_dim/2),(y_dim/2),0]) rotate ([0,0,0]) cylinder(standoff_heighta,standoff_dia/2,standoff_dia/2,$fn=60,true);
+                translate ([(x_dim/2),(y_dim/2),0]) rotate ([0,0,0]) cylinder(standoff_heighta,standoff_dia/2,standoff_dia/2,$fn=50,true);
+                translate ([-(x_dim/2),(y_dim/2),0]) rotate ([0,0,0]) cylinder(standoff_heighta,standoff_dia/2,standoff_dia/2,$fn=50,true);
                 //back
-                translate ([(x_dim/2),-(y_dim/2),0]) rotate ([0,0,0]) cylinder(standoff_heighta,standoff_dia/2,standoff_dia/2,$fn=60,true);
-                translate ([-(x_dim/2),-(y_dim/2),0]) rotate ([0,0,0]) cylinder(standoff_heighta,standoff_dia/2,standoff_dia/2,$fn=60,true);
+                translate ([(x_dim/2),-(y_dim/2),0]) rotate ([0,0,0]) cylinder(standoff_heighta,standoff_dia/2,standoff_dia/2,$fn=50,true);
+                translate ([-(x_dim/2),-(y_dim/2),0]) rotate ([0,0,0]) cylinder(standoff_heighta,standoff_dia/2,standoff_dia/2,$fn=50,true);
                  
                     } //end union
                             
     //start subtraction of difference
                //create vibration stand holes
                 //front
-                translate ([(x_dim/2),(y_dim/2),0]) rotate ([0,0,0]) cylinder(standoff_heighta+2,standoff_hole/2,standoff_hole/2,$fn=60,true);
-                translate ([-(x_dim/2),(y_dim/2),0]) rotate ([0,0,0]) cylinder(standoff_heighta+2,standoff_hole/2,standoff_hole/2,$fn=60,true);
+                translate ([(x_dim/2),(y_dim/2),0]) rotate ([0,0,0]) cylinder(standoff_heighta+2,standoff_hole/2,standoff_hole/2,$fn=50,true);
+                translate ([-(x_dim/2),(y_dim/2),0]) rotate ([0,0,0]) cylinder(standoff_heighta+2,standoff_hole/2,standoff_hole/2,$fn=50,true);
                 //back
-                translate ([(x_dim/2),-(y_dim/2),0]) rotate ([0,0,0]) cylinder(standoff_heighta+2,standoff_hole/2,standoff_hole/2,$fn=60,true);
-                translate ([-(x_dim/2),-(y_dim/2),0]) rotate ([0,0,0]) cylinder(standoff_heighta+2,standoff_hole/2,standoff_hole/2,$fn=60,true);
+                translate ([(x_dim/2),-(y_dim/2),0]) rotate ([0,0,0]) cylinder(standoff_heighta+2,standoff_hole/2,standoff_hole/2,$fn=50,true);
+                translate ([-(x_dim/2),-(y_dim/2),0]) rotate ([0,0,0]) cylinder(standoff_heighta+2,standoff_hole/2,standoff_hole/2,$fn=50,true);
                     
               //create hear recess holes
                 //front
-                translate ([(x_dim/2),(y_dim/2),-(standoff_heighta/2)+(recess_height/2)]) rotate ([0,0,0]) cylinder(recess_height,recess_dia/2,recess_dia/2,$fn=60,true);
-                translate ([-(x_dim/2),(y_dim/2),-(standoff_heighta/2)+(recess_height/2)]) rotate ([0,0,0]) cylinder(recess_height,recess_dia/2,recess_dia/2,$fn=60,true);
+                translate ([(x_dim/2),(y_dim/2),-(standoff_heighta/2)+(recess_height/2)]) rotate ([0,0,0]) cylinder(recess_height,recess_dia/2,recess_dia/2,$fn=50,true);
+                translate ([-(x_dim/2),(y_dim/2),-(standoff_heighta/2)+(recess_height/2)]) rotate ([0,0,0]) cylinder(recess_height,recess_dia/2,recess_dia/2,$fn=50,true);
                 //back
-                translate ([(x_dim/2),-(y_dim/2),-(standoff_heighta/2)+(recess_height/2)]) rotate ([0,0,0]) cylinder(recess_height,recess_dia/2,recess_dia/2,$fn=60,true);
-                translate ([-(x_dim/2),-(y_dim/2),-(standoff_heighta/2)+(recess_height/2)]) rotate ([0,0,0]) cylinder(recess_height,recess_dia/2,recess_dia/2,$fn=60,true);
+                translate ([(x_dim/2),-(y_dim/2),-(standoff_heighta/2)+(recess_height/2)]) rotate ([0,0,0]) cylinder(recess_height,recess_dia/2,recess_dia/2,$fn=50,true);
+                translate ([-(x_dim/2),-(y_dim/2),-(standoff_heighta/2)+(recess_height/2)]) rotate ([0,0,0]) cylinder(recess_height,recess_dia/2,recess_dia/2,$fn=50,true);
                                                
     } //end difference
 }//end module

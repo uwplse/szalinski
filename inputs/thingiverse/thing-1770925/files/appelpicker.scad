@@ -13,7 +13,7 @@ a=[1,6,12,16,18,20];
 b=[0,0,0,0,2,3];
 d = width_of_wooden_stick; // width of the wooden stick
 h = full_height_of_wooden_stick; // full height of the stick (the mounting lug is half-height)
-$fn=90;
+$fn=50;
 
 rotate([0,0,-9]) difference() {
     sphere(r=apple_diameter/2+2.4);

@@ -54,7 +54,7 @@ module reine()
         cube([RC,RC,0.00001],center=true);
         translate([sin(360/8*i)*(RC/2-11),cos(360/8*i)*(RC/2-11),Taille*2.5-RC/2])
         {
-          sphere(d=22,$fn=64);
+          sphere(d=22,$fn=50);
         }
         }
       }
@@ -73,9 +73,9 @@ module fou()
       cube([RC,RC,0.00001],center=true);
       translate([0,0,Taille*2-RC/2])
       {
-        sphere(r = RC/4,$fn=64);
+        sphere(r = RC/4,$fn=50);
         translate([0, 0, RC/4 * sin(RC/3)])
-        cylinder(h = RC/3, r1 =  RC/4 * cos(RC/3), r2 = 0,$fn=64);
+        cylinder(h = RC/3, r1 =  RC/4 * cos(RC/3), r2 = 0,$fn=50);
       }
     }
     translate([0,0,Taille*2-RC/2])
@@ -97,19 +97,19 @@ module cavalier()
   translate([0,RC/4,Taille*2-RC/2])
   rotate([90,0,90])
   scale([0.5,1,1])
-  cylinder(d=RC,h=RC/16,$fn=64,center=true);
+  cylinder(d=RC,h=RC/16,$fn=50,center=true);
   }
   hull()
   {
   translate([0,RC/4,Taille*2-RC/2])
   rotate([90,0,90])
   scale([0.5,1,1])
-  cylinder(d=RC/4*3,h=RC/4,$fn=64,center=true);
+  cylinder(d=RC/4*3,h=RC/4,$fn=50,center=true);
 
   translate([0,-RC/4,Taille*2-RC])
   rotate([90,0,90])
   scale([0.5,0.5,1])
-  cylinder(d=RC/4*3,h=RC/8,$fn=64,center=true);
+  cylinder(d=RC/4*3,h=RC/8,$fn=50,center=true);
   }
 }
 
@@ -155,6 +155,6 @@ module pion()
   {
     cube([PC,PC,0.00001],center=true);
     translate([0,0,Taille*1.25-PC/2])
-    sphere(d=PC,$fn=64);
+    sphere(d=PC,$fn=50);
   }
 }

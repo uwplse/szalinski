@@ -48,8 +48,8 @@ module holes() {
 
 module hemisphere() {
   difference() {
-    sphere(r = shellR, $fn = 128);
-    sphere(r = shellR - wall, $fn = 128);
+    sphere(r = shellR, $fn = 50);
+    sphere(r = shellR - wall, $fn = 50);
     translate([-shellR - 1, -shellR - 1, -shellR - 1])
       cube([2 * shellR + 2, 2 * shellR + 2, shellR + 1]);
     holes();

@@ -14,7 +14,7 @@ MinOL = 0.25;
 MaxAng = 40;
 
 // - Print quality
-$fn=100;
+$fn=50;
 
 
 /* [Hidden] */

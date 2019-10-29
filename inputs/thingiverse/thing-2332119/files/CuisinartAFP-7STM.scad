@@ -46,7 +46,7 @@ module lowerShaft(){
       union(){
           upperShaft();
           midFlange();
-          cylinder(lower_Shaft_Height, lower_Shaft_Radius, lower_Shaft_Radius, $fn=300);   
+          cylinder(lower_Shaft_Height, lower_Shaft_Radius, lower_Shaft_Radius, $fn=50);   
           
       } //end union
       
@@ -59,7 +59,7 @@ module lowerShaft(){
                 cube([lower_Shaft_Void_2,lower_Shaft_Void_2,void_Height]);
       } //end lowerShaftVoid intersection
     
-      cylinder(lower_Shaft_Height+mid_Flange_Height+upper_Shaft_Height, pin_Radius, pin_Radius, $fn=300);
+      cylinder(lower_Shaft_Height+mid_Flange_Height+upper_Shaft_Height, pin_Radius, pin_Radius, $fn=50);
           
   } //end difference
 } //end lowerShaft
@@ -67,7 +67,7 @@ module lowerShaft(){
 module midFlange(){
   
   translate([0,0,lower_Shaft_Height])  
-        cylinder(mid_Flange_Height, mid_Flange_Radius, mid_Flange_Radius, $fn=300);
+        cylinder(mid_Flange_Height, mid_Flange_Radius, mid_Flange_Radius, $fn=50);
     
 } //end midFlange
 

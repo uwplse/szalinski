@@ -11,7 +11,7 @@ pocketSegments = 10;
 pocketCorners = 3;
 
 /* [Hidden] */
-$fn=150;
+$fn=50;
 
 // SHOULDER AND BLADE
 difference() {

@@ -123,8 +123,8 @@ module arch(){
     translate([-FrameThickness/2,3*TotalFrameWidth/2,TotalFrameHeight-sqrt(pow(2*TotalFrameWidth,2)-pow(3/2*TotalFrameWidth,2))]){
         rotate([0,90,0]){
             difference(){
-                cylinder( r = 2*TotalFrameWidth, h = FrameThickness, $fn=72 );
-                cylinder( r = 2*TotalFrameWidth-ColumnWidth, h = FrameThickness, $fn=72 );
+                cylinder( r = 2*TotalFrameWidth, h = FrameThickness, $fn=50 );
+                cylinder( r = 2*TotalFrameWidth-ColumnWidth, h = FrameThickness, $fn=50 );
                 translate([0, -2*TotalFrameWidth,0]){
                     cube([2*TotalFrameWidth, 4*TotalFrameWidth, FrameThickness]);
                 }

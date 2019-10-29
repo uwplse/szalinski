@@ -21,7 +21,7 @@ offsetHeight = 0.4;
 /* [Hidden] */
 
 // global curve detail
-$fn=180; 
+$fn=50; 
 
  module cylinder_outer(height,radius,fn){
    fudge = 1/cos(180/fn);

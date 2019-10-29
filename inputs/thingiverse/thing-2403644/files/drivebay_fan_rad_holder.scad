@@ -61,7 +61,7 @@ module shroud () {
         four_cylinders(xs=fh,ys=fh, 
             d=fan_hole_d,h=shroud_thickness+1, z=-0.1);
         
-        cylinder($fn=360, d=fan_diam, h=1+2*shroud_thickness,center=true);
+        cylinder($fn=50, d=fan_diam, h=1+2*shroud_thickness,center=true);
     }
 }
 

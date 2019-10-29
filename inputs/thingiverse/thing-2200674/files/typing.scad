@@ -33,16 +33,16 @@ dmb=distance_mid_bottom;
 module cubox(l1,w1,e1,r1){
 hull(){
 translate([l1/2-r1,w1/2-r1,0]){
-cylinder(e1,r1,r1,$fn=100, center=true);
+cylinder(e1,r1,r1,$fn=50, center=true);
 }
 translate([l1/2-r1,-w1/2+r1,0]){
-cylinder(e1,r1,r1,$fn=100, center=true);
+cylinder(e1,r1,r1,$fn=50, center=true);
 }
 translate([-l1/2+r1,-w1/2+r1,0]){
-cylinder(e1,r1,r1,$fn=100, center=true);
+cylinder(e1,r1,r1,$fn=50, center=true);
 }
 translate([-l1/2+r1,w1/2-r1,0]){
-cylinder(e1,r1,r1,$fn=100, center=true);
+cylinder(e1,r1,r1,$fn=50, center=true);
 
 }
 }

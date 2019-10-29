@@ -6,7 +6,7 @@ grid_ht = 1.5;
 outer_wall_w = 5;
 eps = 0.01; 
 
-$fn=100; 
+$fn=50; 
 
 module mesh(x, y, spacing, ht, th){ 
   total_x = x*spacing; 

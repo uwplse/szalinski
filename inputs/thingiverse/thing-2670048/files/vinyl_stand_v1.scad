@@ -46,15 +46,15 @@ module main_module(){ //create module
             union() {//start union
                 
                 //created extended base to prevent tipping
-                translate ([0,0,6.35/2]) rotate ([0,0,0]) cylinder(6.35,(tube_id+35)/2,(tube_id+35)/2,$fn=60,true);
+                translate ([0,0,6.35/2]) rotate ([0,0,0]) cylinder(6.35,(tube_id+35)/2,(tube_id+35)/2,$fn=50,true);
                 //create main body
-                translate ([0,0,(tube_tall+6.35)/2]) rotate ([0,0,0]) cylinder(tube_tall+6.35,(tube_id+3)/2,(tube_id+3)/2,$fn=60,true);
+                translate ([0,0,(tube_tall+6.35)/2]) rotate ([0,0,0]) cylinder(tube_tall+6.35,(tube_id+3)/2,(tube_id+3)/2,$fn=50,true);
                  
                         
                     } //end union
                     
                 //remove center to save plastic and time 
-                translate ([0,0,(tube_tall)/2]) rotate ([0,0,0]) cylinder(tube_tall+30,(tube_cen-5)/2,(tube_cen-5)/2,$fn=60,true);
+                translate ([0,0,(tube_tall)/2]) rotate ([0,0,0]) cylinder(tube_tall+30,(tube_cen-5)/2,(tube_cen-5)/2,$fn=50,true);
                     
                  //knock out center   
                 translate ([0,0,(tube_tall/2)+7]) rotate ([0,0,0]) knock_out(tube_id,tube_cen,tube_tall+1);
@@ -76,7 +76,7 @@ module knock_out(ko_od,ko_id,ko_tall){ //create module
             union() {//start union
                 
                 //create outer shell
-                translate ([0,0,0]) rotate ([0,0,0]) cylinder(ko_tall,ko_od/2,ko_od/2,$fn=60,true);
+                translate ([0,0,0]) rotate ([0,0,0]) cylinder(ko_tall,ko_od/2,ko_od/2,$fn=50,true);
                  
                         
                     } //end union
@@ -84,14 +84,14 @@ module knock_out(ko_od,ko_id,ko_tall){ //create module
     //start subtraction of difference
                  
                 //create inter knockout
-                translate ([0,0,(5/2)]) rotate ([0,0,0]) cylinder(ko_tall+5,ko_id/2,ko_id/2,$fn=60,true);
+                translate ([0,0,(5/2)]) rotate ([0,0,0]) cylinder(ko_tall+5,ko_id/2,ko_id/2,$fn=50,true);
                                                
     } //end difference
 }//end module
 
 module oval(w,h, height, center = true) //create oval
     {
-        scale([1, h/w, 1]) cylinder(h=height, r=w, $fn=60,center=center);
+        scale([1, h/w, 1]) cylinder(h=height, r=w, $fn=50,center=center);
     }//end module
 
                  

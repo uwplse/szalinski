@@ -34,7 +34,7 @@ slA = 155;
 slZ = 40;
 
 // end of configurable parameters
-$fn = 60;
+$fn = 50;
 
 module base( x )
 {

@@ -26,6 +26,6 @@ difference(){
 
     // holes
     for ( i = [-1.4*VialR*(VialN-1) : 2.8*VialR :1.5*VialR*VialN ] ){
-        translate([0,i,1.35*VialR]) rotate([0,90,0]) cylinder (h = 1.01*VialH, r=VialR, center = true, $fn=200);
+        translate([0,i,1.35*VialR]) rotate([0,90,0]) cylinder (h = 1.01*VialH, r=VialR, center = true, $fn=50);
     }
 }

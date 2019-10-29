@@ -30,10 +30,10 @@ jackpad_top_rad=jackpad_top_dia / 2.0;
 difference(){    
 union(){
 	translate([0,0,(jackpad_top_height/2.0)]) {
-        cylinder (h = jackpad_top_height, r=jackpad_top_rad, center = true, $fn=200);
+        cylinder (h = jackpad_top_height, r=jackpad_top_rad, center = true, $fn=50);
         }
 	translate([0,0,-(jackpad_bot_height/2.0)]) {
-        cylinder (h = jackpad_bot_height, r=jackpad_bot_rad, center = true, $fn=200);
+        cylinder (h = jackpad_bot_height, r=jackpad_bot_rad, center = true, $fn=50);
         }
      }  
 

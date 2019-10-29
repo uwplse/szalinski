@@ -55,7 +55,7 @@ module encoche(){
 		cube([ouverture_z-2, diametre/6, epaisseur]);
 	}
 	if(enc == 2){
-		cylinder(ouverture_z-2, d=epaisseur, $fn=60);
+		cylinder(ouverture_z-2, d=epaisseur, $fn=50);
 	}
 }
 

@@ -18,7 +18,7 @@ ball_diameter = 10;
 join_tolerance = 0.5;  
 
 /* [Hidden] */
-$fn = 100;
+$fn = 50;
 
 /*
 track_intersection();

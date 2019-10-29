@@ -1,4 +1,4 @@
-$fn = 100;
+$fn = 50;
 shell = 1;              // Thickness of outer wall
 
 base_dia = 17;          // Diameter of base circles (Thickness of your finger)

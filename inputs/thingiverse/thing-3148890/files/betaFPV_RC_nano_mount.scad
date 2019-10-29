@@ -38,7 +38,7 @@ holeDiameter = 1.5;
 mountHeight = 1.8;
 roundnessSteps = 15;
 
-$fn = 64;
+$fn = 50;
 outerRadius = outerDiameter / 2;
 holeRadius = holeDiameter / 2;
 camLensRadius = camLensDiameter / 2;

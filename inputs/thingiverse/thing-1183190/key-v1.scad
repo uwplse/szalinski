@@ -30,7 +30,7 @@ union() {
     // Shank
     difference() {
         translate([0, 0, 10])
-        cylinder(d=outer_diameter, h=height_of_shank, $fn=100);
+        cylinder(d=outer_diameter, h=height_of_shank, $fn=50);
 
         translate([0,0, 10+height_of_shank-depth_of_center_hole])
         cylinder(d=inner_diameter, h=depth_of_center_hole+1, $fn=number_of_center_sides);

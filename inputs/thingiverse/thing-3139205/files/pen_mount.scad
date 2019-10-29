@@ -1,6 +1,6 @@
 include <MCAD/units.scad>
 
-$fn = 60;
+$fn = 50;
 
 width = 15;
 length = 58;

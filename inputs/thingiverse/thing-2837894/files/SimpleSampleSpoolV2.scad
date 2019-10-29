@@ -52,7 +52,7 @@ filament_d=1.75; // [1.75:2,3.00:3.25]
 
 /* [Hidden] */
 M3=3.2;
-$fn=60;
+$fn=50;
 armangle=360/armcount;
 arm_l=(outer-hole_d-2*hubwall)/2;
 
@@ -130,7 +130,7 @@ module arc( height, depth, radius, degrees ) {
 	render() {
 		difference() {
 			// Outer ring
-			rotate_extrude($fn = 100)
+			rotate_extrude($fn = 50)
 				translate([radius - height, 0, 0])
 				square([height,depth]);
 

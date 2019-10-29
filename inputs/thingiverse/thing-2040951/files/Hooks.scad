@@ -25,7 +25,7 @@ cubeBorderSize = (CubeWidth-numHooks*DistanceBetweenHooks)/2;
 union() {
     cube([CubeWidth,CubeDepth,CubeHeight],false);
     // Cylinder
-    for(i=[0:numHooks-1]) translate([i*DistanceBetweenHooks+cubeBorderSize+DistanceBetweenHooks/2,CubeDepth/2,CubeHeight]) cylinder(CylinderHeight, CylinderRadius, CylinderRadius, false, $fn=100);
+    for(i=[0:numHooks-1]) translate([i*DistanceBetweenHooks+cubeBorderSize+DistanceBetweenHooks/2,CubeDepth/2,CubeHeight]) cylinder(CylinderHeight, CylinderRadius, CylinderRadius, false, $fn=50);
     // Spheres
-    for(i=[0:numHooks-1]) translate([i*DistanceBetweenHooks+cubeBorderSize+DistanceBetweenHooks/2,CubeDepth/2,CylinderHeight+CubeHeight+SphereRadius/2]) sphere(SphereRadius, $fn=100);
+    for(i=[0:numHooks-1]) translate([i*DistanceBetweenHooks+cubeBorderSize+DistanceBetweenHooks/2,CubeDepth/2,CylinderHeight+CubeHeight+SphereRadius/2]) sphere(SphereRadius, $fn=50);
 }

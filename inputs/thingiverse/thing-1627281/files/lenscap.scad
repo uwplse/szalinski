@@ -1,5 +1,5 @@
 // number of segments
-$fn = 200;
+$fn = 50;
 // inner diameter
 inner_diameter = 30;
 // cap height. So far, bottom is always 2mm, border is 1mm

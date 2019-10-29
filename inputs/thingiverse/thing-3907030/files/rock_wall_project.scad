@@ -17,7 +17,7 @@ l=69.5;
 d=11;
 //[10,11,12,13,14,15]
 
-$fn=100;
+$fn=50;
 
 // How tall should the cup be?
 cuphieght=96;

@@ -11,7 +11,7 @@ D=15;
 H=10;
 
 //Resolution of outer socket layer 
-$fn=500;
+$fn=50;
 
 
    module Socket(){

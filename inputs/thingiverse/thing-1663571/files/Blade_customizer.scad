@@ -21,7 +21,7 @@ module MakeBlade()
         cube([10,50,BladeLength]);
         translate([5,0,BladeLength])
             rotate([-90,0,0])
-                cylinder(h=50,r=5,$fn=100);
+                cylinder(h=50,r=5,$fn=50);
         }
         
     if (EndType==2)
@@ -47,13 +47,13 @@ module MakeBlade()
                 cube([50,12,10]);
             translate([0,BladeRadius+9,0])
                 rotate([0,90,0])
-                cylinder(h=50,r=BladeRadius,$fn=100);
+                cylinder(h=50,r=BladeRadius,$fn=50);
                 
             }
         if(Hollow>0)
         translate([-5,BladeRadius+9,0])
             rotate([0,90,0])
-            cylinder(h=60,r=BladeRadius-4,$fn=100);
+            cylinder(h=60,r=BladeRadius-4,$fn=50);
             
         }
 

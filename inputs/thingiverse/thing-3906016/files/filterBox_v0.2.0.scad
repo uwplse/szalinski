@@ -35,7 +35,7 @@ hingeSep = 1.5;
 diameter= 1.75;
 hd = hingeType != "Flat"?(diameter/2) * 3 +tolerance*2: 0;
 hingeDiameter = hd > 0 && hd < 5.5 ? 5.5:hd;
-$fn=60;
+$fn=50;
 create();
 
 module create(){

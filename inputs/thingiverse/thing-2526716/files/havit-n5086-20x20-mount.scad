@@ -26,12 +26,12 @@ difference() {
     
     // Left screw hole
     translate([base_plate_corner_radius/2+base_plate_hole_offset,base_plate_length/2,-clearance]) {
-        cylinder(d=base_plate_hole_diameter, h=base_plate_height+2*clearance, $fn=96);
+        cylinder(d=base_plate_hole_diameter, h=base_plate_height+2*clearance, $fn=50);
     }
 
     // Right screw hole
     translate([base_plate_width-base_plate_corner_radius/2-base_plate_hole_offset,base_plate_length/2,-clearance]) {
-        cylinder(d=base_plate_hole_diameter, h=base_plate_height+2*clearance, $fn=96);
+        cylinder(d=base_plate_hole_diameter, h=base_plate_height+2*clearance, $fn=50);
     }
 }
 
@@ -50,7 +50,7 @@ module version1 () {
             width = coupler_screw_hole_diameter+2*coupler_wall_width;
 
             union() {
-                cylinder(d=width, h=coupler_width, $fn=96);
+                cylinder(d=width, h=coupler_width, $fn=50);
                 translate([0,-width/2,0]) {
                     cube([width/2+coupler_height, width, coupler_width]);
                 }
@@ -58,12 +58,12 @@ module version1 () {
 
             // Screw hole
             translate([0,0,-clearance]) {
-                cylinder(d=coupler_screw_hole_diameter, h=coupler_width+2*clearance, $fn=96);
+                cylinder(d=coupler_screw_hole_diameter, h=coupler_width+2*clearance, $fn=50);
             }
             
             // Screw head
             translate([0,0,coupler_width-coupler_screw_head_height]) {
-                cylinder(d=coupler_screw_head_diameter, h=coupler_screw_head_height+clearance, $fn=96);
+                cylinder(d=coupler_screw_head_diameter, h=coupler_screw_head_height+clearance, $fn=50);
             }
             
             // Nut
@@ -100,7 +100,7 @@ module version2 () {
             width = coupler_screw_hole_diameter+2*coupler_wall_width;
 
             union() {
-                cylinder(d=width, h=coupler_width, $fn=96);
+                cylinder(d=width, h=coupler_width, $fn=50);
                 translate([0,-width/2,0]) {
                     cube([width/2+coupler_height, width, coupler_width]);
                 }
@@ -108,12 +108,12 @@ module version2 () {
 
             // Screw hole
             translate([0,0,-clearance]) {
-                cylinder(d=coupler_screw_hole_diameter, h=coupler_width+2*clearance, $fn=96);
+                cylinder(d=coupler_screw_hole_diameter, h=coupler_width+2*clearance, $fn=50);
             }
             
             // Screw head
             translate([0,0,coupler_width-coupler_screw_head_height]) {
-                cylinder(d=coupler_screw_head_diameter, h=coupler_screw_head_height+clearance, $fn=96);
+                cylinder(d=coupler_screw_head_diameter, h=coupler_screw_head_height+clearance, $fn=50);
             }
             
             // Nut
@@ -138,16 +138,16 @@ module version2 () {
 module roundedRectangle(width, depth, height, radius) {
     hull () {    
         translate([radius,radius,0]) {
-            cylinder(h=height, r=radius, $fn=90);
+            cylinder(h=height, r=radius, $fn=50);
         }
         translate([width-radius,radius,0]) {
-            cylinder(h=height, r=radius, $fn=90);
+            cylinder(h=height, r=radius, $fn=50);
         }
         translate([radius,depth-radius,0]) {
-            cylinder(h=height, r=radius, $fn=90);
+            cylinder(h=height, r=radius, $fn=50);
         }
         translate([width-radius,depth-radius,0]) {
-            cylinder(h=height, r=radius, $fn=90);
+            cylinder(h=height, r=radius, $fn=50);
         }
     }
 }

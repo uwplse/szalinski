@@ -15,7 +15,7 @@ steps = 5;
 
 // variables below here will not show up in the customizer
 
-$fn=100 + 0; // How many slices should the circles have (circle accuracy)
+$fn=50 + 0; // How many slices should the circles have (circle accuracy)
 
 radius = holeID / 2;
 outerRadius = radius + max(2, radius/2);

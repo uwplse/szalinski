@@ -19,7 +19,7 @@ chain_ball_space=1.2;
 wire_diameter=1.5;
 spacing=0.1;
 
-$fn=100;
+$fn=50;
 
 Assembly();
 

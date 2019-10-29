@@ -58,7 +58,7 @@ grid_y=6;
 grid_height=5;
 //grid_thickness must be smaller than grid_x and grid_y range 0 to 1000
 grid_thickness=1;
-$fn=80;
+$fn=50;
 
 
 /*------------------------------------------------------------------------------

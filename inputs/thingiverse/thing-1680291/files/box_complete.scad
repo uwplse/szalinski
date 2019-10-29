@@ -139,9 +139,9 @@ module screwNose(screwholeDiameter=4, noseHeight=5) {
 	translate([0,screwholeDiameter/2+screwnose_Wall_Thickness+additionalDistanceFromWall, 0]) difference() {
 		union() {
 			translate([-(screwholeDiameter/2+screwnose_Wall_Thickness), -(screwholeDiameter/2+screwnose_Wall_Thickness+additionalDistanceFromWall),0]) cube([(screwholeDiameter/2+screwnose_Wall_Thickness)*2, screwholeDiameter/2+screwnose_Wall_Thickness+additionalDistanceFromWall, noseHeight]);
-			cylinder(r=(screwholeDiameter/2)+screwnose_Wall_Thickness, h=noseHeight, $fn=60);
+			cylinder(r=(screwholeDiameter/2)+screwnose_Wall_Thickness, h=noseHeight, $fn=50);
 		}
-		cylinder(r=screwholeDiameter/2, h=noseHeight, $fn=60);
+		cylinder(r=screwholeDiameter/2, h=noseHeight, $fn=50);
 	}
 }
 box();

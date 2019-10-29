@@ -69,9 +69,9 @@ module make_compartment(cpn) {
             translate([(backplate_width)/2,0,disk_diam*mm_per_in]) {
                 rotate([270,0,0]) {
                     hull() {
-                        cylinder(h = compartment_height+.1, r=pullout_radius,$fn=56);
+                        cylinder(h = compartment_height+.1, r=pullout_radius,$fn=50);
                         translate([0,backplate_width-pullout_radius*1.5,0])
-                        cylinder(h = compartment_height+.1, r=pullout_radius,$fn=56);
+                        cylinder(h = compartment_height+.1, r=pullout_radius,$fn=50);
                     }
                 }
             }

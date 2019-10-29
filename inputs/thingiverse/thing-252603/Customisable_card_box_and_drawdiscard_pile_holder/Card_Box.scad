@@ -1,4 +1,4 @@
-$fn=128;
+$fn=50;
 
 // Height of the cards in mm
 Height = 88; //[50:150]

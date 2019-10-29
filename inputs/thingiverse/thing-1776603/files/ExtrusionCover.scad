@@ -15,7 +15,7 @@ difference()
     {
         difference()
         {
-            translate([0,7,0]) cylinder(r=10, h=height, center=true, $fn=64);
+            translate([0,7,0]) cylinder(r=10, h=height, center=true, $fn=50);
             translate([0,10,0]) cube([20,20,height+1], center=true);
         }
         translate([0,depth/2, 0]) cube([holeSize, 3.5, height], center=true);

@@ -16,7 +16,7 @@ build_plate_manual_x = 100; //[100:400]
 build_plate_manual_y = 100; //[100:400]
 
 
-$fn = 2000 * 1;
+$fn = 50 * 1;
 
 // Wall Thickness
 walls = 2.5;

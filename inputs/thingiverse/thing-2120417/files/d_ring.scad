@@ -39,7 +39,7 @@ head_dia = 12;                  //Cutaway for the head of the screw or washer. Z
 head_inset = 0.1;               //Inset distance for the head of the screw, 
                                 //if head cutaway enabled.
 
-$fn = 64;                       //Resolution
+$fn = 50;                       //Resolution
 
 difference(){
     

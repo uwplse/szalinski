@@ -15,7 +15,7 @@ rheight = height + 0.5;
 rdiameter = diameter + 0.5;
 hypo = sqrt (pow (rheight+curve,2) + pow (rdiameter/2, 2));
 
-$fn = 100 * 1;
+$fn = 50 * 1;
 
 difference () {
    translate ([0,0,-curve]) sphere (r=hypo + 0.5);

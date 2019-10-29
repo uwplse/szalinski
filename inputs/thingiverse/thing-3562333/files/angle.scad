@@ -24,11 +24,11 @@ module make_angle(x,x1,y,z){
         if (holes)
         {
             translate([((face_a_width-thickness)/2)+ thickness, hole_loc_from_end,-1])
-                cylinder(z+2,hole_diameter/2,hole_diameter/2,$fn=100);
+                cylinder(z+2,hole_diameter/2,hole_diameter/2,$fn=50);
             translate([((face_a_width-thickness)/2)+ thickness, length/2,-1])
-                cylinder(z+2,hole_diameter/2,hole_diameter/2,$fn=100);
+                cylinder(z+2,hole_diameter/2,hole_diameter/2,$fn=50);
             translate([((face_a_width-thickness)/2)+ thickness, length-hole_loc_from_end,-1])
-                cylinder(z+2,hole_diameter/2,hole_diameter/2,$fn=100);
+                cylinder(z+2,hole_diameter/2,hole_diameter/2,$fn=50);
         }    
     }
 }

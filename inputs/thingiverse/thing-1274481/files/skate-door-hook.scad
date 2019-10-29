@@ -5,7 +5,7 @@ strength = 5;
 inner_strength = 2;
 inner_height = 12;
 
-$fn=100;
+$fn=50;
 
 difference(){
     cube([roll_diameter +2*strength , roll_diameter + 2*strength, roll_width]);

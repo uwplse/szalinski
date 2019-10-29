@@ -21,7 +21,7 @@ height = 1.5;
 shape = "cross"; // [cross, cricle]
 
 /* [Hidden] */
-$fn = 64;
+$fn = 50;
 centerHoleRadius = centerHoleDiameter / 2;
 centerRadius = centerDiameter / 2;
 

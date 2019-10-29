@@ -5,7 +5,7 @@
 // https://github.com/nbrookins/danger-gadgets.git
 // http://www.thingiverse.com/knick
 
-$fn=96;
+$fn=50;
 // thickness of spnner body.  most bearings are 7-8mm
 body_thickness = 7.5;
 //diameter of center hole.  typical bearings are 22mm

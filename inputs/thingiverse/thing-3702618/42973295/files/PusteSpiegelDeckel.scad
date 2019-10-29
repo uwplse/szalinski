@@ -1,4 +1,4 @@
-$fn=75;
+$fn=50;
 
 difference(){
     cylinder(6,r=52.5,center);

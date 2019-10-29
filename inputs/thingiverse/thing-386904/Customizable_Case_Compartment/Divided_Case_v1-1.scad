@@ -81,7 +81,7 @@ labelHeight = 10;
 
 /*[hidden]*/
 eps = 0.1;
-$fn = 120; // resolution
+$fn = 50; // resolution
 
 module case()
 {

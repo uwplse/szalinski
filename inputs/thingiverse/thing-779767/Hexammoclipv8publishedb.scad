@@ -45,7 +45,7 @@ union() {
 		
 		difference(){
 			translate ([0,0,0])cylinder (h=unit_height,r=unit_width/2,$fn=6);
-			translate ([0,0,0])cylinder (h= unit_height, r=7,  $fn =100);
+			translate ([0,0,0])cylinder (h= unit_height, r=7,  $fn =50);
 				}
 		
 		translate ([0,0,unit_height/2])
@@ -64,7 +64,7 @@ union() {
 		translate([0,cordface_diff-unit_width/2-0.5,unit_height/2])rotate ([-90,90,180])write (name2,t=1.3, h=letterheight, font = "orbitron.dxf", center=true);
 		difference(){
 			translate ([0,0,0])cylinder (h=unit_height,r=unit_width/2,$fn=6);
-			translate ([0,0,0])cylinder (h= unit_height, r=7,  $fn =100);
+			translate ([0,0,0])cylinder (h= unit_height, r=7,  $fn =50);
 				}
 		
 		translate ([0,0,unit_height/2])
@@ -85,7 +85,7 @@ module Bulletsubunit(){
 		translate([0,cordface_diff-unit_width/2-0.5,unit_height/2])rotate ([-90,90,180])write (name3,t=1.3, h=letterheight, font = "orbitron.dxf", center=true);
 		difference(){
 			translate ([0,0,0])cylinder (h=unit_height,r=unit_width/2,$fn=6);
-			translate ([0,0,0])cylinder (h= unit_height, r=7,  $fn =100);
+			translate ([0,0,0])cylinder (h= unit_height, r=7,  $fn =50);
 				}
 		translate ([0,0,unit_height/2])
 			 for (i=[0:11]){

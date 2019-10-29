@@ -1,4 +1,4 @@
-$fn=100;
+$fn=50;
 target_size=80;
 target_thickness=5;
 bottom_length=100;

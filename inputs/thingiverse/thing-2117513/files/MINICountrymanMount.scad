@@ -48,7 +48,7 @@ dist1=75;
 // Distance to end from mount base
 dist2=10;
 dist3=holderSeparation;
-$fn=60;
+$fn=50;
 
 radSupport=mountBaseDiam/2;
 heightSupport=mountBaseHeight;

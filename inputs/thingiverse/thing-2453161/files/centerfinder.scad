@@ -16,7 +16,7 @@ T(0,w/2,h/2)Cu(w,w,h);}
 // ShortCuts.scad 
 // Autor: Rudolf Huttary, Berlin 2015
 //
-$fn = 100; 
+$fn = 50; 
 
 
 //show_examples(); 

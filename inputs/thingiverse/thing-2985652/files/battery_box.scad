@@ -25,7 +25,7 @@ module edge(radius, height)
 			cube([radius+1, radius+1, height], center = true);
 
 		translate([radius, radius, 0])
-			cylinder(h = height+1, r1 = radius, r2 = radius, center = true, $fn = 100);
+			cylinder(h = height+1, r1 = radius, r2 = radius, center = true, $fn = 50);
 	}
 }
 
@@ -57,25 +57,25 @@ module battery_box(cells,mounting_holes)
 				cube(size=[7, 4, 3], center=true);
 
 			translate([20, cells*15/2+4, 3/2])
-				cylinder(r=7/2, h=3, center=true, $fn = 60);
+				cylinder(r=7/2, h=3, center=true, $fn = 50);
 
 			translate([-20, cells*15/2+4/2, 3/2])
 				cube(size=[7, 4, 3], center=true);
 
 			translate([-20, cells*15/2+4, 3/2])
-				cylinder(r=7/2, h=3, center=true, $fn = 60);
+				cylinder(r=7/2, h=3, center=true, $fn = 50);
 
 			translate([20, -(cells*15/2+4/2), 3/2])
 				cube(size=[7, 4, 3], center=true);
 
 			translate([20, -(cells*15/2+4), 3/2])
-				cylinder(r=7/2, h=3, center=true, $fn = 60);
+				cylinder(r=7/2, h=3, center=true, $fn = 50);
 
 			translate([-20, -(cells*15/2+4/2), 3/2])
 				cube(size=[7, 4, 3], center=true);
 
 			translate([-20, -(cells*15/2+4), 3/2])
-				cylinder(r=7/2, h=3, center=true, $fn = 60);
+				cylinder(r=7/2, h=3, center=true, $fn = 50);
             }
 		}
 		
@@ -84,7 +84,7 @@ module battery_box(cells,mounting_holes)
 			// battery cradle
 			translate([0, -cells*15/2+15/2+15*i, 15/2+10/2])
 			rotate(90, [0, 1, 0])
-				cylinder(r=15/2, h=50+4+4, center=true, $fn = 100);
+				cylinder(r=15/2, h=50+4+4, center=true, $fn = 50);
 			
 			// spring cut-out
 			translate([50/2+7-1/2, -cells*15/2+15/2+15*i, 15/2+10/2])
@@ -190,7 +190,7 @@ module battery_box(cells,mounting_holes)
 		// cutout to ease battery removal
 		translate([0, 0, 20/2+10/2])
 		rotate(90, [1, 0, 0])
-			cylinder(r=20/2, h=cells*15+5, center=true, $fn = 100);
+			cylinder(r=20/2, h=cells*15+5, center=true, $fn = 50);
 		
 		// rounded corners on end plates
 		translate([0, -cells*15/2, 20])

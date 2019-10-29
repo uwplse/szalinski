@@ -4,9 +4,9 @@ difference() {
 cube([33,30,6], center=false); //Base
 union() {
 translate ([12,15,2.5])
-cylinder (h = 10, r=6, center = false, $fn=100); //big Hole
+cylinder (h = 10, r=6, center = false, $fn=50); //big Hole
 translate ([12,15,-10])
-cylinder (h = 20, r=3.5, center = false, $fn=100); //small Hole
+cylinder (h = 20, r=3.5, center = false, $fn=50); //small Hole
 translate ([15,15,8.5])
 rotate([0,-2,0])
 cube([40,40,6], center=true); //Slope

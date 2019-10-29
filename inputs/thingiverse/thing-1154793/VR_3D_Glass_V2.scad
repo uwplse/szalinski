@@ -455,7 +455,7 @@ module cube_border(z=10,r=1,c=2)
       translate([0,0,0])
          cube([r+c,r+c,z+c],center=true);
       translate([r/2,r/2,0]) 
-         cylinder(h=z+(c*2),r=r,center=true,$fn=60);
+         cylinder(h=z+(c*2),r=r,center=true,$fn=50);
    }
 }
 //---------------------------------------------------------|

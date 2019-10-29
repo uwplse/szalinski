@@ -3,7 +3,7 @@
 //For users wishing to link in the latest Chamfers-for-OpenSCAD code, the following line can be uncommented, and the included code at the bottom of this page can be commented out or removed.
 //use <Chamfers-for-OpenSCAD/Chamfer.scad>;
     
-$fn=60;
+$fn=50;
 
 bolt_c_c = 43.5;        //center-to-center distance between bolts
 bolt_shank_dia = 6;     //shank diameter of bolt (where bolting battery tray to quad frame) - make same diameter as bolt head for tray that will simply sit over bolt heads

@@ -16,18 +16,18 @@ difference() {
 			union() {
 				translate([height,12,d/2]) {
 					rotate([-90,0,0]) {
-						cylinder(r=d/2, h=l+1+2, $fn=100);
+						cylinder(r=d/2, h=l+1+2, $fn=50);
 					}
 				}
 				translate([height-3,12+1+l,d/2]) {
 					rotate([-90,0,0]) {
-						cylinder(r=d/2, h=2, $fn=100);
+						cylinder(r=d/2, h=2, $fn=50);
 					}
 				}
 			}
 			translate([height,10+l/4,d/2]) {
 				rotate([-90,0,0]) {
-					cylinder(r=d/2-9, h=l+1+2+10, $fn=100);
+					cylinder(r=d/2-9, h=l+1+2+10, $fn=50);
 				}
 			}
 		}

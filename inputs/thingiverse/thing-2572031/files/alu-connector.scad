@@ -5,7 +5,7 @@ dimensions = [22,22, 60]; //
 jackl_dimensions = [25,25,25];
 type = "middle_part"; // [middle_part, end_part, upper_part, lower_part, connector_part]
 
-$fn=60;
+$fn=50;
 
 module base() {
     cube(dimensions);

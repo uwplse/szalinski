@@ -16,7 +16,7 @@
 //All measurements are milimeters
 //Only change if you know what you're doing
 
-$fn=100;
+$fn=50;
 port_od = 95.5; //glowforge outer diameter of exhaust port measured around 97 mm. Minus 1.5mm for tight tolerance
 port_depth = 12.5; //length of the port on the GF 
 extender_depth = port_depth + 12;

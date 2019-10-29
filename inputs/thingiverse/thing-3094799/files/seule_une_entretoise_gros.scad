@@ -4,7 +4,7 @@
   v1
 */
 
-$fn = 100;
+$fn = 50;
 hauteur = 16;       //Hauteur de l'entretoise
    
 

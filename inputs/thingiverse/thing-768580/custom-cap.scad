@@ -27,10 +27,10 @@ top=1.5;
 //border=6;
 
 difference(){
-cylinder(h=depth+top, r=bottlerad+thick, $fn=60, center=true);
-translate([0,0,top]) cylinder(h=depth+top, r=bottlerad, $fn=60, center=true);    
+cylinder(h=depth+top, r=bottlerad+thick, $fn=50, center=true);
+translate([0,0,top]) cylinder(h=depth+top, r=bottlerad, $fn=50, center=true);    
 }
 difference(){
-translate([0,0,0]) cylinder(h=depth+top, r=bottlerad-border, $fn=60, center=true);
-translate([0,0,top+2]) cylinder(h=depth+top, r=bottlerad-border-thick, $fn=60, center=true);    
+translate([0,0,0]) cylinder(h=depth+top, r=bottlerad-border, $fn=50, center=true);
+translate([0,0,top+2]) cylinder(h=depth+top, r=bottlerad-border-thick, $fn=50, center=true);    
 }

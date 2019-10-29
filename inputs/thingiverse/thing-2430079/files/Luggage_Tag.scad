@@ -149,7 +149,7 @@ difference () {
 	difference () {
 		cube ([corner_radius*2,corner_radius*2,plate_thickness+0.1]);
 		translate ([0,0,-0.1])
-		cylinder (r=corner_radius,h=plate_thickness+0.2,$fn=100);
+		cylinder (r=corner_radius,h=plate_thickness+0.2,$fn=50);
 	}
 
 	//Bottom Right
@@ -159,7 +159,7 @@ difference () {
 		translate ([0,-corner_radius*2,0])
 		cube ([corner_radius*2,corner_radius*2,plate_thickness+0.1]);
 		translate ([0,0,-0.1])
-		cylinder (r=corner_radius,h=plate_thickness+0.2,$fn=100);
+		cylinder (r=corner_radius,h=plate_thickness+0.2,$fn=50);
 	}
 
 	//Top Left
@@ -169,7 +169,7 @@ difference () {
 		translate ([-corner_radius*2,0,0])
 		cube ([corner_radius*2,corner_radius*2,plate_thickness+0.1]);
 		translate ([0,0,-0.1])
-		cylinder (r=corner_radius,h=plate_thickness+0.2,$fn=100);
+		cylinder (r=corner_radius,h=plate_thickness+0.2,$fn=50);
 	}
 
 	//Bottom Left
@@ -179,17 +179,17 @@ difference () {
 		translate ([-corner_radius*2,-corner_radius*2,0])
 		cube ([corner_radius*2,corner_radius*2,plate_thickness+0.1]);
 		translate ([0,0,-0.1])
-		cylinder (r=corner_radius,h=plate_thickness+0.2,$fn=100);
+		cylinder (r=corner_radius,h=plate_thickness+0.2,$fn=50);
 	}
 
 	//Cut out hole
 	translate ([margin,-lineheight*(textlines/2-1)-(linespacing-1)*lineheight*(textlines/2-1)-slitlength/2+slitwidth/2,-0.05])
 	union () {
 		translate ([slitwidth/2,slitlength-slitwidth,0])
-		cylinder (r=slitwidth/2,h=plate_thickness+0.1,$fn=100);
+		cylinder (r=slitwidth/2,h=plate_thickness+0.1,$fn=50);
 		cube ([slitwidth,slitlength-slitwidth,plate_thickness+0.1]);		
 		translate ([slitwidth/2,0,0])
-		cylinder (r=slitwidth/2,h=plate_thickness+0.1,$fn=100);
+		cylinder (r=slitwidth/2,h=plate_thickness+0.1,$fn=50);
 	}
 }  //End difference
 

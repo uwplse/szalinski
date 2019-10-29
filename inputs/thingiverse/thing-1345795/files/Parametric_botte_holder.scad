@@ -39,7 +39,7 @@ Step = Inside_Diameter+Wall_Thickness;
 iMax=First_Bottle_Pos+(Number_Of_Bottles_Long*(Step-1));
 jMax=First_Bottle_Pos+(Number_Of_Bottles_Wide*(Step-1)); 
 
-$fn=150;
+$fn=50;
 
 for (i = [First_Bottle_Pos:Step:iMax]){
  for (j = [First_Bottle_Pos:Step:jMax]){   

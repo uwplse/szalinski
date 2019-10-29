@@ -86,25 +86,25 @@ module chimeraMount() {
         
         // Bowden connectors
         translate([chimeraBowdenSpacing / 2,0,-beltClampHeight / 2 - mountPlateThickness - 1])
-        cylinder(d = chimeraBowdenDia, h = mountPlateThickness + bearingDia, $fn = 100);
+        cylinder(d = chimeraBowdenDia, h = mountPlateThickness + bearingDia, $fn = 50);
         translate([-chimeraBowdenSpacing / 2,0,-beltClampHeight / 2 - mountPlateThickness - 1])
-        cylinder(d = chimeraBowdenDia, h = mountPlateThickness + bearingDia, $fn = 100);
+        cylinder(d = chimeraBowdenDia, h = mountPlateThickness + bearingDia, $fn = 50);
         
         // mounting bolts
         translate([0,-3,-beltClampHeight / 2 - mountPlateThickness - 0.5])
-        cylinder(d = 3.5, h = mountPlateThickness + 1, $fn = 100);
+        cylinder(d = 3.5, h = mountPlateThickness + 1, $fn = 50);
         translate([chimeraBoltSpacing / 2,9,-beltClampHeight / 2 - mountPlateThickness - 0.5])
-        cylinder(d = 3.5, h = mountPlateThickness + 1, $fn = 100);
+        cylinder(d = 3.5, h = mountPlateThickness + 1, $fn = 50);
         translate([-chimeraBoltSpacing / 2,9,-beltClampHeight / 2 - mountPlateThickness - 0.5])
-        cylinder(d = 3.5, h = mountPlateThickness + 1, $fn = 100);
+        cylinder(d = 3.5, h = mountPlateThickness + 1, $fn = 50);
         
         // mounting bolt heads
         translate([0,-3,-beltClampHeight / 2])
-        cylinder(d = 6.5, h = mountPlateThickness + beltClampHeight, $fn = 100);
+        cylinder(d = 6.5, h = mountPlateThickness + beltClampHeight, $fn = 50);
         translate([chimeraBoltSpacing / 2,9,-beltClampHeight / 2])
-        cylinder(d = 6.5, h = mountPlateThickness + beltClampHeight, $fn = 100);
+        cylinder(d = 6.5, h = mountPlateThickness + beltClampHeight, $fn = 50);
         translate([-chimeraBoltSpacing / 2,9,-beltClampHeight / 2])
-        cylinder(d = 6.5, h = mountPlateThickness + beltClampHeight, $fn = 100);
+        cylinder(d = 6.5, h = mountPlateThickness + beltClampHeight, $fn = 50);
         
         // slot for cables
         translate([-13,-mountWidth / 2 - 1,-beltClampHeight / 2 - mountPlateThickness - 1])
@@ -132,10 +132,10 @@ module cableSupport() {
         }
         translate([10, -mountWidth / 2 + 14, 6])
         rotate([90, 0, 0])
-        cylinder(d=3.5, h = 5, center = true, $fn = 100);
+        cylinder(d=3.5, h = 5, center = true, $fn = 50);
         translate([-10, -mountWidth / 2 + 14, 6])
         rotate([90, 0, 0])
-        cylinder(d=3.5, h = 5, center = true, $fn = 100);
+        cylinder(d=3.5, h = 5, center = true, $fn = 50);
     }
 }
 
@@ -153,11 +153,11 @@ module touchMount() {
         
         translate([0,0,-beltClampHeight / 2 - touchMountDrop - touchMountThickness])
         translate([bearingClampDiameter / 2 + xAxisBarSpacing / 2 + touchMountWidth / 2 + 2, -touchMountBoltSpacing / 2, -1])
-        cylinder(d = 4.3, h = touchMountThickness + 2, $fn = 100);
+        cylinder(d = 4.3, h = touchMountThickness + 2, $fn = 50);
         
         translate([0,0,-beltClampHeight / 2 - touchMountDrop - touchMountThickness])
         translate([bearingClampDiameter / 2 + xAxisBarSpacing / 2 + touchMountWidth / 2 + 2, touchMountBoltSpacing / 2, -1])
-        cylinder(d = 4.3, h = touchMountThickness + 2, $fn = 100);
+        cylinder(d = 4.3, h = touchMountThickness + 2, $fn = 50);
     }
 }
 
@@ -204,7 +204,7 @@ module bearingClamp(extraSpace = 0, cutoutsOnly = false) {
         rotate([-90,0,0])
         difference() {
             union() {
-                cylinder(d = bearingClampDiameter, h = mountWidth, $fn = 100);
+                cylinder(d = bearingClampDiameter, h = mountWidth, $fn = 50);
                 translate([-bearingClampDiameter / 2,0,0])
                 cube([bearingClampDiameter, mountPlateThickness + beltClampHeight / 2, mountWidth]);
                 //translate([0,beltClampHeight / 2,0])
@@ -221,11 +221,11 @@ module bearingClamp(extraSpace = 0, cutoutsOnly = false) {
 
 module bearingClampCutouts(bearingSpace, extraSpace, bearingOverlap, lipThickness) {
     translate([0,0,-2])
-    cylinder(d = bearingInnerClampDiameter, h = mountWidth + 4, $fn = 100);
+    cylinder(d = bearingInnerClampDiameter, h = mountWidth + 4, $fn = 50);
     translate([0,0,bearingSpace])
-    cylinder(d = bearingDia + extraSpace, h = bearingLength * 2 + extraSpace, $fn = 100);
+    cylinder(d = bearingDia + extraSpace, h = bearingLength * 2 + extraSpace, $fn = 50);
     translate([0,0,bearingSpace + bearingLength + extraSpace])
-    cylinder(d = bearingDia + extraSpace, h = bearingLength + extraSpace, $fn = 100);
+    cylinder(d = bearingDia + extraSpace, h = bearingLength + extraSpace, $fn = 50);
     //translate([-11, bearingOverlap + lipThickness, -2])
     //cube([17, bearingClampDiameter * 4, mountWidth + 4]);
     //translate([-bearingInnerClampDiameter / 2, 0, -2])
@@ -259,13 +259,13 @@ module beltClamp(width = 5, length = 20, cornerDia = 3) {
             translate([length - 2, 0, 0])
             cube([2,2,beltClampHeight + additionalBeltClampHeight]);
             translate([cornerDia / 2, width - cornerDia / 2, 0])
-            cylinder(d = cornerDia, h = beltClampHeight + additionalBeltClampHeight, $fn = 100);
+            cylinder(d = cornerDia, h = beltClampHeight + additionalBeltClampHeight, $fn = 50);
             translate([length - cornerDia / 2, width - cornerDia / 2, 0])
-            cylinder(d = cornerDia, h = beltClampHeight + additionalBeltClampHeight, $fn = 100);
+            cylinder(d = cornerDia, h = beltClampHeight + additionalBeltClampHeight, $fn = 50);
         }
         for (i = [0:beltToothPitch:length]) {
             translate([i,width,0])
-            cylinder(d = beltToothDia, h = beltClampHeight + additionalBeltClampHeight, $fn = 100);
+            cylinder(d = beltToothDia, h = beltClampHeight + additionalBeltClampHeight, $fn = 50);
         }
         chamfer();
     }

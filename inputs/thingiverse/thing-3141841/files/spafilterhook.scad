@@ -5,7 +5,7 @@
 diameter = 140.0;
 width = 4.0;
 height = 3.0;
-$fn=80;
+$fn=50;
 
 module hollowCylinder(diam, wid) {
     difference() {

@@ -1,4 +1,4 @@
-$fn = 100*1;
+$fn = 50*1;
 
 // Drawer door thickness 
 drawer_thickness = 16.6; // [5:0.1:40]

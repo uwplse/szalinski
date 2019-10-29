@@ -67,7 +67,7 @@ module fastening_plate() {
     }
 };
 
-$fn = 100;
+$fn = 50;
 
 rotate([0,90,90])
 difference() {

@@ -27,7 +27,7 @@ module head()
 difference() 
 {
 cube(size = scale * 8, center=true);
-//translate([0,0,scale*4])cylinder(r=scale*1,h=8, center=true,$fn=100);
+//translate([0,0,scale*4])cylinder(r=scale*1,h=8, center=true,$fn=50);
 }
 }
 
@@ -35,8 +35,8 @@ cube(size = scale * 8, center=true);
 
 module leg_connector()
 {
-//translate([scale*2,scale*1,0])cylinder(r=1.5,h=scale*2, center=true,$fn=100); 
-//translate([scale*2,scale*2,0])cylinder(r=1.5,h=scale*2, center=true,$fn=100);
+//translate([scale*2,scale*1,0])cylinder(r=1.5,h=scale*2, center=true,$fn=50); 
+//translate([scale*2,scale*2,0])cylinder(r=1.5,h=scale*2, center=true,$fn=50);
 }
 
 //Create the body of guy
@@ -48,12 +48,12 @@ difference()
 union()
 {
 translate([0,0,scale*10])cube([scale*8,scale*4,scale*12], center=true);
-//translate([0,0,scale*4])cylinder(r=scale*1-0.25,h=8, center=true,$fn=100);
+//translate([0,0,scale*4])cylinder(r=scale*1-0.25,h=8, center=true,$fn=50);
 }
 translate([0,scale*-1.5,scale*16])leg_connector();
 translate([scale*-4,scale*-1.5,scale*16])leg_connector();
-//translate([scale*4,0,scale*6])rotate(a=[90,0,90])cylinder(r=1.5,h=scale*2, center=true,$fn=100);
-//translate([scale*-4,0,scale*6])rotate(a=[90,0,90])cylinder(r=1.5,h=scale*2, center=true,$fn=100);
+//translate([scale*4,0,scale*6])rotate(a=[90,0,90])cylinder(r=1.5,h=scale*2, center=true,$fn=50);
+//translate([scale*-4,0,scale*6])rotate(a=[90,0,90])cylinder(r=1.5,h=scale*2, center=true,$fn=50);
 }
 }
 
@@ -91,7 +91,7 @@ translate([0,0,6*scale]) rotate([90-rangle,0,0]) translate([0,0,-6*scale]) diffe
 {
 translate([-5.75*scale,4*scale,6*scale])rotate([90,0,0])cube([3.5*scale,3.5*scale,12*scale],center=true);
 translate([-5.75*scale,8.5*scale,6*scale])rotate([0,90,0])cube([5*scale+0.5,1.4*scale+0.5,1*scale+0.5],center=true);
-//translate([scale*-4,0,scale*6])rotate(a=[90,0,90])cylinder(r=scale*0.2,h=scale*2, center=true,$fn=100);
+//translate([scale*-4,0,scale*6])rotate(a=[90,0,90])cylinder(r=scale*0.2,h=scale*2, center=true,$fn=50);
 }
 }
 
@@ -102,7 +102,7 @@ module freearm(langle)
 translate([0,0,6*scale]) rotate([90-langle,0,0]) translate([0,0,-6*scale]) difference()
 {
 translate([5.75*scale,4*scale,6*scale])rotate([90,0,0])cube([3.5*scale,3.5*scale,12*scale],center=true);
-//translate([scale*4,0,scale*6])rotate(a=[90,0,90])cylinder(r=scale*0.2,h=scale*2, center=true,$fn=100);
+//translate([scale*4,0,scale*6])rotate(a=[90,0,90])cylinder(r=scale*0.2,h=scale*2, center=true,$fn=50);
 }
 }
 

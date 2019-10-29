@@ -24,7 +24,7 @@ part=0;     // [0:all together, 1:front/rear, 2:side, 3:bottom, 4:separator, 5:f
 
 
 /* [Hidden] */
-$fn=100;
+$fn=50;
 
 // -----------------------------------------------------
 //  Seite/Wand (vorne/hinten)

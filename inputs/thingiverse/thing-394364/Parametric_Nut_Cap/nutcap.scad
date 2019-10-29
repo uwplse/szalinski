@@ -1,5 +1,5 @@
 
-$fn=100;
+$fn=50;
 
 // Nut diameter (mm)
 nut=11.9;

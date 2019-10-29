@@ -24,7 +24,7 @@ a = 42.3; //17HS42
 //distance from hole to surface motor
 kd =5.65;
 
-$fn = 70;
+$fn = 50;
 
 difference(){   
     

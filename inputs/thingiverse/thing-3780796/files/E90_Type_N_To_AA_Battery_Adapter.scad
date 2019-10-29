@@ -7,7 +7,7 @@ main();
 
 module main()
 {
-	$fn = 360;
+	$fn = 50;
 	AdapterFillGapLength = 20;			// How much longer the battery needs to be (cut the nail to this length + 1mm, including the head)
 	AdapterBatteryOverlapLength = 20;	// How much of the battery is covered by the adapeter
 	BatteryDiameter = 11.4; 			// E90/N battery diameter

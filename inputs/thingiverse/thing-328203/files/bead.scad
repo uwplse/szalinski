@@ -12,7 +12,7 @@ SkewFactor = 100; //[1:400]
 
 /* [Hidden] */
 //sets the smoothness of the bead.
-$fn = 75; 
+$fn = 50; 
 
 difference() {
 	scale ([1,1,SkewFactor/100])

@@ -1,5 +1,5 @@
 
-$fn=100;
+$fn=50;
 difference() {
 translate([1.15,-1.9,-2]) { cube([2,3.8,4]); }
 

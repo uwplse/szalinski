@@ -21,7 +21,7 @@ bump_diameter = 1.0;
 
 /* [Hidden] */
 pad = 0.001;
-$fn = 128;
+$fn = 50;
 
 
 module bump() {

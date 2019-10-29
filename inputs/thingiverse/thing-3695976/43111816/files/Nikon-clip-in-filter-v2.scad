@@ -14,7 +14,7 @@ filter_lip_width=1.5;
 filter_lip_height=1;
 filter_diameter=1.25*25.4;
 
-$fn=360;
+$fn=50;
 
 
 

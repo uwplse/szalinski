@@ -7,7 +7,7 @@ topHeight = 5;
 
 /* [Hidden] */
 
-$fn = 360;
+$fn = 50;
 
 holeRadius = holeDiameter / 2;
 innerRadius = innerDiameter / 2;

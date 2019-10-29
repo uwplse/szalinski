@@ -434,7 +434,7 @@ intersection() {
           rotate([0, 90, 0])
           cylinder(h = 1.864, r1 = 0.328, r2 = 0.328, center = true, $fn = 12);
         
-          sphere(r = 54.297, $fn = 108);
+          sphere(r = 54.297, $fn = 50);
         }
       
         union() {
@@ -549,7 +549,7 @@ intersection() {
     intersection() {
       difference() {
         difference() {
-          sphere(r = 54.297, $fn = 108);
+          sphere(r = 54.297, $fn = 50);
         
           translate([0, -0.136, -0.135])
           rotate([180, 90, 180])
@@ -712,7 +712,7 @@ intersection() {
     
       union() {
         difference() {
-          sphere(r = 54.297, $fn = 108);
+          sphere(r = 54.297, $fn = 50);
         
           translate([4.1125, -9.7205, 2.7875])
           rotate([-90, 0, 0])

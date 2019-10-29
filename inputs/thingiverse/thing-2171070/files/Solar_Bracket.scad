@@ -51,10 +51,10 @@ module Bracket(){
                     
                     spacing = h/4;
                     translate([spacing,5,0])
-                         cylinder(h=10, d=diameter,$fn=180);
+                         cylinder(h=10, d=diameter,$fn=50);
                     
                     translate([3*spacing,5,0])
-                        cylinder(h=10, d=diameter,$fn=180);
+                        cylinder(h=10, d=diameter,$fn=50);
                 }
             }
         }

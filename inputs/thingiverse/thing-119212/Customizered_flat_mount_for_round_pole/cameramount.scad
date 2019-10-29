@@ -1,4 +1,4 @@
-$fn=60+4;
+$fn=50+4;
 
 //camera mount pole mounting legnth
 camera_mount_lenght = 100 ;

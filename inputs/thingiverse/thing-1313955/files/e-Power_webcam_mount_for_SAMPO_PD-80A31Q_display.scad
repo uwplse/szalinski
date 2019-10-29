@@ -24,7 +24,7 @@ translate([displayTop+height+1,(displayThickness+2)/2-1,(webcamBaseMax-webcamBas
 }
 
 translate([displayTop+webcamThickness+height+4,(displayThickness+2)/2,0]) {
-    cylinder(r=2, h=webcamBaseMax, $fn=100);
+    cylinder(r=2, h=webcamBaseMax, $fn=50);
 }
 
 

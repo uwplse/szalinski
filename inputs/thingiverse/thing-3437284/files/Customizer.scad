@@ -52,7 +52,7 @@ module clockface() {
 union() {
 
 difference()   {
-    $fn = 100;
+    $fn = 50;
     cylinder(2,d = diameter- 1, d = diameter-1);
     
     translate([0,0,-0.5])cylinder(3, d = diameter - 10, d = diameter-10);
@@ -79,7 +79,7 @@ union() {
 
 difference() {
 
-$fn = 150;
+$fn = 50;
 
 cylinder(14, d = core_inner, d = core_inner);
 
@@ -94,7 +94,7 @@ difference() {
     translate([-(clockwork_size+5)/2,-(clockwork_size+5)/2,0]) cube(size = [clockwork_size+5,clockwork_size+5,12]);
     translate([-(clockwork_size+2)/2,-(clockwork_size+2)/2,2]) cube([clockwork_size+2,clockwork_size+2,20]);
     
-$fn = 150;
+$fn = 50;
     
 difference() {
     translate([0, 0, -2]) cylinder(15, 15, 15);
@@ -114,7 +114,7 @@ intersection() {
     translate([1,1,0]) cube([diameter,diameter,diameter]);
 
     difference() {
-        $fn = 200;
+        $fn = 50;
         difference() {
             cylinder(4, d = diameter-4, d = diameter-4);
             translate ([0,0,1]) cylinder(4.1, d = diameter-6, d =   diameter-6);
@@ -124,7 +124,7 @@ intersection() {
         
 intersection() {
         translate([15,15,-1]) cube([diameter, diameter, diameter]);
-        $fn = 100;
+        $fn = 50;
     difference() {
         translate([0,0,-1])cylinder(diameter+2, d = diameter-30, d = diameter-30);
     difference() {

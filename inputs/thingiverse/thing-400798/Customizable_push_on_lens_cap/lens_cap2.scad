@@ -15,7 +15,7 @@ looseness=0;//[0:20]
 doTether= "true"; // ["true","false"]
 
 /* [Hidden] */
-$fn=70;
+$fn=50;
 loose=looseness/10; // ie looseness = 5 loose = 0.5mm
 
 

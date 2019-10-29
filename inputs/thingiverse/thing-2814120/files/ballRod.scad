@@ -3,7 +3,7 @@ ballDiameter = 35;
 rodDiameter = 7.6;
 flatBottom = 5;
 
-$fn = 100;
+$fn = 50;
 
 difference()
 {

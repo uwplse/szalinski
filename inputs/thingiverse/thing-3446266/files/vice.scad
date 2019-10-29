@@ -47,7 +47,7 @@ depthPcb = 1.2;
 heightPcbOuter = 2;
 
 /* [Hidden] */
-$fn = 90;
+$fn = 50;
 height = slotHeight + bottom;
 cutoutDiameter = (width - slotBottom - slotPadding * 2 - walls * 2) / 2;
 cutoutRadius = cutoutDiameter / 2;

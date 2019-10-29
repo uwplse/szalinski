@@ -10,7 +10,7 @@
 /* [Main] */
 
 // Define number of facets (large numbers provide better smoothing)
-$fn=100;
+$fn=50;
 
 // Define outside diameter of spacer ring in mm
 outside_diameter=95.0;

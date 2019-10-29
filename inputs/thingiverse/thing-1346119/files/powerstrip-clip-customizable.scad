@@ -2,7 +2,7 @@
 // International License. To view a copy of this license, visit
 // http://creativecommons.org/licenses/by-sa/4.0/
 
-$fn = 64;
+$fn = 50;
 
 width = 55;
 height = 42;

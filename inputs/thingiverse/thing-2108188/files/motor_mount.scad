@@ -1,4 +1,4 @@
-$fn=64;
+$fn=50;
 
 thick=3;
 arm_width=10;

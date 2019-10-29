@@ -62,7 +62,7 @@ module ball () {
 		pretty_cylinder();
 		//cylinder(d=Bearing_diameter, h=Height, center=true, $fn=cyl_res);
 		// hole
-		sphere(d=Ball_diameter, center=true, $fn=100);
+		sphere(d=Ball_diameter, center=true, $fn=50);
 		// split
 		translate([0,Bearing_diameter/2,0])
 		cube(size=[split_gap,Bearing_diameter,Height+Delta*2], center=true);

@@ -1,5 +1,5 @@
 //// Number of fragments
-$fn=60;
+$fn=50;
 
 radius=15;
 height=0.81;

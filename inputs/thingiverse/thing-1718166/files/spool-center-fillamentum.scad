@@ -15,10 +15,10 @@ union() {
     {
 	    union ()
 	    {
-            cylinder(h=1.5, r=(spool_hole_biggest/2)+4,$fn=64);
-		    cylinder(h=4.5,r=(spool_hole_biggest/2),$fn=64);
-            cylinder(h=7.5,r=(spool_hole_big/2),$fn=64);
-		    cylinder(h=12,r=(spool_hole_small/2),$fn=64);
+            cylinder(h=1.5, r=(spool_hole_biggest/2)+4,$fn=50);
+		    cylinder(h=4.5,r=(spool_hole_biggest/2),$fn=50);
+            cylinder(h=7.5,r=(spool_hole_big/2),$fn=50);
+		    cylinder(h=12,r=(spool_hole_small/2),$fn=50);
 	    }
 	    translate([0,0,-0.1]) cylinder (h=13,r=4.4,$fn=30);
 		for ( i = [0 : 45 : 360] ){

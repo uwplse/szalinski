@@ -59,7 +59,7 @@ module disc()
     
     difference()
     {
-        cylinder(r=outside_rad/2,h=Thickness,$fn=120);
+        cylinder(r=outside_rad/2,h=Thickness,$fn=50);
         for(i=[0:3])
         {
             if(i != 3)

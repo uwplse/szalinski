@@ -26,8 +26,8 @@ for (x = [-outerDiameter : outerDiameter : outerDiameter])
         //    import("C:/Users/jan/Desktop/hosewasher1.stl");
         difference()
         {
-            cylinder(d = outerDiameter, h = height, $fn = 90);
-            cylinder(d = innerDiameter, h = height, $fn = 90);
+            cylinder(d = outerDiameter, h = height, $fn = 50);
+            cylinder(d = innerDiameter, h = height, $fn = 50);
         }
     }
 }

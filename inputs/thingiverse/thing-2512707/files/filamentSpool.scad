@@ -45,11 +45,11 @@ module side(pegs){
                     }
                     //winding hole
                 translate([holeDiameter/2+17.5+windingHoleOffset+windingHoleSize,0,-0.01]){
-                                cylinder($fn=75,d=windingHoleSize,h=width);
+                                cylinder($fn=50,d=windingHoleSize,h=width);
                 }
                 rotate([0,0,15]){
                     translate([holeDiameter/2+17.5+windingHoleOffset+windingHoleSize,0,-0.01]){
-                                cylinder($fn=75,d=windingHoleSize,h=width);
+                                cylinder($fn=50,d=windingHoleSize,h=width);
                 }
                 }
             }
@@ -58,14 +58,14 @@ module side(pegs){
             for(filHoles=[0:numberOfFilamentHoles]){
                 rotate([0,0,(360/numberOfFilamentHoles)*filHoles]){
                             translate([spoolDiameter/2-5,0,-0.01]){
-                                cylinder($fn=80,d=filamentHoleWidth,h=width);
+                                cylinder($fn=50,d=filamentHoleWidth,h=width);
                             }
                         }
             }
             
             //big hole
             translate([0,0,-0.01]){
-                cylinder($fn=100,h=width/1.5,d=holeDiameter);
+                cylinder($fn=50,h=width/1.5,d=holeDiameter);
             }
         }
 }

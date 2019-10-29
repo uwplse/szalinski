@@ -1,4 +1,4 @@
-$fn=100+0;
+$fn=50+0;
 
 // Choose which part to generate
 Mode = "Part1"; // [Part1,Part2,Part3]

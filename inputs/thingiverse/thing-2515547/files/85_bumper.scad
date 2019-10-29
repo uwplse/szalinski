@@ -8,7 +8,7 @@ slit=2.5;
 
 n=0.1;
 
-$fn=60;
+$fn=50;
 
 difference() {
     union() {

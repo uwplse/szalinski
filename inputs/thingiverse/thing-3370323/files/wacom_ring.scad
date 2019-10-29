@@ -1,4 +1,4 @@
-$fn = 128;
+$fn = 50;
 ring_inner=9.2;
 ring_width=9;
 ring_thickness=1.6;

@@ -57,7 +57,7 @@ tolerance = 0;
 // (The tolerance for the test part #0):
 toleranceTest = 0;
 
-$fn=100;
+$fn=50;
 
 if(framePart == 0) {
     toleranceTest(rodSize=5,rodLength=30,thickness=5,tolerance=toleranceTest);  

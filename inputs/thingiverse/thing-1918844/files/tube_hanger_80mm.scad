@@ -13,12 +13,12 @@ union(){
     
 rotate([0,0,-45+180]){
 difference(){ // Center tube holder
-cylinder(r=tube_r+1.5+10,h=25,$fn=100,center=true); // OD
+cylinder(r=tube_r+1.5+10,h=25,$fn=50,center=true); // OD
 
 //translate([0,25,0])  cube([80,70,25],center=true); // Cut more than half of holder
   translate([0,35,-0.01])  cube([120,60,25.2],center=true); // Cut half of holder
 
-cylinder(r=tube_r+1.5,h=25.1,$fn=100,center=true); // ID
+cylinder(r=tube_r+1.5,h=25.1,$fn=50,center=true); // ID
 }
 }
 

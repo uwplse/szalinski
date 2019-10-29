@@ -1,4 +1,4 @@
-$fn = 80;
+$fn = 50;
 $fs=1.75/4;
 
 // Scaling factor to compensate shrinkage characteristic of used filament

@@ -49,7 +49,7 @@ walls = 2;
 depth = 3;
 
 /* [Hidden] */
-$fn = 64;
+$fn = 50;
 
 direction = polarization;
 enableReflectorMounts =  "enabled";

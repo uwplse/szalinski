@@ -8,7 +8,7 @@ union(){
 intersection(){
 difference()
 {
-    sphere(r=20, center = true, $fn=100);
+    sphere(r=20, center = true, $fn=50);
     translate([-20,-20,-40]) cube([40,40,40]); //bottom
    
 }

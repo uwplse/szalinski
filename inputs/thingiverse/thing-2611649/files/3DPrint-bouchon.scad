@@ -48,7 +48,7 @@ difference(){
 //Base horizontale
 module base(){
 	
-	$fn=64;
+	$fn=50;
 	hull(){
 		//Boule a la base
 		translate([0,0,_height-_diameter_big/2])sphere(r=_diameter_big/2);

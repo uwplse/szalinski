@@ -8,7 +8,7 @@ hole_radius = 5;
 // in mm
 wall_thickness = 1.2;
 // level of detail
-$fn = 150;
+$fn = 50;
 
 difference(){
     cylinder(r=spacer_radius, h=spacer_height);

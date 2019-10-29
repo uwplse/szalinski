@@ -23,6 +23,6 @@ cube(size=[organizerLength,organizerWidth,organizerHeight], center = false);
         //Cylinder for the rounded bottom
         rotate([-90,0,0])
         translate([toolCutoutWidth/2+cutoutSpot,-(organizerHeight)+toolCutoutDepth-toolCutoutWidth/2,-10])
-        cylinder(h=organizerWidth+20, r=toolCutoutWidth/2, center=false, $fn=100);
+        cylinder(h=organizerWidth+20, r=toolCutoutWidth/2, center=false, $fn=50);
     }
 }

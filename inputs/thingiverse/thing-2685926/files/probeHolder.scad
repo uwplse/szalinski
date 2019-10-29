@@ -38,26 +38,26 @@ difference() {
     }
     hull() {
         translate([wallThickness+coletteHolderClearance+spindleShaftDiameter/2,length/2,0])
-            cylinder(r=lipMinDiameter/2, h=spindlePortionHeight+lipHeight, $fn=90);
+            cylinder(r=lipMinDiameter/2, h=spindlePortionHeight+lipHeight, $fn=50);
         translate([wallThickness+coletteHolderClearance+spindleShaftDiameter+wallThickness+m5,length/2,0])
             cylinder(r=lipMinDiameter/2, h=spindlePortionHeight+lipHeight, $fn=sides);
     }
     translate([wallThickness+coletteHolderClearance+spindleShaftDiameter+m5/2,0,spindlePortionHeight/2]) rotate([-90,0,0]) {
-        cylinder(r=m5/2,h=length,$fn=90);
+        cylinder(r=m5/2,h=length,$fn=50);
     }
     translate([wallThickness+coletteHolderClearance+spindleShaftDiameter+m5/2-m5NutWidth/2,(length-spindleShaftDiameter)/4-m5NutHeight/4,0])
         cube([m5NutWidth,m5NutHeight,spindlePortionHeight]);
     hull() {
         translate([0,wallThickness,height-probeOffset]) rotate([0,90,0])
-            cylinder(r=m3/2,h=length,$fn=90);
+            cylinder(r=m3/2,h=length,$fn=50);
         translate([0,length-wallThickness,height-probeOffset]) rotate([0,90,0])
-            cylinder(r=m3/2,h=length,$fn=90);
+            cylinder(r=m3/2,h=length,$fn=50);
     }
     hull() {
         translate([wallThickness-insetDepth,wallThickness+m3/2,height-probeOffset-insetOffsetFromHoles-m3/2]) rotate([0,90,0])
-            cylinder(r=insetHeight/2,h=insetDepth,$fn=90);
+            cylinder(r=insetHeight/2,h=insetDepth,$fn=50);
         translate([wallThickness-insetDepth,length-wallThickness-m3/2,height-probeOffset-insetOffsetFromHoles-m3/2]) rotate([0,90,0])
-            cylinder(r=insetHeight/2,h=insetDepth,$fn=90);
+            cylinder(r=insetHeight/2,h=insetDepth,$fn=50);
     }
     
     translate([wallThickness-insetDepth,0,spindlePortionHeight]) {

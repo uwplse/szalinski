@@ -8,7 +8,7 @@ Date: 4/20/2018
 */
 
 module groomer(depth, height, radius){
-    $fn=360;
+    $fn=50;
 
     difference(){ // bottom silo
         // outside wall

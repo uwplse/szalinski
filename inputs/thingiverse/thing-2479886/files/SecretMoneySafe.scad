@@ -25,7 +25,7 @@ screw_diameter = 4; // [0:0.5:5]
 
 /* [Hidden] */
 e = 1e-2;
-$fn = 100;
+$fn = 50;
 
 module box() {
 	difference() {

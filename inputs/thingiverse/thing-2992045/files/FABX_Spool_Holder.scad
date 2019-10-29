@@ -1,4 +1,4 @@
-$fn=200;
+$fn=50;
 spool_length=65;
 sheet_thickness=3.5;
 spool_saver=5;

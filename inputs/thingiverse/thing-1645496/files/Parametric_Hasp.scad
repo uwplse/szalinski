@@ -25,10 +25,10 @@ translate([0,-G/2,0])
     cube([L,G,G]);
 // Aro de cogida a puerta
 translate ([L,0,0])
-    cylinder(h=G,d=(D2+2*G),$fn=100);
+    cylinder(h=G,d=(D2+2*G),$fn=50);
 // Aro de enganche en pared
 translate([2*G,G/2,0])
-    cylinder (h=G,d=4*G,$fn=100);
+    cylinder (h=G,d=4*G,$fn=50);
 // Prolongacion de Sujeccion a Pared
 translate([0,-(G+3*D),0])
     cube ([G,G+3*D,G]);
@@ -41,7 +41,7 @@ translate([L,0,-1])
     cylinder(h=G+2,d=D2);
 // Taladro de anclaje a pared
 translate([2*G,G/2,-1])
-    cylinder(h=G+2,d=2*G,$fn=100);
+    cylinder(h=G+2,d=2*G,$fn=50);
 // Parte inferior del anclaje a la pared
 translate([G,-3*G/2-1,-1])
     cube([2*G,2*G+1,G+2]);
@@ -56,19 +56,19 @@ union(){
 // Arco central:
 
 difference(){
-cylinder(h=H,d=D2+2*G,$fn=100);
+cylinder(h=H,d=D2+2*G,$fn=50);
     
 translate ([0,0,-1])
-    cylinder(h=H+2,d=D2,$fn=100);
+    cylinder(h=H+2,d=D2,$fn=50);
 translate([0,-(D2+G)/2-1.1,H/2])
     cube([D2+2*G+2,D2+G+2,H+2], center=true);
 }
 // Arco lateral Derecho
 difference(){
  translate([D2+G,0,0])
-    cylinder(h=H,d=D2+2*G,$fn=100);   
+    cylinder(h=H,d=D2+2*G,$fn=50);   
  translate([D2+G,0,-1])
-    cylinder(h=H+2,d=D2,$fn=100);
+    cylinder(h=H+2,d=D2,$fn=50);
  translate([0,0,-1])
     cube([D2*2+2*G+2,D2+G+2,H+2]);
  translate([D2+G+.1,-D2/2-G-2,-1])
@@ -80,16 +80,16 @@ translate([D2+G,-D2/2-G,0])
     cube([D*2,G,H]);
 translate([D2+G+D/2,-D2/2+1,H/2])
 rotate([90,0,0])
-cylinder(h=G+2,d=D,$fn=100);
+cylinder(h=G+2,d=D,$fn=50);
 }    
  // Arco lateral Izquierdo
 
 mirror([1,0,0]){
 difference(){
  translate([D2+G,0,0])
-    cylinder(h=H,d=D2+2*G,$fn=100);   
+    cylinder(h=H,d=D2+2*G,$fn=50);   
  translate([D2+G,0,-1])
-    cylinder(h=H+2,d=D2,$fn=100);
+    cylinder(h=H+2,d=D2,$fn=50);
  translate([0,0,-1])
     cube([D2*2+2*G+2,D2+G+2,H+2]);
  translate([D2+G+.1,-D2/2-G-2,-1])
@@ -115,7 +115,7 @@ D3=1.5*G*sqrt(2);
 difference(){
 // Cuerpo base
 union(){
-cylinder(h=H,d=D3+2*G,$fn=100);
+cylinder(h=H,d=D3+2*G,$fn=50);
 translate([0,-G/2-D3/2,H/2])
     cube([D3+2*G+6*D,G,H],center=true);
 

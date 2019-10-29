@@ -1,4 +1,4 @@
-$fn=200;
+$fn=50;
 
 length = 45;
 width = 30;

@@ -17,7 +17,7 @@ width     = 70;
 thickness = 3;
 ear       = 10;
 
-$fn = 64;
+$fn = 50;
 round_radius = 6;
 
 

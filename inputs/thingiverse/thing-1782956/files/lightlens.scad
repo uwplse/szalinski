@@ -7,7 +7,7 @@ l=5;
 //height
 h=1;
 
-$fn=100;
+$fn=50;
 
 union(){
 cylinder(r=d/2, h=h/2, center=true);

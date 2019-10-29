@@ -25,7 +25,7 @@ wall_thick=3 ;
 pen_size=pen_d + 2 ; 						// Pen diameter + small gap
 
 wall_h=pen_d/2 +pen_size/2+wall_thick; 		// Biggest Wall Height
-$fn=120;
+$fn=50;
 //=============
 module support(){
 	module base(){

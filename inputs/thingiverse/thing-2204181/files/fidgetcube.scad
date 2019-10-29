@@ -8,7 +8,7 @@ Description: Fidget ball cube
 hole_size = 30; // [2:35]
 sphere_diameter = 40; // [10:44]
 
-$fn=100;
+$fn=50;
 
 // Inner Sphere
 sphere(d=sphere_diameter); 

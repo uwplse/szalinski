@@ -1,4 +1,4 @@
-$fn=100; //smoothness
+$fn=50; //smoothness
 
 radius=9;
 height=18;

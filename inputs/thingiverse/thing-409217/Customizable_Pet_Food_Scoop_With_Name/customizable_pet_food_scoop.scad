@@ -75,7 +75,7 @@ module cup()
 	echo("radius = ",radius);
   	translate([-(radius + (wall_thickness/2)) , 0,0]) 
 	{
-	  		cylinder(r=radius + (wall_thickness/2) , h=(height), center=false, $fn=80);
+	  		cylinder(r=radius + (wall_thickness/2) , h=(height), center=false, $fn=50);
 	
 	writecylinder(text = name,where = [0,0,0], radius = (radius + (wall_thickness/2)), height = (height),west = 90,h = 8,t=2,bold=true,space = 1.2,font = font_name); 
 			
@@ -95,7 +95,7 @@ difference()
 	}
   	translate([-(radius + (wall_thickness/2)) , 0,wall_thickness]) 
 	{
-	  		cylinder(r=radius , h=height , center=false, $fn=80);
+	  		cylinder(r=radius , h=height , center=false, $fn=50);
 	}
 }
 

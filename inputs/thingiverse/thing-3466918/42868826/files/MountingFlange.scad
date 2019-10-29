@@ -1,5 +1,5 @@
 /* [Resolution] */
-$fn = 80;
+$fn = 50;
 
 /* [Hole Pattern] */
 //Flange hole pattern: (0)=circular, (1)=rectangular

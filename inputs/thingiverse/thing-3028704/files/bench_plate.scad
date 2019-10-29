@@ -326,11 +326,11 @@ module brassprep_a()
 {
     union()
     {
-        #translate([0,65.0,0]) cylinder($fn=100,r=6.35,h=thickness+radius,center=true);
-        #translate([-20,40.0,0]) cylinder($fn=100,r=7.2,h=thickness+radius,center=true);
-        #translate([-20,40.0,-0.75*thickness]) cylinder($fn=100,r=8.86,h=thickness+radius,center=true);
-        #translate([20,40.0,0]) cylinder($fn=100,r=7.2,h=thickness+radius,center=true);
-        #translate([20,40.0,-0.75*thickness]) cylinder($fn=100,r=8.86,h=thickness+radius,center=true);
+        #translate([0,65.0,0]) cylinder($fn=50,r=6.35,h=thickness+radius,center=true);
+        #translate([-20,40.0,0]) cylinder($fn=50,r=7.2,h=thickness+radius,center=true);
+        #translate([-20,40.0,-0.75*thickness]) cylinder($fn=50,r=8.86,h=thickness+radius,center=true);
+        #translate([20,40.0,0]) cylinder($fn=50,r=7.2,h=thickness+radius,center=true);
+        #translate([20,40.0,-0.75*thickness]) cylinder($fn=50,r=8.86,h=thickness+radius,center=true);
         #translate([0,15.0,-thickness]) cylinder($fn=6,r=3.65,h=thickness+radius,center=false);
         #translate([20,15.0,-thickness]) cylinder($fn=6,r=3.65,h=thickness+radius,center=false);
         #translate([-20,15.0,-thickness]) cylinder($fn=6,r=3.65,h=thickness+radius,center=false);
@@ -348,7 +348,7 @@ module brassprep_b()
 {
     union()
     {
-        #translate([0,65.0,0]) cylinder($fn=100,r=6.35,h=thickness+radius+1,center=true);
+        #translate([0,65.0,0]) cylinder($fn=50,r=6.35,h=thickness+radius+1,center=true);
         #translate([-20,40.0,0]) cylinder($fn=6,r=3.65,h=thickness+radius+1,center=true);
         #translate([20,40.0,0]) cylinder($fn=6,r=3.65,h=thickness+radius+1,center=true);
         

@@ -10,7 +10,7 @@ cam_width=13;
 cut=0.5;
 cutout_size=30;
 
-$fn=60;
+$fn=50;
 
 
 //U120

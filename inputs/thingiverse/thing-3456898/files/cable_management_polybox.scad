@@ -32,7 +32,7 @@ TZT_D = PolyBox_Depth;
 TZT_C = PolyBox_Corner_Radius;
 TZT_T = PolyBox_Thickness;
 TZT_P = Center_Post;
-$fn=100;
+$fn=50;
 
 
 //TZT_Box ([sides, radius, depth, corner_radius])

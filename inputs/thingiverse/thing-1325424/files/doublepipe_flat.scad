@@ -19,7 +19,7 @@ hole="yes"; //[yes,no]
 //hole diametre
 dh=3;
 
-$fn=200/2;
+$fn=50/2;
 
 difference(){
     union(){

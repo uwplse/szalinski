@@ -23,7 +23,7 @@ module edge(radius, height)
 			cube([radius+1, radius+1, height], center = true);
 
 		translate([radius, radius, 0])
-			cylinder(h = height+1, r1 = radius, r2 = radius, center = true, $fn = 100);
+			cylinder(h = height+1, r1 = radius, r2 = radius, center = true, $fn = 50);
 	}
 }
 

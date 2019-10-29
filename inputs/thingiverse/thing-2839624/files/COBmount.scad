@@ -1,4 +1,4 @@
-$fn=80;
+$fn=50;
 
 //COB LED holder
 dHolder=36;

@@ -16,7 +16,7 @@ jig_height     = 30    ;// mm height of jig
 jig_fin_width  = 38    ;// mm Fin span
 wall_thickness =  4    ;// mm desired wall thickness
 glue_clearance =  4    ;// mm inner gap to prevent glue sticking to jig
-$fn            =150    ; // Changes the smoothness of the curves
+$fn            =50    ; // Changes the smoothness of the curves
   
 difference(){
   // Create the solid shapes

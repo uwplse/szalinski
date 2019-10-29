@@ -8,7 +8,7 @@ plate_height = 120;
 plate_width = socket_width+2*socket_gauge;
 
 
-$fn=60;
+$fn=50;
 
 // ===================================================
 

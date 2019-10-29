@@ -37,7 +37,7 @@ difference() {
     };
     for (i = [[0,0],[pushRodLength-ballDiameter,180]]) {
         translate([0,0,i[0]]) rotate([i[1],0,0]) {
-            cylinder(r=grubScrewDiameter/2, h=grubScrewLength, $fn=90);
+            cylinder(r=grubScrewDiameter/2, h=grubScrewLength, $fn=50);
             translate([0,0,nutTrapOffset])  
                 hull() {
                     cylinder(r=nutTrapWidth/2, h=nutTrapHeight, $fn=nutSideCount);

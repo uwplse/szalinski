@@ -74,8 +74,8 @@ module y_cuts(){
   
   // zip tie
   translate([width/2,thickness - 1.6,height/2 - zip_tie_offset - 2]) difference(){
-    cylinder(r=rod_diameter/2+4.5,h=3,$fn=64);
-    cylinder(r=rod_diameter/2+2.5,h=3.1,$fn=64);
+    cylinder(r=rod_diameter/2+4.5,h=3,$fn=50);
+    cylinder(r=rod_diameter/2+2.5,h=3.1,$fn=50);
   }
 }
 

@@ -27,7 +27,7 @@ difference(){
     //Pencil Holder
     for(a = [-BodyRadius*4/9:PencilRadius*2:BodyRadius*2/3]){
         translate([-a,-a,0]){
-            cylinder(Height,PencilRadius,PencilRadius,$fn = 100);
+            cylinder(Height,PencilRadius,PencilRadius,$fn = 50);
         }
     }
     

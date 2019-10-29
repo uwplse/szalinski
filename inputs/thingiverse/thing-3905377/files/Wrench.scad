@@ -16,7 +16,7 @@ module allen(){
 }
 //allen();
 module handle(){
-    cylinder(h=h,d=d+10,center=false,$fn=100);
+    cylinder(h=h,d=d+10,center=false,$fn=50);
 }
 //handle();
 module power(){

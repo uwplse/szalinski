@@ -1,6 +1,6 @@
 module fins()
 {
-    $fn=60;
+    $fn=50;
     difference()
     {
         union()
@@ -24,7 +24,7 @@ module fins()
 
 module tyre()
 {
-    $fn=60;
+    $fn=50;
     difference()
     {   
         difference()
@@ -42,7 +42,7 @@ module tyre()
 
 module shaftHole()
 {
-    $fn=60;
+    $fn=50;
     difference()
     { 
         cylinder(h=12, r=6,center=true);

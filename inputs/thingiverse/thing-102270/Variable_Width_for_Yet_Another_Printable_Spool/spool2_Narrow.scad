@@ -91,8 +91,8 @@ module loadArm() {
 module edge(withHoles) {
 	union() {
 		difference() {
-			cylinder(5,99.6,99.6,$fn=60);
-			translate([0,0,-0.1])cylinder(5.2,84.6,84.6,$fn=60);
+			cylinder(5,99.6,99.6,$fn=50);
+			translate([0,0,-0.1])cylinder(5.2,84.6,84.6,$fn=50);
 			translate([-105,-102.45,-0.1])cube([210,110,10]);
 			rotate([0,0,45])translate([-105,-7.55,-0.1])cube([210,110,10]);
 			if (withHoles) {

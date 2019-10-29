@@ -17,11 +17,11 @@ inner();
 module inner() {
     difference() {
         union() {
-            cylinder(h=2*t, r=e14_outer, $fn=100, center=true);
+            cylinder(h=2*t, r=e14_outer, $fn=50, center=true);
             cube([w, 3*t, 2*t], center=true);
             cube([3*t, w, 2*t], center=true);
         }
-        cylinder(h=100, r=e14+0.5, $fn=100, center=true);
+        cylinder(h=100, r=e14+0.5, $fn=50, center=true);
     }
 };
 

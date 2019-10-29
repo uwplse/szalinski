@@ -75,7 +75,7 @@ module drawMotorMountHoles()
 	translate([offset2,offset2,0]) drawMotorMountScrewHole();
 	translate([-offset2,-offset2,0]) drawMotorMountScrewHole();
 
-	cylinder(bigSize,rMotorHolderInner,rMotorHolderInner,true,$fn=100);
+	cylinder(bigSize,rMotorHolderInner,rMotorHolderInner,true,$fn=50);
 	for (angle=[0:90:270])
 	{
 		rotate([0,0,angle]) drawMotorMountFancyHole();
@@ -106,20 +106,20 @@ module drawSpokeRibFillet(prmBottomFillets,prmTopFillets)
 		{
 			if (prmBottomFillets)
 			{
-				translate([-w/2,w/2,-eps]) cylinder(heightSpokeRib+2*eps,rSpokeRibFillet,rSpokeRibFillet,$fn=100);	
-				translate([-w/2,-w/2,-eps]) cylinder(heightSpokeRib+2*eps,rSpokeRibFillet,rSpokeRibFillet,$fn=100);	
+				translate([-w/2,w/2,-eps]) cylinder(heightSpokeRib+2*eps,rSpokeRibFillet,rSpokeRibFillet,$fn=50);	
+				translate([-w/2,-w/2,-eps]) cylinder(heightSpokeRib+2*eps,rSpokeRibFillet,rSpokeRibFillet,$fn=50);	
 			}
 
 			if (prmTopFillets)
 			{
 				translate([factor*w/2,w/2,-eps]) hull() 
 				{
-					cylinder(heightSpokeRib+2*eps,rSpokeRibFillet,rSpokeRibFillet,$fn=100);	
+					cylinder(heightSpokeRib+2*eps,rSpokeRibFillet,rSpokeRibFillet,$fn=50);	
 					translate([2*rSpokeRibFillet,-rSpokeRibFillet,0]) cube([eps,2*rSpokeRibFillet,heightSpokeRib+2*eps]);
 				}
 				translate([factor*w/2,-w/2,-eps]) hull() 
 				{
-					cylinder(heightSpokeRib+2*eps,rSpokeRibFillet,rSpokeRibFillet,$fn=100);	
+					cylinder(heightSpokeRib+2*eps,rSpokeRibFillet,rSpokeRibFillet,$fn=50);	
 					translate([2*rSpokeRibFillet,-rSpokeRibFillet,0]) cube([eps,2*rSpokeRibFillet,heightSpokeRib+2*eps]);
 				}
 			}
@@ -152,11 +152,11 @@ module drawPropellerGuardRib(prmRadius)
 	{
 		union()
 		{
-			cylinder(heightSpokeRib,rOuter,rOuter,$fn=250);
+			cylinder(heightSpokeRib,rOuter,rOuter,$fn=50);
 		}
 		union()
 		{
-			translate([0,0,-eps]) cylinder(heightSpokeRib+2*eps,rInner,rInner,$fn=250);
+			translate([0,0,-eps]) cylinder(heightSpokeRib+2*eps,rInner,rInner,$fn=50);
 		}
 	}
 }
@@ -170,7 +170,7 @@ module drawPropellerGuard()
 	{
 		union()
 		{
-			cylinder(heightSpokeRib,rMotorHolderOuter,rMotorHolderOuter,$fn=250);
+			cylinder(heightSpokeRib,rMotorHolderOuter,rMotorHolderOuter,$fn=50);
 
 			rInner = diameterPropeller/2+clearancePropellerGuard;
 			rOuter = rInner+thicknessPropellerGuard;
@@ -200,19 +200,19 @@ module drawPropellerGuard()
 					{
 						union()
 						{
-							cylinder(hPropellerGuard,rOuter,rOuter,$fn=1000);
+							cylinder(hPropellerGuard,rOuter,rOuter,$fn=50);
 						}
 						union()
 						{
-							translate([0,0,-eps]) cylinder(hPropellerGuard+2*eps,rInner,rInner,$fn=1000);
+							translate([0,0,-eps]) cylinder(hPropellerGuard+2*eps,rInner,rInner,$fn=50);
 							for (nr=[1:1:nrOfHoles])
 							{
-								rotate([0,0,startAngle+angleIncrement*(nr-1)]) translate([0,0,heightSpokeRib+(hPropellerGuard-heightSpokeRib-propellerGuardHoleFlesh)/2]) rotate([-90,0,0]) cylinder(bigSize,rFancy,rFancy,$fn=100,true);
+								rotate([0,0,startAngle+angleIncrement*(nr-1)]) translate([0,0,heightSpokeRib+(hPropellerGuard-heightSpokeRib-propellerGuardHoleFlesh)/2]) rotate([-90,0,0]) cylinder(bigSize,rFancy,rFancy,$fn=50,true);
 							}
 							for (nr=[1:1:nrOfHoles-1])
 							{
-								rotate([0,0,startAngle+angleIncrement*(nr-1)+angleIncrement/2]) translate([0,0,hPropellerGuard-propellerGuardHoleFlesh-rFancy]) rotate([-90,0,0]) cylinder(bigSize,rFancy,rFancy,$fn=100,true);
-								rotate([0,0,startAngle+angleIncrement*(nr-1)+angleIncrement/2]) translate([0,0,heightSpokeRib+rFancy]) rotate([-90,0,0]) cylinder(bigSize,rFancy,rFancy,$fn=100,true);
+								rotate([0,0,startAngle+angleIncrement*(nr-1)+angleIncrement/2]) translate([0,0,hPropellerGuard-propellerGuardHoleFlesh-rFancy]) rotate([-90,0,0]) cylinder(bigSize,rFancy,rFancy,$fn=50,true);
+								rotate([0,0,startAngle+angleIncrement*(nr-1)+angleIncrement/2]) translate([0,0,heightSpokeRib+rFancy]) rotate([-90,0,0]) cylinder(bigSize,rFancy,rFancy,$fn=50,true);
 							}
 							if (usePropellerGuardFillet)
 							{
@@ -262,14 +262,14 @@ module drawPropellerGuard()
 				}
 				union()
 				{
-					cylinder(heightSpokeRib,rMotorHolderOuter-eps,rMotorHolderOuter-eps,$fn=250);
+					cylinder(heightSpokeRib,rMotorHolderOuter-eps,rMotorHolderOuter-eps,$fn=50);
 				}
 			}						
 		}
 		union()
 		{
 			rotate([0,0,90]) drawMotorMountHoles();
-			translate([0,0,heightSpokeRib]) cylinder(bigSize,rMotorHolderOuter+eps,rMotorHolderOuter+eps,$fn=250);
+			translate([0,0,heightSpokeRib]) cylinder(bigSize,rMotorHolderOuter+eps,rMotorHolderOuter+eps,$fn=50);
 		}
 	}
 }

@@ -40,7 +40,7 @@ mag_wall = 0.6; // mm, magnet backing wall minimum size
 abit = 0.001; //use for making overlap to get single manifold stl
 alot = 150;
 
-$fn = 200;
+$fn = 50;
 
 Di = di * (2/sqrt(3)); // mm, circumdiameter of inner side of honeycomb
 

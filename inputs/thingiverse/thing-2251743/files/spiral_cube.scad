@@ -63,7 +63,7 @@ module spiral_cube(leng, leng_diff, min_leng) {
 }
 
 module base(leng) {
-    $fn = 96;
+    $fn = 50;
     r = leng / 3;
     difference() {
         difference() {

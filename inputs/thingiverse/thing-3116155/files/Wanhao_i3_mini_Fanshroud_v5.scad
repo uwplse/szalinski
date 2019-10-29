@@ -36,8 +36,8 @@ difference() {
     translate([0, 0, 0]) cube([40, 52, 2], center = true);
 
     // mounting bumps for the fan (top)
-    translate([-16, 10, 1]) cylinder(2, 2.5, 2.5, true, $fn = 180);
-    translate([+16, 10, 1]) cylinder(2, 2.5, 2.5, true, $fn = 180);
+    translate([-16, 10, 1]) cylinder(2, 2.5, 2.5, true, $fn = 50);
+    translate([+16, 10, 1]) cylinder(2, 2.5, 2.5, true, $fn = 50);
  
     // create 2 fan shrouds, subtract the smaller, inner one to make the construct hollow
     difference() {
@@ -52,12 +52,12 @@ difference() {
   translate([0, -35 + shroud_height, 5]) cube([40 + 10, 10, 20], center = true);
 
   // mounting holes on top
-  translate([-10, 18 + nozzle_height_finetuning, 0]) cylinder(20, 1.7, 1.7, true, $fn = 180);
-  translate([+10, 18 + nozzle_height_finetuning, 0]) cylinder(20, 1.7, 1.7, true, $fn = 180);
+  translate([-10, 18 + nozzle_height_finetuning, 0]) cylinder(20, 1.7, 1.7, true, $fn = 50);
+  translate([+10, 18 + nozzle_height_finetuning, 0]) cylinder(20, 1.7, 1.7, true, $fn = 50);
 
   // mounting holes for the fan (top)
-  translate([-16, 10, 0]) cylinder(20, 1.47, 1.47, true, $fn = 180);
-  translate([+16, 10, 0]) cylinder(20, 1.47, 1.47, true, $fn = 180);
+  translate([-16, 10, 0]) cylinder(20, 1.47, 1.47, true, $fn = 50);
+  translate([+16, 10, 0]) cylinder(20, 1.47, 1.47, true, $fn = 50);
 
   // smooth top edges
   translate([20 + 4, 25 + 4, 0]) rotate([0, 0, 45]) cube([20, 20, 10], center = true);
@@ -65,7 +65,7 @@ difference() {
 
   difference() {  
     // opening for the main fan
-    translate([0, -4, 0]) cylinder(10, 18, 18, true, $fn = 180);
+    translate([0, -4, 0]) cylinder(10, 18, 18, true, $fn = 50);
   
     // cut the opening in half
     translate([0, -20, 0]) cube([40, 30, 20], center = true);
@@ -90,8 +90,8 @@ difference() {
 difference() {
   union() {
     // mounting bumps for the fan (bottom)
-    translate([-16, 10 - 32, 1]) cylinder(4, 2.75, 2.75, true, $fn = 180);
-    translate([+16, 10 - 32, 1]) cylinder(4, 2.75, 2.75, true, $fn = 180);
+    translate([-16, 10 - 32, 1]) cylinder(4, 2.75, 2.75, true, $fn = 50);
+    translate([+16, 10 - 32, 1]) cylinder(4, 2.75, 2.75, true, $fn = 50);
 
     // support for the mounting bumps
     translate([+16, 10 - 32 - 2, 0]) cube([5.25, 2.5, 2], center = true);
@@ -99,8 +99,8 @@ difference() {
   }
 
   // mounting holes for the fan (bottom)
-  translate([-16, 10 - 32, 0]) cylinder(20, 1.47, 1.47, true, $fn = 180);
-  translate([+16, 10 - 32, 0]) cylinder(20, 1.47, 1.47, true, $fn = 180);
+  translate([-16, 10 - 32, 0]) cylinder(20, 1.47, 1.47, true, $fn = 50);
+  translate([+16, 10 - 32, 0]) cylinder(20, 1.47, 1.47, true, $fn = 50);
 
   // cut bottom towards fan flush
   translate([0, 0, -10.95]) cube([40 + 10, 50 + 10, 20], center = true);

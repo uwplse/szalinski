@@ -155,7 +155,7 @@ difference () { union () {	// for including coin slot
 		// Thumb hole
 		if (includethumbhole==true) {
 			intersection () {
-			translate ([min(8,nox*(compx+wall)/8),(noy*(compy+wall))/2,thumbrad+wall/2]) sphere (r=thumbrad, center=true, $fn=60);
+			translate ([min(8,nox*(compx+wall)/8),(noy*(compy+wall))/2,thumbrad+wall/2]) sphere (r=thumbrad, center=true, $fn=50);
 			translate ([min(8,nox*(compx+wall)/8),0,0]) cube (size=[20,(noy*(compy+wall)),20], center=false);
 		}
 	}

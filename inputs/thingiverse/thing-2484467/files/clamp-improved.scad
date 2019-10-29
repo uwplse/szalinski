@@ -42,9 +42,9 @@ cube([clamp_id+wall,clamp_id+wall*16,clamp_h*2]);
 module clamp() {
 
     difference() {
-        cylinder(d=clamp_id+wall*2,h=clamp_h,$fn=100);
+        cylinder(d=clamp_id+wall*2,h=clamp_h,$fn=50);
         translate([0,0,-1])
-        cylinder(d=clamp_id,h=clamp_h+2,$fn=100);
+        cylinder(d=clamp_id,h=clamp_h+2,$fn=50);
     }
     
     translate([0,clamp_id/2+screw_d+wall,clamp_h/2])
@@ -81,7 +81,7 @@ module screwhole()
 {        
     rotate([0,90,0])
     union() {
-        cylinder(d=screw_d, h=wall*2+0.5, $fn=100, center=true);
+        cylinder(d=screw_d, h=wall*2+0.5, $fn=50, center=true);
         translate([0,0,-wall*0.75])
             cylinder(d=nut_d, h=wall/2+0.05, $fn=6, center=true);
     }

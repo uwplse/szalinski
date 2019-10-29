@@ -1,5 +1,5 @@
 // The quality of the rings
-$fn = 150;
+$fn = 50;
 // The tolerance of the bearing size (make it higher if the bearings don't fit and lower if they fall out) (default = 0.3)
 Tolerance = 0.3;
 // How many bearings you want to have around the inner bearing

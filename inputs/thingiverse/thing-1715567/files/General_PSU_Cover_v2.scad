@@ -118,7 +118,7 @@ module foot() {
     //create tabed foot
     difference() {
             union() {//start union
-                  translate([0,0,0]) rotate([0,0,0]) cylinder(5,10/2,10/2,$fn=60);
+                  translate([0,0,0]) rotate([0,0,0]) cylinder(5,10/2,10/2,$fn=50);
                     } //end union
     //start subtraction of difference
                   translate([-5,0,-2.5]) rotate([0,0,0]) cube([10,10,10]);
@@ -129,8 +129,8 @@ module dual_banna_jack() {
     //create tabed foot
     difference() {
             union() {//start union
-                  translate([-9.5,0,0]) rotate([0,0,0]) cylinder(10,11.5/2,11.5/2,$fn=60);
-                  translate([9.5,0,0]) rotate([0,0,0]) cylinder(10,11.5/2,11.5/2,$fn=60);
+                  translate([-9.5,0,0]) rotate([0,0,0]) cylinder(10,11.5/2,11.5/2,$fn=50);
+                  translate([9.5,0,0]) rotate([0,0,0]) cylinder(10,11.5/2,11.5/2,$fn=50);
                     } //end union
     //start any subtraction of difference below if needed
                  

@@ -61,7 +61,7 @@ cig_usb_right=1;           // [0:No, 1:Yes]
 // Do not edit below values
 // (Unless for fun :-D)
 // --------------------------------
-$fn=96;             // [32:1:128]
+$fn=50;             // [32:1:128]
 cig_thick = cig_thicks+ht;
 cig_usb_width = cig_usb_hwidth+ht;
 cig_usb_start = cig_usb_starty-ht;

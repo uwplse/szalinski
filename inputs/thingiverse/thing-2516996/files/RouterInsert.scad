@@ -8,15 +8,15 @@ OverallThickness = 7.62;   // how deep of an insert
 
 if (BitDiameter == 0) {
   union() {
-    cylinder(h=LipDepth, r=OuterDiameter, $fn=250);
-    cylinder(h=OverallThickness, r=RimDiameter, $fn=250);
+    cylinder(h=LipDepth, r=OuterDiameter, $fn=50);
+    cylinder(h=OverallThickness, r=RimDiameter, $fn=50);
   }
 } else {
  difference() {   
    union() {
-     cylinder(h=LipDepth, r=OuterDiameter, $fn=250);
-     cylinder(h=OverallThickness, r=RimDiameter, $fn=250);
+     cylinder(h=LipDepth, r=OuterDiameter, $fn=50);
+     cylinder(h=OverallThickness, r=RimDiameter, $fn=50);
    }
-  cylinder (h=OverallThickness, r= BitDiameter, $fn=250);    
+  cylinder (h=OverallThickness, r= BitDiameter, $fn=50);    
   }
  }

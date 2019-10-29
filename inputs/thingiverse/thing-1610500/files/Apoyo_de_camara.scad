@@ -23,7 +23,7 @@ rotate([0,-angulo,0])
     intersection(){
     // 1. Cilindro base
     rotate([90,0,0])
-    cylinder(r=ancho,h=largo,$fn=200, center=true);
+    cylinder(r=ancho,h=largo,$fn=50, center=true);
     // 2.Cubo para Base
     translate([0,-((largo/2)+1),-ancho-2])
     cube([ancho+2,largo+2,ancho+2]);

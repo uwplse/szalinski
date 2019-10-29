@@ -77,7 +77,7 @@ front_on = 1; // [0:No, 1:Yes]
 //number of bitbeam holes on sides
 beam_height_count = 8;
 
-$fn=150;
+$fn=50;
 
 
 

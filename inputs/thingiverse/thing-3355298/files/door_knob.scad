@@ -16,7 +16,7 @@ wheel_steps2=8; // outer
 wheel_steps_start=0;    // inner
 wheel_steps_start2=0;   // outer
 
-$fn=100;
+$fn=50;
 
 module regular_polygon(order, r=1){
  	angles=[ for (i = [0:order-1]) i*(360/order) ];

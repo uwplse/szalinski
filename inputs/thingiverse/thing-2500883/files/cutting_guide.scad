@@ -27,7 +27,7 @@ indentationOuter = 1;
 steps = 5;
 
 /* [Hidden] */
-$fn = 64;
+$fn = 50;
 innerRadius = inner / 2;
 outerRadius = innerRadius + walls;
 offsetY = guideWidth / 2 + walls;

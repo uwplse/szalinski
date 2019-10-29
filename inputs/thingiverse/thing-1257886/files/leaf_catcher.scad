@@ -8,7 +8,7 @@ filter_thickness=5;
 filter_number_of_rings=5;
 
 //fine setting ---------------------------------------------
-$fn=2000;
+$fn=50;
 
 //calculations ---------------------------------------------
 tube_radius=tube_diameter/2;

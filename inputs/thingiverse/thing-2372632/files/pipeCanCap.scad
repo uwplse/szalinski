@@ -36,7 +36,7 @@ hd = 4.0; // [4:12]
 e = 0.02*1;		
 
 // smoothness
-$fn = 128;	
+$fn = 50;	
 
 module outerSolid()
 {

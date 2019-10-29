@@ -4,7 +4,7 @@ box_height=20;
 thickness=3;
 
 //resolution
-$fn=150;
+$fn=50;
 
 difference()
 {

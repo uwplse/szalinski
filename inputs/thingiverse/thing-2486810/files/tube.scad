@@ -6,7 +6,7 @@
 thickness = 2;
 length =  70;
 id = 15;
-$fn = 64;
+$fn = 50;
 
 difference(){
 

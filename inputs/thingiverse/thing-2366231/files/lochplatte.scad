@@ -6,7 +6,7 @@ durchm1 = 4; // [2,3,4,5]
 steghoehe = 5; // [0:20]
 bohrung = 0; //[1:Nein,0:ja]
 /* [Hidden] */
-rundung=durchm1; steg = steghoehe+hoehe; $fn=80;
+rundung=durchm1; steg = steghoehe+hoehe; $fn=50;
 translate ([-tiefe/2,-breite/2,0])     {
 lochplatte (breite,tiefe,hoehe);      
 if (bohrung==1) {ecksteg1(breite,tiefe,hoehe,durchm1);}

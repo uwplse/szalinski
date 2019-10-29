@@ -1,5 +1,5 @@
 // All Values should be the same as in cable_spool_bottom
-$fn=100;
+$fn=50;
 
 
 outer_dia =80;

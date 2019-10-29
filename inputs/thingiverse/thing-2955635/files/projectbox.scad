@@ -1,4 +1,4 @@
-$fn = 100;
+$fn = 50;
 wall = 2.5; // thickness
 corner_r = 4; // radius
 box_x = 74; // length

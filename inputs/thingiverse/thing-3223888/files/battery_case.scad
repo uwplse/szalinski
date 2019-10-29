@@ -7,7 +7,7 @@ battery_diameter=21;    // typical 21 for 21700 or 18 for 18650
 battery_count=4;           // number of tubes you want to make PER ROW! 
 rows=2;                         // number of rows
                                       
-$fn=130;
+$fn=50;
 module tube(){
     difference(){
         cylinder(h=battery_length+4, d=battery_diameter+4);

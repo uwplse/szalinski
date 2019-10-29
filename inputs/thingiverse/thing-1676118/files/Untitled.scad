@@ -27,9 +27,9 @@ cylinder(h=12,r=a,$fn=10);
 
 translate([0,0,-10]){
 difference(){
-cylinder(h=100,r=a*2,$fn=100);
+cylinder(h=100,r=a*2,$fn=50);
 
-cylinder(h=100,r=a,$fn=100);
+cylinder(h=100,r=a,$fn=50);
 }
 }
 }

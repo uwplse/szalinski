@@ -1,4 +1,4 @@
-$fn=120;
+$fn=50;
 
 AnzX=1; // Anzahl Spalten - Number of columns
 AnzY=1; // Anzahl Zeilen - Number of lines

@@ -3,7 +3,7 @@ width=40;         // [10:100]
 InnerHeight=16;   // [1:0.1:20]
 
 /* [Hidden] */
-$fn = 64;
+$fn = 50;
 
 difference() {
   hull() {

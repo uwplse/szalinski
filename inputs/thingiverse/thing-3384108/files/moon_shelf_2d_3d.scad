@@ -41,7 +41,7 @@ circle_number=10; //number per side 200
 width=circle_diameter*circle_number;
 joint_offset=15;
 
-$fn=100;
+$fn=50;
 
 module moon_whole(){
 difference(){

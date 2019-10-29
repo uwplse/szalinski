@@ -1,4 +1,4 @@
-$fn = 96;
+$fn = 50;
 
 printLayerHeight = 0.15;
 

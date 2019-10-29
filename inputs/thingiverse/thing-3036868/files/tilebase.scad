@@ -1,4 +1,4 @@
-$fn=80;
+$fn=50;
 
 // Diameter of the base. 
 base_diameter = 50; // [10:200]

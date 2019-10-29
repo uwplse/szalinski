@@ -34,7 +34,7 @@ difference() {
 
     translate([(4+frame_thickness+4)/2,7,10]) {
         rotate([90,0,0]) {
-            cylinder(r=8/2, h=20, $fn=100); // M8 hole for threaded rod
+            cylinder(r=8/2, h=20, $fn=50); // M8 hole for threaded rod
         }
     }
     

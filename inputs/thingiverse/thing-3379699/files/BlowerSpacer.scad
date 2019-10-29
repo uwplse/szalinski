@@ -1,4 +1,4 @@
-$fn = 64;
+$fn = 50;
 
 thickness = 4.5;
 

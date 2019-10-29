@@ -10,10 +10,10 @@ difference()
 	{
 		difference()
 		{
-			cylinder(r=(battery_diameter/2)+tolerance+wall_thickness, h=battery_height+(tolerance)+(2*wall_thickness),$fn=64);
+			cylinder(r=(battery_diameter/2)+tolerance+wall_thickness, h=battery_height+(tolerance)+(2*wall_thickness),$fn=50);
 
 			translate([0,0,wall_thickness])
-			cylinder(r=(battery_diameter/2)+(tolerance/2), h=battery_height+(tolerance),$fn=64);
+			cylinder(r=(battery_diameter/2)+(tolerance/2), h=battery_height+(tolerance),$fn=50);
 			translate([0,-((battery_diameter/2)+2+tolerance),0])
 			cube([battery_diameter+10,battery_diameter+5,battery_height+5]);
 

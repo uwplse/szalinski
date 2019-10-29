@@ -1,4 +1,4 @@
-$fn = 100;
+$fn = 50;
 /* Examine carefully the layers before printing
  for the case some part is missing if measures 
  doesn't match. */

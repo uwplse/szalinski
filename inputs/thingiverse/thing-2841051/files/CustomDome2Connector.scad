@@ -11,7 +11,7 @@
 module MakeConnector5(diameter_tube,diameter_screw){
     V2A = 15.86;
     V2B = 18.00;
-    $fn=60;
+    $fn=50;
     Tube=diameter_tube+0.2;
     H=Tube*1.8; 
     D=Tube*5.5;
@@ -74,7 +74,7 @@ module MakeConnector5(diameter_tube,diameter_screw){
 module MakeConnector6(diameter_tube,diameter_screw){
     V2A = 15.86;
     V2B = 18.00;
-    $fn=60;
+    $fn=50;
     Tube=diameter_tube+0.2;
     H=Tube*1.8;        
     D=Tube*5.5;
@@ -135,7 +135,7 @@ module MakeConnector6(diameter_tube,diameter_screw){
 module MakeConnector4(diameter_tube,diameter_screw){
     V2A = 15.86;
     V2B = 18.00;
-    $fn=60;
+    $fn=50;
     Tube=diameter_tube+0.2;
     H=Tube*1.8;       
     D=Tube*5.5;

@@ -72,7 +72,7 @@ for (rings = [2: bottle_columns])
 
 module endcap()
 {
-$fn=200;
+$fn=50;
  difference()
     {cylinder(r=tube_diameter/2+tube_wall+0.8+5, h=20);
         translate([0,0,10])
@@ -112,7 +112,7 @@ $fn=200;
 
 module holder_endcap()
 {
-$fn=200;
+$fn=50;
  difference()
     {cylinder(r=tube_diameter/2+tube_wall+0.8+5, h=holder_height+5);
         translate([0,0,holder_height])
@@ -154,7 +154,7 @@ $fn=200;
 
 module hex_endcap()
 {
-$fn=200;
+$fn=50;
  difference()
     {rotate([0,0,30])
         cylinder(r=sqrt((tube_diameter/2+tube_wall+0.8+6)*(tube_diameter/2+tube_wall+0.8+6)+((tube_diameter/2+tube_wall+0.8+6)/2)*((tube_diameter/2+tube_wall+0.8+6)/2)), h=20, $fn=6);
@@ -201,11 +201,11 @@ intersection()
         {union()
             {cylinder(r=bottle_diameter*bottle_columns+bottle_spacing*(bottle_columns-1)+tray_border-bottle_diameter/2, h=plate_thickness, $fn=6);
              translate([0,0,0.001])
-                cylinder(r=bottle_diameter/2+1.2, h=holder_height, $fn=100);
+                cylinder(r=bottle_diameter/2+1.2, h=holder_height, $fn=50);
                 for(dreining = [0: 60: 300])
     {rotate([0,0,dreining])
         translate([bottle_diameter*(bottle_columns-1)+bottle_spacing*(bottle_columns-1),0,0.001])
-            cylinder(r=bottle_diameter/2+1.2, h=holder_height, $fn=100);
+            cylinder(r=bottle_diameter/2+1.2, h=holder_height, $fn=50);
         }
 
 
@@ -229,9 +229,9 @@ intersection()
 //This small block makes the center column. Can be commented out if you want to remove that column...
 difference()
     {translate ([0,0,0.01])
-        cylinder(r=bottle_diameter/2+1.2, h=bottom_height+plate_thickness, $fn=100);
+        cylinder(r=bottle_diameter/2+1.2, h=bottom_height+plate_thickness, $fn=50);
      translate([0,0,plate_thickness+0.01])
-        cylinder(r=bottle_diameter/2, h=bottom_height+plate_thickness+2, $fn=100);
+        cylinder(r=bottle_diameter/2, h=bottom_height+plate_thickness+2, $fn=50);
     }
   
     
@@ -240,9 +240,9 @@ for(dreining = [0: 60: 300])
     {rotate([0,0,dreining])
         translate([bottle_diameter*(bottle_columns-1)+bottle_spacing*(bottle_columns-1),0,0.01])
         difference()
-            {cylinder(r=bottle_diameter/2+1.2, h=bottom_height+plate_thickness, $fn=100);
+            {cylinder(r=bottle_diameter/2+1.2, h=bottom_height+plate_thickness, $fn=50);
             translate([0,0,plate_thickness-0.01])
-                cylinder(r=bottle_diameter/2, h=bottom_height+plate_thickness+2, $fn=100);
+                cylinder(r=bottle_diameter/2, h=bottom_height+plate_thickness+2, $fn=50);
             }
         }
 }

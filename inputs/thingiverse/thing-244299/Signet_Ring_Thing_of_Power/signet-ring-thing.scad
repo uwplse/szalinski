@@ -30,7 +30,7 @@ RING_DIAMETER = 0;
 TILT = 66.2;
 
 // Segments per circle. Higher values yield smoother surfaces but take longer to process.
-$fn = 90;
+$fn = 50;
 
 Ring(	RING_DIAMETER == 0 ? RingSizeToFingerDiameter(RING_SIZE) : RING_DIAMETER,
 		TILT,

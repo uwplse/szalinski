@@ -17,7 +17,7 @@ hole_size = die_size + (die_buffer * 2);
 outside_border = 10;
 buffer = (card_width - (outside_border * 2) - (hole_size * holes)) / (holes-1);
 
-$fn = 100;
+$fn = 50;
 
 union() {
     difference() {

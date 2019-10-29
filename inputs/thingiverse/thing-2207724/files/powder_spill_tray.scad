@@ -10,7 +10,7 @@
 /* [Main] */
 
 // Define number of facets (large numbers provide better smoothing)
-$fn=100;
+$fn=50;
 
 // Define height of the cylinder wall in mm
 height=8.0;

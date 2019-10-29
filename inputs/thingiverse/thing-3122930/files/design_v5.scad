@@ -5,7 +5,7 @@
 // - Made the insert 0.3 mm bigger to 12.3, so that cuvettes slide in more easily
 
 $vpd=400; //Viewport, defines the zoom factor after auto reload
-$fn=80; //High res
+$fn=50; //High res
 //$fn = 20; //Low res for testing
 
 T = 3; //wall thickness in mm

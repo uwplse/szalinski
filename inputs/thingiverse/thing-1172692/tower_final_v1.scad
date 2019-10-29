@@ -43,7 +43,7 @@ debug = false;
 drainage = true;
 
 // Resolution
-$fn = 360;
+$fn = 50;
 
 // echo(smooth)
 

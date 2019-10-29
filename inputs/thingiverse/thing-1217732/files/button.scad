@@ -30,7 +30,7 @@ hd=1;
 //holes repartition diameter
 hr=4;
 
-$fn=100/2;
+$fn=50/2;
 
 bouton();
 

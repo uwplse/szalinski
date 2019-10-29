@@ -24,10 +24,10 @@ module cover(cover_len)
 			cube([wing_width, 2.75, cover_len], center=true);
 
 		translate([6.5/2 - wing_width/2 + 0.15, 2.2/2 + 0.35, 0])
-			cylinder(r=1.05, h=cover_len, center=true, $fn=60);
+			cylinder(r=1.05, h=cover_len, center=true, $fn=50);
 
 		translate([-6.5/2 + wing_width/2 - 0.15, 2.2/2 + 0.35, 0])
-			cylinder(r=1.05, h=cover_len, center=true, $fn=60);
+			cylinder(r=1.05, h=cover_len, center=true, $fn=50);
 	}
 }
 

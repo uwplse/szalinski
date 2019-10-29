@@ -53,17 +53,17 @@ if (View == 1){
             difference(){
                 difference(){
                     union(){
-                        cylinder(t,Ro*1.25,Ro*1.25,center=true,$fn=1000);
+                        cylinder(t,Ro*1.25,Ro*1.25,center=true,$fn=50);
                         translate([0,D,0]){
-                            cylinder(t,Ro*1.25,Ro*1.25,center=true,$fn=1000);
+                            cylinder(t,Ro*1.25,Ro*1.25,center=true,$fn=50);
                             }
                             translate([0,D/2,0]){
                                 cube([Ro*2.5,D,t],center=true);
                                 }
                                 }
-                                cylinder(t,b/2,b/2,center=true,$fn=1000);
+                                cylinder(t,b/2,b/2,center=true,$fn=50);
                                 translate([0,D,0]){
-                                    cylinder(t,b/2,b/2,center=true,$fn=1000);
+                                    cylinder(t,b/2,b/2,center=true,$fn=50);
                                     }}
                                     translate([0,0,0]){
                                         cylinder(2*nutt,nutw/2,nutw/2,center=false,$fn=6);
@@ -77,11 +77,11 @@ if (View == 1){
     difference(){
     union(){
     difference(){
-        cylinder(t,Ro,Ro,center=true,$fn=1000);
+        cylinder(t,Ro,Ro,center=true,$fn=50);
         for (i=[0:N-1]){
             rotate([0,0,ang*i]){
         translate([0,Ro-D,0]){
-            cylinder(t,(w/2)+tol,(w/2)+tol,center=true,$fn=100);
+            cylinder(t,(w/2)+tol,(w/2)+tol,center=true,$fn=50);
         }
         rotate([0,0,180]){
         translate([-((w/2)+tol),D-Ro,-t/2]){
@@ -90,12 +90,12 @@ if (View == 1){
         for (i=[0:N-1]){
             rotate([0,0,(ang/2)+(ang*i)]){
                 translate([0,-D,0]){
-                    cylinder(t,Ro+tol,Ro+tol,center=true,$fn=1000);
+                    cylinder(t,Ro+tol,Ro+tol,center=true,$fn=50);
                     }}}}
                     translate([0,0,t]){
-                        cylinder(t,Ri,Ri,center=true,$fn=1000);
+                        cylinder(t,Ri,Ri,center=true,$fn=50);
                     }}
-                    cylinder(3*t,b/2,b/2,center=true,$fn=1000);
+                    cylinder(3*t,b/2,b/2,center=true,$fn=50);
             }}}
             
                 //Rotor
@@ -103,17 +103,17 @@ if (View == 1){
                 union(){
                     difference(){
                         translate([0,0,t/2]){
-                    cylinder(2*t,Ro,Ro,center=true,$fn=1000);
+                    cylinder(2*t,Ro,Ro,center=true,$fn=50);
                         }
                         translate([0,-D,(1.5*t)-tol]){
-                            cylinder(2*t,Ro+(2*tol),Ro+(2*tol),center=true,$fn=1000);}
-                            cylinder(4*t,b/2,b/2,center=true,$fn=1000);
+                            cylinder(2*t,Ro+(2*tol),Ro+(2*tol),center=true,$fn=50);}
+                            cylinder(4*t,b/2,b/2,center=true,$fn=50);
                             }
                     translate([0,-Ro,t/2]){
-                        cylinder(2*t,w/2,w/2,center=true,$fn=1000);
+                        cylinder(2*t,w/2,w/2,center=true,$fn=50);
                     }
                 translate([0,Ro-(t*(2/3)),2*t]){
-                cylinder(2*t,t/2,t/2,center=true,$fn=1000);
+                cylinder(2*t,t/2,t/2,center=true,$fn=50);
                 }}}
             
             
@@ -127,11 +127,11 @@ else{
     difference(){
     union(){
     difference(){
-        cylinder(t,Ro,Ro,center=true,$fn=1000);
+        cylinder(t,Ro,Ro,center=true,$fn=50);
         for (i=[0:N-1]){
             rotate([0,0,ang*i]){
         translate([0,Ro-D,0]){
-            cylinder(t,(w/2)+tol,(w/2)+tol,center=true,$fn=100);
+            cylinder(t,(w/2)+tol,(w/2)+tol,center=true,$fn=50);
         }
         rotate([0,0,180]){
         translate([-((w/2)+tol),D-Ro,-t/2]){
@@ -141,15 +141,15 @@ else{
         for (i=[0:N-1]){
             rotate([0,0,(ang/2)+(ang*i)]){
                 translate([0,-D,0]){
-                    cylinder(t,Ro+tol,Ro+tol,center=true,$fn=1000);
+                    cylinder(t,Ro+tol,Ro+tol,center=true,$fn=50);
                     }}
                     }
                     }
                     translate([0,0,t]){
-                        cylinder(t,Ri,Ri,center=true,$fn=1000);
+                        cylinder(t,Ri,Ri,center=true,$fn=50);
                     }
                 }
-                    cylinder(3*t,b/2,b/2,center=true,$fn=1000);
+                    cylinder(3*t,b/2,b/2,center=true,$fn=50);
             }
                 }
     //Rotor
@@ -157,17 +157,17 @@ else{
                   union(){
                     difference(){
                         translate([0,0,t/2]){
-                    cylinder(2*t,Ro,Ro,center=true,$fn=1000);
+                    cylinder(2*t,Ro,Ro,center=true,$fn=50);
                         }
                         translate([0,-D,(1.5*t)-tol]){
-                            cylinder(2*t,Ro+(2*tol),Ro+(2*tol),center=true,$fn=1000);}
-                            cylinder(4*t,b/2,b/2,center=true,$fn=1000);
+                            cylinder(2*t,Ro+(2*tol),Ro+(2*tol),center=true,$fn=50);}
+                            cylinder(4*t,b/2,b/2,center=true,$fn=50);
                             }
                     translate([0,-Ro,t/2]){
-                        cylinder(2*t,w/2,w/2,center=true,$fn=1000);
+                        cylinder(2*t,w/2,w/2,center=true,$fn=50);
                     }
                 translate([0,Ro-(t*(2/3)),2*t]){
-                cylinder(2*t,t/2,t/2,center=true,$fn=1000);
+                cylinder(2*t,t/2,t/2,center=true,$fn=50);
                 }}}
                 
     //Base
@@ -175,16 +175,16 @@ else{
                     difference(){
                         difference(){
                             union(){
-                                cylinder(t,Ro*1.25,Ro*1.25,center=true,$fn=1000);
+                                cylinder(t,Ro*1.25,Ro*1.25,center=true,$fn=50);
                                 translate([0,D,0]){
-                                    cylinder(t,Ro*1.25,Ro*1.25,center=true,$fn=1000);
+                                    cylinder(t,Ro*1.25,Ro*1.25,center=true,$fn=50);
                                     }
                                     translate([0,D/2,0]){
                                         cube([Ro*2.5,D,t],center=true);
                                         }}
-                                        cylinder(t,b/2,b/2,center=true,$fn=1000);
+                                        cylinder(t,b/2,b/2,center=true,$fn=50);
                                         translate([0,D,0]){
-                                            cylinder(t,b/2,b/2,center=true,$fn=1000);
+                                            cylinder(t,b/2,b/2,center=true,$fn=50);
                                             }}
                                             translate([0,0,0]){
                                                 cylinder(2*nutt,nutw/2,nutw/2,center=false,$fn=6);

@@ -11,8 +11,8 @@ diatabhang=2*tabhang;
 module insert(){
 union(){
 union(){
-    cylinder(2.5, d=97.5, $fn=60);
-    translate([0,0,2.5]) cylinder(2.85, d=91, $fn=60);
+    cylinder(2.5, d=97.5, $fn=50);
+    translate([0,0,2.5]) cylinder(2.85, d=91, $fn=50);
 }
    difference(){ 
        union(){

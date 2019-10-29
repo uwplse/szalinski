@@ -19,7 +19,7 @@ inch=25.4;
 difference() {
   //cube([x_total * 10, y_total * 10,10]);
   hull() {
-    $fn = 60;
+    $fn = 50;
     translate([corner_r, corner_r, 0]) cylinder(r=corner_r,h=height);
     translate([total_x_holes * spacing - corner_r, corner_r, 0]) cylinder(r=corner_r,h=height);
     translate([total_x_holes * spacing - corner_r, total_y_holes * spacing - corner_r, 0]) cylinder(r=corner_r,h=height);

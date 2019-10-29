@@ -45,13 +45,13 @@ module maleBar(length, innerWidth, outerWidth, crossOver)
 			cube([outerWidth,outerWidth,length - (crossOver*2)]);
 		}
 
-		translate([outerWidth/2,outerWidth+1,-crossOver/2]) rotate([90,0,0]) cylinder(screwHoleLength,screwHoleWidth,screwHoleWidth,$fn=100);
+		translate([outerWidth/2,outerWidth+1,-crossOver/2]) rotate([90,0,0]) cylinder(screwHoleLength,screwHoleWidth,screwHoleWidth,$fn=50);
 
-		translate([-1,outerWidth/2,-crossOver/2]) rotate([0,90,0]) cylinder(screwHoleLength,screwHoleWidth,screwHoleWidth,$fn=100);
+		translate([-1,outerWidth/2,-crossOver/2]) rotate([0,90,0]) cylinder(screwHoleLength,screwHoleWidth,screwHoleWidth,$fn=50);
 
-		translate([outerWidth/2,outerWidth+1,length-crossOver-(crossOver/2)]) rotate([90,0,0]) cylinder(screwHoleLength,screwHoleWidth,screwHoleWidth,$fn=100);
+		translate([outerWidth/2,outerWidth+1,length-crossOver-(crossOver/2)]) rotate([90,0,0]) cylinder(screwHoleLength,screwHoleWidth,screwHoleWidth,$fn=50);
 
-		translate([-1,outerWidth/2,length-crossOver-(crossOver/2)]) rotate([0,90,0]) cylinder(screwHoleLength,screwHoleWidth,screwHoleWidth,$fn=100);
+		translate([-1,outerWidth/2,length-crossOver-(crossOver/2)]) rotate([0,90,0]) cylinder(screwHoleLength,screwHoleWidth,screwHoleWidth,$fn=50);
 	}
 }
 
@@ -70,13 +70,13 @@ module femaleBar(length, innerWidth, outerWidth, widthGap, crossOver)
 
 		translate([(outerWidth-innerWidth-widthGap)/2,(outerWidth-innerWidth-widthGap)/2,length-(crossOver)-1]) cube([innerWidth+widthGap,innerWidth+widthGap,crossOver+2]);
 
-		translate([outerWidth/2,outerWidth+1,crossOver/2]) rotate([90,0,0]) cylinder(screwHoleLength,screwHoleWidth,screwHoleWidth,$fn=100);
+		translate([outerWidth/2,outerWidth+1,crossOver/2]) rotate([90,0,0]) cylinder(screwHoleLength,screwHoleWidth,screwHoleWidth,$fn=50);
 
-		translate([-1,outerWidth/2,crossOver/2]) rotate([0,90,0]) cylinder(screwHoleLength,screwHoleWidth,screwHoleWidth,$fn=100);
+		translate([-1,outerWidth/2,crossOver/2]) rotate([0,90,0]) cylinder(screwHoleLength,screwHoleWidth,screwHoleWidth,$fn=50);
 
-		translate([outerWidth/2,outerWidth+1,length-(crossOver/2)]) rotate([90,0,0]) cylinder(screwHoleLength,screwHoleWidth,screwHoleWidth,$fn=100);
+		translate([outerWidth/2,outerWidth+1,length-(crossOver/2)]) rotate([90,0,0]) cylinder(screwHoleLength,screwHoleWidth,screwHoleWidth,$fn=50);
 
-		translate([-1,outerWidth/2,length-(crossOver/2)]) rotate([0,90,0]) cylinder(screwHoleLength,screwHoleWidth,screwHoleWidth,$fn=100);
+		translate([-1,outerWidth/2,length-(crossOver/2)]) rotate([0,90,0]) cylinder(screwHoleLength,screwHoleWidth,screwHoleWidth,$fn=50);
 
 	}
 }
@@ -95,9 +95,9 @@ module hmaleBar(length, innerWidth, outerWidth, crossOver)
 			cube([outerWidth,outerWidth,length - (crossOver)]);
 		}
 
-		translate([outerWidth/2,outerWidth+1,-crossOver/2]) rotate([90,0,0]) cylinder(screwHoleLength,screwHoleWidth,screwHoleWidth,$fn=100);
+		translate([outerWidth/2,outerWidth+1,-crossOver/2]) rotate([90,0,0]) cylinder(screwHoleLength,screwHoleWidth,screwHoleWidth,$fn=50);
 
-		translate([-1,outerWidth/2,-crossOver/2]) rotate([0,90,0]) cylinder(screwHoleLength,screwHoleWidth,screwHoleWidth,$fn=100);
+		translate([-1,outerWidth/2,-crossOver/2]) rotate([0,90,0]) cylinder(screwHoleLength,screwHoleWidth,screwHoleWidth,$fn=50);
 	}
 }
 
@@ -115,9 +115,9 @@ module hfemaleBar(length, innerWidth, outerWidth, widthGap, crossOver)
 
 		translate([(outerWidth-innerWidth)/2,(outerWidth-innerWidth)/2,-1]) cube([innerWidth,innerWidth,crossOver+2]);
 
-		translate([outerWidth/2,outerWidth+1,crossOver/2]) rotate([90,0,0]) cylinder(screwHoleLength,screwHoleWidth,screwHoleWidth,$fn=100);
+		translate([outerWidth/2,outerWidth+1,crossOver/2]) rotate([90,0,0]) cylinder(screwHoleLength,screwHoleWidth,screwHoleWidth,$fn=50);
 
-		translate([-1,outerWidth/2,crossOver/2]) rotate([0,90,0]) cylinder(screwHoleLength,screwHoleWidth,screwHoleWidth,$fn=100);
+		translate([-1,outerWidth/2,crossOver/2]) rotate([0,90,0]) cylinder(screwHoleLength,screwHoleWidth,screwHoleWidth,$fn=50);
 
 	}
 }

@@ -89,7 +89,7 @@ module classicKeychain(Text,FontSize,FontStyle,PlateHeight,TextYoffset,LetterSpa
             difference(){
                 translate([-FontSize/3+(FontSize/3 - FontSize/5)/2,0,0])
                 rotate([90,0,0]) 
-                cylinder(r=FontSize/3, h=PlateHeight, $fn=100, center=true);
+                cylinder(r=FontSize/3, h=PlateHeight, $fn=50, center=true);
                 translate([-FontSize/3+(FontSize/3 - FontSize/5)/2,0,0]) 
                 rotate([90,0,0])
                 cylinder(r=FontSize/5, h=PlateHeight + 1, center=true);
@@ -168,7 +168,7 @@ module blockKeychain(Text, FontSize, FontStyle, FontHeight, PlateHeight, LetterS
             difference(){
                 translate([-FontSize/3+(FontSize/3 - FontSize/5)/2,0,0])
                 rotate([90,0,0]) 
-                cylinder(r=FontSize/2.5, h=Plate_Height, $fn=100, center=true);
+                cylinder(r=FontSize/2.5, h=Plate_Height, $fn=50, center=true);
                 translate([-FontSize/3+(FontSize/3 - FontSize/5)/2,0,0])
                 rotate([90,0,0])
                 cylinder(r=FontSize/4.25, h=Plate_Height + 1, center=true);

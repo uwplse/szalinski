@@ -19,7 +19,7 @@ radius = 2;
 cutoutMargin = 5;
 
 /* [Hidden] */
-$fn = 180;
+$fn = 50;
 thickness = bottomThickness + topThickness;
 
 difference() {

@@ -60,7 +60,7 @@ module plate(length) {
 	translate([30,-33.5,-2]) cube([length,69,2]);
 }
 
-$fn=60;
+$fn=50;
 
 if (chargers > 0)
 	for (i = [0:chargers-1])

@@ -10,7 +10,7 @@
 
 use <write/Write.scad>
 //resolution (50+)
-$fn = 100;
+$fn = 50;
 
 //credit card dimensions-keep
 card_x = 85.60;

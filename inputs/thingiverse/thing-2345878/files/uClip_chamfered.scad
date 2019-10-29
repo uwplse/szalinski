@@ -17,7 +17,7 @@ flangeTerminateMult = 0.5;
 manifoldCorrection = 0.04;
 extra_chamfer = 0;
 
-$fn = 120;
+$fn = 50;
 
 cubeSize = insideDiameter + thickness * 2;
 distanceBetween = insideDiameter + thickness * 2 + 3;
@@ -70,13 +70,13 @@ module pvcClip()
 module torus_chamfer()
 {
     difference() {
-        rotate_extrude($fn = 80)
+        rotate_extrude($fn = 50)
             translate([insideDiameter / 2 - 1, 0, 0])
                 square([2, 2]);
     
-        rotate_extrude($fn = 80)
+        rotate_extrude($fn = 50)
             translate([insideDiameter / 2 + 1, 2, 0])
-                circle(r = 1, $fn = 60);
+                circle(r = 1, $fn = 50);
         }
 }
 

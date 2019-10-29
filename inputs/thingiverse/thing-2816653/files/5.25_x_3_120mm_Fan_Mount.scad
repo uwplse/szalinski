@@ -15,7 +15,7 @@ mbw=10;
 mholed=3.25;
 mbh2o=86;
 
-$fn=100;
+$fn=50;
 //mountbs();
 //mountbsw();
 //mountb();

@@ -4,7 +4,7 @@ left =1;
 right=1;
 mid  =1;
 
-$fn = 100;
+$fn = 50;
 wall = 2;
 hingeWidth = 13.5;
 hingeHeight = 15;

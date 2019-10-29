@@ -10,7 +10,7 @@ difference(){
 translate([0,0,height+thickness]) cube([length,width,thickness]);
 cube([thickness,width,height+2*thickness]);
 translate([length,width/2,height+thickness]) cylinder(r1=width/2, r2=width/2, h=thickness);
-$fn=200;
+$fn=50;
 translate([length,width/2,0]) cylinder(r1=width/2, r2=width/2, h=thickness);
 }
         translate([0,0,height+thickness+1]) rotate(a=-45, v=[0,1,0]) cube([50,width,thickness]);

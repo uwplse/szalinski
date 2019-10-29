@@ -15,7 +15,7 @@ part="assembled";   // [assembled:all together (view only),connector_top:upper p
 ld=32;  // [10:100]
 
 /* [Hidden] */
-$fn=100;
+$fn=50;
 
 //ld=32;  // Durchmesser des Lenkers
 bh=20;  // Breite des Lenker-Verbinders

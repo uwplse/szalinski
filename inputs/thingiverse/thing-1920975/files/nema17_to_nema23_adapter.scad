@@ -15,7 +15,7 @@ nema17CutOuta = (nema23HoleDistance*2)-(nema23HeadR*2); //43
 nema17CutOutb = 43;
 
 
-$fn = 128;
+$fn = 50;
 
 difference(){
 cube([width, length, height], center= true);

@@ -1,4 +1,4 @@
-$fn = 64;
+$fn = 50;
 radius = 5;
 width = 40;
 InnerHeight = 16;

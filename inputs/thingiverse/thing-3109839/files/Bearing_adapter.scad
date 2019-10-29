@@ -13,6 +13,6 @@ bearing_width = 7;
 /*[Hidden]*/
 
 difference() {
-    cylinder (d=outer_diameter,h=bearing_width,center=true,$fn=128);
-    cylinder (d=inner_diameter,h=bearing_width+1,center=true,$fn=128);
+    cylinder (d=outer_diameter,h=bearing_width,center=true,$fn=50);
+    cylinder (d=inner_diameter,h=bearing_width+1,center=true,$fn=50);
 }

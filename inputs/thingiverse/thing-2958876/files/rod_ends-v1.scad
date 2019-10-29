@@ -27,15 +27,15 @@ module cap(rad = rad+gap,thick=thickness,height=height, base_height=base_height,
     shiftdown = thick > base_height?  base_height :thick;
     difference() {
         // outter circle
-    cylinder(r=rad+thick,h=height,$fn=64);
+    cylinder(r=rad+thick,h=height,$fn=50);
         // inner circle
-    translate([0,0,thick]) cylinder(r=rad,h=height,$fn=64);
+    translate([0,0,thick]) cylinder(r=rad,h=height,$fn=50);
     }
     
     // add the base
     if (base_height >0 && base_radius>0)
     {
-        translate([0,0,-shiftdown]) cylinder(r=base_radius, h=base_height,$fn=64);
+        translate([0,0,-shiftdown]) cylinder(r=base_radius, h=base_height,$fn=50);
     }
     
 }

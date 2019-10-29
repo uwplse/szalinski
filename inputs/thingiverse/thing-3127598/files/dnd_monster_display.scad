@@ -4,7 +4,7 @@ miniX=20;
 miniY=1;
 miniZ=30;
 wall=2;
-$fn = 100;
+$fn = 50;
 translate([-miniX/2 - wall,-wall -miniY/2,groundHeight]) 
 {
 difference()

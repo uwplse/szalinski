@@ -30,7 +30,7 @@ module edge(radius, height)
 			cube([radius+1, radius+1, height], center = true);
 
 		translate([radius, radius, 0])
-			cylinder(h = height+1, r1 = radius, r2 = radius, center = true, $fn = 100);
+			cylinder(h = height+1, r1 = radius, r2 = radius, center = true, $fn = 50);
 	}
 }
 
@@ -62,25 +62,25 @@ module battery_box(cells)
 				cube(size=[7, 4, 3], center=true);
 
 			translate([20, cells*Cell_Wide/2+4, 3/2])
-				cylinder(r=7/2, h=3, center=true, $fn = 60);
+				cylinder(r=7/2, h=3, center=true, $fn = 50);
 
 			translate([-20, cells*Cell_Wide/2+4/2, 3/2])
 				cube(size=[7, 4, 3], center=true);
 
 			translate([-20, cells*Cell_Wide/2+4, 3/2])
-				cylinder(r=7/2, h=3, center=true, $fn = 60);
+				cylinder(r=7/2, h=3, center=true, $fn = 50);
 
 			translate([20, -(cells*Cell_Wide/2+4/2), 3/2])
 				cube(size=[7, 4, 3], center=true);
 
 			translate([20, -(cells*Cell_Wide/2+4), 3/2])
-				cylinder(r=7/2, h=3, center=true, $fn = 60);
+				cylinder(r=7/2, h=3, center=true, $fn = 50);
 
 			translate([-20, -(cells*Cell_Wide/2+4/2), 3/2])
 				cube(size=[7, 4, 3], center=true);
 
 			translate([-20, -(cells*Cell_Wide/2+4), 3/2])
-				cylinder(r=7/2, h=3, center=true, $fn = 60);
+				cylinder(r=7/2, h=3, center=true, $fn = 50);
 		}
     }
         
@@ -94,7 +94,7 @@ module battery_box(cells)
 			// battery cradle
 			translate([0, -cells*Cell_Wide/2+Cell_Wide/2+Cell_Wide*i, Cell_Wide/2+10/2])
 			rotate(90, [0, 1, 0])
-				cylinder(r=Cell_Wide/2, h=Cell_Long+2+2, center=true, $fn = 100);
+				cylinder(r=Cell_Wide/2, h=Cell_Long+2+2, center=true, $fn = 50);
 			
 			// spring cut-out
 			translate([Cell_Long/2+3, -cells*Cell_Wide/2+Cell_Wide/2+Cell_Wide*i, Cell_Wide/2+10/2])
@@ -218,7 +218,7 @@ module battery_box(cells)
 		// cutout to ease battery removal
 		translate([0, 0, 20/2+10/2])
 		rotate(90, [1, 0, 0])
-			cylinder(r=20/2, h=cells*Cell_Wide+5, center=true, $fn = 100);
+			cylinder(r=20/2, h=cells*Cell_Wide+5, center=true, $fn = 50);
 		
 		// rounded corners on end plates
 		translate([0, -cells*Cell_Wide/2, Cell_Wide*(4/3)])

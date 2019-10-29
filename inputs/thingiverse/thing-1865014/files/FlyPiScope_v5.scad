@@ -199,7 +199,7 @@ module C(){
 	translate([+Cam_X_offset,-Servo_Y/2-Cam_Y/2-Walls,sep-Walls/4-H_coglink/2-Walls/4]){cylinder( $fn=50, r = R_coglink, h = H_coglink, center = true );} // CogLink
 }
 module C_sub(){
-      translate([0,0,0]){cylinder( $fn=100, r = R_Mainhole, h = 100, center = true );} // Hole
+      translate([0,0,0]){cylinder( $fn=50, r = R_Mainhole, h = 100, center = true );} // Hole
  	//translate([-P_XY/2-P_border-A_Wall_X/2,0,sep]){cube([A_Wall_X+Tol,A_Wall_Y+Tol,7], center = true );} // wallcut
 	translate([+Cam_X_offset,-Servo_Y/2-Cam_Y/2-Walls,sep-Walls/4-H_coglink/2-Walls/4]){cylinder( $fn=50, r = 1, h = 50, center = true );} // CogLink
 	translate([0,-Emiss_pivot_hole_offset-1,sep]){rotate ([0,0,0]) {cylinder($fn = 50, r = Emiss_pivot_hole_R, h = 50, center = true );}} // Wheel_peg		

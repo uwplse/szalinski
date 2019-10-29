@@ -11,10 +11,10 @@ i_inner = 0.2;
 i_outer = 0.2;
 
 difference() {
-    cylinder(d=d_outer-i_outer, h=h, $fn=100);
+    cylinder(d=d_outer-i_outer, h=h, $fn=50);
     
     translate([0,0,-1]) {
-        cylinder(d=d_inner+i_inner, h=h+2, $fn=100);
+        cylinder(d=d_inner+i_inner, h=h+2, $fn=50);
     }
 }
 

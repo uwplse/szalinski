@@ -6,7 +6,7 @@
 outerDiameter=10;
 
 
-$fn=100;
+$fn=50;
 //height of baseplate in mm
 plate=2;
 
@@ -61,5 +61,5 @@ difference(){
     translate([-31/2,31/2,-1])cylinder(d=3.2,h=space+2);
 }
 module flansch (){
-    translate([0,0,-1])cylinder(d=23,h=20,$fn=100);
+    translate([0,0,-1])cylinder(d=23,h=20,$fn=50);
 }

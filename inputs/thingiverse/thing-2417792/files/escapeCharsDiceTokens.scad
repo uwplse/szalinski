@@ -104,10 +104,10 @@ difference(){
         cube([GLength+ThicknessW+Thickness+PWidth,CDiameter,MCutoff]); }
 
 // Snap fit holes
-    translate([ThicknessW-ThicknessW*1.4,TLength/5*2,THeight-ThicknessW*1.5]) rotate([90,0,0]) cylinder($fn = 100, r = ThicknessW, h = TLength/5);
-    translate([ThicknessW-ThicknessW*1.4,TLength/5*4,THeight-ThicknessW*1.5]) rotate([90,0,0]) cylinder($fn = 100, r = ThicknessW, h = TLength/5);
+    translate([ThicknessW-ThicknessW*1.4,TLength/5*2,THeight-ThicknessW*1.5]) rotate([90,0,0]) cylinder($fn = 50, r = ThicknessW, h = TLength/5);
+    translate([ThicknessW-ThicknessW*1.4,TLength/5*4,THeight-ThicknessW*1.5]) rotate([90,0,0]) cylinder($fn = 50, r = ThicknessW, h = TLength/5);
 
-    translate([TWidth-ThicknessW+ThicknessW*1.4,TLength/5*2,THeight-MCutoff-ThicknessW*1.5]) rotate([90,0,0]) cylinder($fn = 100, r = ThicknessW, h = TLength/5);
-    translate([TWidth-ThicknessW+ThicknessW*1.4,TLength/5*4,THeight-MCutoff-ThicknessW*1.5]) rotate([90,0,0]) cylinder($fn = 100, r = ThicknessW, h = TLength/5);
+    translate([TWidth-ThicknessW+ThicknessW*1.4,TLength/5*2,THeight-MCutoff-ThicknessW*1.5]) rotate([90,0,0]) cylinder($fn = 50, r = ThicknessW, h = TLength/5);
+    translate([TWidth-ThicknessW+ThicknessW*1.4,TLength/5*4,THeight-MCutoff-ThicknessW*1.5]) rotate([90,0,0]) cylinder($fn = 50, r = ThicknessW, h = TLength/5);
 
 }

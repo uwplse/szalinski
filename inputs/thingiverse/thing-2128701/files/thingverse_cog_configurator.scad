@@ -73,14 +73,14 @@ module cog(tooth_count,tooth_diameter,space_between_teeth,height,holeDiameter){
 	
 				}
 				// axis fix
-				translate([0,0,axisFixOffset]) cylinder(h = axisFixHeight,r=axisFixRadius, center = true, $fn=100);							
+				translate([0,0,axisFixOffset]) cylinder(h = axisFixHeight,r=axisFixRadius, center = true, $fn=50);							
 			}
 			//screw hole fixature
 			rotate([90,0,0]) translate([0,axisFixScrewHoleOffset,(radius+10)/2]) cylinder(h = radius+10,r=axisFixScrewHoleRadisu, center = true,$fn=res);
 		}
 		ha = axisFixHeight+ height +10;
 		if (axisType == "hole") {
-			cylinder(h = ha,r=(holeDiameter/2), center = true,$fn=100);			
+			cylinder(h = ha,r=(holeDiameter/2), center = true,$fn=50);			
 		}else if(axisType == "four"){
 			rotate([0,0,45]) cylinder(h = ha,r=(holeDiameter/2), center = true,$fn=4);
 		}else if(axisType == "five"){

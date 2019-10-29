@@ -12,7 +12,7 @@ ws=1.5;     // [0.5:0.01:3]
 bottom_opening=0;   // [0:false, 1:true]
 
 /* [Hidden] */
-$fn=100;
+$fn=50;
 
 //innen=[83, 16, 100];
 innen=[sp_x, sp_y, sp_z];

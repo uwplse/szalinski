@@ -32,7 +32,7 @@ MountHoleInset = 5;
 
 
 /* [Hidden] */
-$fn=60;
+$fn=50;
 
 // Modules
 

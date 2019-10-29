@@ -6,7 +6,7 @@ hole_radius=hole_size/2;
 connector_thickness=2;
 connector_length=25;
 
-$fn=100;
+$fn=50;
 
 y_number=2;
 x_number=2;

@@ -48,13 +48,13 @@ function hexmajor(minor) = 2 * minor / sqrt(3);
 difference() {
     union() {
         // Socket boss
-        cylinder(h=socket_depth, d=handle_diam, $fn=100);
+        cylinder(h=socket_depth, d=handle_diam, $fn=50);
         // Handle
         translate([handle_length/2, 0, handle_thick/2])
         cube([handle_length, handle_diam, handle_thick], center=true);
         // Handle endround
         translate([handle_length, 0, 0])
-        cylinder(h=handle_thick, d=handle_diam, $fn=100);
+        cylinder(h=handle_thick, d=handle_diam, $fn=50);
     }
     // Hex boss
     cylinder(h=2.1*socket_depth, d=hex_diam, $fn=6, center=true);

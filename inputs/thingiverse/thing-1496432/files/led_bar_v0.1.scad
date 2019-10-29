@@ -32,8 +32,8 @@ module genSpacerMountingPoint() {
     difference() {
         union() {
             translate([-mounting_hole_outer_diameter/2, 0, 0]) cube([mounting_hole_outer_diameter, mounting_hole_outer_diameter, led_bar_height], center=true);
-            cylinder(led_bar_height, mounting_hole_outer_diameter/2, mounting_hole_outer_diameter/2, center=true, $fn=100);
+            cylinder(led_bar_height, mounting_hole_outer_diameter/2, mounting_hole_outer_diameter/2, center=true, $fn=50);
         }
-        cylinder(led_bar_height, alu_spacer_diameter_real/2, alu_spacer_diameter_real/2, center=true, $fn=100);
+        cylinder(led_bar_height, alu_spacer_diameter_real/2, alu_spacer_diameter_real/2, center=true, $fn=50);
     }
 }

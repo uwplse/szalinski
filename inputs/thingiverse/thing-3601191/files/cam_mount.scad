@@ -53,7 +53,7 @@ hookHeight = 2;
 */
 
 /* [Hidden] */
-$fn = 90;
+$fn = 50;
 
 // F7 3in1 is default
 antennaOffset = 0;

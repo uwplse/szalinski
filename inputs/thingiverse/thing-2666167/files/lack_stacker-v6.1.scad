@@ -1,4 +1,4 @@
-$fn = 100;
+$fn = 50;
 
 // Tolerance to use for the different measurements to accomodate filament thickness.
 tolerance = 1;

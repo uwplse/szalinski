@@ -6,7 +6,7 @@
 //Usage: Alter parameters based on measurement of items. Hook is divided into 3 sections: top, center, bottom. Top and bottom both include 2 curved sections (inner and outer), which have variables responsible for altering angle and radius of the curve. Credits to Alex English for his Wedge module.
 
 //Number of facets used to generate an arc
-$fn = 100;
+$fn = 50;
 
 //////////////////////////////////PARAMETERS/////////////////////////////////////
 

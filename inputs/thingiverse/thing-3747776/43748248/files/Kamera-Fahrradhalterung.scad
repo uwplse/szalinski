@@ -1,4 +1,4 @@
-$fn=100; 
+$fn=50; 
 corner_radius=3;    // rounded corners
 thickness=4.1;      // thickness of material
 width=16;           // with of the entire thing

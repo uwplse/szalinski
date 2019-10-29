@@ -25,10 +25,10 @@ module honeycomb(rows,cols) {
 module roundedcube(xdim, ydim, zdim, rdim) {
     hull()
     {
-        translate([rdim,rdim,0]) cylinder(h=zdim,r=rdim, $fn=64);
-        translate([xdim-rdim,rdim,0]) cylinder(h=zdim,r=rdim, $fn=64);
-        translate([rdim,ydim-rdim,0]) cylinder(h=zdim,r=rdim, $fn=64);
-        translate([xdim-rdim,ydim-rdim,0]) cylinder(h=zdim,r=rdim, $fn=64);
+        translate([rdim,rdim,0]) cylinder(h=zdim,r=rdim, $fn=50);
+        translate([xdim-rdim,rdim,0]) cylinder(h=zdim,r=rdim, $fn=50);
+        translate([rdim,ydim-rdim,0]) cylinder(h=zdim,r=rdim, $fn=50);
+        translate([xdim-rdim,ydim-rdim,0]) cylinder(h=zdim,r=rdim, $fn=50);
     }
 }
 

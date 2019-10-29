@@ -2,7 +2,7 @@
 // for use in electronics & mechanical projects
 // Example size for M3 bolts x 6 x 6 mm
 
-$fn=128;
+$fn=50;
 
 //Parameters:
 height = 6; 

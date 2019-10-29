@@ -8,7 +8,7 @@
 tube_diameter	=	32 		;//mm measured tube outer diameter  
 jig_height		=	30		;//mm height of jig
 wall_thickness	=	4  		;//mm desired wall thickness
-$fn = 150;  // Changes the smoothness of the curves
+$fn = 50;  // Changes the smoothness of the curves
 
 
 difference(){

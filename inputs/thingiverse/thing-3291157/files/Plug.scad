@@ -1,5 +1,5 @@
 /* [Hidden] */ ////////////////////////////
-$fn = 64;
+$fn = 50;
 
 /* [Plug] */ ////////////////////////////
 // Innerdiameter of the Plug (aka ID of the Pipe)?

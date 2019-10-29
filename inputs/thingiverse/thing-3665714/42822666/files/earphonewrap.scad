@@ -1,4 +1,4 @@
-$fn=100;
+$fn=50;
 /*
 Object Name: OpenSCAD earphone wrap for USB type-c
 Author: Brian Khuu 2019

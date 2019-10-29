@@ -8,7 +8,7 @@ knob_diameter=8.8;
 knob_roundness=0.333;
 knob_length=7.7;
 
-$fn=100;
+$fn=50;
 
 straight_length=length*(1-roundness);
 

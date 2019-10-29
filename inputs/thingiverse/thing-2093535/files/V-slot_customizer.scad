@@ -2,7 +2,7 @@ shape="20x20";//[20x20,20x40,20x60,20x80,40x40,C-Beam]
 lenght=10;
 
 //////////////
-$fn=60;
+$fn=50;
 module center() {
     difference() {
         

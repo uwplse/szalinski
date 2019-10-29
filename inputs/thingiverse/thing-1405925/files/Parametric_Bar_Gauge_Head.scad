@@ -4,7 +4,7 @@ wall_thickness = 2;
 length = 25;
 screwhole_radius = 1.5;
 
-$fn=100;
+$fn=50;
 
 difference() {
 

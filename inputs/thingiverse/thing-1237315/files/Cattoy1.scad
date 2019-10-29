@@ -3,7 +3,7 @@
 CustomizeSize = 40;             // This is the total size of the sphere end to end in mm.
 
 //You should be able to mostly leave below alone and just edit the size above in mm.
-$fn = 100;                      // High resolution
+$fn = 50;                      // High resolution
 Size = CustomizeSize / 2;       // Get the radius of the sphere we will create
 Wall = Size / 8;                // Define the wall thickness 
 SlotHeight = (Size * 2) / 1.65; // Define the Slot height (not including semicircles)

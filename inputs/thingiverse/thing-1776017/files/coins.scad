@@ -13,7 +13,7 @@ base_h = 2;
 base_xtnd = 2;
 
 /* [Hidden] */
-$fn=100;
+$fn=50;
 walls = 2.8;
 coin2_d = 25.75+1; //2 euro dia 25.75
 coin2_h = height; //h 2.20
@@ -138,10 +138,10 @@ module coinHolder(diam,height,coin){
 				rotate([0,0,-f_corn+180])translate([-opening/2,0,base_h])cube([opening/2,30,height+0.1]);
 			}
 			//opening roundings
-			translate([cut_point_X,cut_point_Y,base_h])rotate([0,0,f_corn+45])cylinder(d=walls,h=height,$fn = 60);
-			translate([cut_point_X,-cut_point_Y,base_h])rotate([0,0,f_corn+90])cylinder(d=walls,h=height,$fn=60);
-			translate([-cut_point_X,cut_point_Y,base_h])rotate([0,0,f_corn+90])cylinder(d=walls,h=height,$fn=60);
-			translate([-cut_point_X,-cut_point_Y,base_h])rotate([0,0,f_corn+45])cylinder(d=walls,h=height,$fn=60);
+			translate([cut_point_X,cut_point_Y,base_h])rotate([0,0,f_corn+45])cylinder(d=walls,h=height,$fn = 50);
+			translate([cut_point_X,-cut_point_Y,base_h])rotate([0,0,f_corn+90])cylinder(d=walls,h=height,$fn=50);
+			translate([-cut_point_X,cut_point_Y,base_h])rotate([0,0,f_corn+90])cylinder(d=walls,h=height,$fn=50);
+			translate([-cut_point_X,-cut_point_Y,base_h])rotate([0,0,f_corn+45])cylinder(d=walls,h=height,$fn=50);
 		}
 		//coin hall
 		translate([0,0,base_h])cylinder(d=diam,h=height+0.1);

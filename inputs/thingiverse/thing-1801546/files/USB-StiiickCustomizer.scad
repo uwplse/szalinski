@@ -1,5 +1,5 @@
 //count of fragments for cylinders etc.
-$fn=60;
+$fn=50;
 //plug dimensions (including 1mm tolerance)
 PLen=27; 
 //width and height - for perfect sit, file down (including 0.8mm tolerance)

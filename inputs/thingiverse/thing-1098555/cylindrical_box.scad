@@ -36,18 +36,18 @@ module printPart() {
 
 module container() {
     difference() {
-        cylinder(r=(radius + wall), h=total, $fn=360);
+        cylinder(r=(radius + wall), h=total, $fn=50);
         
         translate([0, 0, bottom])
-            cylinder(r=radius, h=total, $fn=360);
+            cylinder(r=radius, h=total, $fn=50);
     }
 }
 
 module lid() {
     difference() {
-        cylinder(r=(radius + wall * 2 + clearance), h=lidHeight, $fn=360);
+        cylinder(r=(radius + wall * 2 + clearance), h=lidHeight, $fn=50);
         
         translate([0, 0, bottom])
-            cylinder(r=(radius + wall + clearance), h=lidHeight, $fn=360);
+            cylinder(r=(radius + wall + clearance), h=lidHeight, $fn=50);
     }
 }

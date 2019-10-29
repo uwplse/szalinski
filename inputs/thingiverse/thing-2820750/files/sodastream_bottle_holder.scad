@@ -58,7 +58,7 @@ upper_buckle_position = 242; // [150:250]
 
 /* [Hidden] */
 
-$fn=100;
+$fn=50;
 
 BASE_WIDTH = inner_width_of_collars + 1; // Adding some tolerance
 OUTER_DIAMETER = BASE_WIDTH + thickness_of_collars * 2;

@@ -1,4 +1,4 @@
-$fn=100+0;
+$fn=50+0;
 //Width of entire assembly
 w=20;
 // Length of lip (part with slot)

@@ -16,7 +16,7 @@ cable_tie_radius = 15;
 
 cut_height = 64; // adjusts also the height
 
-$fn = 100; // details
+$fn = 50; // details
 
 holder_width = phone_width + 2*wall;
 holder_depth = phone_depth + 2*wall;

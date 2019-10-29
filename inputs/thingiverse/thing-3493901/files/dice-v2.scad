@@ -47,7 +47,7 @@ difference(){
   //dice body
   intersection(){
     cube(size, center=true);
-    sphere(roundness*size, $fn=100);
+    sphere(roundness*size, $fn=50);
   }
   //dice faces
   for (i=[0:5])

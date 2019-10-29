@@ -6,6 +6,6 @@ inner = 31.25;
 length = 40;
 
 difference() {
-cylinder( h=length, r=outer/2, center=false, $fn=144 );
-cylinder( h=length, r=inner/2, center=false, $fn=144 );
+cylinder( h=length, r=outer/2, center=false, $fn=50 );
+cylinder( h=length, r=inner/2, center=false, $fn=50 );
 }

@@ -1,9 +1,9 @@
 difference() {
     
-	cylinder (h = 40, d=87.5, $fn=200);
+	cylinder (h = 40, d=87.5, $fn=50);
 	
     translate ([0,0,50])
-        sphere (d=90, $fn=200);
+        sphere (d=90, $fn=50);
 
         for (k=[3:6:30])
         for (x=[0:360/k:360])

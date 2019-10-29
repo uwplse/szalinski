@@ -19,14 +19,14 @@ module solid()
     {
     union()
     {
-        translate([Microphone_Location,-2,6]) rotate ([90,0,0]) cylinder (h = 4, r=(Headphone_Diameter+Shell_Distance)/2, center = true, $fn=5000);
+        translate([Microphone_Location,-2,6]) rotate ([90,0,0]) cylinder (h = 4, r=(Headphone_Diameter+Shell_Distance)/2, center = true, $fn=50);
         difference()
         {
             cube([Hearing_Aid_Height + Shell_Distance*2,Hearing_Aid_Width + Shell_Distance*2,Hearing_Aid_Length + Shell_Distance]);
             translate([Shell_Distance,Shell_Distance,Shell_Distance+1])cube([Hearing_Aid_Height,Hearing_Aid_Width,  Hearing_Aid_Length]);
         }
     }
-        translate([Microphone_Location,-2,6]) rotate ([90,0,0]) cylinder (h = 7, r=Headphone_Diameter/2, center = true, $fn=5000);
+        translate([Microphone_Location,-2,6]) rotate ([90,0,0]) cylinder (h = 7, r=Headphone_Diameter/2, center = true, $fn=50);
     }
 }
 

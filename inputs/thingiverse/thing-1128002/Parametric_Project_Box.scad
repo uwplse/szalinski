@@ -25,7 +25,7 @@ longTabLength=t*4;
 
 
 module clip(height, t) {
-  $fn=90;
+  $fn=50;
   union() {
     cylinder(r=t/3, h=height);
     translate([-t/4, -t/3, 0])

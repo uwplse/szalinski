@@ -38,7 +38,7 @@ difference(){
     translate([extDepth-gapHeight/2,0,0])
         cube([totalDepth-extDepth+gapHeight/2,topHeight+gapHeight+minBaseHeight, length]);
     translate([(topHeight)/2,(topHeight)/2,0])
-        cylinder(length, r=(topHeight)/2,$fn=100);
+        cylinder(length, r=(topHeight)/2,$fn=50);
     translate([extDepth-gapHeight/2,topHeight+gapHeight,0])
         cylinder(length, r=extraBaseRadius,$fn=20);
     

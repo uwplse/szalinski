@@ -34,12 +34,12 @@ union(){
     difference(){
     union(){
         translate([250.025,0,0]){
-        cylinder(h=h1,r1=250,r2=250,center=false,$fn=500);
+        cylinder(h=h1,r1=250,r2=250,center=false,$fn=50);
         }
     }
     union(){
         translate([250,0,0]){
-        cylinder(h=h1,r1=230.005,r2=230.005,center=false,$fn=500);
+        cylinder(h=h1,r1=230.005,r2=230.005,center=false,$fn=50);
         }
         translate([276,0,50]){
         cube(size=[500,500,h1],center=true);
@@ -57,16 +57,16 @@ union(){
 }
     union(){
     translate([14.25,45,0]){
-        cylinder(h=h1,r1=10,r2=10,center=false,$fn=500);
+        cylinder(h=h1,r1=10,r2=10,center=false,$fn=50);
     }
     translate([14.25,-45,0]){
-        cylinder(h=h1,r1=10,r2=10,center=false,$fn=500);
+        cylinder(h=h1,r1=10,r2=10,center=false,$fn=50);
     }
     translate([10,0,h1]){
-        cylinder(h=6,r1=8,r2=8,center=false,$fn=500);
+        cylinder(h=6,r1=8,r2=8,center=false,$fn=50);
     }
     translate([10,0,h1+6]){
-        cylinder(h=5,r1=8,r2=8,center=false,$fn=500);
+        cylinder(h=5,r1=8,r2=8,center=false,$fn=50);
         }
         translate([10,0,h1+8.5]){
         for(r=[0:30]){

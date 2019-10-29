@@ -58,7 +58,7 @@ module chemney_by_size(height){
 	difference(){
 		translate([0,0,height/2.0])difference(){
 			cube([capsule_cap_diameter + 5, capsule_cap_diameter + 5, height], center = true);
-			cylinder(r = capsule_cap_diameter/2.0 + 0.5, h=height, center = true, $fn = 200);
+			cylinder(r = capsule_cap_diameter/2.0 + 0.5, h=height, center = true, $fn = 50);
 			translate([2.5,0,0])cube([capsule_cap_diameter , capsule_cap_diameter / 4.0, height], center = true);
 		}
 
@@ -87,12 +87,12 @@ translate([0,0, -(capsule_height + 15)])translate([(capsule_cap_diameter +5)/2.0
 	cube([capsule_cap_diameter +5, capsule_cap_diameter +5, capsule_height + 15], center = true);
 
 	translate([0,0,(capsule_height + 12.5)/2.0])
-		cylinder(r = (capsule_cap_diameter + 1) /2.0, h=3, center = true, $fn = 200);
+		cylinder(r = (capsule_cap_diameter + 1) /2.0, h=3, center = true, $fn = 50);
 	translate([(capsule_cap_diameter  + 1) / 2.0, 0 , (capsule_height + 12.5)/2.0])
 		cube([capsule_cap_diameter + 1, capsule_cap_diameter + 1, 3], center = true);
 
 	translate([0,0,5/2.0])
-		cylinder(r = (capsule_cap_under_diameter) /2.0, h=capsule_height + 10, center = true, $fn = 200);
+		cylinder(r = (capsule_cap_under_diameter) /2.0, h=capsule_height + 10, center = true, $fn = 50);
 	translate([(capsule_cap_under_diameter) / 2.0, 0 , 5/2.0])
 		cube([capsule_cap_under_diameter, capsule_cap_under_diameter, capsule_height + 10], center = true);
 }

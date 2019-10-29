@@ -38,7 +38,7 @@ module Shaft() {
         }
     else if (ShaftType == "Round") {
             rotate([0, 90, 0]) scale([25.4, 25.4, 25.4])
-            cylinder(h=TotalLength, d=ShaftSize, $fn = 60, center = true);
+            cylinder(h=TotalLength, d=ShaftSize, $fn = 50, center = true);
         }
     }
 module EncoderHole() {
@@ -46,10 +46,10 @@ module EncoderHole() {
         difference() {
             Shaft();
             rotate([0, 90, 0]) scale([25.4, 25.4, 25.4]) translate([0, 0, TotalLength/2])
-                cylinder(h = EncoderHoleDepth, d = EncoderShaftDiameter, $fn = 60, center = true);
+                cylinder(h = EncoderHoleDepth, d = EncoderShaftDiameter, $fn = 50, center = true);
             if(BothSides == "On") {
             rotate([0, 90, 0]) scale([25.4, 25.4, 25.4]) translate([0, 0, -TotalLength/2])
-                cylinder(h = EncoderHoleDepth, d = EncoderShaftDiameter, $fn = 60, center = true);
+                cylinder(h = EncoderHoleDepth, d = EncoderShaftDiameter, $fn = 50, center = true);
         }
         }  
     }
@@ -59,15 +59,15 @@ module  Grooves(){
     if (Snapring == "On"){
         difference() {
             rotate([0, 90, 0]) scale([25.4, 25.4, 25.4]) translate([0, 0, TotalLength/2-SnapRingOffset])
-                cylinder(h = GrooveWidth, d = ShaftSize, $fn = 60, center = true);
+                cylinder(h = GrooveWidth, d = ShaftSize, $fn = 50, center = true);
             rotate([0, 90, 0]) scale([25.4, 25.4, 25.4]) translate([0, 0, TotalLength/2-SnapRingOffset])
-                cylinder(h = GrooveWidth, d = ShaftSize-GrooveDepth, $fn = 60, center = true);
+                cylinder(h = GrooveWidth, d = ShaftSize-GrooveDepth, $fn = 50, center = true);
         }
         difference() {
             rotate([0, 90, 0]) scale([25.4, 25.4, 25.4]) translate([0, 0, -TotalLength/2+SnapRingOffset])
-                cylinder(h = GrooveWidth, d = ShaftSize, $fn = 60, center = true);            
+                cylinder(h = GrooveWidth, d = ShaftSize, $fn = 50, center = true);            
             rotate([0, 90, 0]) scale([25.4, 25.4, 25.4]) translate([0, 0, -TotalLength/2+SnapRingOffset])
-                cylinder(h = GrooveWidth, d = ShaftSize-GrooveDepth, $fn = 60, center = true);
+                cylinder(h = GrooveWidth, d = ShaftSize-GrooveDepth, $fn = 50, center = true);
         }
 }
 }

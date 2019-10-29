@@ -47,7 +47,7 @@ midway_screws_offset = tube_diam/2 + cable_clearance_x + wall_thickness + screw_
 difference() {
 	union() {
 		// main wall around the tube
-		cylinder(r=tube_diam/2+wall_thickness, h=mount_height, $fn=256);
+		cylinder(r=tube_diam/2+wall_thickness, h=mount_height, $fn=50);
 		// mount for screws closest to the tube
 		translate([-(neartube_mount_size/2+tube_diam/2),0,mount_height/2])
 		box(neartube_mount_size,wall_thickness*2,mount_height);
@@ -63,10 +63,10 @@ difference() {
 		cylinder(r=(wall_thickness*2+cable_clearance_y)/2, h=mount_height, $fn=16);
 		// main wall around the thing to mount
 		translate([mount_offset,0,0])
-		cylinder(r=mount_diam/2+wall_thickness,h=mount_height, $fn=256);
+		cylinder(r=mount_diam/2+wall_thickness,h=mount_height, $fn=50);
 	}
 	// hole for the tube
-	cylinder(r=tube_diam/2, h=BIG_NUMBER, $fn=256, center=true);
+	cylinder(r=tube_diam/2, h=BIG_NUMBER, $fn=50, center=true);
 	// screw holes near the tube
 	translate([top_screws_offset,0,0])
 	alternating_screw_holes();
@@ -80,7 +80,7 @@ difference() {
 	alternating_screw_holes(-1);
 	// thing to mount hole
 	translate([mount_offset,0,0])
-	cylinder(r=mount_diam/2,h=BIG_NUMBER,center=true, $fn=256);
+	cylinder(r=mount_diam/2,h=BIG_NUMBER,center=true, $fn=50);
 	// gap
 	box(BIG_NUMBER, gap_width, BIG_NUMBER);
 }

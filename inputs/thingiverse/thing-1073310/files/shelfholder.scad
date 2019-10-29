@@ -8,7 +8,7 @@ hs=12;
 rt=10;
 // height of tab in mm
 ht=30;
-$fn=100;
+$fn=50;
 
 union(){
     translate([-rad,0,0])cylinder(r=rad,h=hs+ht);

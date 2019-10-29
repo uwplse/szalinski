@@ -21,7 +21,7 @@ module CreateCoin()
     {
         union()
         {
-            cylinder(h=coin_thickness, r=coin_radius, $fn = 100);
+            cylinder(h=coin_thickness, r=coin_radius, $fn = 50);
             translate([-screw_length/2, 0, 0 ])
             cube([screw_length, neck_length+coin_radius, coin_thickness]);
             translate([-screw_length/2, neck_length+coin_radius, screw_diameter/2+wallthickness])
@@ -89,7 +89,7 @@ module CreatePaperHolder()
                 }
                 union()
                 {
-                    cylinder(r=coin_radius, h=paperholder_thickness, $fn=100);
+                    cylinder(r=coin_radius, h=paperholder_thickness, $fn=50);
                     translate([-coin_radius, 0, 0])
                     cube([coin_diameter, coin_radius+neck_length-(screw_diameter/2+wallthickness), paperholder_thickness]);
                     

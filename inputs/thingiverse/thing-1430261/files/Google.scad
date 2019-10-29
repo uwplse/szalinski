@@ -21,13 +21,13 @@ difference(){
         cube([size,size,thickness+stand_off_length]);
     }
     translate([$screwoffset,$screwoffset,-1])
-    cylinder(thickness+stand_off_length+2,screw_size/2,screw_size/2,$fn=100);
+    cylinder(thickness+stand_off_length+2,screw_size/2,screw_size/2,$fn=50);
     translate([$screwoffset+hole_spacing,$screwoffset,-1])
-    cylinder(thickness+stand_off_length+2,screw_size/2,screw_size/2,$fn=100);
+    cylinder(thickness+stand_off_length+2,screw_size/2,screw_size/2,$fn=50);
     translate([$screwoffset,$screwoffset+hole_spacing,-1])
-    cylinder(thickness+stand_off_length+2,screw_size/2,screw_size/2,$fn=100);
+    cylinder(thickness+stand_off_length+2,screw_size/2,screw_size/2,$fn=50);
     translate([$screwoffset+hole_spacing,$screwoffset+hole_spacing,-1])
-    cylinder(thickness+stand_off_length+2,screw_size/2,screw_size/2,$fn=100);
+    cylinder(thickness+stand_off_length+2,screw_size/2,screw_size/2,$fn=50);
     translate([size/2,-1*($c-size)/2,thickness])
     rotate([0,0,45])
     cube([$filtersize,$filtersize*2,thickness+stand_off_length]);
@@ -40,24 +40,24 @@ difference(){
 	difference () {
 		translate ([0,-corner_radius*2,0])
 		cube ([corner_radius*2,corner_radius*2,thickness+stand_off_length+2]);
-		cylinder (r=corner_radius,h=thickness+stand_off_length+2,$fn=100);
+		cylinder (r=corner_radius,h=thickness+stand_off_length+2,$fn=50);
 	}
     
     translate ([size,size,0])
 	translate ([-corner_radius,-corner_radius,-1])
 	difference () {
 		cube ([corner_radius*2,corner_radius*2,thickness+stand_off_length+2]);
-		cylinder (r=corner_radius,h=thickness+stand_off_length+2,$fn=100);
+		cylinder (r=corner_radius,h=thickness+stand_off_length+2,$fn=50);
 	}
     	translate ([corner_radius,corner_radius,-1])
 	difference () {
 		translate ([-corner_radius*2,-corner_radius*2,0])
 		cube ([corner_radius*2,corner_radius*2,thickness+stand_off_length+2]);
-		cylinder (r=corner_radius,h=thickness+stand_off_length+2,$fn=100);
+		cylinder (r=corner_radius,h=thickness+stand_off_length+2,$fn=50);
 	}
 
     
 }
 translate([size/2,size/2,0])
-cylinder(thickness,size/2,size/2,$fn=100);
+cylinder(thickness,size/2,size/2,$fn=50);
 

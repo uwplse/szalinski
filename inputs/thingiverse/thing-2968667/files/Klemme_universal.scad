@@ -14,7 +14,7 @@ flanschbreite=15; //width of flansch
 flanschhoehe=5; //thickness of flansch, make sure it is > wandstaerke/2
 
 aussendurchmesser=2*wandstaerke+innendurchmesser;
-$fn=100;
+$fn=50;
 
 module ring() {
 difference(){

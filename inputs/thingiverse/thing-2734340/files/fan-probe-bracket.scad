@@ -1,4 +1,4 @@
-$fn=100;
+$fn=50;
 
 hole_spacing = 32;
 hole_size = 3.4;	// screw hole size

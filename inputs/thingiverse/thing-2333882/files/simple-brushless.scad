@@ -28,7 +28,7 @@ MOTOR_MOUNT_CENTER_DIAMETER=5;
 STANDOFF_MARGIN=5;
 
 /* [Hidden] */
-$fn=64;
+$fn=50;
 
 prop_size = PROP_SIZE_INCHES * 25.4; 
 

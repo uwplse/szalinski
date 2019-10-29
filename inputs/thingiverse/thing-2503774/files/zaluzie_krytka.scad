@@ -27,6 +27,6 @@ difference() {
 
 module kraj(r = 4) {
     
-    cylinder(h, r, r, $fn=200);
+    cylinder(h, r, r, $fn=50);
 }
 

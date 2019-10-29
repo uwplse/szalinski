@@ -7,7 +7,7 @@ hole1_position=2.3;
 hole_distance=10.5;
 hole_diameter=9.2;
 
-$fn=100;
+$fn=50;
 
 sheight=height-rounding_top;
 module outer() {

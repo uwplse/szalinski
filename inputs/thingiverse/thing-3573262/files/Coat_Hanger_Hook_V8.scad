@@ -101,7 +101,7 @@ module hook(hookwidth,wall_th,inner_width)
         
         translate([hook_r,-out_y,hookwidth/2])
             rotate([90,0,0])
-                sphere(r=hook_r,$fn=64);
+                sphere(r=hook_r,$fn=50);
         
         //echo(hookwidth/2,(zpos1+zpos2)/2);
     }

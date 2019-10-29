@@ -46,7 +46,7 @@ grip_cutoff_angle = 20;
 
 //CUSTOMIZER VARIABLES END
 
-$fn = 80*1;  // while debugging reduce this to 20 to save time
+$fn = 50*1;  // while debugging reduce this to 20 to save time
 
 wall = 2*wall_thickness;
 pad = 2*1;

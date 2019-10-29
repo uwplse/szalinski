@@ -5,7 +5,7 @@ pole_h = 5;
 clip_depth = 10;
 clip_thick = 2;
 
-$fn = 96;
+$fn = 50;
 
 clip_depth2 = clip_depth + pole_r;
 

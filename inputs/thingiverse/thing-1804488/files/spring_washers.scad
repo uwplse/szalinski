@@ -27,7 +27,7 @@ rim_inner = spring/2;
 rim_outer = rim_inner+wall;
 
 little = 0+0.01;
-$fn = 90;
+$fn = 50;
 
 module pipe(len, inner, outer)  {
 	difference()  {

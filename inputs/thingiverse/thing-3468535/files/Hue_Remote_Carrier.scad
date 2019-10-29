@@ -11,7 +11,7 @@
  ***************************************************/
  
 // You may want to take the quality down whilst fettling:
-$fn=60; // 15 might be better until you're ready to print
+$fn=50; // 15 might be better until you're ready to print
 
 // There's a 20mm x 3mm magnet embedded in the carrier for the Hue remote (at the bottom).
 // I used a filament change command (M600) to pause the printer so that I could pop the magnet in.

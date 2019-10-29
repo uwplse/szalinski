@@ -5,7 +5,7 @@ bottom_thickness = 2 * 0.4;
 bushing_height = 4;
 bushing_inner_diameter = spring_diameter - 2 * spring_wire_diameter;
 bushing_outer_diameter = spring_diameter;
-$fn = 500;
+$fn = 50;
 
 main();
 

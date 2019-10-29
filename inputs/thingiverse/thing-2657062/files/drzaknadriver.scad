@@ -197,15 +197,15 @@ module ab_mouse_ear( beam = "OOOO", beam_height = AB_BEAM_HEIGHT ) {
 		// Mouse Ear
       translate( [-beam_length/2, 0, -(AB_BEAM_HEIGHT-.5)/2] )
 			difference() {
-	        cylinder( r = AB_BEAM_WIDTH, .5, center=true, $fn=100 );
-	        cylinder( r = AB_BEAM_WIDTH/2+.2, 1, center=true, $fn=100 );
+	        cylinder( r = AB_BEAM_WIDTH, .5, center=true, $fn=50 );
+	        cylinder( r = AB_BEAM_WIDTH/2+.2, 1, center=true, $fn=50 );
          }
 
 		// Mouse Ear
       translate( [beam_length/2, 0, -(AB_BEAM_HEIGHT-.5)/2] )
 			difference() {
-	        cylinder( r = AB_BEAM_WIDTH, .5, center=true, $fn=100 );
-	        cylinder( r = AB_BEAM_WIDTH/2+.2, 1, center=true, $fn=100 );
+	        cylinder( r = AB_BEAM_WIDTH, .5, center=true, $fn=50 );
+	        cylinder( r = AB_BEAM_WIDTH/2+.2, 1, center=true, $fn=50 );
 	      }
     }
 
@@ -223,11 +223,11 @@ module ab_mouse_ear_cutout( beam = "OOOO", beam_height = AB_BEAM_HEIGHT ) {
   union() {
 		// Mouse Ear
       translate( [-beam_length/2, 0, -(AB_BEAM_HEIGHT-.5)/2] )
-	        cylinder( r = AB_BEAM_WIDTH+.2, 1, center=true, $fn=100 );
+	        cylinder( r = AB_BEAM_WIDTH+.2, 1, center=true, $fn=50 );
 
 		// Mouse Ear
       translate( [beam_length/2, 0, -(AB_BEAM_HEIGHT-.5)/2] )
-	        cylinder( r = AB_BEAM_WIDTH+.2, 1, center=true, $fn=100 );
+	        cylinder( r = AB_BEAM_WIDTH+.2, 1, center=true, $fn=50 );
 
     if( $children ) children(0);
   }
@@ -246,10 +246,10 @@ module ab_solid_beam( beam = "OOOO", beam_height = AB_BEAM_HEIGHT ) {
       cube( [ beam_length, AB_BEAM_WIDTH, beam_height ], center=true );
 
       translate( [-beam_length/2, 0, 0] )
-        cylinder( r = AB_BEAM_WIDTH/2, beam_height, center=true, $fn=100 );
+        cylinder( r = AB_BEAM_WIDTH/2, beam_height, center=true, $fn=50 );
 
       translate( [beam_length/2, 0, 0] )
-        cylinder( r = AB_BEAM_WIDTH/2, beam_height, center=true, $fn=100 );
+        cylinder( r = AB_BEAM_WIDTH/2, beam_height, center=true, $fn=50 );
     }
 
 	if( AB_MOUSE_EARS == true ) {
@@ -294,13 +294,13 @@ module ab_beam_holes( beam = "OOOO", beam_height = AB_BEAM_HEIGHT ) {
 }
 
 module ab_hole_pin( beam_height = AB_BEAM_HEIGHT ) {
-  cylinder(beam_height+2, AB_HOLE_INSIDE_DIAMETER/2, AB_HOLE_INSIDE_DIAMETER/2, center = true, $fn=100);
+  cylinder(beam_height+2, AB_HOLE_INSIDE_DIAMETER/2, AB_HOLE_INSIDE_DIAMETER/2, center = true, $fn=50);
 
   translate([0,0,beam_height/2-AB_HOLE_RING_DEPTH/2+.5])
-    cylinder(AB_HOLE_RING_DEPTH+1, AB_HOLE_RING_DIAMETER/2, AB_HOLE_RING_DIAMETER/2, center = true, $fn=100);     
+    cylinder(AB_HOLE_RING_DEPTH+1, AB_HOLE_RING_DIAMETER/2, AB_HOLE_RING_DIAMETER/2, center = true, $fn=50);     
 
   translate([0,0,-(beam_height/2-AB_HOLE_RING_DEPTH/2+.5)])
-    cylinder(AB_HOLE_RING_DEPTH+1, AB_HOLE_RING_DIAMETER/2, AB_HOLE_RING_DIAMETER/2, center = true, $fn=100);     
+    cylinder(AB_HOLE_RING_DEPTH+1, AB_HOLE_RING_DIAMETER/2, AB_HOLE_RING_DIAMETER/2, center = true, $fn=50);     
 }
 
 module ab_hole_left_slot( beam_height = AB_BEAM_HEIGHT ) {
@@ -361,7 +361,7 @@ module ab_hole_axle( beam_height = AB_BEAM_HEIGHT , first = false, last = false)
 anybeam(  [ "O"], 1  ); 
 difference() {
     translate ([0,0,3.9])    
-        cylinder (12,3.8,3.8, false, $fn=200);
+        cylinder (12,3.8,3.8, false, $fn=50);
     translate ([0,0,5])
-        cylinder (20,3/2,3/2, false, $fn=200);
+        cylinder (20,3/2,3/2, false, $fn=50);
 }

@@ -17,7 +17,7 @@ difference() {
         
     }
     translate([0,0,heightPadding == 0 ? -0.05 : heightPadding]) {
-        cylinder(r=diameterOfMetal/2+0.4, h=thicknessOfMetal+2, $fn=100);
+        cylinder(r=diameterOfMetal/2+0.4, h=thicknessOfMetal+2, $fn=50);
     }
 }
 

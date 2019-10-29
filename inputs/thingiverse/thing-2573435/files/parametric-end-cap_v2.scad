@@ -36,7 +36,7 @@ innerDia = 8.3;
 wall = 1.5; 
 
 /* [Hidden] */
-$fn=100;
+$fn=50;
 outerDia = innerDia + 2*wall;
 ix=0.005;	// This is just some static value to beautify the cutout
 

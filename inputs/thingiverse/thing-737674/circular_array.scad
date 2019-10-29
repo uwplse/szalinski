@@ -31,7 +31,7 @@ circular_array(method=method,r=radius,spacing=spacing) cube([3,3,3]);
 
 
 // array of touching spheres to check proper function of the spacing parameter
-// circular_array(r=100,spacing=10) sphere(r=5,$fn=60);
+// circular_array(r=100,spacing=10) sphere(r=5,$fn=50);
 
 // something useful - a filter holder
 // subtract an array of cylinders from a circular disc

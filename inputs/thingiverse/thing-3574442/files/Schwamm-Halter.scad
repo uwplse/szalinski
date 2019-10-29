@@ -17,7 +17,7 @@ openings_vertical=1;      // [0:False, 1:True]
 split_faucet=1;           // [0:False, 1:True]
 
 /* [Hidden] */
-$fn=100;
+$fn=50;
 schwamm=[sponge_x, sponge_y, sponge_z];
 rohr_d=faucet_diameter;
 ws=wallthickness;

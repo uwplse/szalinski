@@ -8,7 +8,7 @@ height = 4;
 innerHeight = 10;
 // inner part wall thickness
 thick = 3;
-$fn = 64;
+$fn = 50;
 
 difference () {
 

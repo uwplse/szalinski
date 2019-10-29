@@ -52,7 +52,7 @@ module slipring(){
             // die Vertiefung fuer den Draht
             difference(){
                 translate([0,0,tz]) cylinder(d=sr_d+.1, h=sr_z-2*tz);
-                translate([0,0,tz]) cylinder(d=sr_d-wireD*2, h=sr_z-2*tz, $fn=100);  // hier liegt der Draht
+                translate([0,0,tz]) cylinder(d=sr_d-wireD*2, h=sr_z-2*tz, $fn=50);  // hier liegt der Draht
             }
             // fuer jeden Ring braucht die jeweilige Windung 2 Loecher 
             for(i=[0:sl_cnt-1]){

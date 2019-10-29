@@ -13,7 +13,7 @@
 //
 
 
-$fn = 100;
+$fn = 50;
 
 bearingDiameter = 15.05; // [15.00:Tight - 15.00mm, 15.05:default - 15.05mm, 15.1:Loose - 15.10mm, 15.2:Lucy Goosey - 15.20mm]
 bearingLength = 15.1; // [15.0:Tight - 15.00mm, 15.1:default (to ridge) - 15.05mm, 15.2:Loose - 15.20mm, 24.2:Full bearing length - 24.20mm]

@@ -14,7 +14,7 @@ pin_diff = 1.0;
 
 /* [Hidden] */
 //This tells OpenScad to make the circle really round
-$fn = 100;
+$fn = 50;
 pin_rad = pin_diam / 2;
 lego_rad = lego_diam / 2;
 hole_rad = pin_rad-pin_diff/2;

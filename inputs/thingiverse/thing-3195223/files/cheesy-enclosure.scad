@@ -205,7 +205,7 @@ module MountingBlocks(diam, z1) {
   intersection() {
     for (p = [[enclosureScrewX, 0], [-enclosureScrewX, 0], [0, enclosureScrewY], [0, -enclosureScrewY]])
       translate(p)
-        cylinder(r=r, h=z1, $fn=60);
+        cylinder(r=r, h=z1, $fn=50);
     
     translate([-x0, -y0])
       cube([2*x0, 2*y0, z1]);

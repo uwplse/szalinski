@@ -1,4 +1,4 @@
-$fn = 80;
+$fn = 50;
 pernas = 4; //quantidade de pernas do spinner
 raio = 25;  //distancia do centro (ponto 0,0,0) até o centro do cilindro externos
 espessura = 12.5; //espessura entre cilindros internos e externos

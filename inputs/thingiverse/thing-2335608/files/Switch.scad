@@ -1,4 +1,4 @@
-$fn = 360;
+$fn = 50;
 /*[Nintendo Switch Support bracket parameters]*/
 // (mm) Printed thickness of the bracket support beams (not including rail)
 thickness = 4;

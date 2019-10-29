@@ -23,7 +23,7 @@ wall_width = 3;
 magnet_n = 4;
 
 module hull_magnet() {
-	cylinder(r=(magnet_radius+mag_fudge_factor), h=magnet_height, $fn=500);
+	cylinder(r=(magnet_radius+mag_fudge_factor), h=magnet_height, $fn=50);
 }
 
 module magnet_ring(flip) {
@@ -36,7 +36,7 @@ module top(radius, height, magnet_r, magnet_h){
 	difference() {
 		union() {
 				//main cylinder
-				cylinder(r=radius, h=height, $fn=500);
+				cylinder(r=radius, h=height, $fn=50);
 		
 				//side protrusion
 				translate([radius-1,-2.5,0])
@@ -48,11 +48,11 @@ module top(radius, height, magnet_r, magnet_h){
 module bottom(inner_radius, inner_height, magnet_r, magnet_h){
 	difference() {
 		//main cylinder
-		cylinder(r=(inner_radius+wall_width+fudge_factor), h=(inner_height+wall_width+magnet_h), $fn=500);
+		cylinder(r=(inner_radius+wall_width+fudge_factor), h=(inner_height+wall_width+magnet_h), $fn=50);
 		
 		//hull out space for top piece
 		translate([0,0,wall_width+magnet_h])
-			cylinder(r=inner_radius+fudge_factor, h = inner_height, $fn=500);
+			cylinder(r=inner_radius+fudge_factor, h = inner_height, $fn=50);
 		
 		//cut out a notch in the wall
 		translate([-1*(inner_radius+wall_width)-fudge_factor,-0.5*wall_width,wall_width+magnet_h])

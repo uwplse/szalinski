@@ -18,13 +18,13 @@ difference()
   translate([-cube_width/2,-cube_width/2,0]) cube(size=[cube_width,cube_width,cube_height]);  
   union()
   {  
-    translate([0,0,cube_height/2]) cylinder(h=cube_height+2,r1=rod_dia/2,r2=rod_dia/2,center=true, $fn=60);
+    translate([0,0,cube_height/2]) cylinder(h=cube_height+2,r1=rod_dia/2,r2=rod_dia/2,center=true, $fn=50);
 // vert screw holes
-    translate([screw_dist/2,screw_dist/2,cube_height/2]) cylinder(h=cube_height+2,r1=screw_dia/2,r2=screw_dia/2,center=true, $fn=60);
-    translate([-screw_dist/2,screw_dist/2,cube_height/2]) cylinder(h=cube_height+2,r1=screw_dia/2,r2=screw_dia/2,center=true, $fn=60);
-    translate([screw_dist/2,-screw_dist/2,cube_height/2]) cylinder(h=cube_height+2,r1=screw_dia/2,r2=screw_dia/2,center=true, $fn=60);
-    translate([-screw_dist/2,-screw_dist/2,cube_height/2]) cylinder(h=cube_height+2,r1=screw_dia/2,r2=screw_dia/2,center=true, $fn=60);
+    translate([screw_dist/2,screw_dist/2,cube_height/2]) cylinder(h=cube_height+2,r1=screw_dia/2,r2=screw_dia/2,center=true, $fn=50);
+    translate([-screw_dist/2,screw_dist/2,cube_height/2]) cylinder(h=cube_height+2,r1=screw_dia/2,r2=screw_dia/2,center=true, $fn=50);
+    translate([screw_dist/2,-screw_dist/2,cube_height/2]) cylinder(h=cube_height+2,r1=screw_dia/2,r2=screw_dia/2,center=true, $fn=50);
+    translate([-screw_dist/2,-screw_dist/2,cube_height/2]) cylinder(h=cube_height+2,r1=screw_dia/2,r2=screw_dia/2,center=true, $fn=50);
 // hor screw hole      
-    translate([0,0,cube_height/2]) rotate([90,0,0]) cylinder(h=cube_width+2,r1=screw_dia/2,r2=screw_dia/2,center=true, $fn=60);
+    translate([0,0,cube_height/2]) rotate([90,0,0]) cylinder(h=cube_width+2,r1=screw_dia/2,r2=screw_dia/2,center=true, $fn=50);
   }    
 }

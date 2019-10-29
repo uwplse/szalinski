@@ -11,7 +11,7 @@ wallThickness = 2.4;
 fudgeAllowance = 0.2; //looseness of bearing fit
 
 //Hidden
-$fn=120;
+$fn=50;
 yTotal = bearingDepth+(2*wallThickness)+fudgeAllowance;
 zCube = bearingOD/2+wallThickness+fudgeAllowance;
 bearingCover = bearingOD/2+1;

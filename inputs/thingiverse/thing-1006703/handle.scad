@@ -92,40 +92,40 @@ fingergrab();
 module rounded_rectangle(l,w,d,r){
 hull(){    
 translate([-l/2+r,+w/2-r,0])
-cylinder(r=r,h=d,center=true,$fn=100);
+cylinder(r=r,h=d,center=true,$fn=50);
 translate([+l/2-r,+w/2-r,0])
-cylinder(r=r,h=d,center=true,$fn=100); 
+cylinder(r=r,h=d,center=true,$fn=50); 
 translate([-l/2+r,-w/2+r,0])
-cylinder(r=r,h=d,center=true,$fn=100); 
+cylinder(r=r,h=d,center=true,$fn=50); 
 translate([+l/2-r,-w/2+r,0])
-cylinder(r=r,h=d,center=true,$fn=100); 
+cylinder(r=r,h=d,center=true,$fn=50); 
 
 }  
 }
 module toprounded_rectangle(l,w,d,r){
 hull(){    
 translate([-l/2+r,+w/2-r,0])
-cylinder(r=r,h=d,center=true,$fn=100);
+cylinder(r=r,h=d,center=true,$fn=50);
 translate([+l/2-r,+w/2-r,0])
-cylinder(r=r,h=d,center=true,$fn=100); 
+cylinder(r=r,h=d,center=true,$fn=50); 
 translate([-l/2+r,-w/2+r,0])
-cube([r*2,r*2,d],center=true,$fn=100); 
+cube([r*2,r*2,d],center=true,$fn=50); 
 translate([+l/2-r,-w/2+r,0])
-cube([r*2,r*2,d],center=true,$fn=100); 
+cube([r*2,r*2,d],center=true,$fn=50); 
 }  
 }
 
 module bottomrounded_rectangle(x,y,z,r){
 hull(){    
 translate([-l/2+r,+w/2-r,0])
- cube([r*2,r*2,d],center=true,$fn=100);
+ cube([r*2,r*2,d],center=true,$fn=50);
 translate([+l/2-r,+w/2-r,0])
-cube([r*2,r*2,d],center=true,$fn=100);
+cube([r*2,r*2,d],center=true,$fn=50);
     
 translate([-l/2+r,-w/2+r,0])
-cylinder(r=r,h=d,center=true,$fn=100);
+cylinder(r=r,h=d,center=true,$fn=50);
 translate([+l/2-r,-w/2+r,0])
-cylinder(r=r,h=d,center=true,$fn=100); 
+cylinder(r=r,h=d,center=true,$fn=50); 
 }//end hull  
 }//end module
 
@@ -147,12 +147,12 @@ toprounded_rectangle(fingerwidth/4-2,fingerheight,backplatethickness+safety,fing
 //filamentguides
 //center
 translate([0,filamentoffset,framethickness+backplatethickness/2]){
-cylinder(d=filamentbore,h=backplatethickness*2,center=true,$fn=100);    
+cylinder(d=filamentbore,h=backplatethickness*2,center=true,$fn=50);    
 }//end translate
 
 //right
 translate([framelenght/2-filamentoffset,filamentoffset,framethickness+backplatethickness/2]){
-cylinder(d=filamentbore,h=backplatethickness*2,center=true,$fn=100);
+cylinder(d=filamentbore,h=backplatethickness*2,center=true,$fn=50);
  rotate(a=45,v=[0,0,1]){
     translate([((filamentbore+filamentoffset)*1.73)/2,0,0])
      cube([(filamentbore+filamentoffset)*1.73,filamentdia,backplatethickness*2],center=true);
@@ -161,7 +161,7 @@ cylinder(d=filamentbore,h=backplatethickness*2,center=true,$fn=100);
 
 //left
 translate([-framelenght/2+filamentoffset,filamentoffset,framethickness+backplatethickness/2]){
-cylinder(d=filamentbore,h=backplatethickness*2,center=true,$fn=100); 
+cylinder(d=filamentbore,h=backplatethickness*2,center=true,$fn=50); 
 
 rotate(a=-45,v=[0,0,1]){
     translate([-((filamentbore+filamentoffset)*1.73)/2,0,0])
@@ -181,11 +181,11 @@ cube([framelenght,framewidth+frameextend,backplatethickness],center=true);
 hull(){
 translate([0,framewidth/2,backplatethickness/2])
 rotate(a=90,v=[0,1,0]){
-cylinder(r=backplatethickness/2,h=framelenght,center=true,$fn=100);
+cylinder(r=backplatethickness/2,h=framelenght,center=true,$fn=50);
  }//end rotate    
     translate([0,framewidth/2+backplatethickness/2+roundoffset,backplatethickness/2])
 rotate(a=90,v=[0,1,0]){
-cylinder(r=backplatethickness/2,h=framelenght,center=true,$fn=100);
+cylinder(r=backplatethickness/2,h=framelenght,center=true,$fn=50);
    
 }//end rotate
 }//end hull
@@ -201,9 +201,9 @@ cylinder(d=holedia*2,h=0.8*holedia+safety,center=true,$fn=6);
 
 module 2holes(){
    translate([holedistance/2,0,backplatethickness/2])
-cylinder(d=holedia,h=backplatethickness+safety,center=true,$fn=100);
+cylinder(d=holedia,h=backplatethickness+safety,center=true,$fn=50);
    translate([-holedistance/2,0,backplatethickness/2])
-cylinder(d=holedia,h=backplatethickness+safety,center=true,$fn=100);
+cylinder(d=holedia,h=backplatethickness+safety,center=true,$fn=50);
 }//end module
 
 module 3triangles(){
@@ -224,10 +224,10 @@ hull(){
 rotate(a=90,v=[0,0,1])
    cylinder(r=r,h=framethickness,center=true,$fn=3);
    translate([-ak/2,-hk/2,0])
-cylinder(r=2,h=framethickness,center=true,$fn=100);
+cylinder(r=2,h=framethickness,center=true,$fn=50);
    translate([ak/2,-hk/2,0])
-cylinder(r=2,h=framethickness,center=true,$fn=100);
+cylinder(r=2,h=framethickness,center=true,$fn=50);
    translate([0,hk/2,0])
-cylinder(r=2,h=framethickness,center=true,$fn=100);
+cylinder(r=2,h=framethickness,center=true,$fn=50);
 }
 }//end module

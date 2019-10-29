@@ -29,7 +29,7 @@ total_height = 17;
 
 module voidvoid(){}
 //low $fn to 100 if OpenScad rendering run too slow for you
-$fn=250;
+$fn=50;
 
 //bajatorpeq=4;
 bajatorpeq = total_height / 3.0;

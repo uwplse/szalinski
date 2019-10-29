@@ -22,7 +22,7 @@ tab_offset = 0;
 
 /* [Hidden] */
 
-$fn = 64;
+$fn = 50;
 eps = 0.01;
 
 module bowden_clip_tab() {

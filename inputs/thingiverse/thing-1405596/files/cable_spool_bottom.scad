@@ -1,4 +1,4 @@
-$fn=100;
+$fn=50;
 
 outer_dia =80;
 inner_dia =47;

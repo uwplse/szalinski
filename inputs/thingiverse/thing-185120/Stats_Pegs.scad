@@ -8,7 +8,7 @@ std=1.5;
 size=10;
 
 /* [Hidden] */
-$fn=100;
+$fn=50;
 
 for (x = [0:size-1])
 {

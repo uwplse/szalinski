@@ -24,7 +24,7 @@ module screwthread_onerotation(P,D_maj,step) {
 		screwthread_triangle(P);
 
 	translate([0,0,P/2])
-	cylinder(r=D_min/2,h=2*P,$fn=360/step,center=true);
+	cylinder(r=D_min/2,h=2*P,$fn=50/step,center=true);
 }
 
 module thread(P,D,step,rotations) {
@@ -35,7 +35,7 @@ module thread(P,D,step,rotations) {
 	screwthread_onerotation(P,D,step);
 }
 
-$fn = 100;
+$fn = 50;
 module screw(){
 union(){
     

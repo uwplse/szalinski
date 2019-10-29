@@ -1,4 +1,4 @@
-$fn = 64;
+$fn = 50;
 profile_width = 30;
 profile_thickness = 2;
 

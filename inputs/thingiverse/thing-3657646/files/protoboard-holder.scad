@@ -24,7 +24,7 @@ mount_post_height=2.2;
 
 
 /* [Hidden] */
-$fn=72;
+$fn=50;
 inner_fn=32;
 
 // CALC

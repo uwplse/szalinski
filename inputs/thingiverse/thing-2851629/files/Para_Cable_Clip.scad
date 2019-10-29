@@ -25,24 +25,24 @@ module holder(){
         translate([thickness/2+tol01/2,0,0]) cube([depth-thickness+tol01,width+tol01,channel_gap],center=true);      
         translate([depth/2-feature_dia,0,height/2-feature_dia]) difference(){
             translate([(feature_dia+tol01)/2,0,+feature_dia/2+tol01/2]) cube([feature_dia+tol01,width+tol01,feature_dia+tol01],center=true);
-            translate([0,0,0]) rotate([90,0,0]) cylinder(h=width+tol01*2,d=feature_dia*2,$fn=144,center=true);
+            translate([0,0,0]) rotate([90,0,0]) cylinder(h=width+tol01*2,d=feature_dia*2,$fn=50,center=true);
         }
         scale([1,1,-1]) translate([depth/2-feature_dia,0,height/2-feature_dia]) difference(){
             translate([(feature_dia+tol01)/2,0,+feature_dia/2+tol01/2]) cube([feature_dia+tol01,width+tol01,feature_dia+tol01],center=true);
-            translate([0,0,0]) rotate([90,0,0]) cylinder(h=width+tol01*2,d=feature_dia*2,$fn=144,center=true);
+            translate([0,0,0]) rotate([90,0,0]) cylinder(h=width+tol01*2,d=feature_dia*2,$fn=50,center=true);
         }        
         scale([-1,1,-1]) translate([depth/2-feature_dia,0,height/2-feature_dia]) difference(){
             translate([(feature_dia+tol01)/2,0,+feature_dia/2+tol01/2]) cube([feature_dia+tol01,width+tol01,feature_dia+tol01],center=true);
-            translate([0,0,0]) rotate([90,0,0]) cylinder(h=width+tol01*2,d=feature_dia*2,$fn=144,center=true);
+            translate([0,0,0]) rotate([90,0,0]) cylinder(h=width+tol01*2,d=feature_dia*2,$fn=50,center=true);
         }
         scale([-1,1,1]) translate([depth/2-feature_dia,0,height/2-feature_dia]) difference(){
             translate([(feature_dia+tol01)/2,0,+feature_dia/2+tol01/2]) cube([feature_dia+tol01,width+tol01,feature_dia+tol01],center=true);
-            translate([0,0,0]) rotate([90,0,0]) cylinder(h=width+tol01*2,d=feature_dia*2,$fn=144,center=true);
+            translate([0,0,0]) rotate([90,0,0]) cylinder(h=width+tol01*2,d=feature_dia*2,$fn=50,center=true);
         }
-        translate([depth/2-thickness-feature_dia_inner,0,height/2-thickness-feature_dia_inner]) rotate([90,0,0]) cylinder(h=width+tol01,d=feature_dia_inner*2,$fn=72,center=true);
-        scale([1,1,-1]) translate([depth/2-thickness-feature_dia_inner,0,height/2-thickness-feature_dia_inner]) rotate([90,0,0]) cylinder(h=width+tol01,d=feature_dia_inner*2,$fn=72,center=true);
-        scale([-1,1,-1]) translate([depth/2-thickness-feature_dia_inner,0,height/2-thickness-feature_dia_inner]) rotate([90,0,0]) cylinder(h=width+tol01,d=feature_dia_inner*2,$fn=72,center=true);
-        scale([-1,1,1]) translate([depth/2-thickness-feature_dia_inner,0,height/2-thickness-feature_dia_inner]) rotate([90,0,0]) cylinder(h=width+tol01,d=feature_dia_inner*2,$fn=72,center=true);
+        translate([depth/2-thickness-feature_dia_inner,0,height/2-thickness-feature_dia_inner]) rotate([90,0,0]) cylinder(h=width+tol01,d=feature_dia_inner*2,$fn=50,center=true);
+        scale([1,1,-1]) translate([depth/2-thickness-feature_dia_inner,0,height/2-thickness-feature_dia_inner]) rotate([90,0,0]) cylinder(h=width+tol01,d=feature_dia_inner*2,$fn=50,center=true);
+        scale([-1,1,-1]) translate([depth/2-thickness-feature_dia_inner,0,height/2-thickness-feature_dia_inner]) rotate([90,0,0]) cylinder(h=width+tol01,d=feature_dia_inner*2,$fn=50,center=true);
+        scale([-1,1,1]) translate([depth/2-thickness-feature_dia_inner,0,height/2-thickness-feature_dia_inner]) rotate([90,0,0]) cylinder(h=width+tol01,d=feature_dia_inner*2,$fn=50,center=true);
         cube([depth-thickness*2,width+tol01,height-(thickness+feature_dia_inner)*2],center=true);
         cube([depth-(feature_dia_inner+thickness)*2,width+tol01,height-thickness*2],center=true);
     }
@@ -61,7 +61,7 @@ module clip(){
                 translate([-(channel_depth-clip_over_t)/2-channel_depth/2+clip_over_t,0,-channel_width/2]) cube([channel_depth-clip_over_t+tol01,width+tol01,clip_dist*2+tol01],center=true);
             }
         }
-        rotate([0,90,90]) cylinder(h=width+tol01,d=channel_width/2.5,$fn=72,center=true);
+        rotate([0,90,90]) cylinder(h=width+tol01,d=channel_width/2.5,$fn=50,center=true);
         translate([channel_depth/2,0,0]) cube([channel_depth+tol01,width+tol01,channel_width/2.5],center=true);
     }
 }
@@ -75,7 +75,7 @@ module clip2(){
                 translate([-(channel_depth-clip_over_t)/2-channel_depth/2+clip_over_t,0,channel_width/2]) cube([channel_depth-clip_over_t+tol01,width+tol01,clip_dist*2+tol01],center=true);
             }
         }
-        rotate([0,90,90]) cylinder(h=width+tol01,d=channel_width/2.5,$fn=72,center=true);
+        rotate([0,90,90]) cylinder(h=width+tol01,d=channel_width/2.5,$fn=50,center=true);
         translate([channel_depth/2,0,-channel_width/3.75]) cube([channel_depth+tol01+channel_width/2.5,width+tol01,channel_width/2],center=true);
     }
 }
@@ -89,11 +89,11 @@ module assembly(){
         }
     difference(){
                 translate([depth/2-thickness*.5-tol01/2,0,channel_gap/2+thickness/2-tol01/2]) cube([thickness+tol01,width+tol01,thickness+tol01],center=true);
-                translate([depth/2,0,channel_gap/2+thickness]) rotate([90,0,0]) cylinder(h=width+tol01*2,d=thickness*2,$fn=144,center=true);
+                translate([depth/2,0,channel_gap/2+thickness]) rotate([90,0,0]) cylinder(h=width+tol01*2,d=thickness*2,$fn=50,center=true);
             }
     difference(){
                 translate([depth/2-thickness*.5-tol01/2,0,-channel_gap/2-thickness/2+tol01/2]) cube([thickness+tol01,width+tol01,thickness+tol01],center=true);
-                translate([depth/2,0,-channel_gap/2-thickness]) rotate([90,0,0]) cylinder(h=width+tol01*2,d=thickness*2,$fn=144,center=true);
+                translate([depth/2,0,-channel_gap/2-thickness]) rotate([90,0,0]) cylinder(h=width+tol01*2,d=thickness*2,$fn=50,center=true);
         }
     }
 }

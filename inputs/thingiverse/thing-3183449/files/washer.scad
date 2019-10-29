@@ -15,7 +15,7 @@ Thickness = 5;
 
 /* [Hidden] */
 
-$fn=100;
+$fn=50;
 TZT_WASHER (Thickness, Outside_Diameter/2, Inside_Diameter/2);
 
 module TZT_WASHER (TZT_Thk, TZT_RadA, TZT_RadB) {

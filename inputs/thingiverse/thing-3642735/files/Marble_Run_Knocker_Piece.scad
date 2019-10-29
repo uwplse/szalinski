@@ -14,7 +14,7 @@ cylinder_translate=30;//translate of peg hole
 spacing_subtract=0.5;//add this to the bottom block
 Z_translate=15;//translate the main block
 extra_space_hole=1;//extra space for the hole
-$fn=100;//it's $fn, you don't need an explanation
+$fn=50;//it's $fn, you don't need an explanation
 
 
 translate([0,0,Z_translate]){

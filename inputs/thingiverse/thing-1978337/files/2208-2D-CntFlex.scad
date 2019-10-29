@@ -13,7 +13,7 @@ boxHeight= 53+4; // [20:100]
 // depth of the controller box in mm
 boxDepth= 16; // [10:30]
 
-$fn=150;
+$fn=50;
 
 // controller enclosure
 translate([-boxWidth/2, -boxHeight, 0]) 

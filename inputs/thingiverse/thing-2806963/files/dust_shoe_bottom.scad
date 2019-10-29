@@ -5,7 +5,7 @@ mount_thickness=3;
 mount_corner_radius=10;
 magnet_hole_diameter=13;
 magnet_height=1.2;
-$fn=100;
+$fn=50;
 
 use <hull.scad>
 

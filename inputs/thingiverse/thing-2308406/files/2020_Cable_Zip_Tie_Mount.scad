@@ -8,7 +8,7 @@ $bolt=5;
 $tabs=0;
 
 // DO NOT EDIT
-$fn=120;
+$fn=50;
 
 module makeTabs () {
     translate([$bw/2 - 6,-3, -2 - $bh/2]) cube([6,6,2]);

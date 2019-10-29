@@ -76,7 +76,7 @@ zOffsetForHoles = 5;
                 
                 translate([xOffsetForHoles * side, flatBaseDepth/2, zOffsetForHoles])
                 rotate([90, 0, 0])
-                cylinder(h = supportForScrewSize, r1 = holeDiameter/2, r2 = holeDiameter/2, center = false, $fn = 60);
+                cylinder(h = supportForScrewSize, r1 = holeDiameter/2, r2 = holeDiameter/2, center = false, $fn = 50);
                 //english_thread (diameter=.164, threads_per_inch=32, length=supportForScrewSize/25.4, center = false);
                              
                 

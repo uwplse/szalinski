@@ -1,4 +1,4 @@
-$fn = 60;
+$fn = 50;
 
 //switch size
 switch = 12.5;

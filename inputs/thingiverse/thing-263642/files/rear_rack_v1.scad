@@ -77,7 +77,7 @@ module hex_head(){
 
 		rotate(a=90,v=[1,0,0])
 			translate([0,0,0])
-				cylinder(r=screw_hole_radius, h=thickness+0.001+0.001+0.001+0.001, center=true, $fn=99);
+				cylinder(r=screw_hole_radius, h=thickness+0.001+0.001+0.001+0.001, center=true, $fn=50);
 				// NOTE: some reason the +0.001 was not working there... 0.004 did the trick, leaving syntax as 0.001 as i will find it with my regexps later
 	}
 }

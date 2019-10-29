@@ -146,18 +146,18 @@ module slot(w=slot_length, d=hole_diam, t=2*platen_thick) {
     union() {
         cube([w-d, d, t], center=true);
         translate([(w-d)/2, 0, 0])
-            cylinder(h=t, d=d, center=true, $fn=100);
+            cylinder(h=t, d=d, center=true, $fn=50);
         translate([-(w-d)/2, 0, 0])
-            cylinder(h=t, d=d, center=true, $fn=100);
+            cylinder(h=t, d=d, center=true, $fn=50);
     }
 }
 
 module eccentric() {
     translate([0, 0, eccentric_thick/2]) {
         difference() {
-            cylinder(h=eccentric_thick, d=eccentric_diam, center=true, $fn=100);
+            cylinder(h=eccentric_thick, d=eccentric_diam, center=true, $fn=50);
             translate([-(eccentric_diam - hole_diam)/2 + wall_thick, 0, 0])
-                cylinder(h=2*eccentric_thick, d=hole_diam, center=true, $fn=100);
+                cylinder(h=2*eccentric_thick, d=hole_diam, center=true, $fn=50);
         }
     }
 }

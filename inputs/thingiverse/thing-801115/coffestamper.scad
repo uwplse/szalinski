@@ -6,7 +6,7 @@ nob_diameter = 30; // [16:50]
 // Height of stamper
 height = 60;
 
-$fn=100;
+$fn=50;
 
 module stamper(dia=56,ndia=30,height=60) {
     hull() {

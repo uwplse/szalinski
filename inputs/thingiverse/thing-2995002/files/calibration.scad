@@ -8,7 +8,7 @@ radius=150;
 nozzle=0.4;
 
 // $fn
-$fn=128;
+$fn=50;
 
 
 for (r = [0:spacing:radius]) {

@@ -1,4 +1,4 @@
-$fn=100;
+$fn=50;
 
 support_width = 130;
 support_length = 50;

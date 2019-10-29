@@ -10,10 +10,10 @@ union () {
 			
 		   cube([65,breiteOben,4],0);
 			
-		   translate([65+4.5+1,58.5,2]) rotate([90,0,0]) cylinder(r=4.5, h=16, center=true, $fn=390); 
+		   translate([65+4.5+1,58.5,2]) rotate([90,0,0]) cylinder(r=4.5, h=16, center=true, $fn=50); 
 		   translate([64,50.5,0]) cube([3.2,16,4],0);
 
-		   translate([65+4.5+1,159.5,2]) rotate([90,0,0]) cylinder(r=4.5, h=16, center=true, $fn=390); 
+		   translate([65+4.5+1,159.5,2]) rotate([90,0,0]) cylinder(r=4.5, h=16, center=true, $fn=50); 
 		   translate([64,151.5,0]) cube([3.2,16,4],0);
 
 		 }
@@ -43,12 +43,12 @@ union () {
 				  translate([22,171,-1])  cube([18,18,dicke+3],0);
 				  translate([22,191,-1])  cube([18,18,dicke+3],0);
 
-				   translate([65+4.5+1,58,2]) rotate([90,0,0]) cylinder(r=2.25, h=20, center=true, $fn=390); 
+				   translate([65+4.5+1,58,2]) rotate([90,0,0]) cylinder(r=2.25, h=20, center=true, $fn=50); 
 				   translate([65+3.3,50.1,1.5]) cube([10,5+1,6],0);  
 				   translate([65+3.3,61.8,1.5]) cube([10,5+1,5],0);  
 				   translate([65+3.3,56,-3.5]) cube([10,5+1,6],0);  
 
-				   translate([65+1+4.5,158,2]) rotate([90,0,0]) cylinder(r=2.25, h=20, center=true, $fn=390); 
+				   translate([65+1+4.5,158,2]) rotate([90,0,0]) cylinder(r=2.25, h=20, center=true, $fn=50); 
 				   translate([65+3.3,151.1,1.5]) cube([10,5+1,6],0);  
 				   translate([65+3.3,162.8,1.5]) cube([10,5+1,5],0);  
 				   translate([65+3.3,157,-3.5]) cube([10,5+1,6],0);   

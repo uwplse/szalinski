@@ -38,7 +38,7 @@ frontLength = 89.7 - length;
 height = 4.4;
 
 /* [Hidden] */
-$fn = 90;
+$fn = 50;
 
 backHoleRadius = backHoleDiameter / 2;
 frontHoleRadius = frontHoleDiameter / 2;

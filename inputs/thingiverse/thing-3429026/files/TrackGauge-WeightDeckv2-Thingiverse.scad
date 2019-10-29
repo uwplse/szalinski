@@ -44,11 +44,11 @@ module GageBit()
 {
     union()
     {
-        translate([0.25*TrakGage-NozAll,0,0.5*(RailHt - SlprAttAllow)]) cylinder(r=0.25*TrakGage, h = RailHt - SlprAttAllow, center = true, $fn = 120);
-        translate([-0.25*TrakGage+NozAll,0,0.5*(RailHt - SlprAttAllow)]) cylinder(r=0.25*TrakGage, h = RailHt - SlprAttAllow, center = true, $fn = 120);
+        translate([0.25*TrakGage-NozAll,0,0.5*(RailHt - SlprAttAllow)]) cylinder(r=0.25*TrakGage, h = RailHt - SlprAttAllow, center = true, $fn = 50);
+        translate([-0.25*TrakGage+NozAll,0,0.5*(RailHt - SlprAttAllow)]) cylinder(r=0.25*TrakGage, h = RailHt - SlprAttAllow, center = true, $fn = 50);
         
-        translate([0.75*TrakGage+RailHdWd+NozAll,0,0.5*(RailHt - SlprAttAllow)]) cylinder(r=0.25*TrakGage, h = RailHt - SlprAttAllow, center = true, $fn = 120);
-        translate([-0.75*TrakGage-RailHdWd-NozAll,0,0.5*(RailHt - SlprAttAllow)]) cylinder(r=0.25*TrakGage, h = RailHt - SlprAttAllow, center = true, $fn = 120);
+        translate([0.75*TrakGage+RailHdWd+NozAll,0,0.5*(RailHt - SlprAttAllow)]) cylinder(r=0.25*TrakGage, h = RailHt - SlprAttAllow, center = true, $fn = 50);
+        translate([-0.75*TrakGage-RailHdWd-NozAll,0,0.5*(RailHt - SlprAttAllow)]) cylinder(r=0.25*TrakGage, h = RailHt - SlprAttAllow, center = true, $fn = 50);
     }
 }
 
@@ -63,8 +63,8 @@ module Trimmer()
 {
     
     translate([0,0,0.5*(RailHt - SlprAttAllow+TopBar)])cube([TrakGage+4*CnrRad,ToolDepth,TopBar+RailHt-SlprAttAllow-0.5*CnrRad], center = true);
-    translate([0.5*TrakGage+CnrRad,0,RailHt - SlprAttAllow+TopBar-0.5*CnrRad]) rotate([90,0,0]) cylinder(r = CnrRad, h = ToolDepth, center = true, $fn = 64);
-     translate([-0.5*TrakGage-CnrRad,0,RailHt - SlprAttAllow+TopBar-0.5*CnrRad]) rotate([90,0,0]) cylinder(r = CnrRad, h = ToolDepth, center = true, $fn = 64);
+    translate([0.5*TrakGage+CnrRad,0,RailHt - SlprAttAllow+TopBar-0.5*CnrRad]) rotate([90,0,0]) cylinder(r = CnrRad, h = ToolDepth, center = true, $fn = 50);
+     translate([-0.5*TrakGage-CnrRad,0,RailHt - SlprAttAllow+TopBar-0.5*CnrRad]) rotate([90,0,0]) cylinder(r = CnrRad, h = ToolDepth, center = true, $fn = 50);
     translate([0,0,0.5*(RailHt - SlprAttAllow)+TopBar+0.625*CnrRad])cube([TrakGage+CnrRad*2,ToolDepth,CnrRad], center = true);
 }
 
@@ -73,8 +73,8 @@ module Cutouts()
 {
     union()
     {
-        translate([0.25*(TrakGage-RailHt),0,0]) rotate([90,0,0])cylinder(r = RailHt, h = GageDist*1.5, center = true, $fn=64);
-        translate([-0.25*(TrakGage-RailHt),0,0]) rotate([90,0,0])cylinder(r = RailHt, h = GageDist*1.5, center = true, $fn=64);
+        translate([0.25*(TrakGage-RailHt),0,0]) rotate([90,0,0])cylinder(r = RailHt, h = GageDist*1.5, center = true, $fn=50);
+        translate([-0.25*(TrakGage-RailHt),0,0]) rotate([90,0,0])cylinder(r = RailHt, h = GageDist*1.5, center = true, $fn=50);
         cube([0.5*(TrakGage-RailHt),GageDist*1.5,2*RailHt],center = true);
 
     }

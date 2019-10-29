@@ -1,6 +1,6 @@
 // Fitting Cap
  
-$fn = 200;
+$fn = 50;
  
 // Parameters
 inner_radius = 30.75;

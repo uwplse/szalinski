@@ -2,7 +2,7 @@
 // 2019 Troseph
 // https://www.thingiverse.com/thing:3626559
 
-$fn=100;
+$fn=50;
 // LED specifics
 ledl=205;
 ledw=8.5;

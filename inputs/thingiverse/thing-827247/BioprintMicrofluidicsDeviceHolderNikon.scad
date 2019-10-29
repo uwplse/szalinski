@@ -60,7 +60,7 @@ BottomThicknessInLayersInMM = BottomThicknessInLayers*SizeOfNozzle;
 LidXOffset = 0;
 LidYOffset = InnerWidth + 2*WallThicknessInMM + OuterSkirtWidth + InnerSkirtWidth; 
 
-// cylinder(h = 10, r=20, $fn=100);
+// cylinder(h = 10, r=20, $fn=50);
 
 
 
@@ -178,7 +178,7 @@ difference(){
 
 // cut cylinder
 	translate([ObjectiveCenterX, ObjectiveCenterY, -1*BottomThicknessInLayersInMM])
-		cylinder(h = BottomThicknessInLayersInMM + WallHeight, r=ObjectiveDiameter/2, $fn=100);
+		cylinder(h = BottomThicknessInLayersInMM + WallHeight, r=ObjectiveDiameter/2, $fn=50);
 
 }
 

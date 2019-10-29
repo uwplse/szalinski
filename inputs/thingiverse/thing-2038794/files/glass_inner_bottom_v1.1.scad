@@ -16,7 +16,7 @@ feetHeight = 8;
 feetInnerGap = 1;
 
 
-cylinder(h=2, r=radius, center=true, $fn=90);
+cylinder(h=2, r=radius, center=true, $fn=50);
 
 for (n = [ 0 : nbFeet - 1 ])
     translate([
@@ -24,5 +24,5 @@ for (n = [ 0 : nbFeet - 1 ])
         (radius-feetRadius - feetInnerGap) * sin(360 * n / nbFeet),
         feetHeight/2+1
     ])
-    cylinder(h=feetHeight, r=feetRadius, center=true, $fn=60)
+    cylinder(h=feetHeight, r=feetRadius, center=true, $fn=50)
 ;

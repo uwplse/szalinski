@@ -27,16 +27,16 @@ module hotend_fan() {
 		translate([0,12.5,0])
             hull() {
                 translate([10,0,0])
-                    cylinder(r=3, h=groove_height, $fn=72);
+                    cylinder(r=3, h=groove_height, $fn=50);
                 translate([-10,0,0])
-                    cylinder(r=3, h=groove_height, $fn=72);
+                    cylinder(r=3, h=groove_height, $fn=50);
             }
          translate([0,-12.5,0])
             hull() {
                 translate([10,0,0])
-                    cylinder(r=3, h=groove_height, $fn=72);
+                    cylinder(r=3, h=groove_height, $fn=50);
                 translate([-10,0,0])
-                    cylinder(r=3, h=groove_height, $fn=72);
+                    cylinder(r=3, h=groove_height, $fn=50);
             }
     }
     
@@ -64,7 +64,7 @@ module hotend_fan() {
 	
 	translate([0,0,0]){
         // Groove mount.
-        cylinder(r=groove_radius+1, h=200, center=true, $fn=96);
+        cylinder(r=groove_radius+1, h=200, center=true, $fn=50);
         // J-Head barrel.
         translate([0, 0, groove_height + 0.02])
           cylinder(r=barrel_radius + 1, h=100, $fn=24);
@@ -117,30 +117,30 @@ module hotend_fan() {
 		union(){
             rotate([0, 0, -150]) translate([0, 12.5, 5]) {
                 cylinder(r=m3_nut_radius, h=4, center=true, $fn=6);
-                cylinder(r=m3_radius, h=12, center=true, $fn=96);
+                cylinder(r=m3_radius, h=12, center=true, $fn=50);
             }
 
             rotate([0, 0, -180]) translate([0, 12.5, 5]) {
-               cylinder(r=m3_radius+1, h=12, center=true, $fn=96);
+               cylinder(r=m3_radius+1, h=12, center=true, $fn=50);
             }
 
             rotate([0, 0, -210]) translate([0, 12.5, 5]) {
                 cylinder(r=m3_nut_radius, h=4, center=true, $fn=6);
-                cylinder(r=m3_radius, h=12, center=true, $fn=96);
+                cylinder(r=m3_radius, h=12, center=true, $fn=50);
             }
 
             rotate([0, 0, -30]) translate([0, 12.5, 5]) {
                 cylinder(r=m3_nut_radius, h=4, center=true, $fn=6);
-                cylinder(r=m3_radius, h=12, center=true, $fn=96);
+                cylinder(r=m3_radius, h=12, center=true, $fn=50);
             }
 
             rotate([0, 0, 30]) translate([0, 12.5, 5]) {
                 cylinder(r=m3_nut_radius, h=4, center=true, $fn=6);
-                cylinder(r=m3_radius, h=12, center=true, $fn=96);
+                cylinder(r=m3_radius, h=12, center=true, $fn=50);
             }
 
             translate([0, 12.5, 5]) {
-                cylinder(r=m3_radius+1, h=12, center=true, $fn=96);
+                cylinder(r=m3_radius+1, h=12, center=true, $fn=50);
             }
         }
 
@@ -150,14 +150,14 @@ module hotend_fan() {
   translate([-5,15,0]) cube([10,10,4.5]);
   translate([-5,25,0]) rotate([30,0,0]) difference() {
       cube([10,10,5]);
-      translate([5,7.5,2.5]) rotate([0,90,0]) cylinder(r=1.6, h=12, center=true, $fn=96);
+      translate([5,7.5,2.5]) rotate([0,90,0]) cylinder(r=1.6, h=12, center=true, $fn=50);
   }
   
   // Supporto ventola sinistra
   translate([-5,-25,0]) cube([10,10,4.5]);
   translate([-5,-22.5,4.3]) rotate([150,0,0]) difference() {
       cube([10,10,5]);
-      translate([5,7.5,2.5]) rotate([0,90,0]) cylinder(r=1.6, h=12, center=true, $fn=96);
+      translate([5,7.5,2.5]) rotate([0,90,0]) cylinder(r=1.6, h=12, center=true, $fn=50);
   }
 }
 

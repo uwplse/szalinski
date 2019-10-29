@@ -42,7 +42,7 @@ wall_thickness = 3; // [1:0.1:10]
 /* [Hidden] */
 
 overlap = 0.04;
-$fn = 100;
+$fn = 50;
 
 // preview[view:south, tilt:top]
 

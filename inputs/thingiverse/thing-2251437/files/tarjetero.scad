@@ -40,7 +40,7 @@ tolerance = 0.5;
  * %%EOS_HEADER%% }}}
  */
 
-$fn=60;
+$fn=50;
 
 //Standard case size 64x102x30
 

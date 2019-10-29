@@ -64,9 +64,9 @@ union(){
     for (j = [-((singleWidth + perBlockWidthAdjustment) / 2) : abs(singleWidth + perBlockWidthAdjustment) : singleWidth * (lengthDots - 1) + (lengthDots - 1) * perBlockWidthAdjustment]) {
       translate([m, j, (standardHeight - wallThickness / 2)]){
         difference() {
-          cylinder(r1=dotRadius, r2=dotRadius, h=(dotHeight + wallThickness / 2), center=false, $fn=100);
+          cylinder(r1=dotRadius, r2=dotRadius, h=(dotHeight + wallThickness / 2), center=false, $fn=50);
 
-          cylinder(r1=(dotRadius - intendedNozzleDiameter * 3), r2=(dotRadius - intendedNozzleDiameter * 3), h=dotHeight, center=false, $fn=100);
+          cylinder(r1=(dotRadius - intendedNozzleDiameter * 3), r2=(dotRadius - intendedNozzleDiameter * 3), h=dotHeight, center=false, $fn=50);
         }
       }
     }
@@ -81,7 +81,7 @@ union(){
         for (i = [0 : abs(singleWidth + perBlockWidthAdjustment) : singleWidth * (lengthDots - 2) + (lengthDots - 1) * perBlockWidthAdjustment]) {
           translate([k, i, 0]){
             union(){
-              cylinder(r1=((round((3.22 - dotRadius) / intendedNozzleDiameter) * intendedNozzleDiameter) + dotRadius), r2=((round((3.22 - dotRadius) / intendedNozzleDiameter) * intendedNozzleDiameter) + dotRadius), h=(standardHeight - wallThickness / 2), center=false, $fn=100);
+              cylinder(r1=((round((3.22 - dotRadius) / intendedNozzleDiameter) * intendedNozzleDiameter) + dotRadius), r2=((round((3.22 - dotRadius) / intendedNozzleDiameter) * intendedNozzleDiameter) + dotRadius), h=(standardHeight - wallThickness / 2), center=false, $fn=50);
               translate([0, 0, (standardHeight - ((standardHeight / 2 - wallThickness / 4) - 1.07))]){
                 cube([(lengthDots >= widthDots ? singleWidth * 2 : wallSupportThickness), (lengthDots < widthDots ? singleWidth * 2 : wallSupportThickness), ((standardHeight - wallThickness / 2) - 2.14)], center=true);
               }
@@ -94,7 +94,7 @@ union(){
       for (k = [0 : abs(singleWidth + perBlockWidthAdjustment) : singleWidth * (widthDots - 2) + (widthDots - 1) * perBlockWidthAdjustment]) {
         for (i = [0 : abs(singleWidth + perBlockWidthAdjustment) : singleWidth * (lengthDots - 2) + (lengthDots - 1) * perBlockWidthAdjustment]) {
           translate([k, i, 0]){
-            cylinder(r1=dotRadius, r2=dotRadius, h=(standardHeight - wallThickness / 2), center=false, $fn=100);
+            cylinder(r1=dotRadius, r2=dotRadius, h=(standardHeight - wallThickness / 2), center=false, $fn=50);
           }
         }
 
@@ -107,7 +107,7 @@ union(){
       translate([(lengthDots > widthDots ? -4 : i), (lengthDots > widthDots ? i : -4), 0]){
         union(){
             //underside Single Width Support Post
-          cylinder(r1=undersideSingleWidthSupportPostRadius, r2=undersideSingleWidthSupportPostRadius, h=(standardHeight - wallThickness / 2), center=false, $fn = 100);
+          cylinder(r1=undersideSingleWidthSupportPostRadius, r2=undersideSingleWidthSupportPostRadius, h=(standardHeight - wallThickness / 2), center=false, $fn = 50);
           translate([0, 0, (standardHeight - ((standardHeight / 2 - wallThickness / 4) - 1.07))]){
             cube([(lengthDots > widthDots ? singleWidth - perBlockWidthAdjustment : wallSupportThickness), (widthDots > lengthDots ? singleWidth - perBlockWidthAdjustment : wallSupportThickness), ((standardHeight - wallThickness / 2) - 2.14)], center=true);
           }

@@ -64,7 +64,7 @@ create=1; // [1:Both Parts, 0:Inner Only, 2:Outer Only]
 /* [Hidden] */
 
 // roundness:
-$fn=200;
+$fn=50;
 
 // the wall thickness
 d_wall = 3;

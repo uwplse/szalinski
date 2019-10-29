@@ -33,7 +33,7 @@ buzzerRadius = buzzerDiameter / 2;
 feetRadiusOuter = feetRadius + feetWall;
 feetHoleHeight = feetHeight + (feetHeight - holderHeight + holderOffsetZ) + 2;
 
-$fn = 180;
+$fn = 50;
 
 difference() {
     group() {

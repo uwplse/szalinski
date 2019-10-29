@@ -61,8 +61,8 @@
 			echo("aA = ", A);
 			echo("aS = ", S);
 			echo("aR = ", R);
-			#cylinder(r=A,h=h+1,center=false,$fn=150);
-			%cylinder(r=R,h=h+1,center=false,$fn=150);
+			#cylinder(r=A,h=h+1,center=false,$fn=50);
+			%cylinder(r=R,h=h+1,center=false,$fn=50);
 		}
 	}
 	else
@@ -78,8 +78,8 @@
 				echo("sA = ", A);
 				echo("sS = ", S);
 				echo("sR = ", R);
-				#cylinder(r=A,h=h+1,center=false,$fn=150);
-				%cylinder(r=R,h=h+1,center=false,$fn=150);
+				#cylinder(r=A,h=h+1,center=false,$fn=50);
+				%cylinder(r=R,h=h+1,center=false,$fn=50);
 			}
 		}
 		else
@@ -95,8 +95,8 @@
 					echo("0A = ", A);
 					echo("0S = ", S);
 					echo("0R = ", R);
-					#cylinder(r=A,h=h+1,center=false,$fn=150);
-					%cylinder(r=R,h=h+1,center=false,$fn=150);
+					#cylinder(r=A,h=h+1,center=false,$fn=50);
+					%cylinder(r=R,h=h+1,center=false,$fn=50);
 				}
 			}
 			else		// build with R
@@ -111,7 +111,7 @@
 					echo("rA = ", A);
 					echo("rS = ", S);
 					echo("rR = ", R);
-					%cylinder(r=R,h=h+1,center=false,$fn=150);
+					%cylinder(r=R,h=h+1,center=false,$fn=50);
 				}
 			}
 		}

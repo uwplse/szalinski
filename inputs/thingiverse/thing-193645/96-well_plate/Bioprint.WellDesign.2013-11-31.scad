@@ -32,9 +32,9 @@ for ( c = [0 : 1 : NumCols - 2] )
 		// wells
 		difference() {
     			translate([c*WellCenterSpacing, r*WellCenterSpacing, 0])
-    				cylinder (h = WellDepth, r=WellDiameter/2, center = true, $fn=100);
+    				cylinder (h = WellDepth, r=WellDiameter/2, center = true, $fn=50);
 			translate([c*WellCenterSpacing, r*WellCenterSpacing, WellBottomThickness])
-				cylinder (h = WellDepth-WellBottomThickness, r=WellDiameter/2-WallThickness, center = true, $fn=100);
+				cylinder (h = WellDepth-WellBottomThickness, r=WellDiameter/2-WallThickness, center = true, $fn=50);
 		}
 
 		// connectors
@@ -59,20 +59,20 @@ for ( c = [0 : 1 : NumCols - 1] )
     				translate([0-WellDiameter/2, r*WellCenterSpacing+WellDiameter/2, 0-CubeHeight/2])
     					cube(size = [WellDiameter/4,WellDiameter/4,CubeHeight], center = true);
     				translate([c*WellCenterSpacing, r*WellCenterSpacing, 0])
-    					cylinder (h = WellDepth, r=WellDiameter/2, center = true, $fn=100);
+    					cylinder (h = WellDepth, r=WellDiameter/2, center = true, $fn=50);
 			}
 			difference() {
     				translate([c*WellCenterSpacing, r*WellCenterSpacing, 0])
-    					cylinder (h = WellDepth, r=WellDiameter/2, center = true, $fn=100);
+    					cylinder (h = WellDepth, r=WellDiameter/2, center = true, $fn=50);
 				translate([c*WellCenterSpacing, r*WellCenterSpacing, WellBottomThickness])
-					cylinder (h = WellDepth-WellBottomThickness, r=WellDiameter/2-WallThickness, center = true, $fn=100);
+					cylinder (h = WellDepth-WellBottomThickness, r=WellDiameter/2-WallThickness, center = true, $fn=50);
 			}
 		}else{
 			difference() {
     				translate([c*WellCenterSpacing, r*WellCenterSpacing, 0])
-    					cylinder (h = WellDepth, r=WellDiameter/2, center = true, $fn=100);
+    					cylinder (h = WellDepth, r=WellDiameter/2, center = true, $fn=50);
 				translate([c*WellCenterSpacing, r*WellCenterSpacing, WellBottomThickness])
-					cylinder (h = WellDepth-WellBottomThickness, r=WellDiameter/2-WallThickness, center = true, $fn=100);
+					cylinder (h = WellDepth-WellBottomThickness, r=WellDiameter/2-WallThickness, center = true, $fn=50);
 			}
 		}
 
@@ -94,23 +94,23 @@ for ( c = NumCols - 1 )
     				translate([c*WellCenterSpacing+WellDiameter/2, r-WellDiameter/2, 0-CubeHeight/2])
     					cube(size = [WellDiameter/2,WellDiameter/2,CubeHeight], center = true);
     				translate([c*WellCenterSpacing, r*WellCenterSpacing, 0])
-    					cylinder (h = WellDepth, r=WellDiameter/2, center = true, $fn=100);
+    					cylinder (h = WellDepth, r=WellDiameter/2, center = true, $fn=50);
 
 			}
 			difference() {
     				translate([c*WellCenterSpacing, r*WellCenterSpacing, 0])
-    					cylinder (h = WellDepth, r=WellDiameter/2, center = true, $fn=100);
+    					cylinder (h = WellDepth, r=WellDiameter/2, center = true, $fn=50);
 				translate([c*WellCenterSpacing, r*WellCenterSpacing, WellBottomThickness])
-					cylinder (h = WellDepth-WellBottomThickness, r=WellDiameter/2-WallThickness, center = true, $fn=100);
+					cylinder (h = WellDepth-WellBottomThickness, r=WellDiameter/2-WallThickness, center = true, $fn=50);
 			}
 
 		}else{
 
 			difference() {
     				translate([c*WellCenterSpacing, r*WellCenterSpacing, 0])
-    					cylinder (h = WellDepth, r=WellDiameter/2, center = true, $fn=100);
+    					cylinder (h = WellDepth, r=WellDiameter/2, center = true, $fn=50);
 				translate([c*WellCenterSpacing, r*WellCenterSpacing, WellBottomThickness])
-					cylinder (h = WellDepth-WellBottomThickness, r=WellDiameter/2-WallThickness, center = true, $fn=100);
+					cylinder (h = WellDepth-WellBottomThickness, r=WellDiameter/2-WallThickness, center = true, $fn=50);
 			}
 		}
 
@@ -124,4 +124,4 @@ for ( c = NumCols - 1 )
 
 
 
-//rotate ([90,0,0]) cylinder (h = 4, r=0.9, center = true, $fn=100);
+//rotate ([90,0,0]) cylinder (h = 4, r=0.9, center = true, $fn=50);

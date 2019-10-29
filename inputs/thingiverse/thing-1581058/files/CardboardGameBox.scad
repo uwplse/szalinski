@@ -6,7 +6,7 @@ wallthick =   1.5;
 basethick =   2;
 
 //resolution
-$fn=300;
+$fn=50;
 
 //base
 cube([width+2*wallthick,length+2*wallthick,basethick]);

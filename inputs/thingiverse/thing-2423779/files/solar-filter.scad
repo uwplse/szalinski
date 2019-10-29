@@ -35,18 +35,18 @@ module cover() {
             cylinder(h = wall_thickness,
                      d = cover_outer_diameter,
                      center = true,
-                     $fn=200);  
+                     $fn=50);  
         }
         translate([0 , 0, wall_thickness + cover_depth / 2]) {
             difference() {
                 cylinder(h = cover_depth,
                          d = cover_outer_diameter,
                          center = true,
-                         $fn = 200);
+                         $fn = 50);
                 cylinder(h = cover_depth + 1,
                          d = cover_inner_diameter,
                          center = true,
-                         $fn = 200);                    
+                         $fn = 50);                    
             }
         }
     }
@@ -59,11 +59,11 @@ module holder() {
                 cylinder(h = wall_thickness,
                          d = diameter + 2 * wall_thickness,
                          center = true,
-                         $fn = 200);
+                         $fn = 50);
                 cylinder(h = wall_thickness + 1,
                          d = diameter - 2 * holder_annulus_width,
                          center = true,
-                         $fn = 200);
+                         $fn = 50);
             }
         }
         translate([0, 0, holder_depth / 2 + wall_thickness]) {
@@ -71,11 +71,11 @@ module holder() {
                 cylinder(h = holder_depth,
                          d = diameter + 2 * wall_thickness,
                          center = true,
-                         $fn = 200);
+                         $fn = 50);
                 cylinder(h = holder_depth + 1,
                          d = diameter,
                          center = true,
-                         $fn = 200);
+                         $fn = 50);
             }
         }
     }
@@ -89,11 +89,11 @@ module ring() {
                 cylinder(h = wall_thickness, 
                          d = diameter,
                          center = true,
-                         $fn = 200);                    
+                         $fn = 50);                    
                 cylinder(h = wall_thickness + 1, 
                          d = diameter - ring_annulus_width * 2,
                          center = true,
-                         $fn = 200);                    
+                         $fn = 50);                    
             }
         }
     }

@@ -89,14 +89,14 @@ TotalWidth=Coin1Dia+Coin2Dia+Coin3Dia+Coin4Dia+3*Distance+2*OuterWallThickness+4
 
 module CoinTowerOutside(Dia=23.26,height=2.4,count=20,WallT=2,PushHoleHeight=2.4){
         translate([0,0,0]) 
-        cylinder(r=Dia/2+WallT,h=height*count+WallT,$fn=100);
+        cylinder(r=Dia/2+WallT,h=height*count+WallT,$fn=50);
         
 }
 module CoinTowerInside(Dia=23.26,height=2.4,count=20,WallT=2,PushHoleHeight=2.4,Scale=true){
         translate([0,0,WallT]) 
-        cylinder(r=Dia/2,h=height*(count+1)*2,$fn=100);
+        cylinder(r=Dia/2,h=height*(count+1)*2,$fn=50);
         translate([0,0,-0.01]) 
-        cylinder(r=(Dia/2)*.75,h=PushHoleHeight+0.01,$fn=100);
+        cylinder(r=(Dia/2)*.75,h=PushHoleHeight+0.01,$fn=50);
         translate([-(Dia/4),0,PushHoleHeight+0.02]) 
         cube([Dia/2,Dia/2+WallT+1,height*(count+1)*2]);
         

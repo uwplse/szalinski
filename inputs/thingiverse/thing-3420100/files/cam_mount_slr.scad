@@ -35,7 +35,7 @@ camScrewRadius = camScrewDiameter / 2;
 radius = diameter / 2;
 outerRadius = radius + walls;
 
-$fn = 90;
+$fn = 50;
 
 rotate([90, 0, 0]) {
   difference() {

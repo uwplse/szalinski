@@ -11,8 +11,8 @@ Height = 90; // Height of the lower section
 
 module tube(od, id, h) {
     difference() {
-        cylinder(r=od/2, h=h,$fn=200);
-        cylinder(r=id/2, h=h,$fn=200);
+        cylinder(r=od/2, h=h,$fn=50);
+        cylinder(r=id/2, h=h,$fn=50);
     }
 }
 

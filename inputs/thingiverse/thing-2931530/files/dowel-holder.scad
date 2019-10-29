@@ -23,7 +23,7 @@ flange_hole_d = 6;
 /* [Hidden] */
 
 holder_d = dowel_d + dowel_wall*2;
-$fn = 128;
+$fn = 50;
 
 module holder() {
     difference() {

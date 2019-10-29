@@ -3,7 +3,7 @@ rays=6; //number of rays
 t=2; //material tickness
 h=10; // neck border height
 holeR=r/5; 
-$fn=180;
+$fn=50;
 
 
 

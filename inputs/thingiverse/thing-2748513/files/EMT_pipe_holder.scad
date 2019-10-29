@@ -6,7 +6,7 @@
 // fixes/improvements:
 //     -none
 // adjust to increase/decrease polygon count at expense of processing time
-$fn = 100; //
+$fn = 50; //
 
 rodDiameter = 18;
 

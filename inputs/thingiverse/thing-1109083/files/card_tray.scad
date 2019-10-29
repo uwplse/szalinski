@@ -15,7 +15,7 @@ stack_space = 3.5; // [0:20]
 // Should the bottom be open (less material, but not as strong)?
 open_bottom = 0; // [0:No, 1:Yes]
 
-$fn = 90 * 1;
+$fn = 50 * 1;
 interior_height = box_height - wall_thickness;
 box_width = card_height + wall_thickness * 2 + tolerance * 2;
 slant = box_height < card_width ? acos(box_height / (card_width + wall_thickness)) : 10;

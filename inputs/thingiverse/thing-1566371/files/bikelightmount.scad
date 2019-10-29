@@ -101,7 +101,7 @@ wall_thickness_lightscrew = WALL_THICKNESS;
 // distance of
 light_dist = LIGHTSCREW_INSET + LIGHT_INSET + wall_thickness_lightscrew - WALL_THICKNESS;
 
-$fn=200;
+$fn=50;
 
 
 

@@ -22,7 +22,7 @@
  */
 
 /* Start of customizer header */
-$fn=100;
+$fn=50;
 /* [Grill] */
 
 // Number of rings
@@ -171,8 +171,8 @@ module tear_drop_ring(od=10,t=1,ht=2,sm=true,so=false){
 module mount_hole(d_l,d_s,deep,h)
 {
   rotate([0,180,0]){
-	 cylinder(r=d_s/2,h=h+0.1,$fn=60);
-	 cylinder(r1=d_l/2,r2=d_s/2,h=deep,$fn=60);
+	 cylinder(r=d_s/2,h=h+0.1,$fn=50);
+	 cylinder(r1=d_l/2,r2=d_s/2,h=deep,$fn=50);
   }
 }
 
@@ -183,14 +183,14 @@ module plate()
 	  translate([0,0,thick/2])
 	    cube([size,size,thick],center=true);
 	  translate([0,0,-0.5])
-	    cylinder(r=id/2,h=thick+1,$fn=120);
+	    cylinder(r=id/2,h=thick+1,$fn=50);
 	  // round corners
 	  for(a=[0,90,-90,180]){
 	    rotate([0,0,a]){
 	      translate([mount/2,mount/2,-0.5])
 	        difference(){
 	          cube([(size-mount)/2+0.1,(size-mount)/2+0.1,thick+1]);
-	          cylinder(r=(size-mount)/2,h=thick+1,$fn=60);
+	          cylinder(r=(size-mount)/2,h=thick+1,$fn=50);
 	        }
 	    }
 	  }

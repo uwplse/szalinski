@@ -26,7 +26,7 @@ cylinder_height = n_tiers * tier_height + 2 * padding;
 dimple_radius = (dimple_depth * dimple_depth + tier_height * tier_height / 4) / (2 * dimple_depth);
 
 difference() {
-  cylinder(h = cylinder_height, r = cylinder_radius, $fn = 100);
+  cylinder(h = cylinder_height, r = cylinder_radius, $fn = 50);
   translate([0, 0, -.5]) cylinder(h = cylinder_height + 1, r = cylinder_radius - cylinder_thickness);
   for (z = [0:(n_tiers + 1)/2 - 1], i = [0:(dimples_per_tier - 1)]) {
    rotate(i * 360/dimples_per_tier, [0, 0, 1])

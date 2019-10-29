@@ -1,4 +1,4 @@
-$fn = 180;
+$fn = 50;
 
 // Thickness of walls
 walls        = 5;

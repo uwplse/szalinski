@@ -10,7 +10,7 @@ step_totalix = grid_width-5;
 height_stand = 60;  //[20:10:100]
 dimensione_parete = 3+0;
 height_supporti=height_stand/3;
-$fn=100+0; //risoluzione cilindro
+$fn=50+0; //risoluzione cilindro
 shows_support = "yes"; // [yes,no]
 x=1+0;
 difference(){

@@ -34,9 +34,9 @@ cube([laenge,breite,hoehe]);
     
 union(){
 translate([laenge/2,breite/2,hoehe/3])
-cylinder(h = hoehe, d1 = glas+toleranz, d2 = glas+toleranz, $fn=96) ;
+cylinder(h = hoehe, d1 = glas+toleranz, d2 = glas+toleranz, $fn=50) ;
 translate([laenge/2,breite/2,hoehe/3])
-sphere(d = glas+toleranz, $fn=96);
+sphere(d = glas+toleranz, $fn=50);
 
 translate([laenge/2-auschnitt/2,-10,hoehe/2.5])
 cube([auschnitt,breite/2,hoehe]);
@@ -44,6 +44,6 @@ cube([auschnitt,breite/2,hoehe]);
 
 translate([laenge/2,breite/2,hoehe/2.5])
 rotate([90,0,0])
-cylinder(h = hoehe, d1 = auschnitt, d2 = auschnitt, $fn=96) ;
+cylinder(h = hoehe, d1 = auschnitt, d2 = auschnitt, $fn=50) ;
 }
 }

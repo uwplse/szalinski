@@ -38,7 +38,7 @@ oozeAdjustment=0.45;
 /* [Hidden] */
 // preview[view:south west]
 
-$fn=100;
+$fn=50;
 pinRadius=pinDiameter/2;
 oozeRadius=oozeAdjustment/2;
 

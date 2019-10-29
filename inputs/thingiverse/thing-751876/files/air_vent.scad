@@ -6,7 +6,7 @@ x=4.5; //rad of magnet
 y=5;//height of mag
 z=8;
 
-$fn=100;
+$fn=50;
 difference(){
 difference(){
 union(){

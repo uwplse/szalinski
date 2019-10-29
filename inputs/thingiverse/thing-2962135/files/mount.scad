@@ -1,4 +1,4 @@
-/* $fn = 100; */
+/* $fn = 50; */
 inner_width = 73;
 inner_height = 139;
 rad = 5;

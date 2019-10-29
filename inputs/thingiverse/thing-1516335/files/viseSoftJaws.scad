@@ -117,12 +117,12 @@ module viseSoftJaws(length, width, thickness, angle, knurl_width, knurl_depth, k
 }
 
 
-viseSoftJaws(viseLength, jawWidth, thickness, knurlAngle, knurlWidth, knurlDepth, knurlSpacing, magnetSize, magnetSpacing, vGrooveSize, $fn = 100);
+viseSoftJaws(viseLength, jawWidth, thickness, knurlAngle, knurlWidth, knurlDepth, knurlSpacing, magnetSize, magnetSpacing, vGrooveSize, $fn = 50);
 //create 2nd Vise Jaw by mirroring original part
 translate([0,viseLength*0.5, 0]){
 mirror([0,1,0]){
     
-    viseSoftJaws(viseLength, jawWidth, thickness, knurlAngle, knurlWidth, knurlDepth, knurlSpacing, magnetSize, magnetSpacing, vGrooveSize, $fn = 100);
+    viseSoftJaws(viseLength, jawWidth, thickness, knurlAngle, knurlWidth, knurlDepth, knurlSpacing, magnetSize, magnetSpacing, vGrooveSize, $fn = 50);
 
 }
 }

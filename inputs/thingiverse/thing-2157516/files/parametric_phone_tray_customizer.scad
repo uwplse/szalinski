@@ -49,7 +49,7 @@ module cube_rect_rounded(sx,sy,sz,rad,ct)
 
 module tray()
 {
-$fn=100;
+$fn=50;
 
 // add margin
 phone_length = phone_length + gap; 

@@ -43,7 +43,7 @@ module tx01_mount() {
             translate ([-((camLensWidth/2)+camLensOffsetRight),-4.5,-1.5]) rotate ([cameraAngle,0,0]) tx01_box();
         }
         // xtal cutout
-        translate ([-5,-1,0]) rotate([90,0,0]) cylinder(r=1.8, h=9, center=true, $fn=64);
+        translate ([-5,-1,0]) rotate([90,0,0]) cylinder(r=1.8, h=9, center=true, $fn=50);
         // cap cutout
         //translate ([-5,3,-0.2]) cube([3,7,1]);
         // bottom cutoff
@@ -106,17 +106,17 @@ module e010_bottom_plate() {
     
     // mount left
     difference() {
-        translate([-18,4,0]) cylinder(r=2.8,h=baseHeight,$fn=64);
+        translate([-18,4,0]) cylinder(r=2.8,h=baseHeight,$fn=50);
         translate([-18,4,-0.5]) cylinder(r=0.8, h=2,$fn=32);
     }
     //mount right
     difference() {
-        translate([18,4,0]) cylinder(r=2.8,h=baseHeight,$fn=64);
+        translate([18,4,0]) cylinder(r=2.8,h=baseHeight,$fn=50);
         translate([18,4,-0.5]) cylinder(r=0.8, h=2,$fn=32);
     }
     //mount front
     difference() {
-        translate([0,-14,0]) cylinder(r=2.4,h=baseHeight,$fn=64);
+        translate([0,-14,0]) cylinder(r=2.4,h=baseHeight,$fn=50);
         translate([0,-14,-0.5]) cylinder(r=0.8, h=2,$fn=32);
     }
     // beam front
@@ -129,13 +129,13 @@ module e010_bottom_plate() {
     /*
     // back rounded corner right
     difference() {
-        translate ([-5.5,13,0]) cylinder(r=2,h=baseHeight,$fn=64);
-        translate ([-4,9.5,-0.5]) cylinder(r=3.55,h=2,$fn=64);
+        translate ([-5.5,13,0]) cylinder(r=2,h=baseHeight,$fn=50);
+        translate ([-4,9.5,-0.5]) cylinder(r=3.55,h=2,$fn=50);
     }
     // back rounded corner left
     difference () {
-        translate ([5.5,13,0]) cylinder(r=2,h=baseHeight,$fn=64);
-        translate ([4,9.5,-0.5]) cylinder(r=3.55,h=2,$fn=64);        
+        translate ([5.5,13,0]) cylinder(r=2,h=baseHeight,$fn=50);
+        translate ([4,9.5,-0.5]) cylinder(r=3.55,h=2,$fn=50);        
     }
     translate ([-5.5,13,0]) cube ([11,2,baseHeight]);
     // back angle beam Right

@@ -5,7 +5,7 @@ inner_r = 37; // Inner radius of bottle holder, its the radius!!! d = 2 r !!!
 material = 4; // material thickness
 width = 150;  // Width of the back
 
-$fn = 60;     // Resolution
+$fn = 50;     // Resolution
 
 /********** Processing ************************/
 

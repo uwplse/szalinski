@@ -84,7 +84,7 @@ _draws_offset = _h_rpi_offset + _rpi_spacer_h + _rpi_t + _rpi_poe_h;
 
 // translate([_t_wall+_rpi_padding,_t_wall+_rpi_padding,_h_rpi_offset]) rpi();
 
-$fn=64;
+$fn=50;
 
 //base();
 //lid();
@@ -765,7 +765,7 @@ module base() {
     _standoff_hole_head_r = 2.5; 
     _standoff_hole_head_l = 2.8;
     _hole_inset_r=3;
-$fn=64;
+$fn=50;
     difference() {
 
         union() {

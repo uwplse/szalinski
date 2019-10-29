@@ -15,7 +15,7 @@ function s(x) = x * size / 156;
 module radiusMold(r=1,h=1,extra=s(1)) {
 	difference() {
 		translate([0,0,0]) cube([r+extra,r+extra,h]);
-		translate([0,0,-1]) cylinder(r=r,h=h+2,$fn=72);
+		translate([0,0,-1]) cylinder(r=r,h=h+2,$fn=50);
 	}
 }
 

@@ -106,7 +106,7 @@ module wrench_outer(){
 
 
 module test_cut_cylinder(){
-      cylinder(h = height*2 ,d = test_diameter, center = true, $fn = 60);
+      cylinder(h = height*2 ,d = test_diameter, center = true, $fn = 50);
 }
 
 
@@ -125,10 +125,10 @@ module key_ring_cut(){
 module handles(){
     hull(){
         translate([-length/2,0,0]){
-            cylinder(h = height, d = handle_thickness, center = true, $fn = 60);
+            cylinder(h = height, d = handle_thickness, center = true, $fn = 50);
         }
         translate([length/2,0,0]){
-            cylinder(h = height, d = handle_thickness, center = true, $fn = 60);
+            cylinder(h = height, d = handle_thickness, center = true, $fn = 50);
         }
         
         translate([0,0,2]){

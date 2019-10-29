@@ -8,7 +8,7 @@ length      = 28;
 cut         = 1/9; //(percent of whole along Z)
 hexRad      = 14.3/2; //Radius of a circle touching every vertices along the hex cap bolt (5/16")
 hexHeight   = 5;
-$fn=300;   
+$fn=50;   
 
 difference(){
     

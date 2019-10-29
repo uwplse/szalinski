@@ -13,7 +13,7 @@ HolderType = "Hexagon"; //[Circle,Hexagon]
 DrawType = "All"; //[Head,Legs,All,Demo]
 
 /* [HIDDEN] */
-$fn = 75;
+$fn = 50;
 
 if(DrawType == "Head") Head();
 if(DrawType == "Demo") rotate([180,0,0])Head();

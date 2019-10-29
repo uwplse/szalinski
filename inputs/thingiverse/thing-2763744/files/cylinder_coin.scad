@@ -5,7 +5,7 @@
 // PARAMETERS
 
 // resolution 
-$fn = 100*1;
+$fn = 50*1;
 
 // diameter of the coin
 d = 20;

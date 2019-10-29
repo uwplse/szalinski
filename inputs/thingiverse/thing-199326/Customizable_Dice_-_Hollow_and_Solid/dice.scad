@@ -29,7 +29,7 @@ hollowness = 80; // [0:99]
 
 /* [Hidden] */
 
-$fn = 64;
+$fn = 50;
 
 wall_thickness = rounding;
 

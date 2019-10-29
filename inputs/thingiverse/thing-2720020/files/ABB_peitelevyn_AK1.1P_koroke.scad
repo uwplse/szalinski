@@ -3,7 +3,7 @@
 wire=6;
 height=wire+2;
 wall=2;
-$fn=100;
+$fn=50;
 
 
 

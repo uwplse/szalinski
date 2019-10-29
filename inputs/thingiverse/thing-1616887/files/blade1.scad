@@ -47,7 +47,7 @@ intersection(){
     cylinder(h=slitH+30,
           d=slitL,
           center=true,
-          $fn=100);
+          $fn=50);
     cube([slitL/2,
           slitL/2,
           slitH+10],
@@ -91,24 +91,24 @@ difference(){
 }//end module
 
 module mount_holes(){
-    cylinder(h=10,d=6,center=true,$fn=100);
+    cylinder(h=10,d=6,center=true,$fn=50);
     //cylinder(h=5,d=25,center=true,$fn=3);
     translate([16,0,0]){
         //text("1",5);
-    cylinder(h=5,d=1,center=true,$fn=100);
+    cylinder(h=5,d=1,center=true,$fn=50);
         }//end translate
     translate([12,0,0]){
         //text("1",5);
-    cylinder(h=10,d=3,center=true,$fn=100);
+    cylinder(h=10,d=3,center=true,$fn=50);
         }//end translate
         
     translate([-6.5,10,0]){
         //text("2",5);
-    cylinder(h=10,d=3,center=true,$fn=100);
+    cylinder(h=10,d=3,center=true,$fn=50);
         }//end translate
     translate([-6,-11,0]){
         //text("3",5);
-    cylinder(h=10,d=3,center=true,$fn=100);
+    cylinder(h=10,d=3,center=true,$fn=50);
         }//end translate
     }//end module
 // 
@@ -117,7 +117,7 @@ difference(){
         cylinder(h=bladeT,
             d1=bladeD,
             d2=bladeD,
-            center=true,$fn=100);
+            center=true,$fn=50);
         translate([0,0,-2*bladeT]){
             if (slitStyle==0) {
                 allSlits(nSlits,bladeD-10,          bladeT,centerD);}//end if

@@ -17,13 +17,13 @@ module unionCube(){
 }
 
 module plate(){
-    cylinder(plateHeight, innerRadius+wallStrength, innerRadius+wallStrength, true, $fn = 100);
+    cylinder(plateHeight, innerRadius+wallStrength, innerRadius+wallStrength, true, $fn = 50);
 }
 module plateWall(){
     translate([0,0,plateHeight*2]){
         difference(){
-            cylinder(wallHeight, innerRadius+wallStrength, innerRadius+wallStrength, true, $fn = 100);
-            cylinder(wallHeight, innerRadius, innerRadius, true, $fn = 100);
+            cylinder(wallHeight, innerRadius+wallStrength, innerRadius+wallStrength, true, $fn = 50);
+            cylinder(wallHeight, innerRadius, innerRadius, true, $fn = 50);
         }
     }
 }
@@ -82,5 +82,5 @@ module everything(){
 
 intersection(){
     everything();
-    cylinder(1000, (innerRadius+wallStrength)*1.5, (innerRadius+wallStrength)*1.5, true, $fn = 100);
+    cylinder(1000, (innerRadius+wallStrength)*1.5, (innerRadius+wallStrength)*1.5, true, $fn = 50);
 }

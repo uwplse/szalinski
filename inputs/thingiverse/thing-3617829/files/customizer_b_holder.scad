@@ -10,7 +10,7 @@ part_spacing = 4; // [1:30]
 // B Holder
 /* [hidden] */
 
-$fn = 100;  // 100 => 10 second render
+$fn = 50;  // 100 => 10 second render
 
 // Battery specific variables
 //b_w = 66; // Width (y) 

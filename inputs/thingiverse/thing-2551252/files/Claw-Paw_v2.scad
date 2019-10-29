@@ -1,7 +1,7 @@
 //Get a rule and discover your finger width in milimeters! If it is 40, you chose another kind of finger...
 FINGER_DIAMETER = 18; // [8:40]
 
-$fn=100;
+$fn=50;
 
 difference() {
 	// Solid finger + nail

@@ -10,7 +10,7 @@ layerHeight=0.2;
 
 /* [hidden] */
 rad=diameter/2;
-$fn=200;
+$fn=50;
 
 union() {
 translate([0,0,-layerHeight]) cylinder(r=rad, h=layerHeight);

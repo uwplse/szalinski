@@ -21,7 +21,7 @@ if(print == 0 || print == 2) rotate([print==2?90:0, 0 ,0]) difference() {
 
 module base() {
     difference() {
-        sphere(r=r+0.2, $fn=100);
+        sphere(r=r+0.2, $fn=50);
         translate([0,0,-500-(diameter/12)]) cube([1000,1000,1000], center=true);
         translate([0,0,r-0.8*r_cable]) rotate([90,0,0]) cylinder(r=r_cable, h=100, $fn=50, center=true);
         clip(1.2);
@@ -35,8 +35,8 @@ module base() {
 
 module clip(scale=1) {
     difference() {
-        rotate([90,0,0]) cylinder(r=r*scale, h=clip_width*scale, $fn=100, center=true);
-        scale([0.7,1,1]) rotate([90,0,0]) cylinder(r=r-((clip_width-2)*0.8*scale), h=50, $fn=100, center=true);
+        rotate([90,0,0]) cylinder(r=r*scale, h=clip_width*scale, $fn=50, center=true);
+        scale([0.7,1,1]) rotate([90,0,0]) cylinder(r=r-((clip_width-2)*0.8*scale), h=50, $fn=50, center=true);
         translate([0,0,-45]) cube(100, center=true);
     }
     // rotate

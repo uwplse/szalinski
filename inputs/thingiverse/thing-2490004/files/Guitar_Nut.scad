@@ -71,7 +71,7 @@ module MakeGaps()
 			rotate([0, (-String_Angle), 0])
 				union()
 				{
-					cylinder(h = (Nut_Depth + 4), d = GetStringWidth(i), $fn = 60);
+					cylinder(h = (Nut_Depth + 4), d = GetStringWidth(i), $fn = 50);
 					translate([5, 0, (Nut_Depth / 2) + 2])
 						cube([10, GetStringWidth(i), (Nut_Depth + 4)],center = true);
 				}

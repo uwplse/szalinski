@@ -63,7 +63,7 @@ foot_type="circular";		//[circular, cubic, none]
 foot_size=16;
 
 /*[Hidden]*/
-$fn=200;
+$fn=50;
 mat=2;
 dt1=0.001;
 dt2=2*dt1;

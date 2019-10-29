@@ -26,9 +26,9 @@ module makePart(){
 
 module smm(d){
     difference(){
-        cylinder(1,d/2+10,d/2+10,$fn=360);
+        cylinder(1,d/2+10,d/2+10,$fn=50);
         translate([0,0,-1])
-         cylinder(3,d/2,d/2,$fn=360);
+         cylinder(3,d/2,d/2,$fn=50);
         
         }
         
@@ -40,9 +40,9 @@ module smm(d){
 
 module sinch(da,db){
     difference(){
-        cylinder(1,(da+db/16)*25.4/2+12.7,(da+db/16)*25.4/2+12.7,$fn=360);
+        cylinder(1,(da+db/16)*25.4/2+12.7,(da+db/16)*25.4/2+12.7,$fn=50);
         translate([0,0,-1])
-         cylinder(3,(da+db/16)*25.4/2,(da+db/16)*24.4/2,$fn=360);
+         cylinder(3,(da+db/16)*25.4/2,(da+db/16)*24.4/2,$fn=50);
         
         }
         

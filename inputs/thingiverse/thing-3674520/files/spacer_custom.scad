@@ -51,10 +51,10 @@ difference()
     for(i=[0:frames-2])
     {
         translate([distance*i,0,0])
-            cylinder(r=holesize/2,h=Thickness,$fn=60,center=true);
+            cylinder(r=holesize/2,h=Thickness,$fn=50,center=true);
     }
     translate([-leng/2+holesize*2,-offset,0])
-        cylinder(r=holesize/2,h=Thickness,$fn=60,center=true);
+        cylinder(r=holesize/2,h=Thickness,$fn=50,center=true);
     translate([leng/2-holesize*2,-offset,0])
-        cylinder(r=holesize/2,h=Thickness,$fn=60,center=true);
+        cylinder(r=holesize/2,h=Thickness,$fn=50,center=true);
 }

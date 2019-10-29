@@ -1,5 +1,5 @@
 include <threads.scad>
-$fn=120;
+$fn=50;
 
 dia_outer = 31;
 dia_inner = 29;

@@ -69,12 +69,12 @@ translate([0,0,Base_Height-Offset])
 }
 scale([1,Eccentricity,1]) {
   difference() {
-    cylinder(r=Bottom_Radius+Base_Width/2,h=Base_Height,$fn=100); 
-    translate([0,0,-eps]) cylinder(r=Bottom_Radius-Base_Width/2,h=Base_Height+2*eps,$fn=100);
+    cylinder(r=Bottom_Radius+Base_Width/2,h=Base_Height,$fn=50); 
+    translate([0,0,-eps]) cylinder(r=Bottom_Radius-Base_Width/2,h=Base_Height+2*eps,$fn=50);
    } 
    translate([0,0,Height])
    difference() {
-    cylinder(r=Top_Radius+Top_Width/2,h=Top_Height,$fn=100); 
-    translate([0,0,-eps]) cylinder(r=Top_Radius-Top_Width/2,h=Top_Height+2*eps,$fn=100);
+    cylinder(r=Top_Radius+Top_Width/2,h=Top_Height,$fn=50); 
+    translate([0,0,-eps]) cylinder(r=Top_Radius-Top_Width/2,h=Top_Height+2*eps,$fn=50);
    }
 }

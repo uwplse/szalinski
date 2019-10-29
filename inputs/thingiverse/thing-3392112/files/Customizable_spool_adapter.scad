@@ -14,8 +14,8 @@ hole_height = int_height + 5;
 
 difference() {
     union() {
-        cylinder(d=ext_diam, h=5, $fn=500);
+        cylinder(d=ext_diam, h=5, $fn=50);
         cylinder(d=int_diam, h=int_height, $fn=50);
     }
-    translate ([0,0,0]) cylinder(d=hole_diam, h=hole_height, $fn=1000);
+    translate ([0,0,0]) cylinder(d=hole_diam, h=hole_height, $fn=50);
 }

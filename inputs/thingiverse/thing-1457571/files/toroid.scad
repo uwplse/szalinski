@@ -1,4 +1,4 @@
-$fn=64+0;   // +0 so it's ignored by customizer
+$fn=50+0;   // +0 so it's ignored by customizer
 
 // Select part
 part = "first"; // [first:Mount,second:Mount cap]

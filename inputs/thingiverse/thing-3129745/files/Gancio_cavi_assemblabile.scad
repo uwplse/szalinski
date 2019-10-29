@@ -1,4 +1,4 @@
-$fn=72;
+$fn=50;
 
 Thickness_of_shelf=36.5;
 Length_of_top_segment=20;

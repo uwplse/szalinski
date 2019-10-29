@@ -14,7 +14,7 @@ inner_diameter = 18; // [5:50]
 
 // ignore variable values
 inner_radius = inner_diameter / 2; 
-$fn = 100;
+$fn = 50;
 
 /* draw the main cylinder for sunglass holder */
 union() {

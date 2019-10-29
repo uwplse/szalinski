@@ -51,7 +51,7 @@ module screw_hole(head_diameter, shank_diameter, shank_length, thickness, length
 
 module cylinder_with_hole(hole_diameter, thickness, length) {
     difference() {
-        cylinder(h = length, r = (hole_diameter + thickness) / 2, center = true, $fn = 1000);
-        cylinder(h = length + 2, r = hole_diameter / 2, center = true, $fn = 1000);
+        cylinder(h = length, r = (hole_diameter + thickness) / 2, center = true, $fn = 50);
+        cylinder(h = length + 2, r = hole_diameter / 2, center = true, $fn = 50);
     }
 }

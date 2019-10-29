@@ -50,12 +50,12 @@ TWidth=4*Thickness+ThicknessS+2*DiceWidth+GLength+PWidth+tol;
     difference() {
         union() {
     //Snaps
-            translate([Thickness*0.7,Thickness+TLength/5*2-tol,-1.5*Thickness+Thickness*1.7]) rotate([90,0,0]) cylinder($fn = 100, r = Thickness, h = TLength/5-2*tol);
-            translate([Thickness*0.7,Thickness+TLength/5*4-tol,-1.5*Thickness+Thickness*1.7]) rotate([90,0,0]) cylinder($fn = 100, r = Thickness, h = TLength/5-2*tol);
+            translate([Thickness*0.7,Thickness+TLength/5*2-tol,-1.5*Thickness+Thickness*1.7]) rotate([90,0,0]) cylinder($fn = 50, r = Thickness, h = TLength/5-2*tol);
+            translate([Thickness*0.7,Thickness+TLength/5*4-tol,-1.5*Thickness+Thickness*1.7]) rotate([90,0,0]) cylinder($fn = 50, r = Thickness, h = TLength/5-2*tol);
 
     //Snaps            
-            translate([2*DiceWidth+2*Thickness+GLength+4*Thickness+ThicknessS+PWidth+2*tol2-Thickness*0.7,Thickness+TLength/5*2-tol,-MCutoff-1.5*Thickness+Thickness*1.7]) rotate([90,0,0]) cylinder($fn = 100, r = Thickness, h = TLength/5-2*tol);
-            translate([2*DiceWidth+2*Thickness+GLength+4*Thickness+ThicknessS+PWidth+2*tol2-Thickness*0.7,Thickness+TLength/5*4-tol,-MCutoff-1.5*Thickness+Thickness*1.7]) rotate([90,0,0]) cylinder($fn = 100, r = Thickness, h = TLength/5-2*tol);    
+            translate([2*DiceWidth+2*Thickness+GLength+4*Thickness+ThicknessS+PWidth+2*tol2-Thickness*0.7,Thickness+TLength/5*2-tol,-MCutoff-1.5*Thickness+Thickness*1.7]) rotate([90,0,0]) cylinder($fn = 50, r = Thickness, h = TLength/5-2*tol);
+            translate([2*DiceWidth+2*Thickness+GLength+4*Thickness+ThicknessS+PWidth+2*tol2-Thickness*0.7,Thickness+TLength/5*4-tol,-MCutoff-1.5*Thickness+Thickness*1.7]) rotate([90,0,0]) cylinder($fn = 50, r = Thickness, h = TLength/5-2*tol);    
         }
     
     //Cutting off sides of cylinders

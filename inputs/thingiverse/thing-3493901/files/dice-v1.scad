@@ -33,7 +33,7 @@ difference(){
   //Body die
   intersection(){
     cube(size, center=true);
-    sphere(roundness*size, $fn=100);
+    sphere(roundness*size, $fn=50);
   }
   
   //face 1

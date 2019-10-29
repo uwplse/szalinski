@@ -35,7 +35,7 @@ alignment_tab_2_depth = 5;
 alignment_tab_2_angle = 115;
 
 module hub(){
-    cylinder(tray_thickness+0.01,d=hole_diameter,$fn=200);
+    cylinder(tray_thickness+0.01,d=hole_diameter,$fn=50);
 }
 
 module tilehole(){
@@ -48,19 +48,19 @@ module tilehole(){
 
 module printarea(){
     difference(){
-        cylinder(0.3,d=outer_diameter,$fn=360);
+        cylinder(0.3,d=outer_diameter,$fn=50);
         translate([0,0,-0.005]){
-            cylinder(0.31,d=outer_printable_diameter,$fn=360);
+            cylinder(0.31,d=outer_printable_diameter,$fn=50);
         }
     }
-        cylinder(0.3,d=inner_printable_diameter,$fn=360);
+        cylinder(0.3,d=inner_printable_diameter,$fn=50);
    
 }
 
 
 module disc(){
     difference(){
-        cylinder(tray_thickness,d=outer_diameter,$fn=200);
+        cylinder(tray_thickness,d=outer_diameter,$fn=50);
         if (show_print_area==1){
     translate([0,0,tray_thickness-0.29]){
         printarea();

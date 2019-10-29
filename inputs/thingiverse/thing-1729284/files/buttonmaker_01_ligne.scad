@@ -8,20 +8,20 @@ flatness=-1; // [-1:concave, 0:flat, 1:convex]
 
 difference(){
 	union(){
-		cylinder(d=ligne/40*25.7,h=thickness,center=true,$fn=64);
+		cylinder(d=ligne/40*25.7,h=thickness,center=true,$fn=50);
 		if(flatness==1){
-		translate([0,0,thickness/2]) scale([1,1,1/ligne*thickness*3]) sphere(d=ligne/40*25.7-lipsize*2,$fn=64);
+		translate([0,0,thickness/2]) scale([1,1,1/ligne*thickness*3]) sphere(d=ligne/40*25.7-lipsize*2,$fn=50);
 		}
 	}
 	for(i=[1:holecount]){
 		rotate([0,0,360/holecount*i]) translate([holespacing/2,0,0]) cylinder(d=2,h=thickness+2*3,$fn=32,center=true);
 	}
 	if(flatness==-1){
-	translate([0,0,thickness/2]) scale([1,1,1/ligne*thickness*3]) sphere(d=ligne/40*25.7-lipsize*2,$fn=64);
+	translate([0,0,thickness/2]) scale([1,1,1/ligne*thickness*3]) sphere(d=ligne/40*25.7-lipsize*2,$fn=50);
 	}
 }
 if(lipsize && liptype==1){
-			translate([0,0,thickness/2]) rotate_extrude(convexity = 10,$fn=64)
+			translate([0,0,thickness/2]) rotate_extrude(convexity = 10,$fn=50)
 			translate([ligne/40*25.7/2-lipsize/2, 0, 0])
-			circle(d = lipsize, $fn=64);
+			circle(d = lipsize, $fn=50);
 		}

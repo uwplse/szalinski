@@ -1,7 +1,7 @@
 // Simple nutdriver example -- Al Williams
 
 // Type of shaft
-$fn=128;  // [6:hex, 128:round]
+$fn=50;  // [6:hex, 128:round]
 // Size of nut (a little larger than the nut is good)
 nutsize=6.2;
 // Size of hex driver side -- should be tight

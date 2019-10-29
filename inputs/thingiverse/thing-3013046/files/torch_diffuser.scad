@@ -17,7 +17,7 @@ ring_height = 15;
 cone = 15;
 
 /* [Hidden] */
-$fn = 64;
+$fn = 50;
 pipe_outer_d = torch_diameter+thickness*2;
 fudge = 0.01;
 

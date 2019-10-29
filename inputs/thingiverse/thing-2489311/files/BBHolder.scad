@@ -1,7 +1,7 @@
 Baoding_balls_diameter = 42;  // diameters of balls
 Max_Height = 10;   // maximum height at center part
 Distance = 2;         // Distanceance of balls
-$fn = 64;
+$fn = 50;
 
 bbRadius = Baoding_balls_diameter / 2;
 

@@ -16,7 +16,7 @@ module flat_nut(dia, height)
 	difference()
 	{
 		cylinder(r=out_r,h=height,$fn=6, center=true);
-    cylinder(r=dia/2,h=height+FUZZ, $fn=60, center=true);
+    cylinder(r=dia/2,h=height+FUZZ, $fn=50, center=true);
 	}
 }
 
@@ -29,7 +29,7 @@ module bracket(h, w, d) {
         rotate([0,90,0]) {
          flat_nut(SCREW_DIAMETER, NUT_HEIGHT+FUZZ);
          translate([0,0,-NUT_HEIGHT/2])
-          cylinder(d=SCREW_DIAMETER+FUZZ/2, h=2*THICKNESS, $fn=60, center=true);
+          cylinder(d=SCREW_DIAMETER+FUZZ/2, h=2*THICKNESS, $fn=50, center=true);
       }
   }
 }

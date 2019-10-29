@@ -9,7 +9,7 @@ back_support = 30;
 support_widht = 10;
 support_length = 15;
 
-$fn = 80;
+$fn = 50;
 union(){
 difference(){
 union(){

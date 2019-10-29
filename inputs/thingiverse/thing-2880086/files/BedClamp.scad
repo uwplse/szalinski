@@ -1,7 +1,7 @@
 //  He3D K200 Heated Bed Clamps for securing
 //  Glass Plate
 
-$fn = 100;
+$fn = 50;
 HB_DIAMETER = 220;
 GP_DIAMETER = 199;
 GP_HEIGHT = 3;

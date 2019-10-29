@@ -4,7 +4,7 @@ HoleRadius = 1.5;
 LMRadius = 8;
 
 /* [HIDDEN] */
-$fn = 100;
+$fn = 50;
 
 translate([0,0,12])
     rotate([180,0,0])

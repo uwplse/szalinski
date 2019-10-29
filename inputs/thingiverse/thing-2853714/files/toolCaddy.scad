@@ -31,7 +31,7 @@
 /* ----- parameters ----- */
 
 /* [Hidden] */
-$fn=60; // recomended value for smooth circle is 60
+$fn=50; // recomended value for smooth circle is 60
 standardHexKeySizes = [
     ["M6", 5],
     ["M5", 4],

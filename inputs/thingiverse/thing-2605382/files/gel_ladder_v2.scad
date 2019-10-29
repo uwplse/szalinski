@@ -1,4 +1,4 @@
-$fn = 100;
+$fn = 50;
 
 // number of GU slots
 gels = 5; // [5:12]

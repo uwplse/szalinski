@@ -115,16 +115,16 @@ difference()
     hull()
     {
         translate([0,0,0])
-        cylinder(d=Corner, h=Offset, $fn=100);
+        cylinder(d=Corner, h=Offset, $fn=50);
     
         translate([Duct_width-Corner,0,0])
-        cylinder(d=Corner, h=Offset, $fn=100);
+        cylinder(d=Corner, h=Offset, $fn=50);
         
         translate([0,Duct_width-Corner,0])
-        cylinder(d=Corner, h=Offset, $fn=100);
+        cylinder(d=Corner, h=Offset, $fn=50);
     
         translate([Duct_width-Corner,Duct_width-Corner,0])
-        cylinder(d=Corner, h=Offset, $fn=100);    
+        cylinder(d=Corner, h=Offset, $fn=50);    
     }
     
     //Cutout between IR mount holes

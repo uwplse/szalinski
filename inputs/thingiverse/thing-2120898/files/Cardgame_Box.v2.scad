@@ -169,7 +169,7 @@ module body(){
                         -1
                     ])
                     color([0,1,0])
-                    cylinder(h = compartmentBlockHeight, r=finger_groove_radius, center = false, $fn=300);
+                    cylinder(h = compartmentBlockHeight, r=finger_groove_radius, center = false, $fn=50);
                 ;
             }
             // ** debugger **
@@ -183,7 +183,7 @@ module body(){
         if (finger_groove_type=="horizontal") {
             translate( [0,-coverCavity[1]/2,divider_height] )
             rotate([270,0,0])
-                cylinder(h = coverCavity[1], r=finger_groove_radius, center = false, $fn=300);
+                cylinder(h = coverCavity[1], r=finger_groove_radius, center = false, $fn=50);
         }
     }
 }

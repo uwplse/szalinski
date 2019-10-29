@@ -70,7 +70,7 @@ module classicKeychain(num){
 						translate([12*i,0,0]) rotate([90,0,0]) write(substring(str(num,"   "), i,1),h=15,t=3,font="write/orbitron.dxf", space=1, center=true);
 					}
 					difference(){
-						translate([-9,0,-8]) rotate([90,0,0]) cylinder(r=4, h=3, $fn=100, center=true);
+						translate([-9,0,-8]) rotate([90,0,0]) cylinder(r=4, h=3, $fn=50, center=true);
 						translate([-9,0,-8]) rotate([90,0,0]) cylinder(r=2.5, h=4, center=true);
 					}
 				}

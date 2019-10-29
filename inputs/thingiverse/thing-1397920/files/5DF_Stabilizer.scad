@@ -1,6 +1,6 @@
 stabilizer();
 
-$fn = 96;
+$fn = 50;
 height = 1;
 trace = 1.0;
 

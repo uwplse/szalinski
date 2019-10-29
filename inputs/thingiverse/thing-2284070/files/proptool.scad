@@ -14,7 +14,7 @@ walls = 3;
 keyhole = 4.8;
 
 /* [Hidden] */
-$fn = 64;
+$fn = 50;
 
 difference() {
   group() {

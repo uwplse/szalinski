@@ -1,4 +1,4 @@
-$fn=64;
+$fn=50;
 
 //outer diameter of tube hole
 D_1=10.7;

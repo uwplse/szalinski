@@ -3,7 +3,7 @@ height = 6;  // [4:20]
 depth = 7;   // [4:20]
 UseCubicTip = "yes"; // [yes,no]
 /* HIDDEN */
-$fn=100;
+$fn=50;
 CubicTip= (UseCubicTip=="yes");
 
 P1(false);

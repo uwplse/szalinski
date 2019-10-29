@@ -3,7 +3,7 @@ holeSizeFraction = .5;
 ecks = 2;
 wye = 1;
 zed = 3;
-$fn = 100;
+$fn = 50;
 
 
 module singleBlock(){

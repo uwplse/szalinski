@@ -1,5 +1,5 @@
 //smoothness
-$fn=100;//[10:200]
+$fn=50;//[10:200]
 
 //Inner diameter of spool in mm
 ID=20;

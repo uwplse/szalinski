@@ -25,7 +25,7 @@ cylinderPadding = 5; // [1:10]
 cylinderLength = 40; // [0:100]
 
 /* [Hidden] */
-$fn = 72;
+$fn = 50;
 
 pinLength = width - radius;
 

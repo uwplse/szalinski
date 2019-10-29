@@ -5,9 +5,9 @@ height=7;
 
 difference()
 {
-cylinder(r=(pin_ring_diameter/2)+(2*(pin_size/2)),h=height,$fn=64);
+cylinder(r=(pin_ring_diameter/2)+(2*(pin_size/2)),h=height,$fn=50);
 
-cylinder(r=(pin_ring_diameter/2)-(2*(pin_size/2)),h=height+1,$fn=64);
+cylinder(r=(pin_ring_diameter/2)-(2*(pin_size/2)),h=height+1,$fn=50);
 
 for (i=[0:(360/pin_count):360])
 {

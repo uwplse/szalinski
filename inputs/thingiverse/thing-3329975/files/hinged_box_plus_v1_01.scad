@@ -1,7 +1,7 @@
 
 // v1.01 2019-01-09
 
-$fn = 100;
+$fn = 50;
 
 // Determines whether it's a hinged box or not. 0 or 1.
 makeHinge = 1;

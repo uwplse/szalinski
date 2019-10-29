@@ -1,4 +1,4 @@
-$fn=360; 
+$fn=50; 
 
 // angle of the opening, 0 is horizontal
 ANGLE=30;  // [0:73]

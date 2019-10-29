@@ -13,16 +13,16 @@ difference() {
         // groundplate
         cube([plate_outer_dimension, plate_outer_dimension, 3], true); 
         // mounting bumbers to level buildplate on 4 points
-        translate([45, 45, 1]) cylinder(2, 2, 2, true, $fn = 180);
-        translate([-45, 45, 1]) cylinder(2, 2, 2, true, $fn = 180);
-        translate([-45, -45, 1]) cylinder(2, 2, 2, true, $fn = 180);
-        translate([45, -45, 1]) cylinder(2, 2, 2, true, $fn = 180);
+        translate([45, 45, 1]) cylinder(2, 2, 2, true, $fn = 50);
+        translate([-45, 45, 1]) cylinder(2, 2, 2, true, $fn = 50);
+        translate([-45, -45, 1]) cylinder(2, 2, 2, true, $fn = 50);
+        translate([45, -45, 1]) cylinder(2, 2, 2, true, $fn = 50);
     }
  
     // 3 holes
-    translate([0, 37, 0]) cylinder(10, M3_diameter, M3_diameter, true, $fn = 180);
-    translate([30, -37, 0]) cylinder(10, M3_diameter, M3_diameter, true, $fn = 180);
-    translate([-30, -37, 0]) cylinder(10, M3_diameter, M3_diameter, true, $fn = 180);
+    translate([0, 37, 0]) cylinder(10, M3_diameter, M3_diameter, true, $fn = 50);
+    translate([30, -37, 0]) cylinder(10, M3_diameter, M3_diameter, true, $fn = 50);
+    translate([-30, -37, 0]) cylinder(10, M3_diameter, M3_diameter, true, $fn = 50);
 }
  
  

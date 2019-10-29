@@ -37,7 +37,7 @@ spokeWidth = 5;
 spokeThickness = 6;
 
 /* [Misc] */
-$fn = 100;
+$fn = 50;
 
 makeWheel(outerDiameter,treadWidth,treadThickness,shaftDiameter,hubThickness,hubWidth,keyWidth,spokeCount,spokeWidth,spokeThickness);
 

@@ -37,7 +37,7 @@ BotHoleS = 16.43; //Bottom hole spacing
 
 //Global Parameters
 Global_Scale = 1;
-$fn = 200;
+$fn = 50;
 EPS = 0.01; //Small number to avoid coincident faces
 
 

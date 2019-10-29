@@ -255,7 +255,7 @@ module body(){
           if (fingers[r] > 0) {
             translate( [bodyXoffset[r][0] + boxBody_side[r][0]/2 + wall_thickness_minimum*r + lip_offset*2, lip_thickness, divider_height] )
             rotate([270,0,0])
-                cylinder(h = coverCavity[1], r=fingers[r], center = false, $fn=300);
+                cylinder(h = coverCavity[1], r=fingers[r], center = false, $fn=50);
         };
       }
     }

@@ -24,7 +24,7 @@ module back(length, width, depth) {
                 translate([length-3,depth-2,width-3]) rotate([-90,0,0]) cylinder(2,3,3,$fn=20);
                 translate([0,depth-2,0]) cube([length,2,1]);
             }
-            translate([length/2,depth-2,width/2]) rotate([-90,0,0]) cylinder(4,40,40,$fn=100);
+            translate([length/2,depth-2,width/2]) rotate([-90,0,0]) cylinder(4,40,40,$fn=50);
             translate([length/2-98/2,depth-2,0]) cube([98,4,width/2+16]);
             hull() {
                 translate([length/2-10/2,3.5,0]) cube([10,depth-3,4]);
@@ -32,7 +32,7 @@ module back(length, width, depth) {
                 translate([length/2-10/2,3.5,4-1.5]) rotate([0,90,0]) cylinder(10,1.5,1.5,$fn=20);
             }
         }
-        translate([length/2,depth-3,width/2]) rotate([-90,0,0]) cylinder(7,35,35,$fn=100);
+        translate([length/2,depth-3,width/2]) rotate([-90,0,0]) cylinder(7,35,35,$fn=50);
         translate([length/2-44,depth-4,width/2+11]) rotate([-90,0,0]) cylinder(7,2.5,2.5,$fn=20);
         translate([length/2-44,depth-4,width/2+11]) rotate([-90,0,0]) cylinder(2.7,5,5,$fn=20);
         translate([length/2+44,depth-4,width/2+11]) rotate([-90,0,0]) cylinder(7,2.5,2.5,$fn=20);

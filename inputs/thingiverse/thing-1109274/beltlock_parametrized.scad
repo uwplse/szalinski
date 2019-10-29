@@ -9,7 +9,7 @@ height=15;
 
 //CUSTOMIZER VARIABLES END
 
-module BeltLock(x_in, y_in, h,  $fn=100) {
+module BeltLock(x_in, y_in, h,  $fn=50) {
     wall = 1.2;
     difference(){
         cube([x_in+wall*2,y_in+wall*2,h]);

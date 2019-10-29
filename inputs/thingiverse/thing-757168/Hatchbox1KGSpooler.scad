@@ -14,4 +14,4 @@ difference()
     }
     cylinder(r = ((spoolHoleD-2)/2)-3, h = spoolHeight+3);
 }
-$fn = 100;
+$fn = 50;

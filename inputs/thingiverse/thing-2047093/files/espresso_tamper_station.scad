@@ -1,4 +1,4 @@
-$fn = 60;
+$fn = 50;
 
 inner_diameter=62;
 shell_thickness=3;

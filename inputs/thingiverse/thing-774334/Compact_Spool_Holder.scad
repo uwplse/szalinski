@@ -5,7 +5,7 @@ Spool_Diameter = 52.5;
 Bearing_Diameter = 22.2;
 
 /* [Hidden] */
-$fn=100;
+$fn=50;
 difference()
 {
 	union()

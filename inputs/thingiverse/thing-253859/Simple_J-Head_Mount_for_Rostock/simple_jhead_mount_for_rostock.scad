@@ -74,7 +74,7 @@ module spiral_support(inner_diameter, outer_diameter, height, rotation=720,segme
 module jhead_mount_groove_plate() {
 	translate([0,0,plate_height/2]) difference() {
 		intersection() {
-			cylinder(r=platform_diameter/2,h=plate_height,$fn=80,center=true);
+			cylinder(r=platform_diameter/2,h=plate_height,$fn=50,center=true);
 			cube([platform_diameter,plate_width,plate_height],center=true);
 		}
 		translate([-platform_bcd/2,0,0]) cylinder(r=m4_clearance_diameter/2,h=plate_height+(2*extra),center=true,$fn=12);
@@ -106,7 +106,7 @@ module jhead_mount_holding_plate() {
 					}
 				}
 				intersection() {
-					cylinder(r=platform_diameter/2,h=upper_height,center=true,$fn=80);
+					cylinder(r=platform_diameter/2,h=upper_height,center=true,$fn=50);
 					cube([platform_diameter,plate_width,upper_height],center=true);
 				}
 			}

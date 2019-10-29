@@ -13,8 +13,8 @@ ch=32;
 
 translate([0, 0, 0]) {
     difference() {
-		translate([0, 0, 0]) cylinder(h = ch, r1 =od1/2,r2=od2/2,$fn=96);  //cylinder
-		translate([0, 0, 0]) cylinder(h = ch, r= ind/2, $fn=96);               
+		translate([0, 0, 0]) cylinder(h = ch, r1 =od1/2,r2=od2/2,$fn=50);  //cylinder
+		translate([0, 0, 0]) cylinder(h = ch, r= ind/2, $fn=50);               
     }
 }
 

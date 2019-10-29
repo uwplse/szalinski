@@ -10,7 +10,7 @@ controller_arm_one_distance=7; //distance from wall to the outside edge of the a
 controller_arm_two_distance=34; //distance from wall to the outside edge of the arm; make sure this number is the sum of the arm one distance, the depth of the arms, and the gap you want between the arms
 controller_arm_separation=18.5; //set to zero if you only want one or (mount_width-controller_arm_thickness)/2 if you want two, one at either end
 controller_arm_brace=true;
-$fn=200;
+$fn=50;
 
 controller_mount();
 

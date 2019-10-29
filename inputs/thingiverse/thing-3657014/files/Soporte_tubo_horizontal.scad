@@ -68,9 +68,9 @@ Pared = Grosor_pieza;
 
 module Cierre(){
 difference() {
-    cylinder(Altura,Silla+Pared,Silla+Pared,$fn=100,center=true);
+    cylinder(Altura,Silla+Pared,Silla+Pared,$fn=50,center=true);
 
-        cylinder(Altura+1,Silla,Silla,$fn=100,center=true);
+        cylinder(Altura+1,Silla,Silla,$fn=50,center=true);
         translate([0,Silla,0])
             cube([Anchura+1,Tubo_silla,Altura+1],center=true);
              }
@@ -78,7 +78,7 @@ difference() {
 difference() {
     cube([Anchura,Pared*4,Altura],center=true);
 
-        cylinder(Altura+1,Silla,Silla,$fn=100,center=true);
+        cylinder(Altura+1,Silla,Silla,$fn=50,center=true);
         translate([0,Silla,0])
             cube([Anchura+1,Tubo_silla,Altura+1],center=true);
         rotate([90,90,0])
@@ -112,9 +112,9 @@ difference() {
 
 module Grapa() {
 difference() {
-    cylinder(Altura,Silla+Pared,Silla+Pared,$fn=100,center=true);
+    cylinder(Altura,Silla+Pared,Silla+Pared,$fn=50,center=true);
 
-        cylinder(Altura+1,Silla,Silla,$fn=100,center=true);
+        cylinder(Altura+1,Silla,Silla,$fn=50,center=true);
         translate([0,-Silla,0])
             cube([Anchura+1,Tubo_silla,Altura+1],center=true);
              }
@@ -122,7 +122,7 @@ difference() {
 difference() {
     cube([Anchura,Pared*4,Altura],center=true);
 
-        cylinder(Altura+1,Silla,Silla,$fn=100,center=true);
+        cylinder(Altura+1,Silla,Silla,$fn=50,center=true);
         translate([0,-Silla,0])
             cube([Anchura+1,Tubo_silla,Altura+1],center=true);
         rotate([90,90,0])
@@ -158,8 +158,8 @@ module Barra_primaria(){
     rotate([0,90,0]) {
     
         difference() {
-        cylinder(Anchura,Tubo+Pared,Tubo+Pared,$fn=100,center=true);
-            cylinder(Anchura+1,Tubo,Tubo,$fn=100,center=true);
+        cylinder(Anchura,Tubo+Pared,Tubo+Pared,$fn=50,center=true);
+            cylinder(Anchura+1,Tubo,Tubo,$fn=50,center=true);
                      }
                        
                      }
@@ -185,8 +185,8 @@ translate([-Anchura/2,-Silla-Pared*2-Tubo,-Tubo/2-Pared])
 
     rotate([0,90,0]) 
     translate([-Tubo/2,-Tubo-Pared*2-Silla,0]) 
-        cylinder(Anchura+1,Tubo,Tubo,$fn=100,center=true);
-    cylinder(Altura+1,Silla,Silla,$fn=100,center=true);
+        cylinder(Anchura+1,Tubo,Tubo,$fn=50,center=true);
+    cylinder(Altura+1,Silla,Silla,$fn=50,center=true);
               }
                }
               
@@ -194,7 +194,7 @@ module Tope_Izqdo() {
 difference() {
     rotate([0,90,0]) 
     translate([-Tubo/2,-Tubo-Pared*2-Silla,-Anchura/2+Pared/2]) 
-        cylinder(Pared,Tubo,Tubo,$fn=100,center=true);
+        cylinder(Pared,Tubo,Tubo,$fn=50,center=true);
     translate([-Anchura/2+Pared/2,-Silla-Tubo-Pared*2,Tubo])
         cube([Pared+1,Tubo*2+Pared*2,Tubo],center=true);
               }           
@@ -204,7 +204,7 @@ module Tope_Dcho() {
 difference() {
     rotate([0,90,0]) 
     translate([-Tubo/2,-Tubo-Pared*2-Silla,Anchura/2-Pared/2]) 
-        cylinder(Pared,Tubo,Tubo,$fn=100,center=true);
+        cylinder(Pared,Tubo,Tubo,$fn=50,center=true);
     translate([Anchura/2-Pared/2,-Silla-Tubo-Pared*2,Tubo])
         cube([Pared+1,Tubo*2+Pared*2,Tubo],center=true);
               }

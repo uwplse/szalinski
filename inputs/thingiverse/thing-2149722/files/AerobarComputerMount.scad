@@ -57,7 +57,7 @@ generateAdapter = true;
 //orientation for placement of adapter on print surface - 0 = vertical, 90 = horizontal (just for printing/plating purpose)
 adapterPrintOrientation = 90;
 
-$fn=60;
+$fn=50;
 
 if (generateClamp) {
     clamp();

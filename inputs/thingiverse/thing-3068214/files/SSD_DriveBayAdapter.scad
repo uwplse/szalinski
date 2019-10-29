@@ -4,7 +4,7 @@
  * 2018-08-12
  */
 
-$fn=60;
+$fn=50;
 
 // Thickness of main frame
 frame_z = 3;

@@ -14,7 +14,7 @@ cap_diameter=10;
 cap_hight=3;
 
 //resolution
-$fn=300; //[100,300,500]
+$fn=50; //[100,300,500]
 union(){
   cylinder ( cap_hight, d = cap_diameter );
   translate([0,0,cap_hight-.1])difference(){

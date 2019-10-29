@@ -2,9 +2,9 @@ difference()
 {
 cube([100,12,1.3]);
     translate([20,6,0])
-    cylinder(r=3/2, h=2.3,$fn=100);
+    cylinder(r=3/2, h=2.3,$fn=50);
     translate([80,6,0])
-    cylinder(r=3/2, h=2.3,$fn=100);
+    cylinder(r=3/2, h=2.3,$fn=50);
 }
 cube([100,1,5.8]);
 translate([0,11.5,0])

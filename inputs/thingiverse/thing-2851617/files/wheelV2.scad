@@ -22,34 +22,34 @@ spoke_angle = -10;
 union(){
 // outer rim
 difference(){
-    cylinder(wheel_width,rim_external_radius,rim_external_radius, $fn=128);  // outer rim
+    cylinder(wheel_width,rim_external_radius,rim_external_radius, $fn=50);  // outer rim
  
     translate([0,0,-1]){     // inner rim
-        cylinder(wheel_width+2, rim_external_radius-rim_thickness,rim_external_radius-rim_thickness, $fn=64);
+        cylinder(wheel_width+2, rim_external_radius-rim_thickness,rim_external_radius-rim_thickness, $fn=50);
     }
 }
 
 // inner rim
 difference()
 {
-    cylinder(inner_rim_height,rim_external_radius-rim_thickness,rim_external_radius-rim_thickness, $fn=128);  // outer rim
+    cylinder(inner_rim_height,rim_external_radius-rim_thickness,rim_external_radius-rim_thickness, $fn=50);  // outer rim
  
     translate([0,0,-1]){     // inner rim
-        cylinder(wheel_width+2, rim_external_radius-rim_thickness-inner_rim_thickness,rim_external_radius-rim_thickness-inner_rim_thickness, $fn=64);
+        cylinder(wheel_width+2, rim_external_radius-rim_thickness-inner_rim_thickness,rim_external_radius-rim_thickness-inner_rim_thickness, $fn=50);
     }
 }
 
 // hub
 difference()
 {
-    cylinder(hub_height,hub_radius,hub_radius, $fn=64);  // outer hub
+    cylinder(hub_height,hub_radius,hub_radius, $fn=50);  // outer hub
  
     translate([0,0,-1])
     {   
         // inner hub
         difference()
         {
-            cylinder(wheel_width+2,shaft_radius, shaft_radius, $fn=64); 
+            cylinder(wheel_width+2,shaft_radius, shaft_radius, $fn=50); 
             //flat on shaft
             if (shaft_flat == true)
             {
@@ -105,7 +105,7 @@ for (angle = [0: step_angle: 360])
             {
                 if (spoke_type ==3) // wedge
                 {
-                    rotate_extrude(angle = spoke_thickness * 4, $fn=128)
+                    rotate_extrude(angle = spoke_thickness * 4, $fn=50)
                     {   
                         polygon( [[hub_radius-0.5,0], [rim_external_radius-rim_thickness-                       inner_rim_thickness+0.5,0],
                            [rim_external_radius-rim_thickness-inner_rim_thickness+0.5,                      inner_rim_height],

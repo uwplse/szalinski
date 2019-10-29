@@ -4,7 +4,7 @@ EasyPrintable = 1; // [0,1]
 NumBends = 1; // [1,2]
 
 /* [Hidden] */
-$fn=80;
+$fn=50;
 Angle = 45;
 eps = 0.05;
 Pitch = 8;

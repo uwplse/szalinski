@@ -43,14 +43,14 @@ hub();
 }
 //creates pulley without holes and only one side
 module pulley(){
-    cylinder (d=50,h=35, $fn=60, center=true);
+    cylinder (d=50,h=35, $fn=50, center=true);
 translate([0,0,-19]){
-    cylinder (d=60,h=3, $fn=60, center=true);
+    cylinder (d=60,h=3, $fn=50, center=true);
 }}
 //creates holes in pulley
 difference(){
 //pulley();
-  oval(radius_large,radius_small,cam_width,$fn=60, center=true);  
+  oval(radius_large,radius_small,cam_width,$fn=50, center=true);  
     translate([15+offset,0,0]){
         cylinder(d=25,h=cutout, $fn=20);
             flower();

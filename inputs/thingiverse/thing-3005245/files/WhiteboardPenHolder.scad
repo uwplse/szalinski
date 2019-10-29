@@ -35,7 +35,7 @@ offcet_pen = offcet_base + pen_holder_width - pen_inside;
 
 holder_length = offcet_base + pen_holder_width*(pen_number+1) + pen_d*pen_number - pen_inside*pen_number*2 + magnet_d + magnet_distance*2;
 
-$fn = 100;
+$fn = 50;
 
 difference() {
     union() {

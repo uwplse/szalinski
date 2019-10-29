@@ -45,7 +45,7 @@ module guideRail(){
             };
             rotate(a = 90, v = [1,0,0]){
                 translate([guideWidth/2,guideHeight/2-ballGuideTopDistance,0]){
-                    cylinder(guideLength+2, 1.2, 1.2, $fn=100 ,true);
+                    cylinder(guideLength+2, 1.2, 1.2, $fn=50 ,true);
                 }
             }
         };
@@ -59,7 +59,7 @@ module guideRail(){
             };
             rotate(a = 90, v = [1,0,0]){
                 translate([guideWidth/2,guideHeight/2-ballGuideTopDistance,0]){
-                    cylinder(guideLength+2, 1.2, 1.2, $fn=100 ,true);
+                    cylinder(guideLength+2, 1.2, 1.2, $fn=50 ,true);
                 }
             }
         };

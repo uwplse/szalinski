@@ -46,7 +46,7 @@ translate([x/2,-0.5,h-l2-(3*thx)]) rotate([-90,0,0]) cylinder(r=l2,h=y+2);
 }
 
 module griffeinsatz(){
-$fn=90;
+$fn=50;
 difference(){
 union(){
 cylinder(r=l2-0.6,h=3);

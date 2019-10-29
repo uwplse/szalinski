@@ -14,23 +14,23 @@ difference()  {
     }
     rotate([0,0,0])  {
             translate([0,0,2])  {
-                cylinder(h = ring_mount_H+100, d = ring_mount_ID, center = false, $fn=100);
+                cylinder(h = ring_mount_H+100, d = ring_mount_ID, center = false, $fn=50);
             }
         }
     rotate([0,0,0])  {
             translate([handle_L,0,2])  {
-                cylinder(h = ring_mount_H+100, d = ring_mount_ID, center = false, $fn=100);
+                cylinder(h = ring_mount_H+100, d = ring_mount_ID, center = false, $fn=50);
             }
         }
     }
 module leg()  {
     translate([0,0,0])  {
-        cylinder(h = ring_mount_H, d = ring_mount_OD, center = false, $fn=100);
+        cylinder(h = ring_mount_H, d = ring_mount_OD, center = false, $fn=50);
     }        
 }
 module leg2()  {
     translate([handle_L,0,0])  {
-        cylinder(h = ring_mount_H, d = ring_mount_OD, center = false, $fn=100);
+        cylinder(h = ring_mount_H, d = ring_mount_OD, center = false, $fn=50);
     }
 }
 

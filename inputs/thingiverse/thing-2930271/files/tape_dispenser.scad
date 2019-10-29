@@ -15,7 +15,7 @@ enable_teeth = add_teeth == "yes";
 /* [Hidden] */
 width = tape_width + 1.9*2;
 
-$fn=100;
+$fn=50;
 
 tooth_size=1;
 tooth_distance_factor=1.5;
@@ -37,7 +37,7 @@ module corp() {
             // cilindru curbura aripi
             rotate([90, 0, 0])
             translate([0, -diametre_curvature/2, 0])
-            cylinder(h = tape_width*2, d = diametre_curvature, center = true, $fn=100);
+            cylinder(h = tape_width*2, d = diametre_curvature, center = true, $fn=50);
             // corp
             difference(){
                 // corp dispenser

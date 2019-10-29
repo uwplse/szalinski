@@ -65,10 +65,10 @@ mountScrewHoleDiameter = 0.2;
 
 
 difference() {
-    cylinder(d=d_outer+spacerTrimThickness-i_outer, h=h, $fn=256);
+    cylinder(d=d_outer+spacerTrimThickness-i_outer, h=h, $fn=50);
     
     translate([0,0,-1]) {
-        cylinder(d=d_inner+i_inner, h=h+2, $fn=256);
+        cylinder(d=d_inner+i_inner, h=h+2, $fn=50);
         
     screwCutOuts(0, speakerScrewHoleSpacing, numberOfSpeakerScrewHoles, speakerScrewHoleDiameter, speakerScrewHoleAngle);
         
@@ -121,7 +121,7 @@ module spacerTrim(spacerTrimThickness, spacerTrimHeight)
 	difference() {
 		
         translate([0, 0, h+h-spacerTrimHeight])
-        cylinder(h=h + spacerTrimHeight, d=d_outer, $fn=256);
+        cylinder(h=h + spacerTrimHeight, d=d_outer, $fn=50);
         cylinder(h=h * 4, d=d_inner, center=true);
 	
         }

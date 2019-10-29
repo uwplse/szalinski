@@ -16,7 +16,7 @@ D(){hull(){
     // ShortCuts.scad 
 // Autor: Rudolf Huttary, Berlin 2015
 //
-$fn = 100; 
+$fn = 50; 
 
 
 //show_examples(); 

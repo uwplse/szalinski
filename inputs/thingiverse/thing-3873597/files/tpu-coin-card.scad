@@ -29,7 +29,7 @@ coinh = [ [ 1.5, 1.7 ], [ 2, 1.5 ] , [ 1.7, 1.5 ] ];
 // quarter penny
 
 /* [extras] */
-$fn = 60;
+$fn = 50;
 // round corner radius
 roundr = 3;
     

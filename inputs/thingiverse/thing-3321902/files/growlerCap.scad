@@ -1,4 +1,4 @@
-$fn=200+0;
+$fn=50+0;
 /* [Cap Type] */
 type="solid"; // [coin,hole,solid]
 /* [Option Dimensions] */

@@ -21,9 +21,9 @@ difference() {
     cube(size=[holder_height - holder_radius, holder_width, holder_thickness]);
     
     translate([holder_height - holder_radius, holder_radius, 0])
-      cylinder(h=holder_thickness, r=holder_radius, $fn=200);
+      cylinder(h=holder_thickness, r=holder_radius, $fn=50);
     translate([holder_height - holder_radius, holder_width - holder_radius, 0])
-      cylinder(h=holder_thickness, r=holder_radius, $fn=200);
+      cylinder(h=holder_thickness, r=holder_radius, $fn=50);
   }
   
   translate([holder_wall_size,holder_wall_size, holder_wall_size])
@@ -34,19 +34,19 @@ difference() {
   
   hull() {
     translate([holder_bezel_size + holder_radius, holder_bezel_size + holder_radius, 0])
-      cylinder(h=holder_thickness, r=holder_radius, $fn=200);
+      cylinder(h=holder_thickness, r=holder_radius, $fn=50);
     translate([holder_bezel_size + holder_radius, holder_width - holder_bezel_size - holder_radius, 0])
-      cylinder(h=holder_thickness, r=holder_radius, $fn=200);
+      cylinder(h=holder_thickness, r=holder_radius, $fn=50);
     translate([holder_height - holder_bezel_size - holder_radius, holder_bezel_size + holder_radius, 0])
-      cylinder(h=holder_thickness, r=holder_radius, $fn=200);
+      cylinder(h=holder_thickness, r=holder_radius, $fn=50);
     translate([holder_height - holder_bezel_size - holder_radius, holder_width - holder_bezel_size - holder_radius, 0])
-      cylinder(h=holder_thickness, r=holder_radius, $fn=200);
+      cylinder(h=holder_thickness, r=holder_radius, $fn=50);
   }
 }
 
 difference() {
   translate([holder_width - 8.05, holder_width / 2, holder_thickness / 2 - clip_tab_thickness / 2])
-    cylinder(h=clip_tab_thickness, d=holder_width * 2, $fn=200);
+    cylinder(h=clip_tab_thickness, d=holder_width * 2, $fn=50);
   
   translate([0, holder_width * -1.5, -1])
     cube(holder_width * 3, holder_width * 3, 100);
@@ -54,7 +54,7 @@ difference() {
   translate([(clip_hole_height / -2) - 1, (holder_width - (clip_hole_width + (clip_hole_height / 2))) / 2, -.5])
   hull() {
     translate([0,clip_hole_width,0])
-      cylinder(h=holder_thickness + 1, d=clip_hole_height, $fn=100);
-    cylinder(h=holder_thickness + 1, d=clip_hole_height, $fn=100);
+      cylinder(h=holder_thickness + 1, d=clip_hole_height, $fn=50);
+    cylinder(h=holder_thickness + 1, d=clip_hole_height, $fn=50);
   }
 }

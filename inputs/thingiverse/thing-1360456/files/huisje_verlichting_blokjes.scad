@@ -37,7 +37,7 @@ union()
         {
             translate([(height/2)+1,n*holedistance,-3])
             {
-                cylinder(10,d=diameter,diameter/2,$fn=64);
+                cylinder(10,d=diameter,diameter/2,$fn=50);
             }
         }
     }

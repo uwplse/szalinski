@@ -12,7 +12,7 @@ lensheight=10;
 eye_cap_length=10;
 eye_cap_tooth_diam=5;
 eye_tooth_count=12;
-$fn=128;
+$fn=50;
 
 module EyeCylinder()
 {

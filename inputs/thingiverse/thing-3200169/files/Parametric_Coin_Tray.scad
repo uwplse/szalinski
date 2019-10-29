@@ -5,7 +5,7 @@
 
 
 // Number of facets for rendering
-$fn = 64;
+$fn = 50;
 
 // Largest coin value (0: 50 Ct, 1: 20 Ct, 2: 5 Ct, 3: 10 Ct, 4: 2 Ct, 5: 1 Ct)
 coin0 = 0;

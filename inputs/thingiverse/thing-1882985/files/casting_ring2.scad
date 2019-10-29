@@ -13,12 +13,12 @@ rotate([0,180,0]) {
 translate([diameter/2+5,0,-height/2]) {
         difference() {
             difference() {
-                cylinder(height/2,diameter/2+wandstaerke,diameter/2+wandstaerke,$fn=60);
-                cylinder(height/2+1,diameter/2,diameter/2,$fn=60);
+                cylinder(height/2,diameter/2+wandstaerke,diameter/2+wandstaerke,$fn=50);
+                cylinder(height/2+1,diameter/2,diameter/2,$fn=50);
                          }
             difference() {   
-                cylinder(10,diameter/2+wandstaerke,diameter/2+wandstaerke,$fn=60);
-                cylinder(11,diameter/2+wandhalb,diameter/2+wandhalb,$fn=60);
+                cylinder(10,diameter/2+wandstaerke,diameter/2+wandstaerke,$fn=50);
+                cylinder(11,diameter/2+wandhalb,diameter/2+wandhalb,$fn=50);
                          }
                       }
                     }
@@ -30,12 +30,12 @@ rotate([0,180,0]) {
 translate([-diameter/2-5,0,-height/2]) {
         difference() {
             difference() {
-                cylinder(height/2,diameter/2+wandstaerke,diameter/2+wandstaerke,$fn=60);
-                cylinder(height/2+1,diameter/2,diameter/2,$fn=60);
+                cylinder(height/2,diameter/2+wandstaerke,diameter/2+wandstaerke,$fn=50);
+                cylinder(height/2+1,diameter/2,diameter/2,$fn=50);
                          }
             difference() {   
-                cylinder(10,diameter/2+wandhalb,diameter/2+wandhalb,$fn=60);
-                cylinder(11,diameter/2,diameter/2,$fn=60);
+                cylinder(10,diameter/2+wandhalb,diameter/2+wandhalb,$fn=50);
+                cylinder(11,diameter/2,diameter/2,$fn=50);
                          }
                       }
                     }

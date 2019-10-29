@@ -1,7 +1,7 @@
 x_number=9;
 y_number=6;
 
-$fn=100;
+$fn=50;
 rod_radius=1.5; //1.5 originally
 tolerance=0.20; //0.20 originally
 
@@ -97,7 +97,7 @@ module peg()
 ////    }}
 ////}
 ////// Diameter Test
-////$fn=100;
+////$fn=50;
 ////// Hole from 2mm to 4mm in increments of 0.2
 ////
 ////difference()

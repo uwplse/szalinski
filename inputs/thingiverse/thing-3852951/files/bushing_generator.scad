@@ -1,5 +1,5 @@
 //number of fragments
-$fn=100;//[25,50,100,150,200]
+$fn=50;//[25,50,100,150,200]
 //height of the bushing lip
 lip_height=1.5;
 //diameter of the bushing lip

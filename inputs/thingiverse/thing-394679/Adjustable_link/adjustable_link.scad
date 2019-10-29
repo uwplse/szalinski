@@ -24,7 +24,7 @@ Width=HoleSize*(1+WallWidth/50);
 MinDistance=min(Distance1,Distance2);
 MaxDistance=max(Distance1,Distance2);
 
-$fn=100;
+$fn=50;
 
 difference()
 {

@@ -105,7 +105,7 @@ module holderBalls() {
         (LIPO_HEIGHT+WALL_THICKNESS+AFFORDANCE)*.5])  sphere(d=WALL_THICKNESS*1.2);
 }
 
-$fn=60;
+$fn=50;
 
 union() {
 shell();

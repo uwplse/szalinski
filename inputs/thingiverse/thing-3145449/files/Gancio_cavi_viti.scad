@@ -1,4 +1,4 @@
-$fn=72;
+$fn=50;
 
 //0= round     1=Oval      2=rectangular
 Type=0;

@@ -13,7 +13,7 @@ itemCount = 11;
 // Wall thickness
 wallThickness = 2.0;
 
-$fn=90;
+$fn=50;
 difference() {
     union() {
         cylinder(h=(itemHeight*itemCount) + baseHeight,

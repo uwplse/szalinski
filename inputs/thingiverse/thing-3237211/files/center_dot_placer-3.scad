@@ -18,7 +18,7 @@ close_distance=0; //0 for flat supports touching the mirror, 1 or more for a rou
 placer_length=30;
 placer_diameter=center_dot_diameter;
 
-$fn=200;
+$fn=50;
 
 
 module locator() {

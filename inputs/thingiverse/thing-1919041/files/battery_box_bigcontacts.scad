@@ -1,4 +1,4 @@
-$fn = 100; // upgrade resolution
+$fn = 50; // upgrade resolution
 battery_diameter = 19;
 battery_length = 73; // 69 for unprotected
 

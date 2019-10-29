@@ -21,7 +21,7 @@ length_ratio = 1.0;
 c2c = inner_diameter * length_ratio;
 
 // Roundness resolution (higher = smoother and slower to render)
-$fn=120;  
+$fn=50;  
 
 // Bounding box dimensions
 large = 2*(outer_diameter + c2c);

@@ -1,5 +1,5 @@
 
-$fn = 60;
+$fn = 50;
 
 //base width and length
 x1 = 51.2;

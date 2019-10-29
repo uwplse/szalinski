@@ -1,4 +1,4 @@
-$fn=100;
+$fn=50;
 
 radius = 10;
 height = 6;

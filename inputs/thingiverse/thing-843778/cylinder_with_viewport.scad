@@ -12,7 +12,7 @@ viewportheight=70;
 viewportoffset=-10;
 /* [hidden] */
 rad=diameter/2;
-$fn=200;
+$fn=50;
 
 union() {
 translate([0,0,-layerHeight]) cylinder(r=rad, h=layerHeight);

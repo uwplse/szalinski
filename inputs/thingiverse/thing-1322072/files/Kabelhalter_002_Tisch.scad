@@ -18,11 +18,11 @@ difference()
     {
         rotate([-90, 0, 0])
             translate([$depth - $cable_diameter / 2, -$cable_diameter / 2 - $wall_thickness * 2, -1])
-                cylinder($width + $wall_thickness, $cable_diameter / 2, $cable_diameter / 2, $fn = 100);
+                cylinder($width + $wall_thickness, $cable_diameter / 2, $cable_diameter / 2, $fn = 50);
 
         rotate([-90, 0, 0])
             translate([$depth - $cable_diameter / 2, -$desk_height - $wall_thickness * 2, -1])
-                cylinder($width+2, $cable_diameter / 2, $cable_diameter / 2, $fn = 100);
+                cylinder($width+2, $cable_diameter / 2, $cable_diameter / 2, $fn = 50);
     }
 }
 

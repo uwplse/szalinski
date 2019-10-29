@@ -22,7 +22,7 @@ gap = 1;
 //Bolt diameter (mm)
 boltDia = 5;
 
-$fn=360;
+$fn=50;
 
 module PostClamp(){
     difference(){

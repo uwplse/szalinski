@@ -14,7 +14,7 @@
 //	         own variable for pipe end wall thickness. rather than reusing air chamber wall thickness. 
 //	         slicing may benefit from slic3r --spiral-vase option.
 
-$fn=60;
+$fn=50;
 // show object inside at percentage depth
 explode=0;			// [0:100]
 

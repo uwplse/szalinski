@@ -92,7 +92,7 @@ module tidy(diameter, height, wall, fv) {
             translate([distance_to_edge+wall+clearance,0,0])
             scale([1.0,1.5,1.0])
             difference() {
-              cylinder(r=wall, h=slot_height, $fn=90);
+              cylinder(r=wall, h=slot_height, $fn=50);
               translate([-wall,-wall,-sp])
               cube([wall,wall*2,slot_height+sp*2]);
             }
@@ -110,7 +110,7 @@ module tidy(diameter, height, wall, fv) {
           translate([distance_to_edge-wall,0,-sp])
           scale([1.0,1.5,1.0])
           difference() {
-            cylinder(r=wall+clearance, h=wall+sp*2, $fn=90);
+            cylinder(r=wall+clearance, h=wall+sp*2, $fn=50);
             translate([clearance,-wall-clearance,0])
             cube([wall+clearance,(wall+clearance)*2,wall+sp*2]);
           }

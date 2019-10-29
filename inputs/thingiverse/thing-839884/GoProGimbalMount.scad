@@ -124,7 +124,7 @@ difference() {
 	}
 	translate([0, -(helmet_x_rad+gimbal_bar_diam/2+clamp_wall), 0]) {
 		scale([helmet_x_rad, helmet_x_rad, helmet_y_rad]) {
-			sphere(r=1, center=true, $fn=256);
+			sphere(r=1, center=true, $fn=50);
 		}
 	}
 	zspread(mount_length+200) {

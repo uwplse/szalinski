@@ -7,7 +7,7 @@ corner_radius = 5; //[1:10]
 margin = 5; //[0:30]
 
 /*[Hidden]*/
-$fn = 64;
+$fn = 50;
 size_x = 2 * ball_diameter + 2 * corner_radius;
 size_y = ball_diameter + margin;
 
@@ -24,6 +24,6 @@ difference() {
     }
     
     for (i = [-1:2:1])
-    translate([i * (ball_diameter + margin) / 2, 0, ball_diameter / 2 + margin]) sphere(d=ball_diameter, $fn = 256);
+    translate([i * (ball_diameter + margin) / 2, 0, ball_diameter / 2 + margin]) sphere(d=ball_diameter, $fn = 50);
 
 }

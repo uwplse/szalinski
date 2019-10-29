@@ -1,5 +1,5 @@
 //number of fragments
-$fn=70;
+$fn=50;
 
 tabThickness = 1.85;
 tabWidth = 3.55;

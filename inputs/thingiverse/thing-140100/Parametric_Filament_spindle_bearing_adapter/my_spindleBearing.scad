@@ -18,7 +18,7 @@ skate_recess_height = 10;
 inner_wall_thick = Layer_height *3;
 /* [Hidden] */
 Brim_diameter = Spindle_diameter+Brim_width;
-$fn=100;
+$fn=50;
 
 difference()
 {

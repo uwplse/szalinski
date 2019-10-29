@@ -27,7 +27,7 @@ flange_on_one_side_only = 0;
 
 outer_width = height;
 hub_length = height;
-$fn = 200;
+$fn = 50;
 
 
 // draw me one

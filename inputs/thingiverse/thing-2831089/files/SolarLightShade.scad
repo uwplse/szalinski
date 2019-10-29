@@ -7,7 +7,7 @@ HubDiameter=Diameter;
 HubHeight=5;
 HubThick=3.5;
 LockRadius=49.0;
-$fn=100;
+$fn=50;
 Shade(1);
 for (a=[0:30:360]){
 // echo(a)

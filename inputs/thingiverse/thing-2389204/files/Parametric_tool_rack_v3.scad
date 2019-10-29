@@ -1,4 +1,4 @@
-//$fn = 200; //set fragments
+//$fn = 50; //set fragments
 min_height =100; //height of first row
 height_step = 10; //step between rows
 wall = 2; //rack wall thickness

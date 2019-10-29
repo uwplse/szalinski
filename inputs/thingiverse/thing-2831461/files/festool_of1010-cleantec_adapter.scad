@@ -1,4 +1,4 @@
-$fn=180;
+$fn=50;
 wandstaerke = 4;
 h_cleantec  = 25;
 h_fraese    = 20;

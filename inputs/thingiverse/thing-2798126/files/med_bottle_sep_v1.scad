@@ -61,13 +61,13 @@ module main_module(){ //create module
                 x=360/(compartments); 
                 
                 //create base
-                translate ([0,0,wall_thick/2]) rotate ([0,0,0]) cylinder(wall_thick,bot_dia/2,bot_dia/2,$fn=60,true);
+                translate ([0,0,wall_thick/2]) rotate ([0,0,0]) cylinder(wall_thick,bot_dia/2,bot_dia/2,$fn=50,true);
                 
                 //create center
-                translate ([0,0,(sep_height+(stem-1))/2]) rotate ([0,0,0]) cylinder((sep_height+(stem-1)), stem_dia/2,stem_dia/2,$fn=60,true);
+                translate ([0,0,(sep_height+(stem-1))/2]) rotate ([0,0,0]) cylinder((sep_height+(stem-1)), stem_dia/2,stem_dia/2,$fn=50,true);
                 
                 //create top
-                translate ([0,0,((sep_height+stem)-stem_dia)]) sphere($fn = 60, $fa = 12, $fs = 2, r = stem_dia);
+                translate ([0,0,((sep_height+stem)-stem_dia)]) sphere($fn = 50, $fa = 12, $fs = 2, r = stem_dia);
                 
                 //set up for loop
                 for (a =[0:x:360]){//start for loop

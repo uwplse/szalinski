@@ -7,7 +7,7 @@ hole_x = 96;
 hole_y = 5.5;
 post_location = [hole_x, hole_y, gauge];
 
-$fn = 100;
+$fn = 50;
 
 difference() {
     union() {

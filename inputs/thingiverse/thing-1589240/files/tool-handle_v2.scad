@@ -29,19 +29,19 @@ difference(){
 module base(){
     union(){
         //top center cylinder
-        translate([0,0,10]) cylinder(10,top_center_radious/100,top_center_radious/100,$fn=60, center = true);
+        translate([0,0,10]) cylinder(10,top_center_radious/100,top_center_radious/100,$fn=50, center = true);
         //bottom center cylinder
-        cylinder(10,bottom_centre_radious/100,bottom_centre_radious/100,$fn=60,center = true);
+        cylinder(10,bottom_centre_radious/100,bottom_centre_radious/100,$fn=50,center = true);
         
         //x lateral cylinders
-        translate([x_tool_length/20,0,0]) cylinder(10,5,5, $fn=60,center = true);
-        translate([-x_tool_length/20,0,0]) cylinder(10,5,5, $fn=60,center = true);
+        translate([x_tool_length/20,0,0]) cylinder(10,5,5, $fn=50,center = true);
+        translate([-x_tool_length/20,0,0]) cylinder(10,5,5, $fn=50,center = true);
         //x tool body
         cube([x_tool_length/10,10,10],center = true);
         
         //y lateral cylinders
-        translate([0,y_tool_length/20,0]) cylinder(10,5,5, $fn=60,center = true);
-        translate([0,-y_tool_length/20,0]) cylinder(10,5,5, $fn=60,center = true);
+        translate([0,y_tool_length/20,0]) cylinder(10,5,5, $fn=50,center = true);
+        translate([0,-y_tool_length/20,0]) cylinder(10,5,5, $fn=50,center = true);
         //x tool body
         cube([10,y_tool_length/10,10],center = true);
     }

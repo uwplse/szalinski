@@ -14,7 +14,7 @@ h=10;
 ws=3;
 
 /* [Hidden] */
-$fn=100;
+$fn=50;
 
 
 difference() {

@@ -36,13 +36,13 @@ module ring() {
 			difference(){
 	
 				translate([0,0,0])
-					cylinder(r=inner_radius+ring_thickness,h=ring_width,$fn = 100,center = true);
+					cylinder(r=inner_radius+ring_thickness,h=ring_width,$fn = 50,center = true);
 				scale(font_scale)
 				writecylinder(message,[0,0,0],((inner_radius+ring_thickness)/font_scale)+.1,ring_width,space=1.05+spacing_factor,rotate=0,up=.5,center = true,font = Font);
 				
 			}
 	
-			cylinder(r=inner_radius,h=ring_width+1,$fn = 100,center = true);
+			cylinder(r=inner_radius,h=ring_width+1,$fn = 50,center = true);
 		}
 	}
 	else{
@@ -51,13 +51,13 @@ module ring() {
 			difference(){
 	
 				translate([0,0,0])
-					cylinder(r=inner_radius+ring_thickness,h=ring_width,$fn = 100,center = true);
+					cylinder(r=inner_radius+ring_thickness,h=ring_width,$fn = 50,center = true);
 				scale(font_scale)
 				writecylinder(message,[0,0,0],(inner_radius+ring_thickness)/font_scale*1.01,ring_width,space=1.05+spacing_factor,rotate=0,up=.5,center = true,font = Font);
 				
 			}
 	
-			cylinder(r=inner_radius,h=ring_width+1,$fn = 100,center = true);
+			cylinder(r=inner_radius,h=ring_width+1,$fn = 50,center = true);
 		}
 	}
 }

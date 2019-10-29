@@ -21,15 +21,15 @@ module BasePlate() {
 hull() {
 // 0,0
 translate( [ corner_radius, corner_radius, 0 ] )
-    cylinder( h = base_thickness, r = corner_radius, $fn = 100 );
+    cylinder( h = base_thickness, r = corner_radius, $fn = 50 );
 
 // X,0
-translate( [ x_length - corner_radius, corner_radius, 0 ] ) cylinder( h = base_thickness, r = corner_radius, $fn = 100 );
+translate( [ x_length - corner_radius, corner_radius, 0 ] ) cylinder( h = base_thickness, r = corner_radius, $fn = 50 );
 
 // 0,Y
-translate( [ corner_radius, y_length - corner_radius, 0 ] ) cylinder( h = base_thickness, r = corner_radius, $fn = 100 );
+translate( [ corner_radius, y_length - corner_radius, 0 ] ) cylinder( h = base_thickness, r = corner_radius, $fn = 50 );
 
-translate( [ x_length - corner_radius, y_length - corner_radius, 0 ] ) cylinder( h = base_thickness, r = corner_radius, $fn = 100 );
+translate( [ x_length - corner_radius, y_length - corner_radius, 0 ] ) cylinder( h = base_thickness, r = corner_radius, $fn = 50 );
 }
 }
 
@@ -37,36 +37,36 @@ translate( [ x_length - corner_radius, y_length - corner_radius, 0 ] ) cylinder(
 module Pegs(){
 // 0,0
 translate( [ hole_offset, hole_offset, base_thickness ] )
-    cylinder( h = base_thickness + peg_height, d = mounting_hole, $fn = 100 );
+    cylinder( h = base_thickness + peg_height, d = mounting_hole, $fn = 50 );
 
 // X,0
 translate( [ x_length - hole_offset, hole_offset, base_thickness ] )
-    cylinder( h = base_thickness + peg_height, d = mounting_hole, $fn = 100 );
+    cylinder( h = base_thickness + peg_height, d = mounting_hole, $fn = 50 );
 
 // 0,Y
 translate( [ hole_offset, y_length - hole_offset, base_thickness ] )
-    cylinder( h = base_thickness + peg_height, d = mounting_hole, $fn = 100 );
+    cylinder( h = base_thickness + peg_height, d = mounting_hole, $fn = 50 );
 
 // X,Y
 translate( [ x_length - hole_offset, y_length - hole_offset, base_thickness ] )
-    cylinder( h = base_thickness + peg_height, d = mounting_hole, $fn = 100 );
+    cylinder( h = base_thickness + peg_height, d = mounting_hole, $fn = 50 );
 }
 
 // standoffs
 module Standoffs() {
 // 0,0
 translate( [ hole_offset, hole_offset, base_thickness ] )
-    cylinder( h = base_thickness + standoff_height, d = standoff_diameter, $fn = 100 );
+    cylinder( h = base_thickness + standoff_height, d = standoff_diameter, $fn = 50 );
 
 // X,0
 translate( [ x_length - hole_offset, hole_offset, base_thickness ] )
-    cylinder( h = base_thickness + standoff_height, d = standoff_diameter, $fn = 100 );
+    cylinder( h = base_thickness + standoff_height, d = standoff_diameter, $fn = 50 );
 
 // 0,Y
 translate( [ hole_offset, y_length - hole_offset, base_thickness ] )
-    cylinder( h = base_thickness + standoff_height, d = standoff_diameter, $fn = 100 );
+    cylinder( h = base_thickness + standoff_height, d = standoff_diameter, $fn = 50 );
 
 // X,Y
 translate( [ x_length - hole_offset, y_length - hole_offset, base_thickness ] )
-    cylinder( h = base_thickness + standoff_height, d = standoff_diameter, $fn = 100 );
+    cylinder( h = base_thickness + standoff_height, d = standoff_diameter, $fn = 50 );
 }

@@ -2,7 +2,7 @@
 
 //200 x 273, 2 slack, 3 rim
 
-$fn=120;
+$fn=50;
 
 width=210;
 length=200;

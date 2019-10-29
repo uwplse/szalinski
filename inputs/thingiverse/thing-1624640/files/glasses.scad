@@ -1,5 +1,5 @@
 //Glasses Professor Farnsworth
-$fn = 100; 
+$fn = 50; 
 d = 1.75;//shackle diameter
 hd = 10;//height of mounting arch
 difference(){     

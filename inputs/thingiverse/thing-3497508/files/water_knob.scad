@@ -1,4 +1,4 @@
-$fn = 180;
+$fn = 50;
 difference() {
     cylinder(20, d=27, true);
     translate([0, 0, -0.01]) {

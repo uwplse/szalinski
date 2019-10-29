@@ -27,7 +27,7 @@ dowelRadius = 6.35;
 slop = .45;             //[.2:.1:1.5]
 
 /* [Hidden] */
-$fn = 60;
+$fn = 50;
 
 insideCornerRadius = cornerRadius-wall;
 

@@ -13,7 +13,7 @@ hgt=1;    // [1:5]
 render=0; //  [0:all together/assembled, 1:arm part, 2:center part, 3:center part + 140mm, 4:all together + 140mm]
 
 /* [Hidden] */
-$fn=100;
+$fn=50;
 wt=2;
 
 

@@ -38,12 +38,12 @@ module shroud() {
 
 module fan_mount_holes() {
   // mounting holes for the fan (top)
-  translate([-16, 11, 0]) rotate([15, 0, 0]) cylinder(20, 1.43, 1.43, true, $fn = 180);
-  translate([+16, 11, 0]) rotate([15, 0, 0]) cylinder(20, 1.43, 1.43, true, $fn = 180);
+  translate([-16, 11, 0]) rotate([15, 0, 0]) cylinder(20, 1.43, 1.43, true, $fn = 50);
+  translate([+16, 11, 0]) rotate([15, 0, 0]) cylinder(20, 1.43, 1.43, true, $fn = 50);
 
   // mounting holes for the fan (bottom)
-  translate([-16, 11 - 31, -10]) rotate([15, 0, 0]) cylinder(10, 1.43, 1.43, true, $fn = 180);
-  translate([+16, 11 - 31, -10]) rotate([15, 0, 0]) cylinder(10, 1.43, 1.43, true, $fn = 180);
+  translate([-16, 11 - 31, -10]) rotate([15, 0, 0]) cylinder(10, 1.43, 1.43, true, $fn = 50);
+  translate([+16, 11 - 31, -10]) rotate([15, 0, 0]) cylinder(10, 1.43, 1.43, true, $fn = 50);
 }
 
 module construct_main_shroud() {
@@ -72,12 +72,12 @@ module construct_main_shroud() {
     translate([0, -35 + shroud_height, 5]) cube([40 + 10, 10, 20], center = true);
 
     // mounting holes on top
-    translate([-32 / 2, 18 + nozzle_height_finetuning, 0]) cylinder(20, 1.8, 1.8, true, $fn = 180);
-    translate([+32 / 2, 18 + nozzle_height_finetuning, 0]) cylinder(20, 1.8, 1.8, true, $fn = 180);
+    translate([-32 / 2, 18 + nozzle_height_finetuning, 0]) cylinder(20, 1.8, 1.8, true, $fn = 50);
+    translate([+32 / 2, 18 + nozzle_height_finetuning, 0]) cylinder(20, 1.8, 1.8, true, $fn = 50);
 
     difference() {  
       // opening for the main fan
-      translate([0, -4 - 1.0, 0]) cylinder(10, 18, 18, true, $fn = 180);
+      translate([0, -4 - 1.0, 0]) cylinder(10, 18, 18, true, $fn = 50);
   
       // cut the opening in half
       translate([0, -16 - 1.0, 0]) cube([40, 30, 20], center = true);
@@ -151,7 +151,7 @@ difference() {
   }
   
   // opening for the main fan
-  translate([0, -5, -5]) rotate([15, 0, 0]) cylinder(30, 18.6, 18.6, true, $fn = 180);
+  translate([0, -5, -5]) rotate([15, 0, 0]) cylinder(30, 18.6, 18.6, true, $fn = 50);
 
   // inner slope to lead towards the bottom
   translate([0, -22.5, -3]) rotate([15, 0, 0]) cube([37, 4, 9], center = true);

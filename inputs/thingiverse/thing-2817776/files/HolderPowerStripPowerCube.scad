@@ -13,7 +13,7 @@ $pin_heigth=5;
 
 
 $screw_hole_diameter=4;
-$fn=150;
+$fn=50;
 
 
 difference(){

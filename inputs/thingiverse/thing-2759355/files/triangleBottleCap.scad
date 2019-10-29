@@ -23,7 +23,7 @@ difference() {
 translate([0,25.5,0])
 difference() {
   translate([0,0,0.5]) cube([15,20,1], center=true);
-  translate([0,-42.5,0]) cylinder(h=1, d=66, $fn=80);
+  translate([0,-42.5,0]) cylinder(h=1, d=66, $fn=50);
 }
 
 translate([-10,35,1]) rotate([0, 90, 0]) cylinder(h=20, d=2, $fn=20)

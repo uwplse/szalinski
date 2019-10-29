@@ -1,5 +1,5 @@
 //Hello World!
-$fn=100.0;
+$fn=50.0;
 bodyThickness=4.0;
 bearingDiameter=22.0;
 bearingWidth=7.0;

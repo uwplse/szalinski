@@ -34,7 +34,7 @@ diamplate2 = outerdiamplate; //correcting outerdiameter is a bad plan but you ca
 widthplate2 = max((diamplate2-innerdiamplate)/2, diamrod2+(2*thickmaterialholder));
 
 //main
-$fn=100;
+$fn=50;
 union()
   {
   difference()   //the plate

@@ -14,7 +14,7 @@ mountheight = 10;
 // The diameter of the tube where to mount the holder in millimeters.
 tubediameter = 22;
 // The fininess of the cylinders. 100 is a good start.
-$fn = 100;
+$fn = 50;
 
 module connector(stegwidth) {
 	// plates

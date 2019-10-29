@@ -16,13 +16,13 @@ module komoda_prot() {
 module tail_woman()
 {
     translate( [0,0,-0.1] )
-    cylinder(r=3,h=(d_s_wall() + l_szuflada())+0.2,$fn=100);
+    cylinder(r=3,h=(d_s_wall() + l_szuflada())+0.2,$fn=50);
 }
 
 module tail_man()
 {
     translate( [0,offset()/2,0] )
-    cylinder(r=2.6,h=(d_s_wall() + l_szuflada()),$fn=100);
+    cylinder(r=2.6,h=(d_s_wall() + l_szuflada()),$fn=50);
 }
 
 module tail_n(l,type)

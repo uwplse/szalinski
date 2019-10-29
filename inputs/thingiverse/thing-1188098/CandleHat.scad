@@ -48,7 +48,7 @@ candleHeight			        = candle_height_diameter_ratio * candleOuterDiameter;
 
 manifoldCorrection = 0.02;
 
-$fn = 80;
+$fn = 50;
 
 
 

@@ -50,7 +50,7 @@ spacer_diameter=55;
 spacer_clearance=0.5;
 
 //Circle resolution
-$fn=72;
+$fn=50;
 
 
 

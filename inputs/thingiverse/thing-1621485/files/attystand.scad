@@ -15,7 +15,7 @@ rows = 3;
 columns = 5;
 
 /* [Hidden] */
-$fn = 360;
+$fn = 50;
 bottomHeight = 2;
 
 /* Calculated */

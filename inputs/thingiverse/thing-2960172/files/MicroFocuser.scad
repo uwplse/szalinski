@@ -9,7 +9,7 @@ NutThickness = 2.5 + 0.2; // plus a bit
 NutCircumscribedRadius = NutInscribedRadius/cos(30);
 e=2;  // epsilon for subtraction.
 
-$fn = 100;
+$fn = 50;
 
 // rotate([180,0,0])
 AnchorRing();
@@ -37,7 +37,7 @@ module Ring()
 {
     difference()
     {
-        // rotate_extrude($fn=100)
+        // rotate_extrude($fn=50)
         //     polygon(
         //         points=[
         //             [Ri+Thickness, -Width/2], [Ri+Thickness, Width/2],

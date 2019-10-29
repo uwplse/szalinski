@@ -11,7 +11,7 @@ h=8+t;
 l=69.5+t;
 //diameter
 d=11+t;
-$fn=100;
+$fn=50;
 
 module bolt(){
     union(){

@@ -1,4 +1,4 @@
-$fn=64;
+$fn=50;
 l = 30;
 // profile width
 prof = 20;

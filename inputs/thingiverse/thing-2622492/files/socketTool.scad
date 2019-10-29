@@ -5,7 +5,7 @@ size = 13.8;
 height = 15;
 
 /* No need to touch this stuff... */
-$fn = 90;
+$fn = 50;
 d = 2*1.03*size/sqrt(3);
 handle_total_l = d+2+4*2;
 handleh = 8;

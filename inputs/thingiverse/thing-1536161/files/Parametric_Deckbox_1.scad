@@ -61,20 +61,20 @@ module Deckbox ()
 			translate([deckl/3-tolerance/4+wall,0,deckh_lower-(deckh/6)])
 				cube([deckl/3+0.5*tolerance,wall/2+0.5*tolerance,deckh_lower]);
 			translate([deckl/2+wall,wall/2+0.5*tolerance,deckh_lower-(deckh/6)])
-				rotate(90,[1,0,0])cylinder($fn=100,r=deckl/6+tolerance/4,h=0.5*wall+0.5*tolerance);
+				rotate(90,[1,0,0])cylinder($fn=50,r=deckl/6+tolerance/4,h=0.5*wall+0.5*tolerance);
 			translate([deckl/3-tolerance/4+wall,1.5*wall+deckw-tolerance/2,deckh_lower-(deckh/6)])
 				cube([deckl/3+0.5*tolerance,wall/2+tolerance,deckh_lower]);
 			translate([deckl/2+wall,2*wall+deckw,deckh_lower-(deckh/6)])
-				rotate(90,[1,0,0])cylinder($fn=100,r=deckl/6+tolerance/4,h=0.5*wall+0.5*tolerance);
+				rotate(90,[1,0,0])cylinder($fn=50,r=deckl/6+tolerance/4,h=0.5*wall+0.5*tolerance);
         
         translate([deckl/3+tolerance/4+wall-tolerance/2,wall/2-tolerance/2,deckh_lower-(deckh/6)+3])
             {
-           intersection(){rotate(90,[0,1,0])cylinder($fn=100,r=bump_radius+tolerance,h=deckl/3+tolerance);
+           intersection(){rotate(90,[0,1,0])cylinder($fn=50,r=bump_radius+tolerance,h=deckl/3+tolerance);
            translate([0,0,-bump_radius-tolerance])cube([deckl/3+tolerance/2,bump_radius+tolerance,2*bump_radius+2*tolerance]);}}
        
            rotate(180,[0,0,1])translate([-2/3*deckl-wall-tolerance/4,-1.5*wall-deckw-tolerance/2,deckh_lower-(deckh/6)+3])
             {
-           intersection(){rotate(90,[0,1,0])cylinder($fn=100,r=bump_radius+tolerance,h=deckl/3+tolerance);
+           intersection(){rotate(90,[0,1,0])cylinder($fn=50,r=bump_radius+tolerance,h=deckl/3+tolerance);
            translate([0,0,-bump_radius-tolerance])cube([deckl/3+tolerance/2,bump_radius+tolerance,2*bump_radius+2]);}}
    
        }
@@ -102,18 +102,18 @@ module Lid ()
 	translate([deckl/3+tolerance/4,0,deckh_lower-(deckh/6)-wall])
 		cube([deckl/3-tolerance/2,wall/2-tolerance/2,deckh/3]);
 	translate([deckl/2,wall/2-0.5*tolerance,deckh_lower-(deckh/6+wall)])
-		rotate(90,[1,0,0])cylinder($fn=100,r=deckl/6-tolerance/4,h=0.5*wall-0.5*tolerance);
+		rotate(90,[1,0,0])cylinder($fn=50,r=deckl/6-tolerance/4,h=0.5*wall-0.5*tolerance);
 	translate([deckl/3+tolerance/4,deckw+1.5*wall+0.5*tolerance,deckh_lower-(deckh/6)-wall])
 		cube([deckl/3-tolerance/2,wall/2-tolerance/2,deckh/3]);
 	translate([deckl/2,deckw+1.5*wall+0.5*tolerance+wall/2-tolerance/2,deckh_lower-(deckh/6)-wall])
-		rotate(90,[1,0,0])cylinder($fn=100,r=deckl/6-tolerance/4,h=0.5*wall-0.5*tolerance);
+		rotate(90,[1,0,0])cylinder($fn=50,r=deckl/6-tolerance/4,h=0.5*wall-0.5*tolerance);
     translate([deckl/3+tolerance/4,wall/2-tolerance/2-0.01,deckh_lower-(deckh/6)+3-wall])
             {
-           intersection(){rotate(90,[0,1,0])cylinder($fn=100,r=bump_radius,h=deckl/3);
+           intersection(){rotate(90,[0,1,0])cylinder($fn=50,r=bump_radius,h=deckl/3);
            translate([0,0,-bump_radius])cube([deckl/3-tolerance/2,bump_radius,2*bump_radius]);}}
     translate([2*deckl/3-tolerance/4,2*wall+deckw-wall/2+tolerance/2,deckh_lower-(deckh/6)+3-wall])
             {
-           rotate(180,[0,0,1]){intersection(){rotate(90,[0,1,0])cylinder($fn=100,r=bump_radius,h=deckl/3);
+           rotate(180,[0,0,1]){intersection(){rotate(90,[0,1,0])cylinder($fn=50,r=bump_radius,h=deckl/3);
            translate([0,0,-bump_radius])cube([deckl/3-tolerance/2,bump_radius,2*bump_radius]);}}}
            
     
@@ -133,7 +133,7 @@ module Lid ()
 				}
 		translate([-wall,(2*wall+deckw)/2,griph])
 				{
-				rotate(90,[0,1,0])cylinder($fn=100,r=gripw/2,h=4*wall+2,center=true);
+				rotate(90,[0,1,0])cylinder($fn=50,r=gripw/2,h=4*wall+2,center=true);
 				}
 
 	}

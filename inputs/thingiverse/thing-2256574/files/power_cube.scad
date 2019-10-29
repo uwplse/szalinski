@@ -41,7 +41,7 @@ xt60TopHeight = 3.4;
 xt60Length = 16;
 
 /* [Hidden] */
-$fn=180;
+$fn=50;
 side = boardLength;
 walls = nozzle * 4;
 sideOuter = side + walls * 2;

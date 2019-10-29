@@ -71,4 +71,4 @@ module SolderStand(thickness,Width, Length,Height, smallWallScale, Angle,Diamete
         }
 }
 
-SolderStand(partThickness,widthOverall, lengthOverall, mainWallHeight, secondWallScale, partAngle, ironMajorDiameter, ironMinorDiameter, $fn=100);
+SolderStand(partThickness,widthOverall, lengthOverall, mainWallHeight, secondWallScale, partAngle, ironMajorDiameter, ironMinorDiameter, $fn=50);

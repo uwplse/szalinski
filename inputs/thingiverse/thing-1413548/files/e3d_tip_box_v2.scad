@@ -194,7 +194,7 @@ module createMeniscus(h,radius) {// This module creates the shape that needs to 
        translate([radius/2+0.1,radius/2+0.1,0]){
           cube([radius+0.2,radius+0.1,h+0.2],center=true);         // All that 0.x numbers are to avoid "ghost boundaries" when substracting
        }
-       cylinder(h=h+0.2,r=radius,$fn = 90,center=true);
+       cylinder(h=h+0.2,r=radius,$fn = 50,center=true);
     }
 }
 

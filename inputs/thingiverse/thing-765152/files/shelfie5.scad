@@ -55,7 +55,7 @@ wall_mount = "false";//[false,true]
 //Corner radius of wall mount. Note: '0' will create a square corner. It is not recommended to set a radius higher than: (bracket_size - (wall_thickness *2) + panel_thickness)
 wall_mount_corner_radius = 0;
 /* [Hidden] */
-$fn=100;
+$fn=50;
 
 panel_depth=bracket_size-panel_thickness-(wall_thickness*2);
 panel_depth2=bracket_size-panel2_thickness-(wall_thickness*2);

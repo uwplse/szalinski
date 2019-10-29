@@ -11,6 +11,6 @@ hauteur=0.2 ;
 
 
 difference (){
-cylinder ( d=diametre, h=hauteur , center = true,$fn=600 ); 
-cylinder ( d=diametre-buse, h=hauteur*10, center = true,$fn=600 ); 
+cylinder ( d=diametre, h=hauteur , center = true,$fn=50 ); 
+cylinder ( d=diametre-buse, h=hauteur*10, center = true,$fn=50 ); 
            }

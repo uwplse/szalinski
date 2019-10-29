@@ -6,7 +6,7 @@ include <Bolt.scad>
 radius = 100;
 
 // Defines the resolution
-$fn = 100;
+$fn = 50;
 module WallHold(r)
 {
   difference()

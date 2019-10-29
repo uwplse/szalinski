@@ -47,7 +47,7 @@ module main_module(){ //create module
             union() {//start union
                 
                 //create retaining body
-                translate ([0,0,0]) rotate ([0,0,0]) cylinder(5,ring_od/2,ring_od/2,$fn=100,true);
+                translate ([0,0,0]) rotate ([0,0,0]) cylinder(5,ring_od/2,ring_od/2,$fn=50,true);
                   
                     } //end union
                             
@@ -55,9 +55,9 @@ module main_module(){ //create module
                 //knock out donut shape to provide room for filter
                 translate ([0,0,2]) rotate ([0,0,0]) donut_module(ring_tall,filter_od,cam_lens_od+3);
                 //knock out center hole for action camera lens
-                translate ([0,0,0]) rotate ([0,0,0]) cylinder(ring_tall*2,cam_lens_od/2,cam_lens_od/2,$fn=100,true);
+                translate ([0,0,0]) rotate ([0,0,0]) cylinder(ring_tall*2,cam_lens_od/2,cam_lens_od/2,$fn=50,true);
                 //recess center opening to clear filter
-                translate ([0,0,4]) rotate ([0,0,0]) cylinder(ring_tall,(cam_lens_od/2)+2,(cam_lens_od/2)+2,$fn=100,true);
+                translate ([0,0,4]) rotate ([0,0,0]) cylinder(ring_tall,(cam_lens_od/2)+2,(cam_lens_od/2)+2,$fn=50,true);
                                                
     } //end difference
 }//end module
@@ -67,12 +67,12 @@ module donut_module(tall,od,id){ //create module
             union() {//start union
                 
                 //create outer body
-                translate ([0,0,0]) rotate ([0,0,0]) cylinder(tall,od/2,od/2,$fn=100,true);
+                translate ([0,0,0]) rotate ([0,0,0]) cylinder(tall,od/2,od/2,$fn=50,true);
                     } //end union
                             
     //start subtraction of difference
                 //create hole
-                translate ([0,0,0]) rotate ([0,0,0]) cylinder(tall+2,id/2,id/2,$fn=100,true);
+                translate ([0,0,0]) rotate ([0,0,0]) cylinder(tall+2,id/2,id/2,$fn=50,true);
                                                
     } //end difference
 }//end module

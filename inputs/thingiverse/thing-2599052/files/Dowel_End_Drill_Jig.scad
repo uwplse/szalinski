@@ -4,7 +4,7 @@ FitBuffer = 0.5;
 OverallHeight = 20;
 rad1 = (DowelDiameter/2)+FitBuffer;
 rad2 = (DrillDiameter/2)+FitBuffer;
-$fn=96;
+$fn=50;
 difference(){
     union(){
         cylinder(OverallHeight,DowelDiameter,DowelDiameter,true);

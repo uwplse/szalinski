@@ -7,7 +7,7 @@ hole_dia = 2.6;
 end_d = 6;
 front_w = 8;
 
-$fn=200;
+$fn=50;
 
 module screw_hole(z_pos)
 {

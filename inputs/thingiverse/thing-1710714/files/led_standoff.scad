@@ -33,7 +33,7 @@ columns = 4;
 part_spacing = 5;
 
 // Number of faces to compute per 360 degrees.
-$fn=64;
+$fn=50;
 
 // A single LED lead hole or slot. Positioned at the 
 // positive X direction. 

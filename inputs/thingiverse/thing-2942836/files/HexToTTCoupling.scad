@@ -47,7 +47,7 @@ module hollow_cylinder(height, r_outer, r_inner)
 {
     difference()
     {
-        cylinder(h=height, r=r_outer, center=false, $fn=100);
-        cylinder(h=height, r=r_inner, center=false, $fn=100);
+        cylinder(h=height, r=r_outer, center=false, $fn=50);
+        cylinder(h=height, r=r_inner, center=false, $fn=50);
     }
 }

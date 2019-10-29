@@ -38,10 +38,10 @@ difference(){
         cylinder(h = thickness * 2, 
                  r = nema_hole_size / 2, 
                  center = true,
-                 $fn=150);
+                 $fn=50);
     cylinder(h = thickness * 2,
              r = nema_boss_size / 2, 
              center = true,
-             $fn = 250);
+             $fn = 50);
         
 }

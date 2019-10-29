@@ -11,7 +11,7 @@ lscales=150;
 //Thickness of the lenses
 gheight=5;
 
-$fn=64;
+$fn=50;
 
 module EyeCylinder()
 {

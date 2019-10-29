@@ -13,7 +13,7 @@ thickness = 5;
 tolerance = .3;
 
 /* [Hidden] */
-$fn = 80;
+$fn = 50;
 
 bearingDiameter = (bearingRadius*2) + tolerance;
 

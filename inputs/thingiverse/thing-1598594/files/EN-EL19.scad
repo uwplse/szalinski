@@ -34,10 +34,10 @@ module batterySlot() {
 	   cube( [ bW - bD, bD, height], center=true);
 	
 	   translate([+(bW / 2) - (bD/2), 0, wallThickness])
-	   cylinder(h=height, r=(bD/2), $fn=100, center=true);
+	   cylinder(h=height, r=(bD/2), $fn=50, center=true);
 	
 	   translate([-(bW / 2) + (bD/2), 0, wallThickness])
-	   cylinder(h=height, r=(bD/2), $fn=100, center=true);
+	   cylinder(h=height, r=(bD/2), $fn=50, center=true);
 	
 	}
 }

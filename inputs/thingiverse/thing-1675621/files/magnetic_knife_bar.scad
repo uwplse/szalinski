@@ -43,7 +43,7 @@ screw_head_diameter = 6; // [1:0.2:20]
 /* [Hidden] */
 
 wall = magnet_height + 1;
-$fn = 100;
+$fn = 50;
 
 number_of_magnets = floor((length-((screw_mounts=="yes" ? 2 : 0)*(screw_head_diameter+1))) / (magnet_diameter+offset));
 first_offset = (length - (number_of_magnets*(magnet_diameter+offset)) + offset) / 2;

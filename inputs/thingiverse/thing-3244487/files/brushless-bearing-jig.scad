@@ -7,7 +7,7 @@ wall_width = 5;
 cable_channel_width = 9;
 bottom = 1.2;
 
-$fn = 96;
+$fn = 50;
 
 //cylinder(r = id, h = 10);
 

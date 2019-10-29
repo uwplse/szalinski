@@ -7,7 +7,7 @@ durchmesser = 24; // [5:0.2:50]
 loch = 0 ; // [0:nein,1:ja]
 /*[hidden]*/
 radius= durchmesser/2;
-$fn = 80;
+$fn = 50;
  rotate([270,0,0])
   translate([0,-2,0])  
 difference(){

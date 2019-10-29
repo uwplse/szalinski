@@ -51,7 +51,7 @@ module holes()
   
   // 2) Cut the circular holes
   // Render circles with 100 segments
-  $fn=100;
+  $fn=50;
   rotate([90,0,0])cylinder(d=size/2,h=size+nozzle_size,center=true);
   
   // 3) Cut the triangular holes

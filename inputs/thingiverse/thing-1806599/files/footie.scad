@@ -41,7 +41,7 @@ foot_start_offset = ceil(floor(center_diameter/2)-(wall_thickness/2));
 foot_inner_diameter = foot_diameter - wall_thickness;
 foot_angle = 360/foot_count;
 
-$fn=60;
+$fn=50;
 
 difference() {
     cylinder(d=center_diameter, h=center_height+wall_thickness);
@@ -52,7 +52,7 @@ difference() {
         }
     }
     translate([0, 0, 0]) cylinder(d=nut_diameter, h=nut_height, $fn=6);
-    cylinder(d=hole_diameter, h=center_height+wall_thickness, $fn=100);
+    cylinder(d=hole_diameter, h=center_height+wall_thickness, $fn=50);
     translate([0, 0, 6]) cylinder(d=washer_diameter, h=washer_height);
 }
 

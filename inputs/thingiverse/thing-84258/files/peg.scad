@@ -40,8 +40,8 @@ hook_width=hole_size*(hook_width_percentage/100)-.5;
 module fit_peg()
 {
 union() {
-sphere(3.6, $fn=100);
-translate ([0,0,-1]) cylinder(h = backing_board+.5, r1 = cylinder_radius, r2 = cylinder_radius,$fn=100);
+sphere(3.6, $fn=50);
+translate ([0,0,-1]) cylinder(h = backing_board+.5, r1 = cylinder_radius, r2 = cylinder_radius,$fn=50);
 }
 
 }
@@ -61,9 +61,9 @@ module hook() {
 difference() {
 	translate ([0,cylinder_radius,13.5+(object_width-.5)]) {
 		rotate(a=[90,90,0]) {
-			rotate_extrude(convexity = 10, $fn = 100)
+			rotate_extrude(convexity = 10, $fn = 50)
 			translate([6+cylinder_radius, 0, 0])
-			square(size=hook_width, $fn = 100);
+			square(size=hook_width, $fn = 50);
 		}
 	}
 

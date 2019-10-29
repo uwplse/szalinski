@@ -20,27 +20,27 @@ module support_vitre() {
     position_encoche=diam_ext_support/6;
     difference() {
         union(){
-        cylinder(h=epaisseur_sur_vitre+vitre_haut+epaisseur_sous_vitre,d=diam_ext_support,$fn=100); //Piece brute
+        cylinder(h=epaisseur_sur_vitre+vitre_haut+epaisseur_sous_vitre,d=diam_ext_support,$fn=50); //Piece brute
         translate([0,0,epaisseur_sur_vitre+vitre_haut])
-            cylinder(h=epaisseur_sous_vitre,d=diam_ext_support,$fn=100); //Piece dessous
+            cylinder(h=epaisseur_sous_vitre,d=diam_ext_support,$fn=50); //Piece dessous
         }
         translate([vitre_diam/2+position_encoche,0,epaisseur_sur_vitre])
-            cylinder(h=vitre_haut+artefact,d=vitre_diam,$fn=100); //Trou Vitre
+            cylinder(h=vitre_haut+artefact,d=vitre_diam,$fn=50); //Trou Vitre
 
         translate([vitre_diam/2+position_encoche/encoche_percent,0,-artefact])
-            cylinder(h=vitre_haut+epaisseur_sur_vitre+2*artefact,d=vitre_diam,$fn=100); //Encoche dessus vitre
+            cylinder(h=vitre_haut+epaisseur_sur_vitre+2*artefact,d=vitre_diam,$fn=50); //Encoche dessus vitre
 
         translate([-position_encoche,0,-artefact])
-            cylinder(h=epaisseur_sur_vitre+vitre_haut+epaisseur_sous_vitre+2*artefact,d=vis_diam,$fn=100); //Trou vis
+            cylinder(h=epaisseur_sur_vitre+vitre_haut+epaisseur_sous_vitre+2*artefact,d=vis_diam,$fn=50); //Trou vis
         
         translate([-position_encoche,0,-artefact])
-            cylinder(h=epaisseur_sur_vitre+artefact,d=vis_tete_diam,$fn=100); //Trou tete vis
+            cylinder(h=epaisseur_sur_vitre+artefact,d=vis_tete_diam,$fn=50); //Trou tete vis
         }
 }
 
 module glass() {
     translate([0,0,-artefact])
-        cylinder(h=vitre_haut+artefact,d=vitre_diam,$fn=100); //Vitre
+        cylinder(h=vitre_haut+artefact,d=vitre_diam,$fn=50); //Vitre
 }
 
 if (globalView) %translate([0,0,10]) rotate([90,0,0]) text("Down view");

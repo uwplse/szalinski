@@ -2,7 +2,7 @@
 // 2019 Troseph
 // https://www.thingiverse.com/thing:3626779
 
-$fn=100;
+$fn=50;
 //  spool info
 mainDia=200;
 innerDia=87;

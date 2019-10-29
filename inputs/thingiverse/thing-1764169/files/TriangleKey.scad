@@ -10,7 +10,7 @@ flatLength=15;//[1:1:80]
 depth=10;//[1:1:80]
 
 /* [Hidden] */
-$fn=150;
+$fn=50;
 
 difference() {
     union()

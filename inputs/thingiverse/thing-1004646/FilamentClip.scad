@@ -9,7 +9,7 @@ module O (extra) {
         cylinder(d=filamentWidth+tolerance+extra, h=clipHeight+1, center=true);
     }
 }
-$fn=200;
+$fn=50;
 
 O(tolerance);
 difference() {

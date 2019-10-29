@@ -6,7 +6,7 @@ diam=30;
 p1=30; //peg board large
 p2=40; // peg board high
 
-$fn=100;
+$fn=50;
 
 translate([-150,0,0]){
 rotate([0,90,0]){

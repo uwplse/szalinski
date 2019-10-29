@@ -39,11 +39,11 @@ base_Height = 3;
 //Generate object    
     difference () {
         //Outside Cylinder
-        cylinder(h = total_Height, d = outside_Diameter, $fn=360);
+        cylinder(h = total_Height, d = outside_Diameter, $fn=50);
         //Cutout lower Cylinder
-        translate([0, 0, base_Height])  cylinder(h = lowerSection_Height + .01, d = lowerSection_InsideDiameter, $fn=360);
+        translate([0, 0, base_Height])  cylinder(h = lowerSection_Height + .01, d = lowerSection_InsideDiameter, $fn=50);
         //Cutout Upper Cylinder
-        translate([0, 0, base_Height + lowerSection_Height]) cylinder(h = upperSection_Height + 2, d = upperSection_InsideDiameter, $fn=360);
+        translate([0, 0, base_Height + lowerSection_Height]) cylinder(h = upperSection_Height + 2, d = upperSection_InsideDiameter, $fn=50);
 
         //Cutouts in lower section
         rotationDegrees = 360 / numSlots; 

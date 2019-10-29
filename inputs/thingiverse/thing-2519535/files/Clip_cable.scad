@@ -11,7 +11,7 @@ Clip_Width=5;//[5:30]
 //Max cable diameter (in mm)
 Cable_Diameter=26;//[3:50]
 // Smoothness
-$fn = 100; //[30:100]
+$fn = 50; //[30:100]
 
 
 cube ([Clip_Thickness, Length + Clip_Thickness, Clip_Width]);

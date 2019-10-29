@@ -13,9 +13,9 @@ translate([19.1,0,19])//corner reinforcement
 }
 difference(){
 translate([20.5/2,3.5,19])//acoustic washer locatin pin
-    rotate(a=[0,0,90])cylinder(r=1.2,h=1,$fn=100);
+    rotate(a=[0,0,90])cylinder(r=1.2,h=1,$fn=50);
 }
 difference(){
 translate([19.5,3.5,34])//acoustic washer locatin pin
-    rotate(a=[0,90,0])cylinder(r=1.2,h=1,$fn=100);
+    rotate(a=[0,90,0])cylinder(r=1.2,h=1,$fn=50);
 }

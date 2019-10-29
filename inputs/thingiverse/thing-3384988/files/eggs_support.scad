@@ -22,7 +22,7 @@ walltickness= 0.8;
 
 
 //[hidden]
-$fn=100;
+$fn=50;
 half_lenght=inner_diameter+2*walltickness;
 
 

@@ -1,6 +1,6 @@
 //z axis coupler
 // Glyn Cowles Dec 2017
-$fn=75;
+$fn=50;
 lScrewD=8.35; //lead screw diam
 sScrewD=5.3; // stepper diam
 oDiam=20; // outer diam

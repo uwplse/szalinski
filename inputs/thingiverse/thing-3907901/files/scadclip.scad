@@ -12,7 +12,7 @@ hole_r=hole_diam/2;
 con_angle=5.194;
 hole_h=15;
 
-$fn=100;//resolution
+$fn=50;//resolution
 
 //top
 translate([-bot_w/2,-bot_l/2+8,bot_h/4])

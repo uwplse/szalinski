@@ -1,4 +1,4 @@
-$fn=128;
+$fn=50;
 radius=150;      // radius of the shelf
 thickness=5;    // thickness of the shelf
 previs=thickness+5; // this is the front side of the shelf (let's make it a bit bigger) - default value should be OK

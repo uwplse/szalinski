@@ -1,4 +1,4 @@
-$fn = 64;
+$fn = 50;
 hexdiam = 4.1; // hexbit diameter
 wall = 4; // gap around bits
 boxheight = 12; // depth of hole for bit

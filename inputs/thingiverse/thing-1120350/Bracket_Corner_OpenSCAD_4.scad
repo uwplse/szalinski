@@ -65,7 +65,7 @@ module corner_chamfer () {
     //cylinder
     translate([-0.5,-c_d,c_d*2]){
         rotate(90, [0,1,0]){
-        cylinder(c_w+1, c_d*multiplier, c_d*multiplier, false, $fn = 100);
+        cylinder(c_w+1, c_d*multiplier, c_d*multiplier, false, $fn = 50);
         }
     }
 }
@@ -96,7 +96,7 @@ module bracket_side () {
 module curved_tip () {
         translate([0,c_d/2,c_h]){
             rotate(90, [0,1,0]){
-                cylinder(c_w, (c_d/2)*multiplier, (c_d/2)*multiplier, false, $fn = 100);
+                cylinder(c_w, (c_d/2)*multiplier, (c_d/2)*multiplier, false, $fn = 50);
                 }
            }
     }
@@ -115,7 +115,7 @@ module cut_out (){
     //This hull function lets you print without support
     hull(){
         
-        $fn=100; //defines resolution
+        $fn=50; //defines resolution
 
     translate([
         c_w/2

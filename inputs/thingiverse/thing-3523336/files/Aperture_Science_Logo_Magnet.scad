@@ -1,4 +1,4 @@
-$fn = 200;
+$fn = 50;
 
 
 logo_radius = 25;

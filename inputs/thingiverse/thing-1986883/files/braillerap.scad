@@ -23,14 +23,14 @@ diametrePointeau=2;
 
 
 difference() {        
-        cylinder(h=$hauteurCyl, r=$diametreCyl/2, center=false, $fn=200);
+        cylinder(h=$hauteurCyl, r=$diametreCyl/2, center=false, $fn=50);
         translate($decaleVide){
         cylinder(h=$hauteurVide, r=$taillePan/2, center=false, $fn=$panVide);
             }
-        cylinder(h=$hauteurCyl-$hauteurVide, r=$diametrePointeau/2, center=false, $fn=200);
+        cylinder(h=$hauteurCyl-$hauteurVide, r=$diametrePointeau/2, center=false, $fn=50);
         translate([0,0,($hauteurCyl-2)]) {
             rotate([90,0,0]){
-        cylinder(h=$diametreCyl, r=$diametreFixeVide/2, center=true, $fn=200);    
+        cylinder(h=$diametreCyl, r=$diametreFixeVide/2, center=true, $fn=50);    
             }
 }
 }

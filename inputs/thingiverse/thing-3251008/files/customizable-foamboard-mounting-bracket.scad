@@ -43,7 +43,7 @@ module bracket(bracketLength, bracketThickness, foamThickness, mountSurfaceThick
                 for(i = [(space/2):space:(bracketLength-space/2)]){
                 translate(v=[((bracketThickness+foamThickness+bracketThickness)/2), bracketThickness+1, i]) {
                     rotate(a=90, v=[1,0,0]){
-                    cylinder(d=screw_hole_diameter, h=bracketThickness+2, $fn=100);
+                    cylinder(d=screw_hole_diameter, h=bracketThickness+2, $fn=50);
                     }
                 }
               }              

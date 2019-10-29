@@ -31,10 +31,10 @@ difference()
 		{
 			union()
 			{
-				cylinder(r=ring_OR, h=ring_thickness*2, center=true, $fn=240);
-				cylinder(r=ring_IR, h=ring_inner_thickness*2, center=true, $fn=240);
+				cylinder(r=ring_OR, h=ring_thickness*2, center=true, $fn=50);
+				cylinder(r=ring_IR, h=ring_inner_thickness*2, center=true, $fn=50);
 			}
-			cylinder(r=ring_CR, h=ring_thickness*4, center=true, $fn=240);
+			cylinder(r=ring_CR, h=ring_thickness*4, center=true, $fn=50);
 		}
 	}
 	translate([0,0,-ring_thickness*2]) cube([ring_OD*1.5, ring_OD*1.5, ring_thickness * 4], center=true);

@@ -79,7 +79,7 @@ mounting_screw_head_height = 3;
 /* [Misc] */
 
 // Resolution
-$fn = 96;
+$fn = 50;
 
 // Avoid artifacts
 clearance = .001;
@@ -194,10 +194,10 @@ module baseMount() {
 module roundedRectangle(width, depth, height, radius) {
     hull () {    
         translate([radius,radius,0]) {
-            cylinder(h=height, r=radius, $fn=90);
+            cylinder(h=height, r=radius, $fn=50);
         }
         translate([radius,depth-radius,0]) {
-            cylinder(h=height, r=radius, $fn=90);
+            cylinder(h=height, r=radius, $fn=50);
         }
         translate([width-radius,depth-radius,0]) {
             cube([radius,radius,height]);

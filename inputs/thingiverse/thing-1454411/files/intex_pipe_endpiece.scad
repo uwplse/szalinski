@@ -11,7 +11,7 @@ gap_height=20;
 slope_height=1;
 slope_factor=0.25;
 
-$fn=300;
+$fn=50;
 $fn_detail=100;
 
 module knob(l) {

@@ -1,4 +1,4 @@
-$fn = 100;
+$fn = 50;
 
 /*
 axle length: 9.2

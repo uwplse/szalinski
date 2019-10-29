@@ -50,7 +50,7 @@ vtxAntennaRadius = vtxAntennaDiameter / 2;
 
 center = width / 2;
 
-$fn = 180;
+$fn = 50;
 
 holder();
 

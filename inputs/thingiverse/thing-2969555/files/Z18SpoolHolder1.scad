@@ -16,8 +16,8 @@ module bearingSupport(Bearing608zzThick, Bearing608zzDiameter, M8ThreadDiameter,
         }
         translate([0,0,ZWallThick+Bearing608zzDiameter/2]) {
             rotate([90,0,0]) {
-                cylinder(r=Bearing608zzDiameter/2, h=Bearing608zzThick, $fn=100, center=true);
-                cylinder(r=M8ThreadDiameter/2, h=Bearing608zzThick+YWallThick*2+2, $fn=100, center=true);
+                cylinder(r=Bearing608zzDiameter/2, h=Bearing608zzThick, $fn=50, center=true);
+                cylinder(r=M8ThreadDiameter/2, h=Bearing608zzThick+YWallThick*2+2, $fn=50, center=true);
             }
         }
     }

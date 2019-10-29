@@ -37,7 +37,7 @@ outerWallTop = 1.5;
 tolerance = 0.12;
 
 /* [Hidden] */
-$fn = 180;
+$fn = 50;
 totalWidthOuter = outerWall * 2 + rows * width + (rows -1) * innerWalls;
 totalWidth = rows * width + (rows -1) * innerWalls;
 totalLengthOuter = outerWall * 2 + cols * length + (cols -1) * innerWalls;

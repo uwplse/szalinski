@@ -16,7 +16,7 @@ based=6;
 holex=diam+th*2+holed; // distance apart of holes
 basew=holex+holed*2; // screw part base width
 
-$fn=60;
+$fn=50;
 assemble();
 
 

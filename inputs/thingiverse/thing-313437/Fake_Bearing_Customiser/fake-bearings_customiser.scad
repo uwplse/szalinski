@@ -65,10 +65,10 @@ module fake_bearing(p_bearing_size,p_tolerance=0.25)
 	// build
 	difference()
 		{
-		cylinder(r=(p_bearing_size[1]-p_tolerance)/2,h=p_bearing_size[2],$fn=100);
+		cylinder(r=(p_bearing_size[1]-p_tolerance)/2,h=p_bearing_size[2],$fn=50);
 		translate([0,0,-l_diff_tol])
 			{
-			cylinder(r=(p_bearing_size[0])/2+p_tolerance,h=p_bearing_size[2]+l_diff_tol*2,$fn=100);
+			cylinder(r=(p_bearing_size[0])/2+p_tolerance,h=p_bearing_size[2]+l_diff_tol*2,$fn=50);
 			}
 		}
 	}
@@ -85,7 +85,7 @@ module BearingHole(p_bearing_size,p_tolerance=0.25)
 	// build
 	difference()
 		{
-		cylinder(r=(p_bearing_size[1]+p_tolerance)/2,h=p_bearing_size[2],$fn=100);
+		cylinder(r=(p_bearing_size[1]+p_tolerance)/2,h=p_bearing_size[2],$fn=50);
 		}
 	}
 

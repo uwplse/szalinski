@@ -8,7 +8,7 @@ numstart=1;
 numbers="Yes";  // [Yes,No]
 
 /* [Hidden] */
-$fn=100;
+$fn=50;
 
 width=tubes*16; //increments of 16
 

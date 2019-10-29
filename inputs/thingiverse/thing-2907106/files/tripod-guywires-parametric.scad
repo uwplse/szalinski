@@ -10,7 +10,7 @@ height = 80;
 
 
 /* [hidden] */
-$fn=360;
+$fn=50;
 guy_hole_radius = flange_diameter / 2 - 7;
 
 difference() {

@@ -11,7 +11,7 @@ wall_thickness=1.5;
 //interior height offset
 interior_height_offset=5;
 //resolution
-$fn=300; //[100,300,500]
+$fn=50; //[100,300,500]
 
 difference(){
   cylinder (exterior_height, d=interior_hole_diameter+wall_thickness );

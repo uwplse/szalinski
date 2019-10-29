@@ -11,7 +11,7 @@ length = 35;
 
 /* [Hidden] */
 
-$fn = 100;
+$fn = 50;
 angle = 27;
 //length of the support (mm)
 length = 35;

@@ -1,4 +1,4 @@
-$fn = 100;
+$fn = 50;
 
 nozzleRadius = 0.35 / 2;
 play = nozzleRadius;

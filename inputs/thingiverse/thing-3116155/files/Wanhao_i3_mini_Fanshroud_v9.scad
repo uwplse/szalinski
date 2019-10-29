@@ -54,8 +54,8 @@ difference() {
   translate([0, -35 + shroud_height, 5]) cube([40 + 10, 10, 20], center = true);
 
   // mounting holes on top
-  translate([-10, 18 + nozzle_height_finetuning, 0]) cylinder(20, 1.7, 1.7, true, $fn = 180);
-  translate([+10, 18 + nozzle_height_finetuning, 0]) cylinder(20, 1.7, 1.7, true, $fn = 180);
+  translate([-10, 18 + nozzle_height_finetuning, 0]) cylinder(20, 1.7, 1.7, true, $fn = 50);
+  translate([+10, 18 + nozzle_height_finetuning, 0]) cylinder(20, 1.7, 1.7, true, $fn = 50);
 
   // smooth top edges
   translate([20 + 4, 25 + 4, 0]) rotate([0, 0, 45]) cube([20, 20, 10], center = true);
@@ -63,7 +63,7 @@ difference() {
 
   difference() {  
     // opening for the main fan
-    translate([0, -4 - 1.0, 0]) cylinder(10, 18, 18, true, $fn = 180);
+    translate([0, -4 - 1.0, 0]) cylinder(10, 18, 18, true, $fn = 50);
   
     // cut the opening in half
     translate([0, -16 - 1.0, 0]) cube([40, 30, 20], center = true);
@@ -121,18 +121,18 @@ difference() {
   }
   
   // opening for the main fan
-  translate([0, -5, -5]) rotate([15, 0, 0]) cylinder(30, 18.6, 18.6, true, $fn = 180);
+  translate([0, -5, -5]) rotate([15, 0, 0]) cylinder(30, 18.6, 18.6, true, $fn = 50);
 
   // inner slope to lead towards the bottom
   translate([0, -22.5, -3]) rotate([15, 0, 0]) cube([37, 4, 9], center = true);
 
   // mounting holes for the fan (top)
-  translate([-16, 11, 0]) rotate([15, 0, 0]) cylinder(20, 1.43, 1.43, true, $fn = 180);
-  translate([+16, 11, 0]) rotate([15, 0, 0]) cylinder(20, 1.43, 1.43, true, $fn = 180);
+  translate([-16, 11, 0]) rotate([15, 0, 0]) cylinder(20, 1.43, 1.43, true, $fn = 50);
+  translate([+16, 11, 0]) rotate([15, 0, 0]) cylinder(20, 1.43, 1.43, true, $fn = 50);
 
   // mounting holes for the fan (bottom)
-  translate([-16, 11 - 31, -10]) rotate([15, 0, 0]) cylinder(10, 1.43, 1.43, true, $fn = 180);
-  translate([+16, 11 - 31, -10]) rotate([15, 0, 0]) cylinder(10, 1.43, 1.43, true, $fn = 180);
+  translate([-16, 11 - 31, -10]) rotate([15, 0, 0]) cylinder(10, 1.43, 1.43, true, $fn = 50);
+  translate([+16, 11 - 31, -10]) rotate([15, 0, 0]) cylinder(10, 1.43, 1.43, true, $fn = 50);
 
   // cut top towards the original shroud flush again
   translate([0, 3, 7.99]) cube([40 + 10, 50 + 10, 14], center = true);

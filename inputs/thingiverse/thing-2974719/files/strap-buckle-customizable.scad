@@ -24,7 +24,7 @@ intersection()
     
     // intersection to shape rounded borders with two spheres
     translate([pow(total_depth,1.2)-total_width/2,0,0])
-        sphere(pow(total_depth,1.2),$fn=60);
+        sphere(pow(total_depth,1.2),$fn=50);
     translate([-pow(total_depth,1.2)+total_width/2,0,0])
-        sphere(pow(total_depth,1.2),$fn=60);
+        sphere(pow(total_depth,1.2),$fn=50);
 }

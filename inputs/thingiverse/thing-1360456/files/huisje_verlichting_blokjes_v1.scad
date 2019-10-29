@@ -50,7 +50,7 @@ union()
         {
             translate([(height/2)+1,(width/2)+1,-3])
             {
-                cylinder(10,d=diameter,diameter/2,$fn=64);
+                cylinder(10,d=diameter,diameter/2,$fn=50);
             }
         }
         else
@@ -62,7 +62,7 @@ union()
                 {
                     translate([(height/2)+1,holestart+1,-3])
                     {
-                        cylinder(10,d=diameter,diameter/2,$fn=64);
+                        cylinder(10,d=diameter,diameter/2,$fn=50);
                     }
                 }
                
@@ -70,7 +70,7 @@ union()
                 {
                     translate([(height/2)+1,width - (holestart),-3])
                     {
-                        cylinder(10,d=diameter,diameter/2,$fn=64);
+                        cylinder(10,d=diameter,diameter/2,$fn=50);
                     }
                 }
                 
@@ -78,7 +78,7 @@ union()
                  {
                     translate([(height/2)+1,((n-1)*holewidth) + holestart,-3])
                     {
-                        cylinder(10,d=diameter,diameter/2,$fn=64);
+                        cylinder(10,d=diameter,diameter/2,$fn=50);
                     }
                 }   
             }

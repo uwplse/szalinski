@@ -28,12 +28,12 @@ pd = (md/3) - pin_tolerance;
 
 
 if (print_method) {
-    sphere(d=md, $fn=128);
+    sphere(d=md, $fn=50);
 } else {
     difference() {
         union() {
-            sphere(d=md, $fn=128);
-            translate([md*1.5,0,0]) sphere(d=md, $fn=128);
+            sphere(d=md, $fn=50);
+            translate([md*1.5,0,0]) sphere(d=md, $fn=50);
         }
         translate([-md,-md,-md*2]) cube([md*5,md*2,md*2]);
         if (print_pin) {

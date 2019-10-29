@@ -39,7 +39,7 @@ eye_space=325;
 
 /* [Hidden] */
 
-$fn=60;
+$fn=50;
 
 // diameter of screws to be used
 screw_d=3;

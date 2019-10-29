@@ -28,7 +28,7 @@ echo(webbing_length);
 // middle section
 difference() {
 	cube([spine_length, depth, height], center=true);
-	cylinder(d=spine_hole_diameter, h=height, $fn=128, center=true);
+	cylinder(d=spine_hole_diameter, h=height, $fn=50, center=true);
 }
 
 // arms - 15deg angle
@@ -46,6 +46,6 @@ translate([0, webbing_flat_offset, 0]) cube([webbing_length, 0.5, height], cente
 module arm() {
 	difference() {
 		cube([arm_length, depth, height], center=true);
-		rotate([90, 0, 90]) cylinder(d=7.8, h=arm_length + 0.1, $fn=128, center=true);
+		rotate([90, 0, 90]) cylinder(d=7.8, h=arm_length + 0.1, $fn=50, center=true);
 	}
 }

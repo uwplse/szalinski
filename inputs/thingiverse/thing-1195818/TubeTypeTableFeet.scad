@@ -27,7 +27,7 @@ outsideRadius = outsideDiameter / 2.0;
 module draw_one()
 {
     // Make it nice and round
-    $fn = 360;
+    $fn = 50;
     
     difference()
     {

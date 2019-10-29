@@ -30,7 +30,7 @@ clearance = 1;
 strip_thickness = 1;
 
 /* [Hidden] */
-$fn=100;
+$fn=50;
 
 print_part();
 

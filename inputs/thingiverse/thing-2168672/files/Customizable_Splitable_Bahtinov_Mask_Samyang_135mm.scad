@@ -35,7 +35,7 @@ grating_gap = 0.8; // [0.8:0.1:7.0]
 /* [Hidden] */
  
 min_wt = 3.0;
-$fn=300;
+$fn=50;
 
 outer_dia = inner_dia + 2*thickness;
 

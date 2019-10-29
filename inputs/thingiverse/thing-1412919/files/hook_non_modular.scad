@@ -25,10 +25,10 @@ module clip(_lip_width, _wire_radius, _do_flex_notch, _width, _wire_spacing, _sm
     difference() {
         cube([_wire_radius*4, _lip_width+(2*_wire_radius), _width]);
         translate([_wire_radius, _wire_radius*2, 0]) cube([_wire_radius*3, _lip_width-(2*_wire_radius), _width]);
-        translate([_wire_radius*2, _wire_radius*2, 0]) cylinder(r=_wire_radius, h=_width, $fn=100);
-        translate([_wire_radius*2,_lip_width, 0]) cylinder(r=_wire_radius, h=_width, $fn=100);
+        translate([_wire_radius*2, _wire_radius*2, 0]) cylinder(r=_wire_radius, h=_width, $fn=50);
+        translate([_wire_radius*2,_lip_width, 0]) cylinder(r=_wire_radius, h=_width, $fn=50);
         if(_do_flex_notch) {
-                translate([_wire_radius*2, _wire_radius*.9, 0]) cylinder(r=_wire_radius*0.3, h=_width, $fn = 100);
+                translate([_wire_radius*2, _wire_radius*.9, 0]) cylinder(r=_wire_radius*0.3, h=_width, $fn = 50);
         }
         //comming soon
         if(_wire_spacing < _wire_radius) {

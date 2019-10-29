@@ -28,7 +28,7 @@ module fullSphere()
 {
   difference()
     {
-     sphere(r= SPHERE_RADIUS, center=true, $fn=100); 
+     sphere(r= SPHERE_RADIUS, center=true, $fn=50); 
      sticks();
     }
 }

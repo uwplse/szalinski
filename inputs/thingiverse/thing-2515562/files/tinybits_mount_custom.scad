@@ -19,7 +19,7 @@ fc_z = 2.5;
 fc_mount_w=2;                   //Strength of the fc holder sidebars
 fc_mount_top=1;                 //How much to add from the fc height to the sideclamps
 
-$fn=60;
+$fn=50;
 
 option_fc_mount=true;
 option_fc_mount_cut=0.5;        //Add some clamp holders to the top of the fc sidebars

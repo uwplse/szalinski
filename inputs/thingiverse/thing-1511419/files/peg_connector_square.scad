@@ -1,7 +1,7 @@
 x_number=4;
 y_number=2;
 
-$fn=100;
+$fn=50;
 rod_radius=1.5;
 tolerance=0.25;
 
@@ -92,7 +92,7 @@ connector();
     }}
 }
 //// Diameter Test
-//$fn=100;
+//$fn=50;
 //// Hole from 2mm to 4mm in increments of 0.2
 //
 //difference()

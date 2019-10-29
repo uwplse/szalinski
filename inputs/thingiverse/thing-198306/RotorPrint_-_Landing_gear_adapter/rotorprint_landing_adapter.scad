@@ -25,7 +25,7 @@ screw_diameter = 3;
 
 /* [Hidden] */
 
-$fn = 100;
+$fn = 50;
 
 choose_part();
 

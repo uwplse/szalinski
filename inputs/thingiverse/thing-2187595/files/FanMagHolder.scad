@@ -33,7 +33,7 @@ Fan_Fiddle_Factor = 0.75; 	// The 0.75 is a fiddle factor to avoid short segment
 
 /* [Hidden] */
 
-$fn = 60;
+$fn = 50;
 Tad = 0.1;
 Tad2 = Tad*2;
 

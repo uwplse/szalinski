@@ -16,7 +16,7 @@ groove_dia = 51.0;
 groove_h = 1.25;
 
 // smoothing
-$fn = 64;
+$fn = 50;
 // padding for manifold (ignore)
 pad = 0.001; 
 

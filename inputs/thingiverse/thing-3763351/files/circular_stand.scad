@@ -13,7 +13,7 @@ legSegmentHeights = [5, 30, 0, 0, 0];
 
 /* [Hidden] */
 
-$fn = 100;
+$fn = 50;
 
 function add(v, i = 0, imax = 1e200) = i < len(v) - 1 && i < imax ? v[i] + add(v, i + 1, imax) : v[i];
 

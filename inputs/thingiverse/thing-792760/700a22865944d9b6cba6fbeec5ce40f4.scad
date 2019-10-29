@@ -65,8 +65,8 @@ module bottom(cardw, cardl, cardh, thick, cardldiv, cardwdiv)
         translate([cardwdiv*2,cardldiv,-thick]) cube([cardwdiv,cardl-cardldiv+thick,cardh+thick*2]);
     }
     translate([0,-5,0]) cube([cardw,cardl+5,cardh+5]);
-    translate([cardw+thick*1.4,cardldiv*5-cardldiv/5,cardh-thick*1.5]) rotate([90,0,0]) cylinder($fn = 100, r = thick, h = cardldiv*4-2*(cardldiv/5));
-    translate([-thick*1.4,cardldiv*5-cardldiv/5,cardh-thick*1.5]) rotate([90,0,0]) cylinder($fn = 100, r = thick, h = cardldiv*4-2*(cardldiv/5));
+    translate([cardw+thick*1.4,cardldiv*5-cardldiv/5,cardh-thick*1.5]) rotate([90,0,0]) cylinder($fn = 50, r = thick, h = cardldiv*4-2*(cardldiv/5));
+    translate([-thick*1.4,cardldiv*5-cardldiv/5,cardh-thick*1.5]) rotate([90,0,0]) cylinder($fn = 50, r = thick, h = cardldiv*4-2*(cardldiv/5));
     }
 }
 
@@ -85,10 +85,10 @@ union(){
         translate([-thick,0,-thick*2]) cube([cardw+thick*2,cardl,cardh+thick*2]);
         //#translate([cardldiv1/1.7-thick*2,cardldiv1+cardldiv1/1.7-thick-tol/10,thick*2]) cube([cardw1+thick*4-cardldiv1/1.7*2,cardldiv1*4-cardldiv1/1.7-thick+tol/2,cardh+thick*2]);
     }
-    translate([cardw+thick*1.4,cardldiv*2+cardldiv/5+1,cardh-thick*1.7]) rotate([90,0,0]) cylinder($fn = 100, r = thick, h = cardldiv);
-    translate([cardw+thick*1.4,cardldiv*5-cardldiv/5-1,cardh-thick*1.7]) rotate([90,0,0]) cylinder($fn = 100, r = thick, h = cardldiv);
-    translate([-thick*1.4,cardldiv*5-cardldiv/5-1,cardh-thick*1.7]) rotate([90,0,0]) cylinder($fn = 100, r = thick, h = cardldiv);
-    translate([-thick*1.4,cardldiv*2+cardldiv/5+1,cardh-thick*1.7]) rotate([90,0,0]) cylinder($fn = 100, r = thick, h = cardldiv);
+    translate([cardw+thick*1.4,cardldiv*2+cardldiv/5+1,cardh-thick*1.7]) rotate([90,0,0]) cylinder($fn = 50, r = thick, h = cardldiv);
+    translate([cardw+thick*1.4,cardldiv*5-cardldiv/5-1,cardh-thick*1.7]) rotate([90,0,0]) cylinder($fn = 50, r = thick, h = cardldiv);
+    translate([-thick*1.4,cardldiv*5-cardldiv/5-1,cardh-thick*1.7]) rotate([90,0,0]) cylinder($fn = 50, r = thick, h = cardldiv);
+    translate([-thick*1.4,cardldiv*2+cardldiv/5+1,cardh-thick*1.7]) rotate([90,0,0]) cylinder($fn = 50, r = thick, h = cardldiv);
 
 translate([-thick*2,cardldiv*5+tol/10,cardh-thick*2]) cube([thick*2,thick,thick*3]);
     translate([cardw,cardldiv*5+tol/10,cardh-thick*2]) cube([thick*2,thick,thick*3]);
@@ -126,7 +126,7 @@ module support(cardw, cardl, cardh, thick, cardldiv, cardwdiv, sup)
         translate([cardwdiv*2-0.7,cardldiv,-thick]) cube([cardwdiv+1.4,cardl-cardldiv+thick,cardh+thick*2]);
     }
     translate([0,-5,0]) cube([cardw,cardl+5,cardh+5]);
-    translate([cardw+thick*1.4,cardldiv*5-cardldiv/5,cardh-thick*1.5]) rotate([90,0,0]) cylinder($fn = 100, r = thick, h = cardldiv*4-2*(cardldiv/5));
-    translate([-thick*1.4,cardldiv*5-cardldiv/5,cardh-thick*1.5]) rotate([90,0,0]) cylinder($fn = 100, r = thick, h = cardldiv*4-2*(cardldiv/5));
+    translate([cardw+thick*1.4,cardldiv*5-cardldiv/5,cardh-thick*1.5]) rotate([90,0,0]) cylinder($fn = 50, r = thick, h = cardldiv*4-2*(cardldiv/5));
+    translate([-thick*1.4,cardldiv*5-cardldiv/5,cardh-thick*1.5]) rotate([90,0,0]) cylinder($fn = 50, r = thick, h = cardldiv*4-2*(cardldiv/5));
     }
 }}

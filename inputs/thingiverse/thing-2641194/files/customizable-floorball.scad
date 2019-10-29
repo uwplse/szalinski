@@ -61,7 +61,7 @@ module half_a_floorball() {
 
 module half_sphere() {
   difference() {
-    sphere(r=radius, $fn=60);
+    sphere(r=radius, $fn=50);
     
     translate([-radius, -radius, -radius])
       cube([2*radius, 2*radius, radius]);

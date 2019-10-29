@@ -28,7 +28,7 @@ rubber_band_post_angle=30;
 antenna_diameter=40;
 antenna_wire=2;
 antenna_ball_diameter=4;
-$fn=100;
+$fn=50;
 
 difference(){
 hull(){

@@ -44,15 +44,15 @@ module post_clamp_90() {
 			//generates basic shape, a hull of two perpendicular cylinders
 			
 			//the first cylinder will be "drilled" to fit around a post
-			cylinder(r=post_diameter/2+clamp_wall_thick, h=clamp_height, $fn=360, center=true);
+			cylinder(r=post_diameter/2+clamp_wall_thick, h=clamp_height, $fn=50, center=true);
 			translate([0, post_diameter/2+clamp_wall_thick+mount_depth/2, 0]) {
 				//base of clamp that will be "drilled" and tapped
 				rotate([90, 0, 0]) {
-					cylinder(r=mount_diameter/2, mount_depth, $fn=360,center=true);
+					cylinder(r=mount_diameter/2, mount_depth, $fn=50,center=true);
 				}
 			}
 		}
-		cylinder(r=post_diameter/2, h=clamp_height+1, $fn=360, center=true); //hole for post
+		cylinder(r=post_diameter/2, h=clamp_height+1, $fn=50, center=true); //hole for post
 		translate([post_diameter/4+clamp_wall_thick/5, 0, 0]) {//generates clamping notch in post hole
 			rotate([0, 0, 0]) {
 				cube(size=[post_diameter/2, post_diameter/3, clamp_height+1], center=true);//clamping notch
@@ -60,12 +60,12 @@ module post_clamp_90() {
 		}
 		translate([-(post_diameter/2+clamp_wall_thick+1)/2, 0, 0]) {//clamp screw hole
 			rotate([0, 90, 0]) {
-				cylinder(r=clamp_screw_diameter/2, h=post_diameter/2+clamp_wall_thick+1, $fn=360, center=true);
+				cylinder(r=clamp_screw_diameter/2, h=post_diameter/2+clamp_wall_thick+1, $fn=50, center=true);
 			}
 		}
 		translate([0, post_diameter/2+clamp_wall_thick, 0]) {//mount screw hole
 			rotate([-90, 0, 0]) {
-				cylinder(r=mount_screw_diameter/2, h=mount_depth+1, $fn=360, center=false);
+				cylinder(r=mount_screw_diameter/2, h=mount_depth+1, $fn=50, center=false);
 
 			}
 		}

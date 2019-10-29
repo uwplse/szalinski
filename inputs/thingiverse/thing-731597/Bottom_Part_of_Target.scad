@@ -1,4 +1,4 @@
-$fn=100;
+$fn=50;
 width=60;//dont change unless you change the width of the part that goes into this slot
 length=80;
 total_height=25;

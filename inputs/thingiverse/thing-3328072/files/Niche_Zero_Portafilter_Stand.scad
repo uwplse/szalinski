@@ -1,4 +1,4 @@
-$fn=180*1;
+$fn=50*1;
 
 // PF Stand Height
 H=55;

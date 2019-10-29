@@ -12,7 +12,7 @@ frame_width=60; // [10:150]
 
 /* [Hidden] */
 
-$fn=60;
+$fn=50;
 rod_half=rod_height/2;
 
 quarter_frame=(frame_width-(rod_diameter*3))/2;

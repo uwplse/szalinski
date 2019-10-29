@@ -28,7 +28,7 @@ straw_radius=straw_dia/2;
 straw_wall=3;
 cup_radius=cup_diameter/2;
 tab_length=straw_radius+straw_wall+cup_wall_thickness+5;
-$fn=100;
+$fn=50;
 
 difference(){
 

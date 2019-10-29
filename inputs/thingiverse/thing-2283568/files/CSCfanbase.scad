@@ -8,7 +8,7 @@
 //
 // Version 0.1
 
-$fn=60;
+$fn=50;
 
 W=40; //Width (equals height)
 Wbp=W+24; //Base Plate Width

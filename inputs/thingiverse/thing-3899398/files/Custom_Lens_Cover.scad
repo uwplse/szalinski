@@ -18,5 +18,5 @@ rh1=rh+h;
 r=d/2;
 r1=r+rt;
 difference() {
-cylinder(rh1,r=r1,true,$fn=100);
-translate([0,0,h]) cylinder(10000000000,r=r,true,$fn=100);}
+cylinder(rh1,r=r1,true,$fn=50);
+translate([0,0,h]) cylinder(10000000000,r=r,true,$fn=50);}

@@ -17,7 +17,7 @@ vacuum_mount_angle=15;
 vacuum_x_offset=25;
 magnet_hole_diameter=13;
 magnet_height=1.2;
-$fn=100;
+$fn=50;
 
 use <hull.scad>
 

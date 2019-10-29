@@ -25,7 +25,7 @@
 //     -0.9.0 - 2016nov05 - fiveangle@gmail.com - Released on thingiverse in order to facilitate ongoing XY calbiration discussion at https://github.com/MarlinFirmware/Marlin/issues/5116
 
 // adjust to increase/decrease polygon count at expense of processing time (above 100 is probably useless)
-$fn = 100;
+$fn = 50;
 bedX = 250;
 bedY = 210;
 

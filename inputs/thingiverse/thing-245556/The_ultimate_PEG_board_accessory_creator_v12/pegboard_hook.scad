@@ -46,9 +46,9 @@ module fit_peg()
 {
     union() {
         translate ([0,0,-backing_board+4]) 
-            sphere(sphere_size/2, $fn=100);
+            sphere(sphere_size/2, $fn=50);
         translate ([0,0,-backing_board+4]) 
-            cylinder(h = backing_board+1, r = cylinder_radius,$fn=100);
+            cylinder(h = backing_board+1, r = cylinder_radius,$fn=50);
     }
 }
 
@@ -89,9 +89,9 @@ module hook() {
     		difference() {
         		translate ([-2*peg_offset+2*magic_offset,cylinder_radius-.25,peg_length]) {
             		rotate(a=[90,90,0]) {
-                		rotate_extrude(convexity = 10, $fn = 100)
+                		rotate_extrude(convexity = 10, $fn = 50)
                 		translate([6+cylinder_radius, 0, 0])
-                		square(size=hook_width, $fn = 100);
+                		square(size=hook_width, $fn = 50);
             		}
         		}
         		translate ([-2*peg_offset+2*magic_offset,-(magic_offset+1)/2,-1]) cube( size= [80,80,80], center=false);
@@ -100,9 +100,9 @@ module hook() {
 		difference() {
         		translate ([-peg_offset+5,cylinder_radius-.25,peg_length]) {
            		rotate(a=[90,90,0]) {
-                		rotate_extrude(convexity = 10, $fn = 100)
+                		rotate_extrude(convexity = 10, $fn = 50)
              	   	translate([6+cylinder_radius, 0, 0])
-        		        square(size=hook_width, $fn = 100);
+        		        square(size=hook_width, $fn = 50);
     		        }
 	        }
         		translate ([-peg_offset+5,-(magic_offset+1)/2,-1]) cube( size= [80,80,80], center=false);

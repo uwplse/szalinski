@@ -1,6 +1,6 @@
 use <nuts_and_bolts_v1.95.scad>;
 
-$fn=60;
+$fn=50;
 
 cross_length=34;
 

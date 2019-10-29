@@ -11,7 +11,7 @@ BandHeight_mm=13;//[3:20]
 //3mm thick is still flexible
 BandThickness_mm=3;//[1:8]
 //Determines number of sides / facets... more is smoother
-$fn=128;
+$fn=50;
 
 CircPercent = HeadCircumference_mm/540;
 CalcLength = BaseLength*CircPercent/2;

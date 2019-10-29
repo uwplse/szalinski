@@ -37,7 +37,7 @@ module vertwalls(rmin, hr)
 
 
 //main
-$fn=100;
+$fn=50;
 union()
   {
   for(l=[0:nlayers])

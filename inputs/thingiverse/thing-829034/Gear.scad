@@ -37,11 +37,11 @@ module gear(){
 module gearh(){
     difference(){
         gear();
-        cylinder(GearHeight,HoleRadius,HoleRadius,$fn=100);
+        cylinder(GearHeight,HoleRadius,HoleRadius,$fn=50);
     }
     difference(){
-        cylinder(GearHeight*2,HoleRadius+SizeOfNozzle,HoleRadius+SizeOfNozzle,$fn = 100);
-        cylinder(GearHeight*2,HoleRadius,HoleRadius,$fn = 100);
+        cylinder(GearHeight*2,HoleRadius+SizeOfNozzle,HoleRadius+SizeOfNozzle,$fn = 50);
+        cylinder(GearHeight*2,HoleRadius,HoleRadius,$fn = 50);
     }
 }
 
@@ -49,7 +49,7 @@ module gearh(){
 union(){
     gearh();
     translate([0,GearRadius/2,GearHeight]){
-        cylinder(HandleHeight,GearRadius/10,GearRadius/10,$fn = 100);
+        cylinder(HandleHeight,GearRadius/10,GearRadius/10,$fn = 50);
     }
 }
 //6 Gears On Outside

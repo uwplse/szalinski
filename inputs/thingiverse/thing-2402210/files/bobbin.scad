@@ -29,7 +29,7 @@ height_tolerance = 0.1;
 
 
 /* [Hidden] */
-$fn = 64;
+$fn = 50;
 eps1 = 0 + 00.01;
 eps2 = 2 * eps1;
 

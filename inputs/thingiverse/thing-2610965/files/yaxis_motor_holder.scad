@@ -8,7 +8,7 @@ $rail_distance = 20;
 $rail_diameter = 8.5; // M8 screw H13
 $rail_to_body = 15;
 
-$fn = 64;
+$fn = 50;
 
 difference() {
     union() {

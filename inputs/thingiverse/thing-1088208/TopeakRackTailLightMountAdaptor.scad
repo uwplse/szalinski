@@ -22,7 +22,7 @@ Standard chinese tail light slide track:
 	wall thickness: 
 
 */
-$fn = 100;
+$fn = 50;
 overlap = 0.01; // negligible amount necessary to make unions and differences render properly
 
 bracket_height = 20.3;

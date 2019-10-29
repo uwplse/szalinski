@@ -31,7 +31,7 @@ tiefe = wand+rahmen+wand;		// X-Richtung wenn montiert
 hoehe = gabel+boden+bohrung+dach;	// Z-Richtung wenn montiert
 // zur Verbesserung vom OpenSCAD Preview
 little=0.01;				
-$fn = 90;
+$fn = 50;
 
 module Wellenbock()  {
 	difference()  {

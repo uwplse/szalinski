@@ -2,7 +2,7 @@
 //Default settings for eSun spools
 
 //Number of Faces/How Smooth
-$fn=360; //[15:360]
+$fn=50; //[15:360]
 
 //Brim Radius
 brim_radius = 2.5;

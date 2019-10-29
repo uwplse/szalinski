@@ -38,17 +38,17 @@ translate([cornerrad, cornerrad, 0]){
         difference() {
             hull() {
                 h = (height/2);
-                translate([0,0,h]) cylinder(h=height, r=cornerrad, $fn=80, center = true);
-                translate([0,l,h]) cylinder(h=height, r=cornerrad, $fn=80, center = true);
-                translate([w,l,h]) cylinder(h=height, r=cornerrad, $fn=80, center = true);
-                translate([w,0,h]) cylinder(h=height, r=cornerrad, $fn=80, center = true);
+                translate([0,0,h]) cylinder(h=height, r=cornerrad, $fn=50, center = true);
+                translate([0,l,h]) cylinder(h=height, r=cornerrad, $fn=50, center = true);
+                translate([w,l,h]) cylinder(h=height, r=cornerrad, $fn=50, center = true);
+                translate([w,0,h]) cylinder(h=height, r=cornerrad, $fn=50, center = true);
             }
             hull() {
                 h = (height/2) + thickness;
-                translate([0,0,h]) cylinder(h=height, r=cornerrad-outwalls, $fn=80, center = true);
-                translate([0,l,h]) cylinder(h=height, r=cornerrad-outwalls, $fn=80, center = true);
-                translate([w,l,h]) cylinder(h=height, r=cornerrad-outwalls, $fn=80, center = true);
-                translate([w,0,h]) cylinder(h=height, r=cornerrad-outwalls, $fn=80, center = true);
+                translate([0,0,h]) cylinder(h=height, r=cornerrad-outwalls, $fn=50, center = true);
+                translate([0,l,h]) cylinder(h=height, r=cornerrad-outwalls, $fn=50, center = true);
+                translate([w,l,h]) cylinder(h=height, r=cornerrad-outwalls, $fn=50, center = true);
+                translate([w,0,h]) cylinder(h=height, r=cornerrad-outwalls, $fn=50, center = true);
             }
         }
         
@@ -72,18 +72,18 @@ translate([cornerrad, cornerrad, 0]){
         difference() {
             hull() {
                 h = (lidheight/2);
-                translate([0,0,h]) cylinder(h=lidheight, r=cornerrad+tol+outwalls, $fn=80, center = true);
-                translate([0,l,h]) cylinder(h=lidheight, r=cornerrad+tol+outwalls, $fn=80, center = true);
-                translate([w,l,h]) cylinder(h=lidheight, r=cornerrad+tol+outwalls, $fn=80, center = true);
-                translate([w,0,h]) cylinder(h=lidheight, r=cornerrad+tol+outwalls, $fn=80, center = true);
+                translate([0,0,h]) cylinder(h=lidheight, r=cornerrad+tol+outwalls, $fn=50, center = true);
+                translate([0,l,h]) cylinder(h=lidheight, r=cornerrad+tol+outwalls, $fn=50, center = true);
+                translate([w,l,h]) cylinder(h=lidheight, r=cornerrad+tol+outwalls, $fn=50, center = true);
+                translate([w,0,h]) cylinder(h=lidheight, r=cornerrad+tol+outwalls, $fn=50, center = true);
             }
             
             hull() {
                 h = (lidheight/2) + lidthickness;
-                translate([0,0,h]) cylinder(h=lidheight, r=(cornerrad)+tol, $fn=80, center = true);
-                translate([0,l,h]) cylinder(h=lidheight, r=(cornerrad)+tol, $fn=80, center = true);
-                translate([w,l,h]) cylinder(h=lidheight, r=(cornerrad)+tol, $fn=80, center = true);
-                translate([w,0,h]) cylinder(h=lidheight, r=(cornerrad)+tol, $fn=80, center = true);
+                translate([0,0,h]) cylinder(h=lidheight, r=(cornerrad)+tol, $fn=50, center = true);
+                translate([0,l,h]) cylinder(h=lidheight, r=(cornerrad)+tol, $fn=50, center = true);
+                translate([w,l,h]) cylinder(h=lidheight, r=(cornerrad)+tol, $fn=50, center = true);
+                translate([w,0,h]) cylinder(h=lidheight, r=(cornerrad)+tol, $fn=50, center = true);
             }
         }
     }

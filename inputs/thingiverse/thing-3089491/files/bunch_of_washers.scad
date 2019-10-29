@@ -1,4 +1,4 @@
-$fn=200;
+$fn=50;
 
 /* [Washer Diameter (OD)] */
 outerdia = 5;  // [0:0.1:100]

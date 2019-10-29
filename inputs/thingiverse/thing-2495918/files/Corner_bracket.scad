@@ -44,7 +44,7 @@ union() {
             cube([$size+$plateLengt,$size+$plateLengt,$hight-(2*$wall)]); //inner
         }
         //top and bottom screw
-        translate ([$size/2,$size/2,$hight]) rotate ([0,0,90]) cylinder (h = 2*$hight , r=$screwsize, center = true, $fn=100); 
+        translate ([$size/2,$size/2,$hight]) rotate ([0,0,90]) cylinder (h = 2*$hight , r=$screwsize, center = true, $fn=50); 
     }
 
     //Side plates
@@ -54,8 +54,8 @@ union() {
             cube([$plateLengt,$wall-$plate,$hight]) color([255,0,0]); //inner
         }
         //screws
-        translate ([$size+$plateLengt/2,$wall,$hight-$screwdistance]) rotate ([90,0,0]) cylinder (h = 2*$wall , r=$screwsize, center = true, $fn=100);
-        translate ([$size+$plateLengt/2,$wall,$screwdistance]) rotate ([90,0,0]) cylinder (h = 2*$wall , r=$screwsize, center = true, $fn=100);
+        translate ([$size+$plateLengt/2,$wall,$hight-$screwdistance]) rotate ([90,0,0]) cylinder (h = 2*$wall , r=$screwsize, center = true, $fn=50);
+        translate ([$size+$plateLengt/2,$wall,$screwdistance]) rotate ([90,0,0]) cylinder (h = 2*$wall , r=$screwsize, center = true, $fn=50);
     }
     
     difference() {    
@@ -64,7 +64,7 @@ union() {
             cube([$wall-$plate,$plateLengt,$hight]) color([255,0,0]); //inner
         }
         //screws
-        translate ([$wall,$size+$plateLengt/2,$hight-$screwdistance]) rotate ([0,90,0]) cylinder (h = 2*$wall , r=$screwsize, center = true, $fn=100);
-        translate ([$wall,$size+$plateLengt/2,$screwdistance]) rotate ([0,90,0]) cylinder (h = 2*$wall , r=$screwsize, center = true, $fn=100);
+        translate ([$wall,$size+$plateLengt/2,$hight-$screwdistance]) rotate ([0,90,0]) cylinder (h = 2*$wall , r=$screwsize, center = true, $fn=50);
+        translate ([$wall,$size+$plateLengt/2,$screwdistance]) rotate ([0,90,0]) cylinder (h = 2*$wall , r=$screwsize, center = true, $fn=50);
     }
 }

@@ -62,6 +62,6 @@ module main_body(){
 module fancy_body(){
 hull(){
     translate ([0,0,Height_z/4]) cube (size = [length_x,Width_y,Height_z/2], center = true);
-    translate ([0,0,Height_z/2]) scale ([length_x,2,1])rotate ([0,90,0]) cylinder (h = 1, r=Height_z/2, center = true, $fn=100);
+    translate ([0,0,Height_z/2]) scale ([length_x,2,1])rotate ([0,90,0]) cylinder (h = 1, r=Height_z/2, center = true, $fn=50);
 }
 }

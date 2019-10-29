@@ -6,8 +6,8 @@ module zstop(tk=2){
 difference(){
 translate([0,0,0])  cube([9,10,10]);
 translate([2,-0,tk]) cube([4.56,20,50]);
-translate([2,10,tk]) rotate([90,0,0]) cylinder(r=1,h=20,$fn=100);
-translate([6.5,10,tk]) rotate([90,0,0]) cylinder(r=1,h=20,$fn=100);
+translate([2,10,tk]) rotate([90,0,0]) cylinder(r=1,h=20,$fn=50);
+translate([6.5,10,tk]) rotate([90,0,0]) cylinder(r=1,h=20,$fn=50);
 
 }}
 

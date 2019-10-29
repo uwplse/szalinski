@@ -24,7 +24,7 @@ batteryConnectorThickness = 1.75;
 batteryHolderHoleDiameter = 3;
 
 /* [Hidden] */
-$fn = 64;
+$fn = 50;
 
 spacing = 0.2;
 batteryRadius = batteryDiameter / 2;

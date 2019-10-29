@@ -2,7 +2,7 @@
 
 // Makes a whiskerbiscuit suitable for slingbows
 
-$fn=150;
+$fn=50;
 vres=0.15; // vertical resolution of printer
 hres=0.4;  // horizontal rsolution of printer
 wall_thickness=hres*1.1;

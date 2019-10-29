@@ -9,7 +9,7 @@ height = mag_height * clearance;
 trans = sphere_radius/2*(-1);
 
 difference() {
-    sphere(sphere_radius,$fn=200);
+    sphere(sphere_radius,$fn=50);
     translate ([trans,trans,trans])cube(sphere_radius*2);
 
     translate ([0,0,trans]) rotate([180,0,0]) cylinder(height,radius,radius);

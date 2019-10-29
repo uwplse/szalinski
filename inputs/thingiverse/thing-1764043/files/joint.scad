@@ -20,7 +20,7 @@ depth=10;    // [4:40]
 
 radius=8;    // [1:20]
 
-$fn=60;      // [8:90]
+$fn=50;      // [8:90]
 
 joint(width, depth, radius);
 

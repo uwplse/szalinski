@@ -2,7 +2,7 @@ Diameter=26.48;
 Thickness=1.92;
 RingDia=3;
 SlotThick=1;
-$fn=60;
+$fn=50;
 
 difference(){
     union(){

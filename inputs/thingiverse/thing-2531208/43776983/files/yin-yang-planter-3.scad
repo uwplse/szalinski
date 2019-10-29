@@ -21,7 +21,7 @@ saucerHeight = 7; //[5:1:20]
 saucerWall = .9; //[.9:.1:6]
 
 /* [Hidden] */
-$fn = 90;
+$fn = 50;
 x = 0; y = 1; z = 2;
 outerR = outerD/2;
 innerR = outerR-wall;

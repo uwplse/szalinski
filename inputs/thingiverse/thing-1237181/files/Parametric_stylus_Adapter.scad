@@ -11,7 +11,7 @@ module penAdapter(mountDiameter=22, mountHeight=15)
 
     difference () {
     
-        cylinder(r=mountDiameter/2-tolerance, h= mountHeight, $fn=70);
+        cylinder(r=mountDiameter/2-tolerance, h= mountHeight, $fn=50);
 
         union () {
             stylusMount();
@@ -24,7 +24,7 @@ module penAdapter(mountDiameter=22, mountHeight=15)
 
 module stylusMount (mountHeight=15) {
 
-    translate([0,0,-1]) cylinder(r=stylusDiameter/2+tolerance, mountHeight+2, $fn=70);      
+    translate([0,0,-1]) cylinder(r=stylusDiameter/2+tolerance, mountHeight+2, $fn=50);      
 }
 
 module space (mountDiameter=22, mountHeight=15, spaceSize=2) {

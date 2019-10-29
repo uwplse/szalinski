@@ -8,7 +8,7 @@ outer_height=16;
 inner_height=12; 
 
 
-$fn=100+0;
+$fn=50+0;
 difference() {
 cylinder(r=cap_diameter/2,h=outer_height,center=true);
 translate([0,0,(outer_height-inner_height)/2+.1])

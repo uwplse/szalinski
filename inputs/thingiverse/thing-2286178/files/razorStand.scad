@@ -1,7 +1,7 @@
 razordiameter=13;
 brushdiameter=26;
 
- $fn=100;
+ $fn=50;
  translate([60,0,60]) difference(){
    rotate([0,90,90])difference(){
         cylinder(h=50, d=120);

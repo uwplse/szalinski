@@ -20,7 +20,7 @@ option_cutout_rear=true;
 
 //Helper/Misc
 n=0.1;  //little additional space for substracting
-$fn=60; //Level of detail on the rounding
+$fn=50; //Level of detail on the rounding
 
 module body(factor,height) {
     r=cutout_r+factor;

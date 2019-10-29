@@ -25,7 +25,7 @@ attache_valise(0,0,0);
 
 module cylindre_vis(x,y,z,h)
 {
-    $fn = 200;
+    $fn = 50;
     hcyl = h + h_cyl;
     r1 = d_trou_vis * 0.5;
     r2 = d_cyl * 0.5;
@@ -43,7 +43,7 @@ module cylindre_vis(x,y,z,h)
 
 module trou_vis(x,y,z,h)
 {
-    $fn = 200;
+    $fn = 50;
     hcyl = h + h_cyl;
     r1 = d_trou_vis * 0.5;
     r2 = d_cyl * 0.5;
@@ -56,7 +56,7 @@ module trou_vis(x,y,z,h)
 
 module creux_sangle(x,y,z)
 {
-    $fn = 200;
+    $fn = 50;
     
     r_coin = 2;
     
@@ -114,7 +114,7 @@ module creux_sangle(x,y,z)
         
 module part_ext(x,y,z)
 {
-    $fn = 200;
+    $fn = 50;
     
     r1 = lr*0.5;
     r2 = 3;

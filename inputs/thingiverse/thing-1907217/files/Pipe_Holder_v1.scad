@@ -57,7 +57,7 @@ module holder_module(){ //create module
             union() {//start union
                 
                 //create outer cylinder
-                translate ([0,0,0]) cylinder(holder_h,od_dia/2,od_dia/2,$fn=60, true);
+                translate ([0,0,0]) cylinder(holder_h,od_dia/2,od_dia/2,$fn=50, true);
                 //create oblong bracket
                 translate ([0,(support_len/2)+(id_dia/2),-(holder_h/2)+(support_h/2)]) oblong(support_w,support_len,support_h,race_open,true);
                 
@@ -65,7 +65,7 @@ module holder_module(){ //create module
                             
     //start subtraction of difference
                      //remove center of holder by diff-ing another cylinder
-                     translate ([0,0,0]) cylinder(holder_h+2,id_dia/2,id_dia/2,$fn=60, true);
+                     translate ([0,0,0]) cylinder(holder_h+2,id_dia/2,id_dia/2,$fn=50, true);
                     
                      //create cube to diff on par of the holder
                      translate ([0,-((od_dia/2)+holder_offset),0]) cube([od_dia+5,od_dia+5,holder_h+5], true);
@@ -84,11 +84,11 @@ module oblong(dia,len_r,tall,hole_1,center){
         union() {//start union
             //create base oblong structure
             cube([dia,len_r,tall], center);
-            translate ([0,len_r/2,0]) cylinder(tall,dia/2,dia/2,$fn=60, center);
+            translate ([0,len_r/2,0]) cylinder(tall,dia/2,dia/2,$fn=50, center);
                 } //end union
         
      //remove hole and create race   
-            translate ([0,len_r/2,-1]) cylinder(tall+3,hole_1/2,hole_1/2,$fn=60, center);
+            translate ([0,len_r/2,-1]) cylinder(tall+3,hole_1/2,hole_1/2,$fn=50, center);
             translate ([0,0,-1]) cube([hole_1,len_r,tall+3], center);
         
     } //end differance
@@ -97,9 +97,9 @@ module oblong(dia,len_r,tall,hole_1,center){
 module zip_strip (zip_od,zip_id,zip_z,center){
     difference() {
         union() {
-             translate ([0,0,0]) cylinder(zip_z,zip_od/2,zip_od/2,$fn=60, center);
+             translate ([0,0,0]) cylinder(zip_z,zip_od/2,zip_od/2,$fn=50, center);
         } //end union
-             translate ([0,0,-1]) cylinder(zip_z+2,zip_id/2,zip_id/2,$fn=60, center);
+             translate ([0,0,-1]) cylinder(zip_z+2,zip_id/2,zip_id/2,$fn=50, center);
     } //end differance
     
 }//end module

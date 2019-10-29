@@ -27,10 +27,10 @@ include <module_thread.scad>
 
 module myPhone(height,width,thickness,arrondi){
     hull(){
-        cylinder(d=arrondi ,h=thickness, $fn=100);
-        translate([0,width-arrondi,0]) cylinder(d=arrondi ,h=thickness, $fn=100);
-        translate([height-arrondi,width-arrondi,0]) cylinder(d=arrondi ,h=thickness, $fn=100);
-        translate([height-arrondi,0,0])cylinder(d=arrondi ,h=thickness, $fn=100);
+        cylinder(d=arrondi ,h=thickness, $fn=50);
+        translate([0,width-arrondi,0]) cylinder(d=arrondi ,h=thickness, $fn=50);
+        translate([height-arrondi,width-arrondi,0]) cylinder(d=arrondi ,h=thickness, $fn=50);
+        translate([height-arrondi,0,0])cylinder(d=arrondi ,h=thickness, $fn=50);
     }
 }
 
@@ -126,8 +126,8 @@ module SupportLaptop(){
 module screw(){
     for(i=[0:14]){
         hull(){
-          rotate([0,0,15*i])translate([7,0,0])cylinder(h=5,r=1,$fn=100);
-          rotate([0,0,-15*i])translate([7,0,0])cylinder(h=5,r=1,$fn=100);
+          rotate([0,0,15*i])translate([7,0,0])cylinder(h=5,r=1,$fn=50);
+          rotate([0,0,-15*i])translate([7,0,0])cylinder(h=5,r=1,$fn=50);
         }
     }
     english_thread(0.45, 5, 0.55);    

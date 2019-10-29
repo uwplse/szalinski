@@ -1,5 +1,5 @@
 // Pen holder, Rite In The Rain
-$fn     = 100;
+$fn     = 50;
 pd      = 9.5;    // pen diameter
 height  = 25;       // height of holder
 mat_t   = 2;        // materiale thickness

@@ -14,7 +14,7 @@ l=69.5;
 // diamter
 d=11;
 
-$fn=100;
+$fn=50;
 
 module bolt(){
 union(){

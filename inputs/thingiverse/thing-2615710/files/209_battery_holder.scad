@@ -25,7 +25,7 @@ hole_depth = cell_diameter;
 
 // transparent battery image
 module battery(cell_height, cell_diameter) {
-    cylinder(h=cell_height, d=cell_diameter, center=true, $fn=100);
+    cylinder(h=cell_height, d=cell_diameter, center=true, $fn=50);
 }
 //%battery(cell_height, cell_diameter);
 

@@ -33,7 +33,7 @@ $hole_diameter = 3.4;
 $r1 = ($fan_guard_width / 3.33);
 $r2 = ($fan_guard_width / 5);
 
-$fn = 60;
+$fn = 50;
 
 difference() {
     union() {

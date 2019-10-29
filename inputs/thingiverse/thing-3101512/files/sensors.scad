@@ -24,8 +24,8 @@ module sonar() {
     // "глаз" сонара - цилиндр
     module sonar_eye() {
         difference() {
-            cylinder(r=8, h=12, $fn=100);
-            translate([0, 0, 11]) cylinder(r=6, h=1+0.1, $fn=100);
+            cylinder(r=8, h=12, $fn=50);
+            translate([0, 0, 11]) cylinder(r=6, h=1+0.1, $fn=50);
         }
     }
 
@@ -48,7 +48,7 @@ module ir_line_sensor() {
     difference() {
         translate([-7, 0, 0]) cube([14, 31, 2]);
 
-        translate([0, 7, -0.1]) cylinder(r=1.5, h=2+0.2, $fn=100);
+        translate([0, 7, -0.1]) cylinder(r=1.5, h=2+0.2, $fn=50);
     }
 
     // подстроечный резистор

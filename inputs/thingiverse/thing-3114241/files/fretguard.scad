@@ -10,7 +10,7 @@ baseLength = fretWidth + 2*5;
 baseHeight = fretHeight/2;
 edgeWidth = 1*1;
 edgeHeight = 1*1;
-$fn=90*1;
+$fn=50*1;
 
 module base(width, length, height) {
    translate([0,0, height/2]) { 

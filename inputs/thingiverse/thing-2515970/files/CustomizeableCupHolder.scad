@@ -14,7 +14,7 @@ clipLength=30; // [1:999]
 clipAngle=5; // [1:89]
 
 /* [Hidden] */
-$fn=100;
+$fn=50;
 
 module inner_cup() {
   translate([0, 0, wallThickness]) {

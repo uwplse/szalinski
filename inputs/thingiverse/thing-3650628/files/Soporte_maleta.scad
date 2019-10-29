@@ -61,17 +61,17 @@ Carro = Dia_Carro/2;
 
 module Mordaza() {
 hull() {
-    cylinder(Ancho,Tubo+Grosor,Tubo+Grosor,$fn=100,center=true);
+    cylinder(Ancho,Tubo+Grosor,Tubo+Grosor,$fn=50,center=true);
         translate([Diametro-Grosor/2,0,0])
         rotate([0,90,90])
-            cylinder(Diametro+Grosor*2,Ancho/2,Ancho/2,$fn=100,center=true);
+            cylinder(Diametro+Grosor*2,Ancho/2,Ancho/2,$fn=50,center=true);
         }
                  }
 
 
 module Carrito() {
 translate([-Tubo-Dia_Carro/2-Grosor*2-Separacion,0,0])
-    cylinder(Ancho,Carro+Grosor,Carro+Grosor,$fn=100,center=true);
+    cylinder(Ancho,Carro+Grosor,Carro+Grosor,$fn=50,center=true);
                   }
 
 
@@ -87,7 +87,7 @@ difference() {
 Base();
     
     translate([-Tubo-Dia_Carro/2-Grosor*2-Separacion,0,0])
-        cylinder(Ancho+1,Carro,Carro,$fn=100,center=true);
+        cylinder(Ancho+1,Carro,Carro,$fn=50,center=true);
 
 
     translate([-Tubo-Dia_Carro/2-Separacion/2-3,Carro,0])
@@ -95,15 +95,15 @@ Base();
         cube([Carro*3,Carro,Ancho+1],center=true);
 
 
-    cylinder(Ancho+1,Tubo,Tubo,$fn=100,center=true);
+    cylinder(Ancho+1,Tubo,Tubo,$fn=50,center=true);
 
     translate([Diametro-Grosor/2,0,0])
     rotate([0,90,90])
-        cylinder(Diametro+Grosor*4+1,Tornillo/2+0.2,Tornillo/2+0.2,$fn=100,center=true);
+        cylinder(Diametro+Grosor*4+1,Tornillo/2+0.2,Tornillo/2+0.2,$fn=50,center=true);
 
     rotate([90,90,0])
     translate([0,Diametro-Grosor/2,+Tubo+Grosor])
-        cylinder(10,Cabeza/2,Cabeza/2,$fn=100,center=true);
+        cylinder(10,Cabeza/2,Cabeza/2,$fn=50,center=true);
 
     translate([Diametro,0,0])
         cube([Diametro+Grosor*2,Grosor*2,Ancho+1],center=true);

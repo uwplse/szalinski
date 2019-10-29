@@ -1,4 +1,4 @@
-$fn = 1000;
+$fn = 50;
 module platte_u(){
 module platte(){
     difference(){

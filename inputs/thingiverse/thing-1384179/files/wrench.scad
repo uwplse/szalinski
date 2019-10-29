@@ -1,6 +1,6 @@
 //use <../MCAD/shapes.scad>		// For octagon
 
-$fn = 360;					// So the cylinders are smooth
+$fn = 50;					// So the cylinders are smooth
 
 nut_diameter = 8.3;			// My M3 nut measured ~5.4, I added a fudge factor
 nut_thickness = 4;

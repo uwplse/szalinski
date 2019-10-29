@@ -35,7 +35,7 @@ screwHeadHeigth = 2;
 screHoleLength  = 8;
 
 // circle precision
-$fn=100;
+$fn=50;
 
 	difference () {
 		union()

@@ -1,4 +1,4 @@
-$fn=100;
+$fn=50;
 
 // The radius of the inner ball. 
 ball_size = 8.5;

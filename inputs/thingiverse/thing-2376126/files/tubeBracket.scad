@@ -29,7 +29,7 @@ Tube_Center_Height = 72;
 Part = "bottom"; // [top: Top of bracket,bottom: Bottom of bracket,spacer: Spacer]
 
 // Internal variables
-$fn = 60*1;
+$fn = 50*1;
 defaultBlockHeight = 8*1;
 blockWidth = 40*1;
 blockLength = 69*1;

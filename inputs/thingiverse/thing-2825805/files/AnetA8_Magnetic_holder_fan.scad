@@ -66,7 +66,7 @@ module tower2(){
 }
 if(tow2) tower2();
 {
-$fn=100;
+$fn=50;
 if(fan){
     translate ([0, 4+dm/2+0.5, 0]) cube ([5, 32-(dm+1), 8]);
     translate ([0, 00, 0]) tower1();

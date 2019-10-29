@@ -13,7 +13,7 @@ Hoehe2mm=10.0;
 BodenRund=1.5;
 HoeheTasche=10;
 
-$fn = 120;
+$fn = 50;
 
 module DoIt()
 {

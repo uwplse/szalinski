@@ -10,7 +10,7 @@ disc_thickness = 0.9;
 
 module main() {
 	difference() {
-		cylinder(h=disc_thickness, r=disc_radius , $fn=900);
+		cylinder(h=disc_thickness, r=disc_radius , $fn=50);
 		for (i = [0:slot_count]) {
 			rotate([0,0, (i * (360 / slot_count))]) {
 				translate([disc_radius  - slot_outer_margin - slot_length , 0, -1]) {

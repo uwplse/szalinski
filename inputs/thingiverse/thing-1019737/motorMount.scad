@@ -1,5 +1,5 @@
 //  Measure for smoothness
-$fn = 100;
+$fn = 50;
 
 //  Tolerance on the radius
 tolerance = 0.1;

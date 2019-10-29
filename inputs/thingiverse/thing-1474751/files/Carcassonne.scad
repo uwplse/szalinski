@@ -48,7 +48,7 @@ mheight=40;//in mm
 //Width of meeple compartments
 mwidth=1;//in mm
 //Resolution of circle
-$fn=200;
+$fn=50;
 //Ciurcular cutout
 circle_radius =10;//in mm
 

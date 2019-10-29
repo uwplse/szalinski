@@ -1,4 +1,4 @@
-$fn=64;
+$fn=50;
 l1 = 20;
 l2 = 20;
 // profile width

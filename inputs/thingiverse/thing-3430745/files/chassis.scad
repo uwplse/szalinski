@@ -1,4 +1,4 @@
-$fn = 100;
+$fn = 50;
 
 //%translate([52.7,-0.6,88]) rotate([90,180,0]) import("solar.stl");
 

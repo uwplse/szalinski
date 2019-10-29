@@ -50,15 +50,15 @@ module draw()
     {
         difference()
         {
-            cylinder(gasket_tickness+bottom_wall_tickness,(outer_diameter+lateral_walls_width)/2,(outer_diameter+lateral_walls_width)/2, $fn=180);
-            cylinder(gasket_tickness+bottom_wall_tickness+1,(inner_diameter-lateral_walls_width)/2,(inner_diameter-lateral_walls_width)/2, $fn=180);
+            cylinder(gasket_tickness+bottom_wall_tickness,(outer_diameter+lateral_walls_width)/2,(outer_diameter+lateral_walls_width)/2, $fn=50);
+            cylinder(gasket_tickness+bottom_wall_tickness+1,(inner_diameter-lateral_walls_width)/2,(inner_diameter-lateral_walls_width)/2, $fn=50);
         }
         
         translate([0,0,bottom_wall_tickness])
          difference()
         {
-            cylinder(gasket_tickness,outer_diameter/2,outer_diameter/2, $fn=180);
-            cylinder(gasket_tickness+1,inner_diameter/2,inner_diameter/2, $fn=180);
+            cylinder(gasket_tickness,outer_diameter/2,outer_diameter/2, $fn=50);
+            cylinder(gasket_tickness+1,inner_diameter/2,inner_diameter/2, $fn=50);
         }
     }
 }

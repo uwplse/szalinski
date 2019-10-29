@@ -1,4 +1,4 @@
-$fn=100;
+$fn=50;
 
 w=25;   // size of square
 thick=5;  // thickness

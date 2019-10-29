@@ -32,12 +32,12 @@ difference(){
     union(){
         
      translate([0,width/7,height/2]){
-           rotate(a=90, v=[1,0,0] , $fn=100){
+           rotate(a=90, v=[1,0,0] , $fn=50){
            cylinder(width,diameter,diameter, center=true);}
            } 
            
            translate([0,0,0]){
-           rotate(a=90, v=[0,0,1] , $fn=100){
+           rotate(a=90, v=[0,0,1] , $fn=50){
            cylinder(height,2*hole,2*hole, center=true);}
            } 
            
@@ -47,27 +47,27 @@ difference(){
     union(){ 
         
           translate([0,0,-height/2]){
-           rotate(a=90, v=[0,0,1] , $fn=100){
+           rotate(a=90, v=[0,0,1] , $fn=50){
            cylinder(height,hole,hole,       center=true);}
            } 
            
            translate([0,width/4,height/3]){
-           rotate(a=90, v=[0,1,0] , $fn=100){
+           rotate(a=90, v=[0,1,0] , $fn=50){
            cylinder(height,1.5*hole,1.5*hole, center=true);}
            } 
             
            translate([0,width/2,height/3]){
-           rotate(a=90, v=[0,1,0] , $fn=100){
+           rotate(a=90, v=[0,1,0] , $fn=50){
            cylinder(height,1.5*hole,1.5*hole, center=true);}
            } 
            
            translate([0,width/2.75,height/3]){
-           rotate(a=90, v=[0,1,0] , $fn=100){
+           rotate(a=90, v=[0,1,0] , $fn=50){
            cylinder(height,2*hole,2*hole, center=true);}
            } 
            
            translate([0,-width/4,height/3]){
-           rotate(a=90, v=[0,1,0] , $fn=100){
+           rotate(a=90, v=[0,1,0] , $fn=50){
            cylinder(height,1.5*hole,1.5*hole, center=true);}
            } 
     }

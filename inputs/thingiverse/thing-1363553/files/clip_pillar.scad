@@ -8,7 +8,7 @@ dicke = 4;          // material thickness
 
 /******************** Processing *******************/
 
-$fn = 60;
+$fn = 50;
 
 difference() {
     

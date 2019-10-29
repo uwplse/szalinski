@@ -22,7 +22,7 @@ Rack_Thickness = 2;
 Fudge = 1;
 
 // Parameters invisible to the user
-$fn = 96*1;						
+$fn = 50*1;						
 radius = Chip_Diameter/2 + Fudge;
 height = Chip_Thickness*Number_of_Chips + Fudge;
 thickness = Rack_Thickness*1;

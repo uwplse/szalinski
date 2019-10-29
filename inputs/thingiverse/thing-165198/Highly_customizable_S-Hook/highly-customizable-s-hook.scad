@@ -98,4 +98,4 @@ translate([-distance_normalized/2,0,0]) {
 }
 
 //preview[view:east,tilt:top]
-$fn = 90;
+$fn = 50;

@@ -32,10 +32,10 @@ translate([0,-spool_radius,0])
 						spool_thickness+(2*clip_thickness)]);
 
 		//color("white")
-		cylinder(r=spool_radius, h=spool_thickness, center=true, $fn=180);
+		cylinder(r=spool_radius, h=spool_thickness, center=true, $fn=50);
 
 		//color("gray")
-			cylinder(r=spool_radius-clip_depth, h=spool_thickness+(2*clip_thickness)+1, center=true, $fn=180);
+			cylinder(r=spool_radius-clip_depth, h=spool_thickness+(2*clip_thickness)+1, center=true, $fn=50);
 
 		if( clip_cut == true )
 		//color("gray")

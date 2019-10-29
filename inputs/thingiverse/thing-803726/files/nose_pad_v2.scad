@@ -1,5 +1,5 @@
 //Set resolution - best to leave at 200
-$fn = 200; 
+$fn = 50; 
 
 //Radius of pad (long)
 l = 5.5; 

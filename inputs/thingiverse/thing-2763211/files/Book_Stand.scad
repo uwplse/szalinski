@@ -3,7 +3,7 @@ booky=20; //Book Thickness
 bookz=200;// Book Height
 angle=15; //Desired Angle
 size=30; //Preferred Cylinder Diameter, will resize if book thickness requires it
-$fn=200;
+$fn=50;
 
 
 //Calculated Variables

@@ -34,10 +34,10 @@ difference() {
 
         hull() {
             translate ([width-corner_radius/2, corner_radius/2, 0]) {
-                cylinder(d=corner_radius, h=height, $fn=96);
+                cylinder(d=corner_radius, h=height, $fn=50);
             }
             translate ([width-corner_radius/2, length-corner_radius/2, 0]) {
-                cylinder(d=corner_radius, h=height, $fn=96);
+                cylinder(d=corner_radius, h=height, $fn=50);
             }
         }
 
@@ -53,11 +53,11 @@ difference() {
 
     // hole front
     translate ([offset_x, offset_y, -clearance]) {
-        cylinder(d=hole_diameter, h=height+2*clearance, $fn=96);
+        cylinder(d=hole_diameter, h=height+2*clearance, $fn=50);
     }
 
     // hole back
     translate ([offset_x, length - offset_y, -clearance]) {
-        cylinder(d=hole_diameter, h=height+2*clearance, $fn=96);
+        cylinder(d=hole_diameter, h=height+2*clearance, $fn=50);
     }
 }

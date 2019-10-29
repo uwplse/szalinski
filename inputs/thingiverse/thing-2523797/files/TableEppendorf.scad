@@ -39,7 +39,7 @@ module PlaqueFer() {
 }
 
 module Aimant(){
-	cylinder(Ap+j,Ad/2+j,Ad/2+j,center=true,$fn=100);
+	cylinder(Ap+j,Ad/2+j,Ad/2+j,center=true,$fn=50);
 }
 module Unit() {
     union()

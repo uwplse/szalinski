@@ -3,7 +3,7 @@
 part = "both"; // [Box:Box only,Lid:Lid only,both:box and lid]
 
 // Arc - No of facets parameter
-$fn = 60;
+$fn = 50;
 
 // Wall thickness
 wallT = 1.2;

@@ -24,7 +24,7 @@ difference() {
     union() {
         //base
         difference() {
-            cylinder(h=base_height, d=(base_inner_diameter+base_wall_thickness), $fn=60);
+            cylinder(h=base_height, d=(base_inner_diameter+base_wall_thickness), $fn=50);
             translate([0,0,-0.05]) 
                 cylinder(h=(base_height-0.95), d=base_inner_diameter,$fn=36);
         }

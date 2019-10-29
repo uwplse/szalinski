@@ -6,7 +6,7 @@
 //  12/11/2016
 //
 
-$fn=90;                 // Make very smooth ends
+$fn=50;                 // Make very smooth ends
 
 
 slitWidth  = 66.00;     // Plenty of extra room to make it easy to put on

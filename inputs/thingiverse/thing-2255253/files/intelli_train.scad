@@ -1,4 +1,4 @@
-$fn=60;
+$fn=50;
 
 // modification of duplo figure leg for locomotive engineer
 module driver()

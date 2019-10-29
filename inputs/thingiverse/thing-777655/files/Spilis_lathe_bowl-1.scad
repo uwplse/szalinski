@@ -39,7 +39,7 @@ difference()	{
 		}
 	translate ([0,0,cr+80]) 
 	scale([1,1,0.6])
-	sphere((cr/2), $fn=100); 
+	sphere((cr/2), $fn=50); 
 }
 translate ([0,0,80])
 cube(size = [cr*2,cr*2,cr], center = true);
@@ -49,7 +49,7 @@ cube(size = [cr*2,cr*2,cr], center = true);
 
 module calot() {
 difference()	{
-sphere(cr, $fn=100); 
+sphere(cr, $fn=50); 
 translate ([0,0,-cr+550])
 cube(size = [cr*2,cr*2,cr*2], center = true);
 }

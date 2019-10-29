@@ -6,7 +6,7 @@ pins_spacing= 2.54;
 height= 10;
 
 difference () {
-    cylinder (h= height, d= led_diameter + 1, $fn= 64);
+    cylinder (h= height, d= led_diameter + 1, $fn= 50);
     union () {
         if (number_of_pins == 2) {
             translate ([-pins_spacing / 2, 0, -0.1]) cylinder (h= height + 0.2, d= 1, $fn= 32);
@@ -18,7 +18,7 @@ difference () {
                     cube (size= [100, 1, height + 0.2], center= true);
             }
         } else if (number_of_pins == 3) {
-            translate ([0, 0, -0.1]) cylinder (h= height + 0.2, d= 1, $fn= 100);
+            translate ([0, 0, -0.1]) cylinder (h= height + 0.2, d= 1, $fn= 50);
             translate ([-pins_spacing, 0, -0.1]) cylinder (h= height + 0.2, d= 1, $fn= 32);
             translate ([pins_spacing, 0, -0.1]) cylinder (h= height + 0.2, d= 1, $fn= 32);
             if (side_opened == "true" && pins_spacing > 1) {

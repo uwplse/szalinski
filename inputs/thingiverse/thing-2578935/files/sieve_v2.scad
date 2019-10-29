@@ -28,7 +28,7 @@ offset_strands = "yes"; // [yes,no]
 lift_strands = 0;
 
 // Number of segments for round shape, low values can be used to obtain polygons that fit inside a circle of the specified outer diameter. For instance, 3 yields a triangle.
-$fn = 72;
+$fn = 50;
 
 /* [Hidden] */
 

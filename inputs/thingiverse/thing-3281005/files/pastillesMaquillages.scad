@@ -52,10 +52,10 @@ module cubeRound(partWidth,partHeight,partZ,rayon){
 		}
 module boxcylinder(partWidth,partZ){
 	difference(){
-			cylinder(r=partWidth/2,h=partZ,$fn=100);
+			cylinder(r=partWidth/2,h=partZ,$fn=50);
 			//translate([0,0,partZ-PNW])scale([partWidth-PNW,partWidth-PNW,1])
 			//random2(partZ);
-			translate([0,0,partZ-PNW])cylinder(r=partWidth/2-2*PNW,h=3,$fn=100);
+			translate([0,0,partZ-PNW])cylinder(r=partWidth/2-2*PNW,h=3,$fn=50);
 		}
 }
 module boxSquareRound(partWidth,partHeight,partZ){

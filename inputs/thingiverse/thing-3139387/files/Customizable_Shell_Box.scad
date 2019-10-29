@@ -2,7 +2,7 @@
 // All of these dimensions are in MM.
 
 //Box frame for shells
-$fn=100;
+$fn=50;
 l = 115; //overall length in X direction
 w = 84; //76.2MM shells, with 3MM walls, (97mm for 3.5 inch mags), (78mm for 2.75 inch shells)
 h = 110; //height of box (22mm per row of shells.)

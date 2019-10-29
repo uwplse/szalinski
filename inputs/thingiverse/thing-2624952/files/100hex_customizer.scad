@@ -427,9 +427,9 @@ module segment(){
     union(){
         cube([size_side-(size_side/6),size_side/6,height], center=true);
         translate([-(size_side-(size_side/6))/2,0,0])
-           cylinder(h=height, r=(size_side/6)/2, $fn=100, center=true);
+           cylinder(h=height, r=(size_side/6)/2, $fn=50, center=true);
         translate([(size_side-(size_side/6))/2,0,0])
-           cylinder(h=height, r=(size_side/6)/2, $fn=100, center=true);
+           cylinder(h=height, r=(size_side/6)/2, $fn=50, center=true);
     } // union    
 } // module
 

@@ -22,7 +22,7 @@ winding_thick	=	30;	//[5:50]
 cutouts_count	=	12; //[0:30]
 
 /*[hidden]*/
-$fn=100;
+$fn=50;
 
 output();
 

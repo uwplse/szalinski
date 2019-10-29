@@ -77,17 +77,17 @@ translate([0,-2,altura_placa])
 }
 translate([(profundidad_baca/2)-(distancia_agujeros/2),ancho_solapa/2,alto_tubo/2])
 rotate([0,0,0])
-cylinder(r=8/2,h=2000,$fn=100);
+cylinder(r=8/2,h=2000,$fn=50);
 translate([(profundidad_baca/2)+(distancia_agujeros/2),ancho_solapa/2,alto_tubo/2])
 rotate([0,0,0])
-cylinder(r=8/2,h=2000,$fn=100);
+cylinder(r=8/2,h=2000,$fn=50);
 
 translate([(profundidad_baca/2)-(distancia_agujeros/2),(2+ancho_baca)-(ancho_solapa/2),alto_tubo/2])
 rotate([0,0,0])
-cylinder(r=8/2,h=2000,$fn=100);
+cylinder(r=8/2,h=2000,$fn=50);
 translate([(profundidad_baca/2)+(distancia_agujeros/2),(2+ancho_baca)-(ancho_solapa/2),alto_tubo/2])
 rotate([0,0,0])
-cylinder(r=8/2,h=2000,$fn=100);
+cylinder(r=8/2,h=2000,$fn=50);
 }
 
 }
@@ -95,31 +95,31 @@ cylinder(r=8/2,h=2000,$fn=100);
 //agujeros
 translate([(profundidad_baca/2)-(distancia_agujeros/2),-50,alto_tubo/2])
 rotate([-90,0,0])
-cylinder(r=8/2,h=2000,$fn=100);
+cylinder(r=8/2,h=2000,$fn=50);
 translate([(profundidad_baca/2)+(distancia_agujeros/2),-50,alto_tubo/2])
 rotate([-90,0,0])
-cylinder(r=8/2,h=2000,$fn=100);
+cylinder(r=8/2,h=2000,$fn=50);
 
 translate([(profundidad_baca/2)-(distancia_agujeros/2),-50,(altura_placa/5)*2])
 rotate([-90,0,0])
-cylinder(r=8/2,h=2000,$fn=100);
+cylinder(r=8/2,h=2000,$fn=50);
 translate([(profundidad_baca/2)+(distancia_agujeros/2),-50,(altura_placa/5)*2])
 rotate([-90,0,0])
-cylinder(r=8/2,h=2000,$fn=100);
+cylinder(r=8/2,h=2000,$fn=50);
 
 translate([(profundidad_baca/2)-(distancia_agujeros/2),-50,(altura_placa/5)*3])
 rotate([-90,0,0])
-cylinder(r=8/2,h=2000,$fn=100);
+cylinder(r=8/2,h=2000,$fn=50);
 translate([(profundidad_baca/2)+(distancia_agujeros/2),-50,(altura_placa/5)*3])
 rotate([-90,0,0])
-cylinder(r=8/2,h=2000,$fn=100);
+cylinder(r=8/2,h=2000,$fn=50);
 
 translate([(profundidad_baca/2)-(distancia_agujeros/2),-50,(altura_placa/5)*4])
 rotate([-90,0,0])
-cylinder(r=8/2,h=2000,$fn=100);
+cylinder(r=8/2,h=2000,$fn=50);
 translate([(profundidad_baca/2)+(distancia_agujeros/2),-50,(altura_placa/5)*4])
 rotate([-90,0,0])
-cylinder(r=8/2,h=2000,$fn=100);
+cylinder(r=8/2,h=2000,$fn=50);
 
 }
 

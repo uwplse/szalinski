@@ -1,4 +1,4 @@
-$fn = 300;
+$fn = 50;
 
 // Avocado holder params
 AVOCADO_RADIUS =      21;

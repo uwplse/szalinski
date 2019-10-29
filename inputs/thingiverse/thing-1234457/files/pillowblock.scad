@@ -90,12 +90,12 @@ module bracket( ){
                 roundCornersCube ( bracketLength,bracketWidth,bracketHeight,squareRadius); // the mount plate
                 
             }
-            //translate([0,0,bracketHeight/2+bearingRadius+bearingOffset]) rotate(a=90, v=[1,0,0]) cylinder(h=50,r= bearingRadius,$fn=360, center =true);    
+            //translate([0,0,bracketHeight/2+bearingRadius+bearingOffset]) rotate(a=90, v=[1,0,0]) cylinder(h=50,r= bearingRadius,$fn=50, center =true);    
             difference(){ // bearing block difference
                 translate([0,0,bracketHeight/2+bearingRadius+bearingOffset-bearingBlockHeight/2]) roundCornersCube ( bearingBlockWidth,bearingBlockLength,bearingBlockHeight,squareRadius);
                 //translate([0,0,bracketHeight/2+bearingRadius+bearingOffset]) rotate(a=90, v=[1,0,0]) cylinder_outer(bearingLength ,bearingRadius + bearingOffset/2,360);
-                translate([0,0,bracketHeight/2+bearingRadius+bearingOffset]) rotate(a=90, v=[1,0,0]) cylinder(h=bearingLength+ holeCreationOffset,r= bearingRadius,$fn=360, center =true);  // the bearing hole
-                translate([0,0,bracketHeight/2+bearingRadius+bearingOffset]) rotate(a=90, v=[1,0,0]) cylinder(h=bearingLength*2 ,r= rodRadius,$fn=360, center =true);  // the rod hole
+                translate([0,0,bracketHeight/2+bearingRadius+bearingOffset]) rotate(a=90, v=[1,0,0]) cylinder(h=bearingLength+ holeCreationOffset,r= bearingRadius,$fn=50, center =true);  // the bearing hole
+                translate([0,0,bracketHeight/2+bearingRadius+bearingOffset]) rotate(a=90, v=[1,0,0]) cylinder(h=bearingLength*2 ,r= rodRadius,$fn=50, center =true);  // the rod hole
 
             }
         
@@ -104,15 +104,15 @@ module bracket( ){
             translate([0,0,bracketHeight/2+bearingRadius+bearingOffset-4]) rotate(a=90, v=[1,0,0]) cylinder_outer(ziptieWidth,bearingRadius +ziptieHeight*2,360);
             translate([0,0,bracketHeight/2+bearingRadius+bearingOffset-4]) rotate(a=90, v=[1,0,0]) cylinder_outer(ziptieWidth,bearingRadius+ ziptieHeight,360); // inner hole for channel
         }
-                translate([boltWidth/2,boltLength/2,0]) cylinder(h=50,r= bracketScrewRadius,$fn=360, center =true); // mount holes
-                translate([-boltWidth/2,boltLength/2,0]) cylinder(h=50,r= bracketScrewRadius,$fn=360, center =true);// mount holes
-                translate([boltWidth/2,-boltLength/2,0])cylinder(h=50,r= bracketScrewRadius,$fn=360, center =true);// mount holes
-                translate([-boltWidth/2,-boltLength/2,0])cylinder(h=50,r= bracketScrewRadius,$fn=360, center =true);// mount holes
+                translate([boltWidth/2,boltLength/2,0]) cylinder(h=50,r= bracketScrewRadius,$fn=50, center =true); // mount holes
+                translate([-boltWidth/2,boltLength/2,0]) cylinder(h=50,r= bracketScrewRadius,$fn=50, center =true);// mount holes
+                translate([boltWidth/2,-boltLength/2,0])cylinder(h=50,r= bracketScrewRadius,$fn=50, center =true);// mount holes
+                translate([-boltWidth/2,-boltLength/2,0])cylinder(h=50,r= bracketScrewRadius,$fn=50, center =true);// mount holes
         
-        translate([boltWidth/2,boltLength/2,bracketHeight/2 + bearingBlockHeight/2+ holeCreationOffset]) cylinder(h=bearingBlockHeight,r= bracketScrewHeadRadius,$fn=360, center =true); // recessed mount holes
-                translate([-boltWidth/2,boltLength/2,bracketHeight/2 + bearingBlockHeight/2+ holeCreationOffset]) cylinder(h=bearingBlockHeight,r= bracketScrewHeadRadius,$fn=360, center =true);// recessed mount holes
-                translate([boltWidth/2,-boltLength/2,bracketHeight/2 + bearingBlockHeight/2+ holeCreationOffset])cylinder(h=bearingBlockHeight,r= bracketScrewHeadRadius,$fn=360, center =true);// recessed mount holes
-                translate([-boltWidth/2,-boltLength/2,bracketHeight/2 + bearingBlockHeight/2 + holeCreationOffset])cylinder(h=bearingBlockHeight,r= bracketScrewHeadRadius,$fn=360, center =true);// recessed mount holes
+        translate([boltWidth/2,boltLength/2,bracketHeight/2 + bearingBlockHeight/2+ holeCreationOffset]) cylinder(h=bearingBlockHeight,r= bracketScrewHeadRadius,$fn=50, center =true); // recessed mount holes
+                translate([-boltWidth/2,boltLength/2,bracketHeight/2 + bearingBlockHeight/2+ holeCreationOffset]) cylinder(h=bearingBlockHeight,r= bracketScrewHeadRadius,$fn=50, center =true);// recessed mount holes
+                translate([boltWidth/2,-boltLength/2,bracketHeight/2 + bearingBlockHeight/2+ holeCreationOffset])cylinder(h=bearingBlockHeight,r= bracketScrewHeadRadius,$fn=50, center =true);// recessed mount holes
+                translate([-boltWidth/2,-boltLength/2,bracketHeight/2 + bearingBlockHeight/2 + holeCreationOffset])cylinder(h=bearingBlockHeight,r= bracketScrewHeadRadius,$fn=50, center =true);// recessed mount holes
     }
 }
 

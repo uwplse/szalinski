@@ -13,11 +13,11 @@ module dr_build_outer(diameter,thickness,width)
 		{
 		union()
 			{
-			cylinder(r=diameter/2 ,h=width, $fn=80);
+			cylinder(r=diameter/2 ,h=width, $fn=50);
 			}
 		union()
 			{
-			cylinder(r=(diameter/2)-thickness ,h=width, $fn=80);
+			cylinder(r=(diameter/2)-thickness ,h=width, $fn=50);
 			}
 		}
 	}
@@ -27,11 +27,11 @@ module dr_build_inner(diameter,thickness,width)
 		{
 		union()
 			{
-			cylinder(r=(diameter+thickness)/4 ,h=width, $fn=80);
+			cylinder(r=(diameter+thickness)/4 ,h=width, $fn=50);
 			}
 		union()
 			{
-			cylinder(r=(diameter+thickness)/4-thickness ,h=width, $fn=80);
+			cylinder(r=(diameter+thickness)/4-thickness ,h=width, $fn=50);
 			}
 		}
 	}

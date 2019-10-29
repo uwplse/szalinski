@@ -63,7 +63,7 @@ module main_module(){ //create module
                     translate ([((board_width/2)-((board_width-(round((board_width-(hole_offset-(hole_dia/2)))/hole_offset))*hole_offset)/2)),((board_height/2)-((board_height-(round((board_height-(hole_offset-(hole_dia/2)))/hole_offset))*hole_offset)/2)),0]) rotate ([0,0,0]) rounded(board_width,board_height,board_thick,chamfer,true);
                 }else{
                     for (i=[0:round((board_width-(hole_offset-(hole_dia/2)))/                        hole_offset)])
-                                for (j=[0:round((board_height-(hole_offset-(hole_dia/2)))/                            hole_offset)])translate ([i*hole_offset,j*hole_offset,0]) rotate ([0,0,0]) cylinder(hole_height,hole_dia/2,hole_dia/2,$fn=60,true);
+                                for (j=[0:round((board_height-(hole_offset-(hole_dia/2)))/                            hole_offset)])translate ([i*hole_offset,j*hole_offset,0]) rotate ([0,0,0]) cylinder(hole_height,hole_dia/2,hole_dia/2,$fn=50,true);
 
             }; //end if union if tstaement
                 
@@ -76,7 +76,7 @@ module main_module(){ //create module
                             for (i=[0:round((board_width-hole_offset)/                        hole_offset)])
                                 for (j=[0:round((board_height-hole_offset)/                            hole_offset)])
                                     
-                                {translate ([i*hole_offset,j*hole_offset,0]) rotate ([0,0,0]) cylinder(hole_height,hole_dia/2,hole_dia/2,$fn=60,true);
+                                {translate ([i*hole_offset,j*hole_offset,0]) rotate ([0,0,0]) cylinder(hole_height,hole_dia/2,hole_dia/2,$fn=50,true);
                    }
                                     
                 }
@@ -100,13 +100,13 @@ module rounded(x,y,z,c,center) {
      //end overlapping cubes
         
      //create corner circles
-        translate ([-(x/2),-(y/2),0]) { cylinder( z,c,c,$fn=60,true);
+        translate ([-(x/2),-(y/2),0]) { cylinder( z,c,c,$fn=50,true);
         }
-        translate ([-(x/2),(y/2),0]) { cylinder( z,c,c,$fn=60,true);
+        translate ([-(x/2),(y/2),0]) { cylinder( z,c,c,$fn=50,true);
         }
-        translate ([(x/2),-(y/2),0]) { cylinder( z,c,c,$fn=60,true);
+        translate ([(x/2),-(y/2),0]) { cylinder( z,c,c,$fn=50,true);
         }
-        translate ([(x/2),(y/2),0]) { cylinder( z,c,c,$fn=60,true);
+        translate ([(x/2),(y/2),0]) { cylinder( z,c,c,$fn=50,true);
         }
      //end coner circle
     

@@ -37,7 +37,7 @@ width_angle = asin((width_arc_length/2)/body_width_curve_radius);
 width_circle_center_translation = cos(width_angle) * body_width_curve_radius;
 width_sidecut_depth = body_width_curve_radius - width_circle_center_translation;
 
-$fn = 100;
+$fn = 50;
 
 // build the frame body without motor holders
 module frame_body() {

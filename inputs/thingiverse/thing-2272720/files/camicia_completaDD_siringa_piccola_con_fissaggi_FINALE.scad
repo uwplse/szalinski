@@ -29,9 +29,9 @@ CreaCamicia(R_Siringa,SpessorePareteSiringa,R_camicia,SpessoreMinimoCamicia,H_ca
      rotate([0,0,90])
      {
     translate([r_axis+12,-8.5,-42.5])
-     cylinder(h=H,r=r_axis-1, center=true, $fn=100);
+     cylinder(h=H,r=r_axis-1, center=true, $fn=50);
       translate([-r_axis-12,-8.5,-42.5])
-     cylinder(h=H,r=r_axis-1, center=true, $fn=100);
+     cylinder(h=H,r=r_axis-1, center=true, $fn=50);
      }
      
  }

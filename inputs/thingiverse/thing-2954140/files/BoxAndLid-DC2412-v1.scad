@@ -67,8 +67,8 @@ module box(width = width+gap, length = length+gap , height = height +gap, lid=fa
         
         // if it's the bottom part, punch two holes for the wires
         if(!lid) {
-            rotate([90,0,0]) translate([0,0,-length/2]) cylinder(r=hole_radius,h=thickness*2,$fn=60,center=true);
-            rotate([90,0,0]) translate([0,0, length/2]) cylinder(r=hole_radius,h=thickness*2,$fn=60,center=true);
+            rotate([90,0,0]) translate([0,0,-length/2]) cylinder(r=hole_radius,h=thickness*2,$fn=50,center=true);
+            rotate([90,0,0]) translate([0,0, length/2]) cylinder(r=hole_radius,h=thickness*2,$fn=50,center=true);
         }
     }
 }

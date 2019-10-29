@@ -7,7 +7,7 @@ gapWidth = 0.2;
 // thickness of the print
 thickness = 0.4;
 
-$fn = 100;
+$fn = 50;
 module TubeHolder(length, radius, thickness, gapWidth){
     
 

@@ -32,7 +32,7 @@ for (i=[1:gridWidth]) {
     }
 }
 
-$fn=60;
+$fn=50;
 gridEdge = (gridSize-gridHole)/2;
 echo(gridEdge);
 modelWidth = (gridSize-(gridSize-gridHole)/2)*(gridWidth-1)+gridSize;

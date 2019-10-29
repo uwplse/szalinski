@@ -88,7 +88,7 @@ module sc1(bits) {
             intersection() {
                 // cut a little off the tip to avoid going too long
                 cube([length - mm(1/64), width, thickness]);
-                translate([0, mm(1/4), thickness*3/4]) rotate([0, 90, 0]) cylinder(h=length, r=mm(1/4), $fn=64);
+                translate([0, mm(1/4), thickness*3/4]) rotate([0, 90, 0]) cylinder(h=length, r=mm(1/4), $fn=50);
             }
         }
         

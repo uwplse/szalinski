@@ -9,7 +9,7 @@ module camera() {
         cube([15, 7, 13.5]);
         /*
         translate([2.875, -1.99, 2.25]) cube([9.25, 2, 10]);
-        translate([7.5, 0.01, 6.75]) rotate([90, 0, 0]) cylinder(d=10, h=10, $fn=100);
+        translate([7.5, 0.01, 6.75]) rotate([90, 0, 0]) cylinder(d=10, h=10, $fn=50);
         */
         translate([2.25, -9.99, 1.5]) cube([10.5, 10, 10.5]);
     }
@@ -19,21 +19,21 @@ module side_fillet() {
     union() {
         translate([-0.5, -0.5, 1.5]) cube([2, 8, 5]);
         translate([-0.5, -0.5, 6.5]) cube([1, 8, 1]);
-        translate([0.5, 7.5, 6.5]) rotate([90, 0, 0]) cylinder(d=2, h=8, $fn=100);
+        translate([0.5, 7.5, 6.5]) rotate([90, 0, 0]) cylinder(d=2, h=8, $fn=50);
     }
 }
 
 module corner_fillet_large() {
     difference() {
         cube([1, 8, 1]);
-        translate([1, 9, 0]) rotate([90, 0, 0]) cylinder(d=1, h=10, $fn=100);
+        translate([1, 9, 0]) rotate([90, 0, 0]) cylinder(d=1, h=10, $fn=50);
     }
 }
 
 module corner_fillet_small() {
     difference() {
         cube([1, 2, 1]);
-        translate([0, 3.5, 0]) rotate([90, 0, 0]) cylinder(d=1, h=4, $fn=100);
+        translate([0, 3.5, 0]) rotate([90, 0, 0]) cylinder(d=1, h=4, $fn=50);
     }
 }
 
@@ -50,8 +50,8 @@ union() {
                 translate([-1, 3.5, 10]) rotate([30, 0, 0]) rotate([0, 90, 0]) cylinder(d=5, h=4.5, $fn=6);
                 translate([16.5, 3.5, 10]) rotate([30, 0, 0]) rotate([0, 90, 0]) cylinder(d=5, h=4.5, $fn=6);
             } else {
-                translate([-0.5, 3.5, 10]) rotate([0, 90, 0]) cylinder(d=2, h=4, $fn=100);
-                translate([16.75, 3.5, 10]) rotate([0, 90, 0]) cylinder(d=2, h=4, $fn=100);
+                translate([-0.5, 3.5, 10]) rotate([0, 90, 0]) cylinder(d=2, h=4, $fn=50);
+                translate([16.75, 3.5, 10]) rotate([0, 90, 0]) cylinder(d=2, h=4, $fn=50);
                 translate([0.76, 3.5, 10]) rotate([30, 0, 0]) rotate([0, 90, 0]) cylinder(d=5, h=1.75, $fn=6);
                 translate([17.49, 3.5, 10]) rotate([30, 0, 0]) rotate([0, 90, 0]) cylinder(d=5, h=1.75, $fn=6);
             }
@@ -105,11 +105,11 @@ union() {
     {
         translate([4.25, 0, 4.25]) difference() {
             cube([1, 1, 1]);
-            translate([1, 1.5, 1]) rotate([90, 0, 0]) cylinder(d=1, h=2, $fn=100);
+            translate([1, 1.5, 1]) rotate([90, 0, 0]) cylinder(d=1, h=2, $fn=50);
         }
         translate([14.75, 0, 4.25]) difference() {
             cube([1, 1, 1]);
-            translate([0, 1.5, 1]) rotate([90, 0, 0]) cylinder(d=1, h=2, $fn=100);
+            translate([0, 1.5, 1]) rotate([90, 0, 0]) cylinder(d=1, h=2, $fn=50);
         }
     }
 }

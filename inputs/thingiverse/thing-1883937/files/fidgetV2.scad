@@ -27,19 +27,19 @@ difference()
     union()
     {
         //inner ring
-        translate([0,0,3.5])scale([1,1,inner_sphere_scale])sphere(r=inner_ring_radius, $fn=70);
+        translate([0,0,3.5])scale([1,1,inner_sphere_scale])sphere(r=inner_ring_radius, $fn=50);
         
         //outside rings
         for (i=[1:number_holes])
         {
-           rotate([0,0,i*360/number_holes])translate([0,ring_distance,3.5])scale([1,1,sphere_scale])sphere(r=ring_radius, $fn=60);
+           rotate([0,0,i*360/number_holes])translate([0,ring_distance,3.5])scale([1,1,sphere_scale])sphere(r=ring_radius, $fn=50);
         }
     }
     
     union()
     {
         //inner ring
-        translate([0,0,-0.01])cylinder(h=7.02, r=11, $fn=60);
+        translate([0,0,-0.01])cylinder(h=7.02, r=11, $fn=50);
         translate([0,0,7])cylinder(h=inner_scale_ring_height, r=inner_ring_radius);
         rotate([0,180,0])cylinder(h=inner_scale_ring_height, r=inner_ring_radius);
         
@@ -49,17 +49,17 @@ difference()
             //subtracts
             union()
             {
-                translate([0,0,-0.001])cylinder(r=center_hole_effect_distance, h=7.002, $fn=70);
+                translate([0,0,-0.001])cylinder(r=center_hole_effect_distance, h=7.002, $fn=50);
             }
             
             //adds
             union()
             {
-                cylinder(r=center_hole_effect_thickness, h=7.001, $fn=60);
+                cylinder(r=center_hole_effect_thickness, h=7.001, $fn=50);
                         //outside rings
         for (i=[1:number_holes])
         {
-           rotate([0,0,i*360/number_holes])translate([0,ring_distance,3.5])scale([1,1,sphere_scale])sphere(r=ring_radius, $fn=60);
+           rotate([0,0,i*360/number_holes])translate([0,ring_distance,3.5])scale([1,1,sphere_scale])sphere(r=ring_radius, $fn=50);
         }
             }
         }
@@ -67,7 +67,7 @@ difference()
         //outside rings
         for (i=[1:number_holes])
         {
-            rotate([0,0,i*360/number_holes])translate([0,ring_distance,-0.01])cylinder(h=7.02, r=11, $fn=60);
+            rotate([0,0,i*360/number_holes])translate([0,ring_distance,-0.01])cylinder(h=7.02, r=11, $fn=50);
             rotate([0,0,i*360/number_holes])translate([0,ring_distance,7])cylinder(h=scale_ring_height, r=ring_radius);
             rotate([0,180,i*360/number_holes])translate([0,ring_distance,0])cylinder(h=scale_ring_height, r=ring_radius);
         }

@@ -39,7 +39,7 @@ spout_length_control = 20;
 left_hand = 0;  
 
 // Circle smoothness (number of faces).
-$fn = 90;
+$fn = 50;
 
 spout_vertical_angle = max(0, atan((height - height * spout_tip_height_fraction)/ spout_length_control));
 

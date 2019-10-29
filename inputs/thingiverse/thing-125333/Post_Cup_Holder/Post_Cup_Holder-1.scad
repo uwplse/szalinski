@@ -9,7 +9,7 @@ post_diameter = 86;
 // Height of the post covered by holder, in mm
 post_height = 15;
 
-$fn=250;
+$fn=50;
 
 module ring(inner_diameter, height, thickness)
 {

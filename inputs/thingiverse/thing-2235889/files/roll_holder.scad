@@ -1,4 +1,4 @@
-$fn=100;
+$fn=50;
 half_pipe_dia=21;
 half_pipe_wall=3;
 pipe_height = 170;

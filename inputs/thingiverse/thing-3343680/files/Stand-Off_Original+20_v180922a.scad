@@ -1,4 +1,4 @@
-$fn=120;
+$fn=50;
 
 ht=67; //original size +20mm
 

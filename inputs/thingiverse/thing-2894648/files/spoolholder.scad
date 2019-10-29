@@ -9,22 +9,22 @@ outer_rad = outer_diameter/2;
 difference() {
     
     union() {
-        cylinder(3,outer_rad,outer_rad,false,$fn=360);
+        cylinder(3,outer_rad,outer_rad,false,$fn=50);
         translate ([0,0,3]) {
-            cylinder(7,inner_rad,inner_rad,false,$fn=360);
+            cylinder(7,inner_rad,inner_rad,false,$fn=50);
         }
     };
     
     union() {
         if (bearing_style == 2) {
-            cylinder(7,bearing_fit,bearing_fit,false,$fn=360);
+            cylinder(7,bearing_fit,bearing_fit,false,$fn=50);
             translate ([0,0,7]) {
-                cylinder(3,4,4,false,$fn=360);
+                cylinder(3,4,4,false,$fn=50);
             }
         } else {
-            cylinder(3,4,4,false,$fn=360);
+            cylinder(3,4,4,false,$fn=50);
             translate ([0,0,3]) {
-                cylinder(7,bearing_fit,bearing_fit,false,$fn=360);
+                cylinder(7,bearing_fit,bearing_fit,false,$fn=50);
             }
         };
     };

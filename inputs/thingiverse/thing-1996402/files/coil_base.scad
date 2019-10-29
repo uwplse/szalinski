@@ -1,4 +1,4 @@
-$fn=64;
+$fn=50;
 difference(){
 union(){
 cylinder(2,25,25);

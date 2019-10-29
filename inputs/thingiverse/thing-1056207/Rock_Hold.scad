@@ -16,7 +16,7 @@ l=69.5;
 // diamter
 d=11;
 
-$fn=100;
+$fn=50;
 
 module bolt(){
 union(){
@@ -27,15 +27,15 @@ union(){
                     
 difference(){
 union(){
-translate([0,0,20])sphere(30, $fn=100);
-cylinder(h = 40, r1 = 30, r2 = 30, center = true,$fn=100);
-translate([0,0,-15])scale([1,1,0.33])sphere(35, $fn=100);
-translate([0,0,5])scale([1,1,0.33])sphere(35, $fn=100);   
-translate([0,0,25])scale([1,1,0.33])sphere(34, $fn=100);  
-translate([0,0,41])scale([1,1,0.33])sphere(28, $fn=100);     
+translate([0,0,20])sphere(30, $fn=50);
+cylinder(h = 40, r1 = 30, r2 = 30, center = true,$fn=50);
+translate([0,0,-15])scale([1,1,0.33])sphere(35, $fn=50);
+translate([0,0,5])scale([1,1,0.33])sphere(35, $fn=50);   
+translate([0,0,25])scale([1,1,0.33])sphere(34, $fn=50);  
+translate([0,0,41])scale([1,1,0.33])sphere(28, $fn=50);     
     
 };
 translate([0,0,-70])cube([1000,1000,100],center=true);
 translate([0,0,-40])bolt();
-translate([0,0,135])cylinder(h = 200, r1 = 12.5, r2 = 12.5, center = true,$fn=100);
+translate([0,0,135])cylinder(h = 200, r1 = 12.5, r2 = 12.5, center = true,$fn=50);
 }

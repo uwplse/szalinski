@@ -35,10 +35,10 @@
                 cube([es,y,z],false);
             translate([-a4,epaulement/3,z/2])
                 rotate ([0,90,0]) 
-                    cylinder(es+2,r=2, $fn=100,center=false);
+                    cylinder(es+2,r=2, $fn=50,center=false);
             translate([-a4,(epaulement/3)*2,z/2])
                 rotate ([0,90,0]) 
-                    cylinder(es+2,r=2, $fn=100,center=false);
+                    cylinder(es+2,r=2, $fn=50,center=false);
          };
      
         //Dessin de la portee
@@ -63,7 +63,7 @@
             difference(){
                 cube([a3,b3,z],false);
                 translate([0,0,-1])
-                cylinder(z+2,r=a3,$fn=100,center=false);
+                cylinder(z+2,r=a3,$fn=50,center=false);
             };//fin de la difference
         
         //Dessin du rayon mur-dessus portee
@@ -76,14 +76,14 @@
             translate([-a4,0,0])
                 cube([a4,b4,z],false);
             translate([-a4,b4,-1])
-                cylinder(L4,r, $fn=100,center=false);
+                cylinder(L4,r, $fn=50,center=false);
             };//fin de la difference
         
         difference(){
             translate([-(a-es),0,0]) 
                 cube([a4,b4,z],false);
             translate([-(a-es-a4),b4,-1])
-                cylinder(L4,r, $fn=100,center=false);
+                cylinder(L4,r, $fn=50,center=false);
             };//fin de la difference
         
         difference(){
@@ -96,7 +96,7 @@
                         cube([2,lx+sx,z],false);
             };//fin de l'union
             translate ([-(a-lx-decalage-sx),-es-2,-1]) 
-                cylinder (h=(z+2),r=2,$fn=100,center=false);
+                cylinder (h=(z+2),r=2,$fn=50,center=false);
         };//fin de la difference
         
 };//fin de l'union

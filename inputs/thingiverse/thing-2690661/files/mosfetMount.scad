@@ -1,4 +1,4 @@
-$fn = 100;
+$fn = 50;
 screwHoleD = 3.5;
 frameHoleOffset = 20;
 mosfetOffsetV = 42;

@@ -139,12 +139,12 @@ module armv2() {
 					  // screw holes for switch
 					  rotate(a=[0,90,0]) {		
 						  translate([-(Switch_ht-2.5), 4, 0]) {
-							  cylinder(h = 11, r = Screw_dia/2, center = false, $fn=100);
+							  cylinder(h = 11, r = Screw_dia/2, center = false, $fn=50);
 						  }
 					  }
 					  rotate(a=[0,90,0]) {
 						  translate(v = [-(Switch_ht-2.5)+Switch_hole_offset, 4+Switch_hole_sep, 0]) {
-						  cylinder(h = 11, r = Screw_dia/2, center = false, $fn=100);
+						  cylinder(h = 11, r = Screw_dia/2, center = false, $fn=50);
 						  }
 					  }
 				  }
@@ -160,12 +160,12 @@ module armv2() {
 						  // screw holes for switch
 						  rotate(a=[0,90,0]) {		
 							  translate([-(Switch_ht-2.5)+Switch_hole_offset, 4, 0]) {
-								  cylinder(h = 11, r = Screw_dia/2, center = false, $fn=100);
+								  cylinder(h = 11, r = Screw_dia/2, center = false, $fn=50);
 							  }
 						  }
 						  rotate(a=[0,90,0]) {
 							  translate(v = [-(Switch_ht-2.5), 4+Switch_hole_sep, 0]) {
-							  cylinder(h = 11, r = Screw_dia/2, center = false, $fn=100);
+							  cylinder(h = 11, r = Screw_dia/2, center = false, $fn=50);
 							  }
 						  }
 					  }
@@ -203,7 +203,7 @@ module armv2() {
 		  translate([-1,6,47]) {
 			  rotate([0,90,0]) minkowski() {
 				  cube([Lever_wd-4,Switch_thk-4,Lever_ht], true);
-				  cylinder(r=6,h=1,$fn=100);
+				  cylinder(r=6,h=1,$fn=50);
 			  }
 		  }
 	  }

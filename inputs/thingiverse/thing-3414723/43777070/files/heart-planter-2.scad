@@ -20,7 +20,7 @@ slant = 0; // [0:40]
 saucerHeight = 8;  //[8:30]
 
 /* [Hidden] */
-$fn = 60;
+$fn = 50;
 x = 0; y = 1; z = 2;
 bb = .66667 * bottom;
 tt = .66667 * top;

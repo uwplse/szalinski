@@ -15,7 +15,7 @@ number_y=2;				// Along the y-axis
 
 //outer_diameter=50, axle=4, spokes=3, wall_thickness=2, thickness=5, spoke_thickness=thickness/2, spoke_width=5, hub_thickness=4
 
-$fn=200;
+$fn=50;
 
 
 module wheel()

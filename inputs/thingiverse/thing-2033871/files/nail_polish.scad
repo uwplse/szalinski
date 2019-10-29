@@ -1,4 +1,4 @@
-$fn = 100;
+$fn = 50;
 xlength = 100;
 ywidth = 100;
 zheight = 60;

@@ -1,4 +1,4 @@
-$fn=75;
+$fn=50;
 WasherDiameter=10;
 HoleDiameter=5;
 BottomThickness=3;

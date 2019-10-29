@@ -1,4 +1,4 @@
-$fn=128+0;
+$fn=50+0;
 
 // Diameter of pilot hole (mm)
 pilot_hole_diameter=3;

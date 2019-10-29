@@ -30,7 +30,7 @@ module overhang(){
             rotate([0,-90,0]){
                 intersection(){
                     cube([overhang_thickness, overhang_thickness, length]);
-                    cylinder(r=overhang_thickness,h=length,$fn=128);
+                    cylinder(r=overhang_thickness,h=length,$fn=50);
                 }
             }
         }
@@ -49,7 +49,7 @@ module intwall(x,y,z){
                         1/( (x > y) ? (2*bevel_h) : 1),
                         1]){
                     rotate([(y > x) ? 90 : 0, (x > y) ? 90 : 0,0]){
-                        cylinder(r=bevel_h,h=1,$fn=128);
+                        cylinder(r=bevel_h,h=1,$fn=50);
                     }
                 }
             }

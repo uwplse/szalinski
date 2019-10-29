@@ -6,9 +6,9 @@ HoleR=1.5; // Possible Values
 Wall=(MoldRadius-3);
 
 difference() {
-	cylinder(r=MoldRadius, h=MoldHeight, $fn=100);
+	cylinder(r=MoldRadius, h=MoldHeight, $fn=50);
 		translate([0, 0, 10])
-		cylinder(r=Wall, h=MoldHeight, $fn=100);
+		cylinder(r=Wall, h=MoldHeight, $fn=50);
 		
 //Bottom Holes
 		for ( i = [0 : 5] )

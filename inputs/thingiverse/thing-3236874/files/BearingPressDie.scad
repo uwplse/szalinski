@@ -1,5 +1,5 @@
 // Die for pressing small bearings in and out of fixtures.
-$fn = 150;
+$fn = 50;
 
 // Outer diameter of the bearing.
 bearing_outer_diameter = 16.0;

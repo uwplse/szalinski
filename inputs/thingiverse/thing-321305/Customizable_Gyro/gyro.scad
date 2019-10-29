@@ -27,6 +27,6 @@ module rings(radius,thickness,height,spacing,n) {
 }
 
 Large=Radius * 4;
-$fn=100;
+$fn=50;
 $t=0.0;
 rings (Radius,Thickness,Height,Spacing,N_Rings);

@@ -34,9 +34,9 @@ cube([base_length,base_width,base_height]);
 translate([slot1Lpos,slot1Wpos,slot1Hpos])rotate([0,0,90])cube([slot_width,slot_length,slot_depth]);
 translate([slot2Lpos,slot2Wpos,slot2Hpos])rotate([0,0,90])cube([slot_width,slot_length,slot_depth]);
 
-translate([slot1Lpos-28,base_width+9,25.5])rotate([90,0,0]) cylinder(base_width+10,5,5,$fn=64);
+translate([slot1Lpos-28,base_width+9,25.5])rotate([90,0,0]) cylinder(base_width+10,5,5,$fn=50);
 
-translate([40,base_width/2,-1])cylinder(5,3.5,3.5,$fn=64);    
+translate([40,base_width/2,-1])cylinder(5,3.5,3.5,$fn=50);    
 }
 }
 

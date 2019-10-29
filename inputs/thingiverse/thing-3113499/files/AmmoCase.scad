@@ -3,7 +3,7 @@
 //
 // All measurements should be in mm.
 
-$fn = 64;
+$fn = 50;
 
 
 rows = 1;                 // Number of spaces horizontally

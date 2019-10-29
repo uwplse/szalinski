@@ -1,5 +1,5 @@
 // smoother circles
-$fn = 90;
+$fn = 50;
 
 // height of the base
 base_h = 5;

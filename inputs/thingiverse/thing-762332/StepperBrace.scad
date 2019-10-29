@@ -6,7 +6,7 @@ HeightFoot = 25;
 //change from stepper to bearing
 Stepper=1;
 
-$fn=72;
+$fn=50;
 difference(){
     union(){
 translate([WidthStepper/-2, WidthStepper/-2,0])

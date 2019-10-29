@@ -110,7 +110,7 @@ hatInsertThickness          = 2.0;
 
 manifoldCorrection = 0.02;
 
-$fn = 80;
+$fn = 50;
 
 
 

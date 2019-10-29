@@ -101,7 +101,7 @@ union()
             {
                 translate([(depth/2)+(thick),(outerwidth/2),-3])
                 {
-                    cylinder(10,d=diameter,diameter/2,$fn=64);
+                    cylinder(10,d=diameter,diameter/2,$fn=50);
                 }
             }
             else
@@ -113,7 +113,7 @@ union()
                     {
                         translate([(depth/2)+(thick),holestart+thick+(diameter/2),-3])
                         {
-                            cylinder(10,d=diameter,diameter/2,$fn=64);
+                            cylinder(10,d=diameter,diameter/2,$fn=50);
                         }
                     }
                    
@@ -121,7 +121,7 @@ union()
                     {
                         translate([(depth/2)+(thick),width - ( (holestart-thick) +(diameter/2) ),-3])
                         {
-                            cylinder(10,d=diameter,diameter/2,$fn=64);
+                            cylinder(10,d=diameter,diameter/2,$fn=50);
                         }
                     }
                     
@@ -130,7 +130,7 @@ union()
                         translate([(depth/2)+(thick),( (holespacing* (n-1) )+thick+holestart+(diameter/2)),-3])
                         {
                             //echo( ( (holespacing* (n-1) )+thick+holestart+diameter));
-                            cylinder(10,d=diameter,diameter/2,$fn=64);
+                            cylinder(10,d=diameter,diameter/2,$fn=50);
                         }
                     }   
                 }

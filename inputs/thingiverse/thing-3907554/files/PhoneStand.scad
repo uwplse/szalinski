@@ -15,9 +15,9 @@ module stand()
 {
     union(){
         cube([baseHeight,4,baseWidth]);
-        translate([-.5,4,0])cylinder(h=baseWidth,r=4,$fn=200);
+        translate([-.5,4,0])cylinder(h=baseWidth,r=4,$fn=50);
         rotate([0,0,75])cube([baseHeight,4,baseWidth]);
-        translate([cos(75)*baseHeight,sin(75)*baseHeight,0])cylinder(h=baseWidth,r=4,$fn=200);
+        translate([cos(75)*baseHeight,sin(75)*baseHeight,0])cylinder(h=baseWidth,r=4,$fn=50);
         translate([cos(75)*baseHeight,sin(75)*baseHeight,0])rotate([0,0,-a])cube([legHeight,4,baseWidth]);
         difference(){
             translate([cos(75)*baseHeight+cos(a)*legHeight,sin(75)*baseHeight-sin(a)*legHeight,0])rotate([0,0,90-a])cube([t+2,4,baseWidth]);

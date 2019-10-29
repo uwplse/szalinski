@@ -7,7 +7,7 @@ use <Nut.scad>;
 use <Bolt.scad>;
 use <M3.scad>;
 
-$fn = 120; 
+$fn = 50; 
 
 difference() {
     difference() {

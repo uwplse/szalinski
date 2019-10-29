@@ -4,7 +4,7 @@ D=60;
 water_bottle(D);
 
 module water_bottle(D=60) {
-$fn=100;
+$fn=50;
 d=D/8 < 5.5 ? 5.5 : D/8;
 z=D+d+1.5;
 zz=z+10;

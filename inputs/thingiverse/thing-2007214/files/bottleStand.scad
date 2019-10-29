@@ -38,7 +38,7 @@ module bottleStand()
     translate([x,0,bottleDiameter*0.5]){
     
     rotate([90,0,0]){
-    cylinder(r=bottleDiameter*0.5, h=bottleHeight, center = true, $fn=100);
+    cylinder(r=bottleDiameter*0.5, h=bottleHeight, center = true, $fn=50);
     }
     }
     }

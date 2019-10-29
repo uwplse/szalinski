@@ -6,8 +6,8 @@ holders_x = 8; // [1:100]
 holders_y = 1; // [1:100]
 
 module paintmock(d=25, h=50, neck_d=20, neck_h=28) {
-    cylinder(d=d, h=h, $fn=60);
-    translate([0,0,neck_h]) cylinder(d=neck_d, h=50, $fn=60);
+    cylinder(d=d, h=h, $fn=50);
+    translate([0,0,neck_h]) cylinder(d=neck_d, h=50, $fn=50);
 }
 
 module rack(x, y = 1) { 
@@ -24,14 +24,14 @@ module rack(x, y = 1) {
                         cube([30, 15, 15]);
                         translate([0,15,3])
                             rotate([0,90,0])
-                            cylinder(r=3, h=30, $fn=90);
+                            cylinder(r=3, h=30, $fn=50);
                         cube([30, sin(70)*63, 3]);
                         translate([0,sin(70)*63, 0])
                         {
                             cube([30, 5, 35]);
                             translate([0,0,3])
                                 rotate([0,90,0])
-                                cylinder(r=3, h=30, $fn=90);
+                                cylinder(r=3, h=30, $fn=50);
                         }
                     }
                     translate([0,5,16])

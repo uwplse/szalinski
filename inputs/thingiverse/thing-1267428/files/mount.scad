@@ -1,4 +1,4 @@
-$fn = 100 * 1;
+$fn = 50 * 1;
 
 //  Length of the base plate
 length = 100;

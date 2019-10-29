@@ -14,7 +14,7 @@ wd=9;
 //tolerance
 tol=0.2; 
 //definition
-$fn=90; 
+$fn=50; 
 //Part to render
 part=0; //[0:All, 1:Part A, 2:Part B]
 

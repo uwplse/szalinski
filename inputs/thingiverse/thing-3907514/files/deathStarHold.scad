@@ -2,7 +2,7 @@
 //Marcello 9/28/19
 
 rad = 70; //main body radius
-$fn = 100; 
+$fn = 50; 
 
 //trench cutout
 clen = 2*rad+1; 

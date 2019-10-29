@@ -33,7 +33,7 @@ part = "both"; // [both, top, bottom]
 spacing = 10;
 
 /* [Hidden] */
-$fn = 360;
+$fn = 50;
 cableRadius = cableDiameter / 2;
 rInner = h / 2 + (s * s) / (8 * h);
 

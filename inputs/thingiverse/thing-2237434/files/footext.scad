@@ -31,6 +31,6 @@ difference () {
         // any excess "below the surface":
         translate([-fsize_x/2-tol-wall-d, -fsize_y/2-tol-wall-d, -(wall+max(minwall,fence)+d)]) cube([fsize_x+2*tol+2*wall+2*d, fsize_y+2*tol+2*wall+2*d, wall+max(minwall,fence)+d]);
         // central hole:
-        translate([0, 0, -(wall+max(minwall,fence)+d)]) cylinder(d=holedia, h=d+wall+max(minwall,fence)+extension+max(minwall,fence)+d, $fn=120);
+        translate([0, 0, -(wall+max(minwall,fence)+d)]) cylinder(d=holedia, h=d+wall+max(minwall,fence)+extension+max(minwall,fence)+d, $fn=50);
     }
 }

@@ -82,7 +82,7 @@ if(object == "front ring")
 // Large cap
 if(object == "large cap")
 {
-    $fn=100;
+    $fn=50;
     RC = R+lip+th+glueGap+ribWidth;
     translate([0,0,-thw])
     union()

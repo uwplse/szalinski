@@ -10,7 +10,7 @@ hookScrewDiameter = 6;
 
 module cover(d, screwDiameter, screwHeadDiameter, screwPosition) {
     difference() {
-        cylinder(r=d/2, h=2.5, $fn=75);
+        cylinder(r=d/2, h=2.5, $fn=50);
     
         for (rotate1 = [ 45 : 90 : 315 ]) {
             rotate([0,0,rotate1]) {
@@ -34,13 +34,13 @@ module hook(w,d,h,holeRadius) {
             }
             translate([0,0,h]) {
                 rotate([0,90,0]) {
-                    cylinder(r=d/2, h=w, center=true, $fn=100);
+                    cylinder(r=d/2, h=w, center=true, $fn=50);
                 }
             }
         }
         translate([0,0,h]) {
             rotate([0,90,0]) {
-                cylinder(r=holeRadius, h=w+2, center=true, $fn=100);
+                cylinder(r=holeRadius, h=w+2, center=true, $fn=50);
             }
         }
     }

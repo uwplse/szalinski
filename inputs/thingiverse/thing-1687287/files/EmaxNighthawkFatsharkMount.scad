@@ -1,4 +1,4 @@
-$fn=100*1;
+$fn=50*1;
 //desired angle
 angle=25;  // [0:35]
 //verical offset of camera

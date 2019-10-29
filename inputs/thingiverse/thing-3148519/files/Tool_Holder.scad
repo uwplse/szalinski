@@ -7,7 +7,7 @@ h = w*2;    //height of backplate
 t = 5;      //thickness of backplate
 d = 3;      //hole size
 
-$fn = 150;
+$fn = 50;
 
 difference(){
     union(){

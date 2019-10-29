@@ -12,7 +12,7 @@ height = 25;
 radius = 2.5;
 tolerance = 0.2;
 
-$fn=100/1;
+$fn=50/1;
 
 // card size 32.0 × 24.0 × 2.1 mm
 sd_card_holder();

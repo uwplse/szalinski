@@ -5,10 +5,10 @@ walld=2;
 module mnthole() {
     translate( [legd/2+15,10,0] )
         rotate([90,0,0] )
-        cylinder( r=1.6, h=20, $fn=100 );
+        cylinder( r=1.6, h=20, $fn=50 );
     translate( [legd/2-15,10,0] )
         rotate([90,0,0] )
-        cylinder( r=1.6, h=20, $fn=100 );
+        cylinder( r=1.6, h=20, $fn=50 );
 }
 
 difference() {

@@ -15,7 +15,7 @@ if(what != 1) {
 
 module hook() {
     cylinder(r=3, h=6, center=true, $fn=40);
-    translate([0,0,4]) cylinder(r=6, h=2, center=true, $fn=60);
+    translate([0,0,4]) cylinder(r=6, h=2, center=true, $fn=50);
 }
 
 module clamp_flex(support = 0) {
@@ -36,8 +36,8 @@ module clamp_flex(support = 0) {
     }
     // The clamp itself
     difference() {
-        cylinder(r=d/2+4, h=h, center=true, $fn=80);
-        cylinder(r=d/2, h=h+10, center=true, $fn=80);
+        cylinder(r=d/2+4, h=h, center=true, $fn=50);
+        cylinder(r=d/2, h=h+10, center=true, $fn=50);
         translate([0, -d*1.45, 0]) cube([2*d, 2*d, 2*d], center=true);
         translate([-5, -d, 0]) cube([10, 2*d, 2*d], center=true);
         translate([-5, -50, -50]) cube([100,100,100]);

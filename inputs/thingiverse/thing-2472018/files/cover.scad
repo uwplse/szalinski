@@ -3,7 +3,7 @@ width=75;
 length=50;
 height=10;
 
-$fn=100;
+$fn=50;
 
 
 difference(){

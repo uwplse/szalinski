@@ -52,41 +52,41 @@ translate([+dist_cam+10,-height/2+12,-44])
 
 //passaggio siringa
          translate([r_est+dist_cam-eccentricita,0,0])
-         cylinder(h=cut,r=r_sir,$fn=100,center=true);
+         cylinder(h=cut,r=r_sir,$fn=50,center=true);
  
     translate([-r_est-dist_cam+eccentricita,0,0])
-         cylinder(h=cut,r=r_sir,$fn=100,center=true);
+         cylinder(h=cut,r=r_sir,$fn=50,center=true);
  
  //tagli per i tubi di entrata/uscita
  rotate([-90,0,0])
 translate([-dist_cam-10,height/2-12,-60])
-  cylinder(h=47,r=3.5,$fn=100);
+  cylinder(h=47,r=3.5,$fn=50);
  
  rotate([-90,0,0])
 translate([-x_cube/2+12,-height/2+12,-60])
-     cylinder(h=47,r=3.5,$fn=100);
+     cylinder(h=47,r=3.5,$fn=50);
  
  rotate([-90,0,0])
 translate([+x_cube/2-12,+height/2-12,-60])
-      cylinder(h=47,r=3.5,$fn=100);
+      cylinder(h=47,r=3.5,$fn=50);
  
  rotate([-90,0,0])
 translate([+dist_cam+10,-height/2+12,-60])
- cylinder(h=47,r=3.5,$fn=100);
+ cylinder(h=47,r=3.5,$fn=50);
 
 //CAMERE INTERNE E cilindri che tagliano l'eccesso dei tubi di entrata all'interno delle camere
  translate([r_est+dist_cam,0,0])
   difference(){
-      cylinder(h=height-5,r=r_est,$fn=100,center=true);
+      cylinder(h=height-5,r=r_est,$fn=50,center=true);
       translate([-eccentricita,0,0])
-      cylinder(h=height-5,r=r_sir+spessore_camera,$fn=100,center=true);
+      cylinder(h=height-5,r=r_sir+spessore_camera,$fn=50,center=true);
   }
   
   translate([-r_est-dist_cam,0,0])
   difference(){
-      cylinder(h=height-5,r=r_est,$fn=100,center=true);
+      cylinder(h=height-5,r=r_est,$fn=50,center=true);
       translate([eccentricita,0,0])
-      cylinder(h=height-5,r=r_sir+spessore_camera,$fn=100,center=true);
+      cylinder(h=height-5,r=r_sir+spessore_camera,$fn=50,center=true);
  }
 
 }

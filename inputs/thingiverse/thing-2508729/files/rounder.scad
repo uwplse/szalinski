@@ -10,7 +10,7 @@ topHeight = 5;
 bottomHeight = 10;
 
 /* [Hidden] */
-$fn = 128;
+$fn = 50;
 bottomRadius = bottomDiameter / 2;
 topRadius = topDiameter / 2;
 holeRadius = holeDiameter / 2;

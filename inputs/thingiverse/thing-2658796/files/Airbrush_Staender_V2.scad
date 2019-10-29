@@ -1,6 +1,6 @@
 
 //
-$fn=160;
+$fn=50;
 // 
 translate([0,20,105]) rotate([-40,0,0]) kopf();
 //fuss();

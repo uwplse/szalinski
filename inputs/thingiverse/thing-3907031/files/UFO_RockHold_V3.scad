@@ -1,4 +1,4 @@
-$fn = 100; //Quality
+$fn = 50; //Quality
 //All dimensions are in mm
 
 //Scale

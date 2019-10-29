@@ -12,7 +12,7 @@ D = 1;
 PD = 2.5;
 Prong_Thickness=0.2;
 //  Facets for circles
-$fn=64;
+$fn=50;
 
 anti_rollout();
 

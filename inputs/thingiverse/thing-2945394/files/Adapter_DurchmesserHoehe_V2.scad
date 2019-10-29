@@ -2,7 +2,7 @@
 //height adjuster for orchid plant pots
 //20180604 P. de Graaff
 
-$fn=100;
+$fn=50;
 Durchmesser=85;     //outer diameter of adjuster
 DurchmesserTopf=80; //outer diameter plant pot
 Hoehe=20;           //total height of adjuster

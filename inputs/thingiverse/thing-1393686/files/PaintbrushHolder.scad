@@ -50,7 +50,7 @@ cap_h = 6;
 /*[Hidden]*/
 full_width = holes_count_w * (hole_w + wall_thickness) + wall_thickness;
 full_depth = holes_count_d * (hole_d + wall_thickness) + wall_thickness;
-$fn = 64;
+$fn = 50;
 
 
 inner_rounding = rounding - wall_thickness;

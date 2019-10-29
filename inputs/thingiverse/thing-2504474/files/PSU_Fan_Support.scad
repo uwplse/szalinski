@@ -37,4 +37,4 @@ module placca (fan,thickness){
     }
 }
 
-$fn=200;
+$fn=50;

@@ -546,8 +546,8 @@ module speed_rotor() {
  */
 module cup(){
 	difference(){
-		sphere(r = radius, $fn=100);
-		sphere(r = radius-thickness, $fn=100);
+		sphere(r = radius, $fn=50);
+		sphere(r = radius-thickness, $fn=50);
 		translate([-radius,0,-radius]) { 
             cube(size = radius*2, center = false); 
         }
@@ -1089,7 +1089,7 @@ if (render=="magnet_rotor") {
 
 // Thread for mounting on Rohloff hub.
 //difference () {
-//   cylinder (r=20, h=10, $fn=100);
+//   cylinder (r=20, h=10, $fn=50);
 //
 //   metric_thread (diameter=34, pitch=1, length=10, internal=true, n_starts=6);
 //}

@@ -1,4 +1,4 @@
-$fn =500;
+$fn =50;
 Diameter_in_Millimeters=100;
 difference() {
 translate([0, 6, 0]) { cube([100, 20, 50], center=true); }

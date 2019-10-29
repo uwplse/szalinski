@@ -26,9 +26,9 @@ dividers=sections-1;
 //base
 
 difference(){
-    roundedBox([base_width, base_length, base_height*3], base_height, false, $fn=100);
+    roundedBox([base_width, base_length, base_height*3], base_height, false, $fn=50);
    
-    translate([0,0,base_height]){   roundedBox([base_width+2*base_height,base_length+.1,base_height*3],base_height,false,$fn=100);
+    translate([0,0,base_height]){   roundedBox([base_width+2*base_height,base_length+.1,base_height*3],base_height,false,$fn=50);
     }
 }
 
@@ -50,16 +50,16 @@ module divider(total_height,width,cutout_width,cutout_height){
                     cube([base_width,width+base_height*2,total_height]);
                 }
                 translate([0,width+base_height/2,height/2+base_height/4]){
-                    roundedBox([base_width+2*base_height,2*base_height,total_height+base_height],base_height,$fn=100);
+                    roundedBox([base_width+2*base_height,2*base_height,total_height+base_height],base_height,$fn=50);
                 }
                 translate([0,-width-base_height/2,height/2+base_height/4]){
-                     roundedBox([base_width+2*base_height,2*base_height,total_height+base_height],base_height,$fn=100);
+                     roundedBox([base_width+2*base_height,2*base_height,total_height+base_height],base_height,$fn=50);
                 }
             }
             //rounded top
             translate([-(base_width/2),0,total_height-base_height/2]){
                 rotate(a=90, v=[0,1,0]){
-                    cylinder(h=base_width, r=base_height/2, $fn=100);
+                    cylinder(h=base_width, r=base_height/2, $fn=50);
                 }
             }
         }

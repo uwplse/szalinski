@@ -64,7 +64,7 @@ translate([0,5,0]) cube([(RulerLength*10)+10,25,2.5]);
 translate([0,-5,0])  cube([(RulerLength*10)+10,1,1]);
 }
 // This is the hole for a keyring.
-translate([6,24,0]) cylinder(h = 10, r=3, center = true, $fn=100);
+translate([6,24,0]) cylinder(h = 10, r=3, center = true, $fn=50);
 
  // Apply our imprint to the back
 translate([105,8,1]) rotate([0,180,0])  write("Maker Academy",h=9.5,t=2,space=1.2); 

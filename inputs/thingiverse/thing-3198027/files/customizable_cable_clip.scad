@@ -24,7 +24,7 @@ screw_diameter = 4.5;
 
 // Following variables are not parameters
 epsilon = 0.1+0;
-$fn=64+0;
+$fn=50+0;
 
 outer = cables_diameter+2*thickness;
 

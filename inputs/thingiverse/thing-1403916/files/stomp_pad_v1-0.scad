@@ -95,7 +95,7 @@ module createPart(width, length, radius, base_thickness, ridge_size, ridge_heigh
             }
             cutout(width, length, cut_spacing, ridge_height + base_thickness, cut_width, min(cut_depth, ridge_height + MAX_BASE_CUT));
         }
-        rrect((base_thickness + ridge_height)*2, width, length, radius, $fn=90);
+        rrect((base_thickness + ridge_height)*2, width, length, radius, $fn=50);
     }
 
 }

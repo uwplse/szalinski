@@ -14,7 +14,7 @@ rotate([0,0,1]){
     cube([35,5,width]);
         translate([35,5,0]){
             intersection(){
-                cylinder(width,5,5,$fn=100);
+                cylinder(width,5,5,$fn=50);
                 translate([0,-5,0]){
                     cube([5,5,width]);
                 }
@@ -26,7 +26,7 @@ rotate([0,0,1]){
 //Rundung Ecke Tischklemme/thickness_of_desknabstand
 translate([5,5,0]){
     intersection(){
-        cylinder(width,5,5,$fn=100);
+        cylinder(width,5,5,$fn=50);
         translate([-5,-5,0]){
             cube([5,5,width]);
         }
@@ -41,7 +41,7 @@ translate([0,5,0]){
 //Rundung Ecke thickness_of_desknabstand/langes Ding
 translate([5,thickness_of_desk+5,0]){
     intersection(){
-        cylinder(width,5,5,$fn=100);
+        cylinder(width,5,5,$fn=50);
         translate([-5,0,0]){
             cube([5,5,width]);
         }
@@ -56,7 +56,7 @@ translate([5,5+thickness_of_desk,0]){
 //Rundung langes Ding/Headsetabstand
 translate([80,15+thickness_of_desk,0]){
     intersection(){
-        cylinder(width,10,10,$fn=100);
+        cylinder(width,10,10,$fn=50);
         translate([0,-10,0]){
             cube([10,10,width]);
         }
@@ -71,7 +71,7 @@ translate([80,15+thickness_of_desk,0]){
 //Rundung Headsetabstand/auflage
 translate([80,thickness_of_headset+10+thickness_of_desk,0]){
     intersection(){
-        cylinder(width,10,10,$fn=100);
+        cylinder(width,10,10,$fn=50);
         translate([0,0,0]){
             cube([10,10,width]);
         }

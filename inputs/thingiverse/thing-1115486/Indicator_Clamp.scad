@@ -7,9 +7,9 @@ difference(){
      
 
  cylinder (h = 12, r=10
-   , center = true, $fn=150);
+   , center = true, $fn=50);
 
- cylinder (h = 14, r=5, center = true, $fn=150);
+ cylinder (h = 14, r=5, center = true, $fn=50);
   
 translate(v = [0,4.25, 0]) {
  
@@ -48,7 +48,7 @@ translate(v = [-3,13,6]) {
      
     rotate ([0,90,0]){
    
-   cylinder ( 8.1, 1.55,1.55, center=true, $fn=150);    
+   cylinder ( 8.1, 1.55,1.55, center=true, $fn=50);    
        
   } }  
 }

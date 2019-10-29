@@ -4,7 +4,7 @@
 //variables
 /* [Hidden] */
 //fragment number
-$fn = 100;
+$fn = 50;
 
 /* [Main] */
 //thickness of desks in mm

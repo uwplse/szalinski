@@ -9,7 +9,7 @@ CenterHoleDiameter=5;
 $fn=50;
 difference(){
     intersection(){
-        scale([1,1,0.5]) sphere(d=Size,$fn=100);
+        scale([1,1,0.5]) sphere(d=Size,$fn=50);
         cube([Size*2,Size*2,Width],center=true);
     }
     if(CenterHoleDiameter > 0)cylinder(d=CenterHoleDiameter+0.5,h=Width*3,center=true);

@@ -1,4 +1,4 @@
-$fn=128;
+$fn=50;
 
 BaseWidth=152*1;
 BaseLength=190*1;

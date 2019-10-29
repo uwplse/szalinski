@@ -19,7 +19,7 @@ loopct=n/2;
 difference() {
 cube([length,width,thickness]);
 for (i=[1:loopct]) {
-  translate([edgeoffset*i+2*hole_radius*(i-1),width/2,1]) cylinder(h=thickness*10,r=hole_radius,center=true,$fn=100);
-  translate([length-(edgeoffset*i+2*hole_radius*(i-1)),width/2,1]) cylinder(h=thickness*10,r=hole_radius,center=true,$fn=100);
+  translate([edgeoffset*i+2*hole_radius*(i-1),width/2,1]) cylinder(h=thickness*10,r=hole_radius,center=true,$fn=50);
+  translate([length-(edgeoffset*i+2*hole_radius*(i-1)),width/2,1]) cylinder(h=thickness*10,r=hole_radius,center=true,$fn=50);
   }
 }

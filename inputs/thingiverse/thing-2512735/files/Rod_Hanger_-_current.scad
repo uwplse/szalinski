@@ -1,4 +1,4 @@
-$fn=80;
+$fn=50;
 
 rodRadius = 15; // include padding
 hangerWidth = 25;  // width of the hanger

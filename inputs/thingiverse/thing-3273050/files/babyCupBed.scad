@@ -43,7 +43,7 @@ output();
 
 //module
 module barreau(clearance=0,cut=0){
-	translate([0,0,-cut])cylinder(r=barDiameter/2+clearance,h=barSpace/2+2*cut,$fn=100);
+	translate([0,0,-cut])cylinder(r=barDiameter/2+clearance,h=barSpace/2+2*cut,$fn=50);
 	}
 
 module helper(){

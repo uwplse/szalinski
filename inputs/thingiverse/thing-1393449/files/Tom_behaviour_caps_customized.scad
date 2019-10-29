@@ -20,14 +20,14 @@ r2 = r1-1;
 
 
 module Base() {
-cylinder($fn=100,h= h1, r = r1, center = true);
+cylinder($fn=50,h= h1, r = r1, center = true);
 }
 
 //Base();
 
 module inside() {
-cylinder ( $fn=100,h = h1, r = r2, centre = true);
- translate ([0,0,-h1/2]){cylinder ($fn=100, h = h1, r = r2, centre = true);}
+cylinder ( $fn=50,h = h1, r = r2, centre = true);
+ translate ([0,0,-h1/2]){cylinder ($fn=50, h = h1, r = r2, centre = true);}
 }
 
 //inside();

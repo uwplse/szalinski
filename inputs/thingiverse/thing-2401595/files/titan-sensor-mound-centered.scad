@@ -43,7 +43,7 @@ difference() {
 	cube([thickness+1, 100, height]);
 }
 //Sensor
-$fn=200;
+$fn=50;
 difference() {
 	union() {
 		translate([sensor_diameter/2+thickness+sensor_standoff,mount_start+thickness+sensor_diameter/2, 0])

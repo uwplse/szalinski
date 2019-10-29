@@ -1,1 +1,1 @@
-sphere(20, $fn=400);
+sphere(20, $fn=50);

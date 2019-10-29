@@ -33,8 +33,8 @@ module lid(LidWidth,LidLength, tol, Thickness, Edge)
             translate([LidWidth+Thickness*3,0,Thickness]) cube([Thickness,LidLength+Thickness*4,2*Thickness]);
 
             //cylinders on side walls
-            translate([LidWidth+4*Thickness-Thickness*0.7,Thickness+LidLength/5,4.5*Thickness-Thickness*1.7]) rotate([270,0,0]) cylinder($fn = 100, r = Thickness, h = 3*LidLength/5);
-            translate([Thickness*0.7,Thickness+LidLength/5,4.5*Thickness-Thickness*1.7]) rotate([270,0,0]) cylinder($fn = 100, r = Thickness, h = 3*LidLength/5);
+            translate([LidWidth+4*Thickness-Thickness*0.7,Thickness+LidLength/5,4.5*Thickness-Thickness*1.7]) rotate([270,0,0]) cylinder($fn = 50, r = Thickness, h = 3*LidLength/5);
+            translate([Thickness*0.7,Thickness+LidLength/5,4.5*Thickness-Thickness*1.7]) rotate([270,0,0]) cylinder($fn = 50, r = Thickness, h = 3*LidLength/5);
             }
     //Subtraction
     //hole in middle

@@ -1,7 +1,7 @@
 // A substitute for nylon rings for Low-Pro Edge style tremolo arms
 
 
-$fn = 64;
+$fn = 50;
 innerDiameter = 4;
 outerDiameter = 6;
 height = 3.8; // make it a bit lower to fit easily

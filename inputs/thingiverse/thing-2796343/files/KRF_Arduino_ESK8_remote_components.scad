@@ -3,7 +3,7 @@
 
 
 
-//$fn=90;
+//$fn=50;
 //electronics
 JoyStick = 1;  //"0"=NO / "1"=YES
 NANO     = 1;  //"0"=NO / "1"=YES 

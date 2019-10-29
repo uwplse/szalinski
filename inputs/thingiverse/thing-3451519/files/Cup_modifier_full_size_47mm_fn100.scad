@@ -1,4 +1,4 @@
-$fn=100;
+$fn=50;
     cylinder(r=41.5, h= 20);
 
 translate([0,0,20]) 

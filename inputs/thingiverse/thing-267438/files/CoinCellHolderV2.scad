@@ -32,10 +32,10 @@ rotate([0,90,0])
 				difference()
 				{
 					// Main block
-					cylinder(r=(battery_diameter/2)+tolerance+wall_thickness, h=battery_height*number_of_cells+(tolerance)+(2*wall_thickness),$fn=64);
+					cylinder(r=(battery_diameter/2)+tolerance+wall_thickness, h=battery_height*number_of_cells+(tolerance)+(2*wall_thickness),$fn=50);
 					// Battery shape
 					translate([0,0,wall_thickness])
-						cylinder(r=(battery_diameter/2)+(tolerance/2), h=battery_height*number_of_cells+tolerance,$fn=64);
+						cylinder(r=(battery_diameter/2)+(tolerance/2), h=battery_height*number_of_cells+tolerance,$fn=50);
 					// Square opening 
 					translate([0,-((battery_diameter/2)+2+tolerance),0])
 						cube([battery_diameter+10,battery_diameter*number_of_cells+5,battery_height*number_of_cells+5]);

@@ -1,7 +1,7 @@
 bit_angle = 45; // [10:90]
 bit_diameter = 5; // [1.0:14.0]
 module holder(diameter, angle){
-	$fn=64;
+	$fn=50;
 	module notch(){
 		rotate([0,0,45])
 		translate([-.5,-.5,-200])

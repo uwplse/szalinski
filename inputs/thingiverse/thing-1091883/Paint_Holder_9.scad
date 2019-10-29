@@ -68,7 +68,7 @@ for ( i = [0 : row-1 ] ){
 translate([0,-(holeDiameter-offset)*i,0,])  
 for ( i = [0 : column-1 ] ){
 translate([(holeDiameter-offset)*i,0,0,])
-cylinder(h = holeH*2, r=holeDiameter/2, $fn=60);     
+cylinder(h = holeH*2, r=holeDiameter/2, $fn=50);     
  }
  }
  }

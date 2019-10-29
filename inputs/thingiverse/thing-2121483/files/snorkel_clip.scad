@@ -24,17 +24,17 @@ module clip(){
             difference(){
                 union(){
                     translate([0, 0, _uncenter])
-                        cylinder(snorkel_clip_height, d=(snorkel_diameter + holder_wall_thickness), center=true, $fn=360); // Snorkel clip
+                        cylinder(snorkel_clip_height, d=(snorkel_diameter + holder_wall_thickness), center=true, $fn=50); // Snorkel clip
                     intersection(){
                         translate([(snorkel_diameter/2)+holder_wall_thickness, 0, _uncenter + strap_clip_offset])
                             cube(size=[14+(holder_wall_thickness*1.5),strap_clip_width,strap_height+(strap_clip_offset*2)], center=true); // strap clip
                     translate([(snorkel_diameter/2)+holder_wall_thickness, 0, _uncenter+ strap_clip_offset])
-                        cylinder(h=strap_height+(strap_clip_offset*2), d=strap_clip_width*1.3, center=true, $fn=360); // clip reinforcing
+                        cylinder(h=strap_height+(strap_clip_offset*2), d=strap_clip_width*1.3, center=true, $fn=50); // clip reinforcing
                     } 
                 }
      
                 translate([0, 0, _uncenter])
-                    cylinder(h=snorkel_clip_height*4, d=snorkel_diameter, center=true, $fn=360); // snorkel hole
+                    cylinder(h=snorkel_clip_height*4, d=snorkel_diameter, center=true, $fn=50); // snorkel hole
                 translate([0-((snorkel_diameter/2)+holder_wall_thickness)+0.5, 0, _uncenter])
                     cube(size=[holder_wall_thickness*2,2, snorkel_clip_height+1], center=true); // Snorkel clip expansion gap
             }

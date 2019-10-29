@@ -15,7 +15,7 @@ wallThickness=3;
 lensHole=8;
 wallHeight=12;
 
-$fn=100;
+$fn=50;
 
 //eyePieceModel();
 rotate([0,0,90]) mountClip();

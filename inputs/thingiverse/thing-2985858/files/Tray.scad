@@ -5,7 +5,7 @@ Th = 4;   // Thickness.
 W = 56; // Leg width.
 Re = 31.9/2;  // Eyepiece radius, plus a bit.
 
-$fn = 100;
+$fn = 50;
 
 // The tray is divided in three thirds, each is customisable as follows:
 
@@ -85,7 +85,7 @@ for(i=[0:2])
             difference()
             {
                 rotate([0, -90, 0])
-                    cylinder(r = 1, h = 1, center=true, $fn=100);
+                    cylinder(r = 1, h = 1, center=true, $fn=50);
                 translate([0,0,-(1+e)/2])
                     cube([1+e, 1+e, 1+e], center=true);
             }

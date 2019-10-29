@@ -25,7 +25,7 @@ module fillet(r, h)
         difference()
         {
             cube([r + eta, r + eta, h], center = true);
-            translate([r/2, r/2, 0]) cylinder(r = r, h = h + 1, center = true, $fn=180);
+            translate([r/2, r/2, 0]) cylinder(r = r, h = h + 1, center = true, $fn=50);
         }
     }
 }

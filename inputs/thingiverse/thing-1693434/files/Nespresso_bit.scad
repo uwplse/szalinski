@@ -6,7 +6,7 @@ shapedHandle=1; // [1:Yes, 0:No]
 sides=16; // [3:1:100]
 
 module screw_head() {
-    scale([1.15, 1, 1]) cylinder(1, (3.3+margin)/2, (3.3+margin)/2, $fn=100);
+    scale([1.15, 1, 1]) cylinder(1, (3.3+margin)/2, (3.3+margin)/2, $fn=50);
 }
 
 difference() {

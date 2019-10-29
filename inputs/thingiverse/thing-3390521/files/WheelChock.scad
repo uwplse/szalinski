@@ -50,7 +50,7 @@ intersection()
 		toblerone(sides,width);
 
 		// wheel
-		translate([0,0,fullrad]) rotate([90,0,0]) cylinder(d=dia,h=2*width,center=true,$fn=240);
+		translate([0,0,fullrad]) rotate([90,0,0]) cylinder(d=dia,h=2*width,center=true,$fn=50);
 		// blutack cutouts
 		if (cutout) mirrorme([1,0,0]) translate([cutmiddle,0,0]) toblerone(Y,width-2*wall_thick);
 	}

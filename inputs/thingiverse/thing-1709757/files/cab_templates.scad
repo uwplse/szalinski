@@ -46,8 +46,8 @@ hole_d=1.5*1;//not intended to be configurable - the size of the holes that make
 
 module cab_oval(a, b)
 {
-    scale([1, min(a,b)/max(a,b), 1]) cylinder(d=max(a,b),h=template_thick, $fn=180);
-    translate([0, 0, -0.3]) scale([0.97, 0.97, 1]) scale([1, min(a,b)/max(a,b), 1]) cylinder(d=max(a,b),h=template_thick, $fn=180);
+    scale([1, min(a,b)/max(a,b), 1]) cylinder(d=max(a,b),h=template_thick, $fn=50);
+    translate([0, 0, -0.3]) scale([0.97, 0.97, 1]) scale([1, min(a,b)/max(a,b), 1]) cylinder(d=max(a,b),h=template_thick, $fn=50);
 }
 
 module cab_round(a)

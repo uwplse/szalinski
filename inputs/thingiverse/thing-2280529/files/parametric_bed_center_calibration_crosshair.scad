@@ -21,7 +21,7 @@ union(){
     }
   }
   difference(){
-    cylinder(d=widthSquare, h=height, center=true, $fn=360);
-    cylinder(d=widthSquare-2*wallThickness, h=height+tolerance, center=true, $fn=360);
+    cylinder(d=widthSquare, h=height, center=true, $fn=50);
+    cylinder(d=widthSquare-2*wallThickness, h=height+tolerance, center=true, $fn=50);
   }
 }

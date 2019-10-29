@@ -22,7 +22,7 @@ cheight = 8;
 part_type=0;	// [0:1:2]
 // Number of parts/feeders to render
 part_count= 15;
-$fn=90;
+$fn=50;
 
 for (n=[0:part_count-1])
 {
@@ -59,7 +59,7 @@ module fillet(r, h)
         difference()
         {
             cube([r + eta, r + eta, h], center = true);
-            translate([r/2, r/2, 0]) cylinder(r = r, h = h + 1, center = true, $fn=180);
+            translate([r/2, r/2, 0]) cylinder(r = r, h = h + 1, center = true, $fn=50);
         }
     }
 }

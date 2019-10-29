@@ -21,14 +21,14 @@ XOffset =1;
 
 
 
-cylinder (h = TopHeight, r=TopDiameter/2, center = true, $fn=100);
+cylinder (h = TopHeight, r=TopDiameter/2, center = true, $fn=50);
 
 
 difference() {
     			translate([0, 0, TopHeight])
-    				cylinder (h = ShaftLength, r=ShaftOuterDiameter/2, center = true, $fn=100);
+    				cylinder (h = ShaftLength, r=ShaftOuterDiameter/2, center = true, $fn=50);
 			translate([0, 0, TopHeight])
-				cylinder (h = ShaftLength, r=ShaftInnerDiameter/2, center = true, $fn=100);
+				cylinder (h = ShaftLength, r=ShaftInnerDiameter/2, center = true, $fn=50);
 }
 
 // add pins

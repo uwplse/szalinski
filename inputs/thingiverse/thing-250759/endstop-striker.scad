@@ -9,7 +9,7 @@ the nut to the body. This provides a narrow
 striker for an optical end stop */
 
 
-$fn=100+0;
+$fn=50+0;
 
 // Main body diameter (mm)
 main_diameter=15;

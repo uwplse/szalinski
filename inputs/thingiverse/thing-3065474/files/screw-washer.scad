@@ -24,9 +24,9 @@ qty = 4;
 module printWasher(rad = (diameter+gap)/2,thick=thickness,height=height) {
     difference() {
         // outter circle
-        cylinder(r=rad+thick,h=height,$fn=64);
+        cylinder(r=rad+thick,h=height,$fn=50);
         // inner circle
-        translate([0,0,-1]) cylinder(r=rad,h=height+2,$fn=64);
+        translate([0,0,-1]) cylinder(r=rad,h=height+2,$fn=50);
     }
 }
     

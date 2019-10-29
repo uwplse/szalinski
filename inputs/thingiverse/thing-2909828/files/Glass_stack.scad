@@ -1,6 +1,6 @@
 Larger_diameter=60;
 Minor_diameter=50;
-$fn = 500;
+$fn = 50;
 principale();
 
 module principale(){

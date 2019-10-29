@@ -73,7 +73,7 @@ module flange() {
             //this sets the y axis point based on the sin of the theta
             y=0+(bolt_spread/2)*sin(theta);
             //this creates the circle or other obect at the x,y point
-            translate([x,y,0]) cylinder(flange_height+2,bolt_ID/2,bolt_ID/2,$fn=60,true);;
+            translate([x,y,0]) cylinder(flange_height+2,bolt_ID/2,bolt_ID/2,$fn=50,true);;
         }//end for loop for circle creation
     
     }//end differance

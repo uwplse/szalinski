@@ -55,7 +55,7 @@ module main_module(){ //create module
             union() {//start union
                 
                 //crreate main body of collar
-                translate ([0,0,0]) rotate ([0,0,0]) cylinder(collar_height,(spindle_dia+wall_Thick)/2,(spindle_dia+wall_Thick)/2,$fn=60,true);
+                translate ([0,0,0]) rotate ([0,0,0]) cylinder(collar_height,(spindle_dia+wall_Thick)/2,(spindle_dia+wall_Thick)/2,$fn=50,true);
                 
                 //create cinch tab
                 translate ([spindle_dia/2,0,0]) rotate ([0,0,0]) cube([50,15,collar_height],true);
@@ -64,7 +64,7 @@ module main_module(){ //create module
                 translate ([-((spindle_dia+wall_Thick)/2)+(mount_width/2),-((spindle_dia+wall_Thick))+(spindle_dia/4),(collar_height/2)-2.5]) rotate ([0,0,0]) oblong(mount_width,x_length,5,0,6.4,true);
                 
                 //create x support
-                translate ([-((spindle_dia+wall_Thick)/2)+(mount_width/2),-((spindle_dia+wall_Thick))+(spindle_dia/4)+10,(collar_height/2)-5]) rotate ([90,90,0]) cylinder(x_length,10/2,10/2,$fn=60,true);
+                translate ([-((spindle_dia+wall_Thick)/2)+(mount_width/2),-((spindle_dia+wall_Thick))+(spindle_dia/4)+10,(collar_height/2)-5]) rotate ([90,90,0]) cylinder(x_length,10/2,10/2,$fn=50,true);
                                 
                 //create z mount
                 translate ([(spindle_dia+mount_width+14)/2,5,-z_length-2.5]) rotate ([90,0,0])oblong(18,(z_length+collar_height),5,0,6.4,true);
@@ -74,13 +74,13 @@ module main_module(){ //create module
     //start subtraction of difference
                     
                 //Differance center of collar
-                translate ([0,0,0]) rotate ([0,0,0]) cylinder(collar_height*2,(spindle_dia)/2,(spindle_dia)/2,$fn=60,true);
+                translate ([0,0,0]) rotate ([0,0,0]) cylinder(collar_height*2,(spindle_dia)/2,(spindle_dia)/2,$fn=50,true);
                     
                 //create opening for cinch
                 translate ([spindle_dia/2,0,0]) rotate ([0,0,0]) cube([52,5,collar_height+2],true);
                     
                 //create hole for cinch bolt
-                translate ([(spindle_dia+25)/2,0,0]) rotate ([90,0,0]) cylinder(20,6.4/2,6.4/2,$fn=60,true);
+                translate ([(spindle_dia+25)/2,0,0]) rotate ([90,0,0]) cylinder(20,6.4/2,6.4/2,$fn=50,true);
                                                
     } //end difference
 }//end module
@@ -90,17 +90,17 @@ module oblong(dia,len,tall,hole_1,hole_2,center){
         union() {
             //create base oblong structure
             cube([dia,len,tall], center);
-            translate ([0,len/2,0]) {cylinder(tall,dia/2,dia/2,$fn=60, center);
+            translate ([0,len/2,0]) {cylinder(tall,dia/2,dia/2,$fn=50, center);
             }
-            translate ([0,-len/2,0]) {cylinder(tall,dia/2,dia/2,$fn=60, center);
+            translate ([0,-len/2,0]) {cylinder(tall,dia/2,dia/2,$fn=50, center);
             }
         } //end union
      //if hole is greater than zero, remove hole otherwise do nothing   
      if (hole_1>0) {
-        translate ([0,len/2,-1]) {cylinder(tall+3,hole_1/2,hole_1/2,$fn=60, center);
+        translate ([0,len/2,-1]) {cylinder(tall+3,hole_1/2,hole_1/2,$fn=50, center);
         }}
         if (hole_2>0) {
-        translate ([0,-len/2,-1]) {cylinder(tall+3,hole_2/2,hole_2/2,$fn=60, center);
+        translate ([0,-len/2,-1]) {cylinder(tall+3,hole_2/2,hole_2/2,$fn=50, center);
         }}
     } //end differance
 }//end module

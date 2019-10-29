@@ -1,10 +1,10 @@
 
-module ball(){sphere(d=35, $fn=100);
+module ball(){sphere(d=35, $fn=50);
 }
 
 module base(){
 difference ()
-{sphere(d = 80, $fn=100);    
+{sphere(d = 80, $fn=50);    
     translate([0,0,-37])
 union(){
 		translate([0,0,69.5-0.1])cylinder(h=8, r=12.5); 

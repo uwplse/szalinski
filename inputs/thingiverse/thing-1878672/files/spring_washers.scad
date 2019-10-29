@@ -41,7 +41,7 @@ echo (washer_price);		// about 5 washers for a cent of material with these prese
 */
 
 little = 0+0.01;
-$fn = 90;
+$fn = 50;
 
 module pipe(len, inner, outer)  {
 	difference()  {

@@ -1,5 +1,5 @@
 Cell_Count = 1; // number of batteries
-$fn = 100;
+$fn = 50;
 battery_diameter = 19; // 18.3
 battery_length = 65; // 65.2
 

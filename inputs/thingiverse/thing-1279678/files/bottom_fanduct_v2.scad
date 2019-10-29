@@ -10,7 +10,7 @@ print_in_one = 1;   //[1:InOne,0:Seperate]
 
 /*[Hidden]*/
 $fa = 5;
-$fn = 360 / $fa; 
+$fn = 50 / $fa; 
 
 module base()
 {
@@ -272,7 +272,7 @@ module duct(hollow)
       {
         translate([-9,3,4])          
           rotate([90,0,0])
-           linear_extrude(height = 3, $fn = 100) 
+           linear_extrude(height = 3, $fn = 50) 
             text("\u263b", 40);
       }
       

@@ -1,4 +1,4 @@
-$fn=100;
+$fn=50;
 
 // Diameter of the spool hole in mm (where the spool holder will fit)
 spool_hole_diameter=59; //[25:100]

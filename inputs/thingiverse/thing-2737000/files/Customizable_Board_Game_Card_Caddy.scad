@@ -54,7 +54,7 @@ card_well_width = card_width + (card_well_buffer_spacing * 2);
 card_well_padding = card_padding - (card_well_buffer_spacing * 2);
 
 // Resolution.
-$fn = 100 * 1;
+$fn = 50 * 1;
 
 // preview[view:north east, tilt:top diagonal]
 

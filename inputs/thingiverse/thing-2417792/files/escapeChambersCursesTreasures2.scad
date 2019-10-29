@@ -39,10 +39,10 @@ difference(){
     translate([Thickness+Edge,0,Thickness]) {
         cube([ChamberWidth-2*Edge,ChamberWidth+2*Thickness,ChamberHeight]); }
     //Snap fit holes
-    translate([Thickness-Thickness*1.4,ChamberWidth/5*2,ChamberHeight+Thickness-Thickness*1.5]) rotate([90,0,0]) cylinder($fn = 100, r = Thickness, h = ChamberWidth/5);
-    translate([Thickness-Thickness*1.4,ChamberWidth/5*4,ChamberHeight+Thickness-Thickness*1.5]) rotate([90,0,0]) cylinder($fn = 100, r = Thickness, h = ChamberWidth/5);
-    translate([ChamberWidth+Thickness+Thickness*1.4,ChamberWidth/5*2,ChamberHeight+Thickness-Thickness*1.5]) rotate([90,0,0]) cylinder($fn = 100, r = Thickness, h = ChamberWidth/5);
-    translate([ChamberWidth+Thickness+Thickness*1.4,ChamberWidth/5*4,ChamberHeight+Thickness-Thickness*1.5]) rotate([90,0,0]) cylinder($fn = 100, r = Thickness, h = ChamberWidth/5);
+    translate([Thickness-Thickness*1.4,ChamberWidth/5*2,ChamberHeight+Thickness-Thickness*1.5]) rotate([90,0,0]) cylinder($fn = 50, r = Thickness, h = ChamberWidth/5);
+    translate([Thickness-Thickness*1.4,ChamberWidth/5*4,ChamberHeight+Thickness-Thickness*1.5]) rotate([90,0,0]) cylinder($fn = 50, r = Thickness, h = ChamberWidth/5);
+    translate([ChamberWidth+Thickness+Thickness*1.4,ChamberWidth/5*2,ChamberHeight+Thickness-Thickness*1.5]) rotate([90,0,0]) cylinder($fn = 50, r = Thickness, h = ChamberWidth/5);
+    translate([ChamberWidth+Thickness+Thickness*1.4,ChamberWidth/5*4,ChamberHeight+Thickness-Thickness*1.5]) rotate([90,0,0]) cylinder($fn = 50, r = Thickness, h = ChamberWidth/5);
 
     //holes for treasure cards
     translate([Adjoiner+ChamberWidth+2*Thickness,Thickness,Thickness]) {
@@ -50,10 +50,10 @@ difference(){
     translate([Adjoiner+ChamberWidth+2*Thickness+Edge,0,Thickness]) {
         cube([TreasureWidth-2*Edge,TreasureWidth+2*Thickness,CurseHeight]); }
     //Snap fit holes
-    translate([Adjoiner+ChamberWidth+2*Thickness-Thickness*1.4,TreasureWidth/5*2,TreasureHeight+Thickness-Thickness*1.5]) rotate([90,0,0]) cylinder($fn = 100, r = Thickness, h = TreasureWidth/5);
-    translate([Adjoiner+ChamberWidth+2*Thickness-Thickness*1.4,TreasureWidth/5*4,TreasureHeight+Thickness-Thickness*1.5]) rotate([90,0,0]) cylinder($fn = 100, r = Thickness, h = TreasureWidth/5);
-    translate([Adjoiner+TreasureWidth+ChamberWidth+2*Thickness+Thickness*1.4,TreasureWidth/5*2,TreasureHeight+Thickness-Thickness*1.5]) rotate([90,0,0]) cylinder($fn = 100, r = Thickness, h = TreasureWidth/5);
-    translate([Adjoiner+TreasureWidth+ChamberWidth+2*Thickness+Thickness*1.4,TreasureWidth/5*4,TreasureHeight+Thickness-Thickness*1.5]) rotate([90,0,0]) cylinder($fn = 100, r = Thickness, h = TreasureWidth/5);
+    translate([Adjoiner+ChamberWidth+2*Thickness-Thickness*1.4,TreasureWidth/5*2,TreasureHeight+Thickness-Thickness*1.5]) rotate([90,0,0]) cylinder($fn = 50, r = Thickness, h = TreasureWidth/5);
+    translate([Adjoiner+ChamberWidth+2*Thickness-Thickness*1.4,TreasureWidth/5*4,TreasureHeight+Thickness-Thickness*1.5]) rotate([90,0,0]) cylinder($fn = 50, r = Thickness, h = TreasureWidth/5);
+    translate([Adjoiner+TreasureWidth+ChamberWidth+2*Thickness+Thickness*1.4,TreasureWidth/5*2,TreasureHeight+Thickness-Thickness*1.5]) rotate([90,0,0]) cylinder($fn = 50, r = Thickness, h = TreasureWidth/5);
+    translate([Adjoiner+TreasureWidth+ChamberWidth+2*Thickness+Thickness*1.4,TreasureWidth/5*4,TreasureHeight+Thickness-Thickness*1.5]) rotate([90,0,0]) cylinder($fn = 50, r = Thickness, h = TreasureWidth/5);
 
 
     //holes for curse cards
@@ -62,8 +62,8 @@ difference(){
     translate([Adjoiner+ChamberWidth+2*Thickness+Edge,TreasureWidth+2*Thickness,Thickness]) {
         cube([CurseWidth-2*Edge,CurseLength+Thickness,CurseHeight]); }
     //Snap fit holes
-    translate([Adjoiner+ChamberWidth+2*Thickness-Thickness*1.4,TreasureWidth+2*Thickness+CurseLength/5*2,CurseHeight+Thickness-Thickness*1.5]) rotate([90,0,0]) cylinder($fn = 100, r = Thickness, h = CurseLength/5);
-    translate([Adjoiner+ChamberWidth+2*Thickness-Thickness*1.4,TreasureWidth+2*Thickness+CurseLength/5*4,CurseHeight+Thickness-Thickness*1.5]) rotate([90,0,0]) cylinder($fn = 100, r = Thickness, h = CurseLength/5);
-    translate([Adjoiner+CurseWidth+ChamberWidth+2*Thickness+Thickness*1.4,TreasureWidth+2*Thickness+CurseLength/5*2,CurseHeight+Thickness-Thickness*1.5]) rotate([90,0,0]) cylinder($fn = 100, r = Thickness, h = CurseLength/5);
-    translate([Adjoiner+CurseWidth+ChamberWidth+2*Thickness+Thickness*1.4,TreasureWidth+2*Thickness+CurseLength/5*4,CurseHeight+Thickness-Thickness*1.5]) rotate([90,0,0]) cylinder($fn = 100, r = Thickness, h = CurseLength/5);
+    translate([Adjoiner+ChamberWidth+2*Thickness-Thickness*1.4,TreasureWidth+2*Thickness+CurseLength/5*2,CurseHeight+Thickness-Thickness*1.5]) rotate([90,0,0]) cylinder($fn = 50, r = Thickness, h = CurseLength/5);
+    translate([Adjoiner+ChamberWidth+2*Thickness-Thickness*1.4,TreasureWidth+2*Thickness+CurseLength/5*4,CurseHeight+Thickness-Thickness*1.5]) rotate([90,0,0]) cylinder($fn = 50, r = Thickness, h = CurseLength/5);
+    translate([Adjoiner+CurseWidth+ChamberWidth+2*Thickness+Thickness*1.4,TreasureWidth+2*Thickness+CurseLength/5*2,CurseHeight+Thickness-Thickness*1.5]) rotate([90,0,0]) cylinder($fn = 50, r = Thickness, h = CurseLength/5);
+    translate([Adjoiner+CurseWidth+ChamberWidth+2*Thickness+Thickness*1.4,TreasureWidth+2*Thickness+CurseLength/5*4,CurseHeight+Thickness-Thickness*1.5]) rotate([90,0,0]) cylinder($fn = 50, r = Thickness, h = CurseLength/5);
 }

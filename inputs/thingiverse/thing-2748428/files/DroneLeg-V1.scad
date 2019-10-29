@@ -1,4 +1,4 @@
-$fn=150;
+$fn=50;
 $base_thickness=2.8;
 $base_lenght=32;
 $base_width=16;

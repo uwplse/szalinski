@@ -2,7 +2,7 @@ plateoffsetY=-3; // shift the mount to one side if distance to f.e. Servo is nee
 plateoffsetZ=3; // move away
 armlength=25;
 
-$fn = 60;
+$fn = 50;
 
 
 module arm(){

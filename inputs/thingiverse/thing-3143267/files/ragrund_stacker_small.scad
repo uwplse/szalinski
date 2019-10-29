@@ -29,10 +29,10 @@ difference() {
 	union() {
 		translate([0, border_size, 0]) cube ([total_width, inner_length, total_height]);
 		translate([border_size, 0, 0]) cube ([inner_width, total_length, total_height]);
-		translate([border_size, border_size, 0]) cylinder (h = total_height, r=border_size, $fn=500);            
-		translate([inner_width+border_size, border_size, 0]) cylinder (h = total_height, r=border_size, $fn=500);        
-		translate([inner_width+border_size, inner_length+border_size, 0]) cylinder (h = total_height, r=border_size, $fn=500);        
-		translate([border_size, inner_length+border_size, 0]) cylinder (h = total_height, r=border_size, $fn=500);
+		translate([border_size, border_size, 0]) cylinder (h = total_height, r=border_size, $fn=50);            
+		translate([inner_width+border_size, border_size, 0]) cylinder (h = total_height, r=border_size, $fn=50);        
+		translate([inner_width+border_size, inner_length+border_size, 0]) cylinder (h = total_height, r=border_size, $fn=50);        
+		translate([border_size, inner_length+border_size, 0]) cylinder (h = total_height, r=border_size, $fn=50);
 
 	}
 	
@@ -46,7 +46,7 @@ difference() {
 	translate([border_size, border_size, inner_bottom_height + junction_size]) {
 		union() {
 			translate([0,0,stand_height]) cube([inner_width, inner_length, inner_top_height+10]);
-			translate([inner_width/2,inner_length/2,2.5 + stand_height/2]) cylinder(h = 5+stand_height, r= stand_radius, center = true, $fn=100);
+			translate([inner_width/2,inner_length/2,2.5 + stand_height/2]) cylinder(h = 5+stand_height, r= stand_radius, center = true, $fn=50);
 		}
 	}
 	

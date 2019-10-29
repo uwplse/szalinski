@@ -8,7 +8,7 @@ probe_mount_diameter_outer=35; //Outside dimeter of the piece the probe mounts t
 probe_depth=4;  //Thickness of the probe mount.
 adapter_probe_overlap=5; //The overlap between the fan mount side and the probe mount side.
 adapter_probe_offset=0; //The vertical offset between the fan mount and probe mount.  Allows for the probe to mount higher or lower than the fan mount.
-$fn=100;
+$fn=50;
 
 adapter();
 

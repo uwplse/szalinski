@@ -3,7 +3,7 @@
 // Add base hole for reinforcement with metal rod
 // Add base cutting mode
 
-$fn=100+0;
+$fn=50+0;
 
 // Choose to generate the base or the end
 Mode = "Base"; // [Base,End]

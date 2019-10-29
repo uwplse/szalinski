@@ -28,7 +28,7 @@ feeler = "all"; // [all, single, none]
 height_of_feeler = 3; // [0:8]
 
 /*[Hidden]*/
-$fn = 100;
+$fn = 50;
 number = height_of_feeler;
 unit = return_unit(unit_type);
 

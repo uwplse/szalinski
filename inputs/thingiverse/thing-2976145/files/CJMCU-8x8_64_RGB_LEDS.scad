@@ -1,4 +1,4 @@
-$fn=60;
+$fn=50;
 union(){
     union(){
         translate([3,3,0])cube([66,66,1]);

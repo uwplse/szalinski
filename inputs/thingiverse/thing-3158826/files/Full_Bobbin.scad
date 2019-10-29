@@ -21,7 +21,7 @@ middle_rod_length = 93.0;
 ID = 9.5;
 //Outer Rod Diameter
 OD = 12;
-$fn = 100;
+$fn = 50;
 full_right_thick = r_thickness+m_thickness+r_m_gap;
 
 

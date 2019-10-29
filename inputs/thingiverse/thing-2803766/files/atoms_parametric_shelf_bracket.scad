@@ -25,7 +25,7 @@ fudge=1;
 adj_len=bracket_height - shelf_thickness - wall_thickness;
 op_len = adj_len * tan(support_angle);
 
-$fn=60;
+$fn=50;
 
 difference() {
  cylinder(bracket_height, d=tube_diameter + (wall_thickness * 2), center=true); 

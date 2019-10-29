@@ -117,7 +117,7 @@ module meter()
 
 if (0) // combine
 {
-   cup($fn=180);
+   cup($fn=50);
 
    translate([-w/2,-t/2,0])
       meter();
@@ -128,11 +128,11 @@ else if (1) // split
    if (h+w>240)
    translate([-w*1.1,-w,hw])
    rotate([180,0,0])
-   cup($fn=180);
+   cup($fn=50);
    else
    translate([0,w/4,hw])
    rotate([180,0,0])
-   cup($fn=180);
+   cup($fn=50);
    
    rotate([90,0,0])
    translate([-w/2,0,0])

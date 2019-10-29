@@ -11,7 +11,7 @@
 
 option = 1; //1: Planter, 2: Base, 3: Assembly
 
-$fn = 200; //Poloygons on a sphere constant
+$fn = 50; //Poloygons on a sphere constant
 EPS = 0.001; //Arbitrarily small number to avoid coincident faces
 offset=0; //Offset for displaying assembly
 

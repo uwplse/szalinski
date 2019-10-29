@@ -7,7 +7,7 @@ Shaft_Thickness= 5;//[1:15]
 Grub_Screw_Radius = 1.3; //[0.5:2.0]
 Grub_Screw_Number = 1;//[0,1,2,3,4]
 
-$fn= 200;
+$fn= 50;
 d1=((Pitch*360)/(2*(22/7)*Outside_Diamter/2));
 n = (360/d1);
 d2= 360/Grub_Screw_Number;

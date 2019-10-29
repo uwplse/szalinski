@@ -10,7 +10,7 @@ lochdm = 12-1.2;
 
 breite = tassendm + 2*rand;
 
-$fn=100;
+$fn=50;
 
 
 difference() {

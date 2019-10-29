@@ -39,7 +39,7 @@ module cellConstructor(){
   for(x = [0:numberCellWidth - 1]){
     for(y = [0:numberCellLength - 1]){
       translate([buffer + (cellSize/2) + (cellSize*y), buffer + (cellSize/2) + (cellSize*x), buffer])
-        cylinder(h = height-buffer, d = cellSize, $fn = 90);
+        cylinder(h = height-buffer, d = cellSize, $fn = 50);
     }
   }
 }

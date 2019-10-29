@@ -40,7 +40,7 @@ spokeWidth = 5;
 spokeThickness = 6;
 
 /* [Misc] */
-$fn = 100;
+$fn = 50;
 
 
 union(){

@@ -1,7 +1,7 @@
 //boite pour batterie et objectif lumix
 
 
-$fn = 128;
+$fn = 50;
 tol = 0.1;
 tol2 = 0.2;
 lg_1 = 47;

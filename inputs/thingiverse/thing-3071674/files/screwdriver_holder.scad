@@ -57,7 +57,7 @@ translate([-(totalLength / 2 + thickness * 2), -outerDiameter / 2, holeDiameter 
 
 
 module holder() {
-  $fn = 180;
+  $fn = 50;
   difference() {
     group() {
       cube([totalLength, outerRadius + paddingWall, height]);

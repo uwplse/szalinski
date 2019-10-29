@@ -16,7 +16,7 @@ wall_strength=3;          // [1:10]
 bottom_thickness=2;       // [1:10]
 r=4;                      // [1:10]
 
-$fn=100;
+$fn=50;
 
 difference() {
   hull() {

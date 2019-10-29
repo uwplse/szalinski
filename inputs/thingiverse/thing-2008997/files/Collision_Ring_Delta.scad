@@ -16,8 +16,8 @@
 Radius= 96; 
  
  difference() {
-    cylinder(h=1, r=Radius, center=false, $fn=200);
-    cylinder(h=1, r=Radius-1, center=false, $fn=200);  
+    cylinder(h=1, r=Radius, center=false, $fn=50);
+    cylinder(h=1, r=Radius-1, center=false, $fn=50);  
  }
 
  

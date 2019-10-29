@@ -10,7 +10,7 @@ post_thickness = 2.0;
 dome_diameter = 100;
 dome_height = 13;
 
-$fn = 64;
+$fn = 50;
 
 module base() {
    cylinder(d=base_diameter, h=base_thickness);

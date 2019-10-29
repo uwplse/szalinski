@@ -11,14 +11,14 @@ difference() {
     union() {
         translate([0,0,base_length]) scale([shaft_xy_rescale,shaft_xy_rescale,1]) technic_x(shaft_length);  
                                                                 // technic cross head
-        cylinder(base_length,d=base_diameter,true,$fn=60);      // base cylinder
+        cylinder(base_length,d=base_diameter,true,$fn=50);      // base cylinder
     }
-    cylinder(hole_length,d=hole_diameter,true,$fn=60);          
+    cylinder(hole_length,d=hole_diameter,true,$fn=50);          
 }
 
 module technic_x (length=20) {
     intersection() {
-        cylinder(length,d=4.74,true,$fn=60);
+        cylinder(length,d=4.74,true,$fn=50);
     
         translate([0,0,(length/2)]) {
             cube([5,1.58,length], true);

@@ -4,7 +4,7 @@
 // 
 // for right holder set leftpart to false
 
-$fn =180;
+$fn =50;
 
 leftpart = true;
 

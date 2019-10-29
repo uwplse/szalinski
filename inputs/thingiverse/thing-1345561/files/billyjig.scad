@@ -31,7 +31,7 @@ diameter = 4.9;
 // Depth of pin hole
 depth = 9;
 
-$fn = 60;
+$fn = 50;
 
 module billy_jig(
   diameter=diameter,

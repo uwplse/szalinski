@@ -27,7 +27,7 @@ finger_pull = 1; // [1:Yes, 0:No]
 spacer = 1; // [1:Yes, 0:No]
 
 //Hidden
-$fn = 60;
+$fn = 50;
 //Calc
 magnet_h = magnets * magnet_height;
 size_z = magnet_h + first_layer_height + (layers-1)*layer_height;

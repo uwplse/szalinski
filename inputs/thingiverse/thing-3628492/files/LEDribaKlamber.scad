@@ -1,5 +1,5 @@
 //Curve quality
-$fn=100;//[10:1:300]
+$fn=50;//[10:1:300]
 /*[LED ribbon parameters]*/
 //LED ribbon width
 r_laius=10;//[3:1:15]

@@ -41,10 +41,10 @@ difference() {
         }
     }
     translate([0,0,height+diameter/2]) rotate([0,90,0])
-        cylinder(r=diameter/2, h=width, $fn=90);
+        cylinder(r=diameter/2, h=width, $fn=50);
     for(i=[1:screwCount])
     translate([i*width/(screwCount+1),0,0]) rotate([(i%2==0?-1:1) * screwAngle,0,0]) {
-        cylinder(r=screwDiameter/2, h=height, center=true, $fn=90);
-        translate([0,0,screwHeadOffset]) cylinder(r=screwHeadDiameter/2, h=height, $fn=90);
+        cylinder(r=screwDiameter/2, h=height, center=true, $fn=50);
+        translate([0,0,screwHeadOffset]) cylinder(r=screwHeadDiameter/2, h=height, $fn=50);
     }
 }

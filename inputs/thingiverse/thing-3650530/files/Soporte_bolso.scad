@@ -61,10 +61,10 @@ Bolso = Hueco_Bolso/2;
 
 module Mordaza() {
 hull() {
-    cylinder(Hueco_Bolso,Tubo+Grosor,Tubo+Grosor,$fn=100,center=true);
+    cylinder(Hueco_Bolso,Tubo+Grosor,Tubo+Grosor,$fn=50,center=true);
         translate([Diametro-Grosor/2,0,0])
         rotate([0,90,90])
-            cylinder(Diametro+Grosor*2,Tuerca+1,Tuerca+1,$fn=100,center=true);
+            cylinder(Diametro+Grosor*2,Tuerca+1,Tuerca+1,$fn=50,center=true);
         }
                  }
 
@@ -72,7 +72,7 @@ hull() {
 module Bol() {
 translate([-Tubo-Hueco_Bolso/2-Grosor-Separacion,0,0])
     rotate([90,0,0])
-    cylinder(Ancho,Bolso+Grosor,Bolso+Grosor,$fn=100,center=true);
+    cylinder(Ancho,Bolso+Grosor,Bolso+Grosor,$fn=50,center=true);
                   }
 
 
@@ -89,7 +89,7 @@ Base();
     
     rotate([90,0,0])
     translate([-Tubo-Hueco_Bolso/2-Grosor-Separacion,0,0])
-        cylinder(Ancho+20,Bolso,Bolso,$fn=100,center=true);
+        cylinder(Ancho+20,Bolso,Bolso,$fn=50,center=true);
 
 
     translate([-Tubo-Hueco_Bolso/2-Separacion-Grosor/4,0,Bolso+6])
@@ -97,15 +97,15 @@ Base();
         cube([Bolso/1.5,Diametro*2,Ancho+1],center=true);
 
 
-    cylinder(Ancho+45,Tubo,Tubo,$fn=100,center=true);
+    cylinder(Ancho+45,Tubo,Tubo,$fn=50,center=true);
 
     translate([Diametro-Grosor/2,0,0])
     rotate([0,90,90])
-        cylinder(Diametro+Grosor*4+1,Tornillo/2+0.2,Tornillo/2+0.2,$fn=100,center=true);
+        cylinder(Diametro+Grosor*4+1,Tornillo/2+0.2,Tornillo/2+0.2,$fn=50,center=true);
 
     rotate([90,0,0])
     translate([Diametro-Grosor/2,0,-Tubo-Grosor])
-        cylinder(10,Cabeza/2,Cabeza/2,$fn=100,center=true);
+        cylinder(10,Cabeza/2,Cabeza/2,$fn=50,center=true);
 
     translate([Diametro,0,0])
         cube([Diametro+Grosor*2,Grosor*2,Ancho+25],center=true);

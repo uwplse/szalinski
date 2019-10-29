@@ -6,7 +6,7 @@ width=24; //[1:1:100]
 //
 height=30; //[1:1:100]
 //smoothness
-$fn=100; //[30:5:200]
+$fn=50; //[30:5:200]
 //heigth of sheat in mm
 handle_lenght=115; //[10:.1:200]
 

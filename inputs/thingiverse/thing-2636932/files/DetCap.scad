@@ -1,6 +1,6 @@
 // Check source holder detector cap
 
-$fn = 400;
+$fn = 50;
 cap_height = 35;
 inner_diameter = 100;
 face_thickness= 3;

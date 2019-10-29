@@ -2,7 +2,7 @@ dInnen=56;
 dAussen=68;
 h1=3;
 h2=1.5;
-$fn=90;
+$fn=50;
 
 
 

@@ -36,7 +36,7 @@ module base(baseSize)
         cube([baseSize, baseSize, 3]);
         union() {
         translate([baseSize/2, baseSize/2, 1])
-            cylinder(r=baseSize/2*1.1 , h=3, $fn=64);
+            cylinder(r=baseSize/2*1.1 , h=3, $fn=50);
             
         offset = baseSize * 0.04;
         translate([offset*1.5, offset*1.5, 1])
@@ -56,7 +56,7 @@ module signTab(baseSize, reverse)
     difference() {
         cube([baseSize*.2, baseSize*.2, 1]);
         translate([cylPosition,baseSize/2, -1])
-            cylinder(r=baseSize/2*1.1 , h=3, $fn=64);
+            cylinder(r=baseSize/2*1.1 , h=3, $fn=50);
         
     }
     translate([position, baseSize*.15, 0])

@@ -17,7 +17,7 @@ Screw_Head_Type = 1; //[1:FLUSH, 2:RECESSED]
 
 /* [Hidden] */
 
-$fn=100;
+$fn=50;
 TZT_Rad = Washer_Diameter/2;
 TZT_Sad = Screw_Gauge/2;
 TZT_Thk = Screw_Gauge;

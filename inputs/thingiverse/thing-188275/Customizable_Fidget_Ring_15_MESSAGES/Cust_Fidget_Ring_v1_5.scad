@@ -145,10 +145,10 @@ if(Ring_Size_Selector > 0) //any preset selected
 		{
 		union()
 			{
-			cylinder(h=(Ring_Thickness),r=(ring_outer),$fn=200);//ring
-			cylinder(h=1.5,r=(ring_lip),$fn=200);//channel 1mm thick
+			cylinder(h=(Ring_Thickness),r=(ring_outer),$fn=50);//ring
+			cylinder(h=1.5,r=(ring_lip),$fn=50);//channel 1mm thick
 			}
-		translate([0,0,-1])cylinder(h=(Ring_Thickness+2),r=(ring_radius),$fn=200);
+		translate([0,0,-1])cylinder(h=(Ring_Thickness+2),r=(ring_radius),$fn=50);
 		}
 	}
 
@@ -158,10 +158,10 @@ if(Ring_Size_Selector==0) //Manual selected
 		{
 		union()
 			{
-			cylinder(h=(Ring_Thickness),r=(man_ring_outer),$fn=200);//ring
-			cylinder(h=1.5,r=(man_ring_lip),$fn=200);//channel 1mm thick
+			cylinder(h=(Ring_Thickness),r=(man_ring_outer),$fn=50);//ring
+			cylinder(h=1.5,r=(man_ring_lip),$fn=50);//channel 1mm thick
 			}
-		translate([0,0,-1])cylinder(h=(Ring_Thickness+2),r=(man_ring_radius),$fn=200);
+		translate([0,0,-1])cylinder(h=(Ring_Thickness+2),r=(man_ring_radius),$fn=50);
 		}
 	}
 }
@@ -177,13 +177,13 @@ if(Ring_Size_Selector > 0) //Any preset selected
 			{
 				union()
 				{
-				cylinder(h=(Ring_Thickness),r=(ring_outer+1),$fn=200);//ring
-				cylinder(h=1.5,r=(ring_lip),$fn=200);//channel 1.5mm thick
+				cylinder(h=(Ring_Thickness),r=(ring_outer+1),$fn=50);//ring
+				cylinder(h=1.5,r=(ring_lip),$fn=50);//channel 1.5mm thick
 				}
 				union()
 				{
-				translate([0,0,1.5])cylinder(h=(Ring_Thickness),r=(ring_outer+0.1),$fn=200);
-				translate([0,0,-1])cylinder(h=(Ring_Thickness),r=(ring_radius),$fn=200);
+				translate([0,0,1.5])cylinder(h=(Ring_Thickness),r=(ring_outer+0.1),$fn=50);
+				translate([0,0,-1])cylinder(h=(Ring_Thickness),r=(ring_radius),$fn=50);
 				}
 			}
 		}
@@ -197,13 +197,13 @@ if(Ring_Size_Selector==0) //Manual selected
 			{
 				union()
 				{
-				cylinder(h=(Ring_Thickness),r=(man_ring_outer+1),$fn=200);//ring
-				cylinder(h=1.5,r=(man_ring_lip),$fn=200);//channel 1.5mm thick
+				cylinder(h=(Ring_Thickness),r=(man_ring_outer+1),$fn=50);//ring
+				cylinder(h=1.5,r=(man_ring_lip),$fn=50);//channel 1.5mm thick
 				}
 				union()
 				{
-				translate([0,0,1.5])cylinder(h=(Ring_Thickness),r=(man_ring_outer+0.1),$fn=200);
-				translate([0,0,-1])cylinder(h=(Ring_Thickness),r=(man_ring_radius),$fn=200);
+				translate([0,0,1.5])cylinder(h=(Ring_Thickness),r=(man_ring_outer+0.1),$fn=50);
+				translate([0,0,-1])cylinder(h=(Ring_Thickness),r=(man_ring_radius),$fn=50);
 				}
 			}
 		}
@@ -221,7 +221,7 @@ if(Ring_Size_Selector > 0) //Any preset selected
 		{
 		if (Type==1)
 			{
-			cylinder(h=sw,r=sr,$fn=200);// flat
+			cylinder(h=sw,r=sr,$fn=50);// flat
 	 		}
 		if (Type==2)
 			{
@@ -238,13 +238,13 @@ if(Ring_Size_Selector > 0) //Any preset selected
 			{
 			difference()
 				{
-				cylinder(h=sw,r=sr,$fn=200);// flat
+				cylinder(h=sw,r=sr,$fn=50);// flat
 				color([1,0,0])
 				scale(font_scale)
 				writecylinder(Message,[0,0,0],(sr/font_scale*1.01),sw+Font_Height,space=1.05+font_factor,rotate=0,font=Font,t=Font_Cut);
 				}
 			}
-		translate([0,0,-1])cylinder(h=(Ring_Thickness),r=(ring_outer+1.5),$fn=200);
+		translate([0,0,-1])cylinder(h=(Ring_Thickness),r=(ring_outer+1.5),$fn=50);
 		}
 	}
 }
@@ -257,7 +257,7 @@ if(Ring_Size_Selector==0) //Any preset selected
 		{
 		if (Type==1)
 			{
-			cylinder(h=sw,r=man_sr,$fn=200);// flat
+			cylinder(h=sw,r=man_sr,$fn=50);// flat
 	 		}
 		if (Type==2)
 			{
@@ -274,13 +274,13 @@ if(Ring_Size_Selector==0) //Any preset selected
 			{
 			difference()
 				{
-				cylinder(h=sw,r=man_sr,$fn=200);// flat
+				cylinder(h=sw,r=man_sr,$fn=50);// flat
 				color([1,0,0])
 				scale(font_scale)
 				writecylinder(Message,[0,0,0],(man_sr/font_scale*1.01),sw+Font_Height,space=1.05+font_factor,rotate=0,font=Font,t=Font_Cut);
 				}
 			}
-		translate([0,0,-1])cylinder(h=(Ring_Thickness),r=(man_ring_outer+1.5),$fn=200);
+		translate([0,0,-1])cylinder(h=(Ring_Thickness),r=(man_ring_outer+1.5),$fn=50);
 		}
 	}
 }
@@ -291,14 +291,14 @@ if(Ring_Size_Selector==0) //Any preset selected
 module hbanded(ro,w){
 difference(){
 	union(){    
-     translate([0,0,-.01])cylinder(r=ro-hsc,h=w+.02,$fn=100);
+     translate([0,0,-.01])cylinder(r=ro-hsc,h=w+.02,$fn=50);
      for(i=[1:Bands]){
-          translate([0,0,(i-1)*3*hsc+1.5*hsc])scale([1,1,1.65])rotate_extrude($fn=100)
+          translate([0,0,(i-1)*3*hsc+1.5*hsc])scale([1,1,1.65])rotate_extrude($fn=50)
                translate([ro-hsc,0,0])circle(r=hsc,$fn=50);
      }
 	}
-	translate([0,0,-hsc])cylinder(r=ro,h=hsc,$fn=100);
-	translate([0,0,w])cylinder(r=ro,h=hsc,$fn=100);
+	translate([0,0,-hsc])cylinder(r=ro,h=hsc,$fn=50);
+	translate([0,0,w])cylinder(r=ro,h=hsc,$fn=50);
 	}
 }
 

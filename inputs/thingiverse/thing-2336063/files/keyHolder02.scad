@@ -61,12 +61,12 @@ module keyHolderBottom()
     
     translate([Length*0.5-boltOffset,0,0])
     {
-    cylinder(r = boltDiameter*0.5, h = boltLength, center=true, $fn=100);
+    cylinder(r = boltDiameter*0.5, h = boltLength, center=true, $fn=50);
     }
  
     translate([-Length*0.5+boltOffset,0,0])
     {
-    cylinder(r = boltDiameter*0.5, h = boltLength, center=true, $fn=100);
+    cylinder(r = boltDiameter*0.5, h = boltLength, center=true, $fn=50);
     }
 
     translate([Length*0.5, Width*0.5,0]){
@@ -109,24 +109,24 @@ module keyHolderTop()
     
     translate([Length*0.5-boltOffset,0,0])
     {
-    cylinder(r = boltDiameter*0.5, h = boltLength, center=true, $fn=100);
+    cylinder(r = boltDiameter*0.5, h = boltLength, center=true, $fn=50);
     }
     
     translate([Length*0.5-boltOffset,0,Thickness-boltHeadThickness])
     {
-    cylinder(r = boltHeadDiameter*0.5, h = boltHeadThickness, center=true, $fn=100);
+    cylinder(r = boltHeadDiameter*0.5, h = boltHeadThickness, center=true, $fn=50);
     }
     
     
  
     translate([-Length*0.5+boltOffset,0,Thickness-boltHeadThickness])
     {
-    cylinder(r = boltHeadDiameter*0.5, h = boltHeadThickness, center=true, $fn=100);
+    cylinder(r = boltHeadDiameter*0.5, h = boltHeadThickness, center=true, $fn=50);
     }
     
     translate([-Length*0.5+boltOffset,0,0])
     {
-    cylinder(r = boltDiameter*0.5, h = boltLength, center=true, $fn=100);
+    cylinder(r = boltDiameter*0.5, h = boltLength, center=true, $fn=50);
     }
 
     translate([Length*0.5, Width*0.5,0]){

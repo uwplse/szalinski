@@ -14,7 +14,7 @@ function MBXL_EdgeOR() = 0.25;     // Radius of smooth edge
 function MBXL_HoleDist() = 10;     // Outer screw hole distance
 
 
-module MakerBeamXL(Lenght, beautify= 0.1 , $fn = 90)
+module MakerBeamXL(Lenght, beautify= 0.1 , $fn = 50)
 {
     difference()
     {
@@ -49,14 +49,14 @@ module MakerBeamXL(Lenght, beautify= 0.1 , $fn = 90)
     };   
 };
 
-module MBXL_ScrewHole(Lenght, beautify = 0.1 , $fn = 90 )
+module MBXL_ScrewHole(Lenght, beautify = 0.1 , $fn = 50 )
 {
-    $fn = 90;
+    $fn = 50;
     union()
     {
         translate([ 0 , 0 , ( 0 - beautify ) ] )
         {
-            cylinder( d = MBXL_BigHoleID() , h = Lenght + ( beautify * 2 ) , $fn = 90 );
+            cylinder( d = MBXL_BigHoleID() , h = Lenght + ( beautify * 2 ) , $fn = 50 );
         };
         
         rotate(a = [0,0,45])
@@ -68,7 +68,7 @@ module MBXL_ScrewHole(Lenght, beautify = 0.1 , $fn = 90 )
                     //More Guesswork
                     translate([ ((MBXL_BigHoleID() / 2 ) - MBXL_SmallHoleID() / 4  ) , 0 , ( 0 - beautify ) ] ) 
                     {
-                        cylinder( d = MBXL_SmallHoleID() , h = Lenght + ( beautify * 2 ) , $fn = 90 );
+                        cylinder( d = MBXL_SmallHoleID() , h = Lenght + ( beautify * 2 ) , $fn = 50 );
                     };
                 };
             };
@@ -76,7 +76,7 @@ module MBXL_ScrewHole(Lenght, beautify = 0.1 , $fn = 90 )
     };
 };
 
-module MBXL_RoundedEdgeNegitive(Lenght , CSize , beautify= 0.1 , $fn = 90)
+module MBXL_RoundedEdgeNegitive(Lenght , CSize , beautify= 0.1 , $fn = 50)
 {
     translate([ 0 - CSize , 0 - CSize , 0 ])
     {
@@ -88,13 +88,13 @@ module MBXL_RoundedEdgeNegitive(Lenght , CSize , beautify= 0.1 , $fn = 90)
                 
                 translate([ 0 , 0 , 0 - beautify])
                 {
-                    cylinder(r = CSize, h = Lenght +(2 * beautify) , $fn = 90 );
+                    cylinder(r = CSize, h = Lenght +(2 * beautify) , $fn = 50 );
                 };
             };
     }
 };
 
-module MakerBeamXL_TSlot_MainChanel(Lenght, beautify = 0.1 , $fn = 90)
+module MakerBeamXL_TSlot_MainChanel(Lenght, beautify = 0.1 , $fn = 50)
 {
     translate([ 0 , 0 - beautify , 0 ])
     {
@@ -134,7 +134,7 @@ module MakerBeamXL_TSlot_MainChanel(Lenght, beautify = 0.1 , $fn = 90)
     };
 };
 
-module MakerBeamXL_TSlot_CrossChanel(Lenght, beautify = 0.1 , $fn = 90)
+module MakerBeamXL_TSlot_CrossChanel(Lenght, beautify = 0.1 , $fn = 50)
 {
     difference()
     {
@@ -185,7 +185,7 @@ module MakerBeamXL_TSlot_CrossChanel(Lenght, beautify = 0.1 , $fn = 90)
     };
 };
 
-module MakerBeamXL_TSlot(Lenght, beautify= 0.1 , $fn = 90)
+module MakerBeamXL_TSlot(Lenght, beautify= 0.1 , $fn = 50)
 {
     rotate(a= [0,0,90])
     union()

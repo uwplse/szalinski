@@ -20,7 +20,7 @@ Roomba_dia= 380; // 39 cm
 // autocenter[true]
 // autocenter 
 // [autocenter]
-$fn=360;
+$fn=50;
 intersection(){
 difference(){
     union(){

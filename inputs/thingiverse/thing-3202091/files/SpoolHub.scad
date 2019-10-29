@@ -20,7 +20,7 @@ bearing_diameter = 22.2;
 bearing_width = 8;
 
 // Circle rendering parameter
-$fn=100;
+$fn=50;
 
 intersection(){
     union(){

@@ -40,7 +40,7 @@ switch_z = 20;
 /* [Misc] */
 
 // Resolution
-$fn=96;
+$fn=50;
 
 // Avoid artifacts
 clearance = 0.01;

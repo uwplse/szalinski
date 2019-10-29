@@ -8,7 +8,7 @@
 module Main_frame(){
 cube([22.25,43-22.25/2,22.25], false);
 translate([(22.25/2),43-22.25/2,0]) {
-    cylinder($fn=100,22.25, d = 22.25,true);
+    cylinder($fn=50,22.25, d = 22.25,true);
 }
 }
 
@@ -16,7 +16,7 @@ translate([(22.25/2),43-22.25/2,0]) {
 module Shaft_hole() {
     rotate([90,0,0]){
     translate([22.25/2,15.9,-80]){
-        cylinder($fn=100,100,d=9.8,true);
+        cylinder($fn=50,100,d=9.8,true);
         }
     }
 }
@@ -60,7 +60,7 @@ module Vertical_Cuts() {
     //--back hole
     translate([22.25/2,15.75,-1]) {
         rotate([0,0,0]){    
-            cylinder($fn=100,80,d=9.8,false);
+            cylinder($fn=50,80,d=9.8,false);
         }
     }
   

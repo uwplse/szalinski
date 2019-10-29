@@ -6,7 +6,7 @@ module MirrorCopy(vector = [0, 1, 0]) {
     mirror (vector) children();
 }
 
-$fn = 360;
+$fn = 50;
 
 module RoundedRidge(length, radius = 1) {
     cylinder(h = length, r = radius);

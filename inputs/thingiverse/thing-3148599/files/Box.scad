@@ -16,7 +16,7 @@ r=5;
 //Number of Columns
 c=3;
 
-$fn=100;
+$fn=50;
 
 module Body()
 {cube([x,y,z]);}

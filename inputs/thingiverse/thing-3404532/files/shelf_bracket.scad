@@ -18,7 +18,7 @@ Bracket_Style = 1; //[1:Support Style 1, 2:Support Style 2, 3:Support Style 3, 4
 
 /* [Hidden] */
 
-$fn=100;
+$fn=50;
 TZT_W=Bracket_Width;
 TZT_H=Bracket_Height;
 TZT_S=Bracket_Style;

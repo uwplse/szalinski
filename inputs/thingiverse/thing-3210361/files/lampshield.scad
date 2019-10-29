@@ -36,11 +36,11 @@ module cutouts() {
 	}
 	
 	translate([length/2+wallthick,depth/2+wallthick,height-(wallthick*0.5)]) {
-		cylinder(r = 2.75, h = sides, $fn = 128);
+		cylinder(r = 2.75, h = sides, $fn = 50);
 	}
 	
 /*	translate([length*0.65,depth/2+wallthick,height-(wallthick*0.5)]) {
-			cylinder(r = 0.75, h = sides, $fn = 128);
+			cylinder(r = 0.75, h = sides, $fn = 50);
 	}*/
 }
 

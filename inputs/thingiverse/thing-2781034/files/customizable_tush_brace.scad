@@ -63,7 +63,7 @@ module draw_tabs() {
 
 module draw_center_hole() {
     translate([(num_segments*(gap_length+peak_length) + peak_length)/2, rail_width/2, -1]) {
-        cylinder(r=1.989, h = segment_height *3, $fn=64);
+        cylinder(r=1.989, h = segment_height *3, $fn=50);
         }
     translate([(num_segments*(gap_length+peak_length) + peak_length)/2, rail_width/2, segment_height - (segment_height/2)]) {
         cylinder(r=3.5, h=segment_height*2+1, $fn=6);

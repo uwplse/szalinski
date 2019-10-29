@@ -1,4 +1,4 @@
-$fn=120;
+$fn=50;
 Hoehe=6;
 Laenge=20;
 Breite=20;

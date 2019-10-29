@@ -1,4 +1,4 @@
-$fn=250;
+$fn=50;
 //shaft diameter in mm
 sd=30.5;
 //handle length; Changes the length of the grip, value must be half of desired length in mm

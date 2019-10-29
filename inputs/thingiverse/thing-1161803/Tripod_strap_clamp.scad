@@ -38,7 +38,7 @@ module tripodclamp()
 							,0])
 				cylinder(h=height
 							,r=tubeRadius + wallThickness
-							,$fn=200);
+							,$fn=50);
 			}
 
 		// Subractions
@@ -50,7 +50,7 @@ module tripodclamp()
 		translate([tubeRadius + slotDepth + (wallThickness*2)
 							,((slotWidth + (wallThickness*2))/2)
 							,-0.1])
-			cylinder(h=height + 0.2,r=tubeRadius, $fn=200);
+			cylinder(h=height + 0.2,r=tubeRadius, $fn=50);
 		
 			// Belt slot gap
 		translate([-0.1,((slotWidth + 2*wallThickness)/2)-slotGap/2,-0.1]) 
@@ -72,14 +72,14 @@ module tripodclamp()
 						rotate([0,90,0]){
 							cylinder(h=slotDepth + 2*wallThickness + 10
 										,r=holeDiameter/2
-										,$fn=200);
+										,$fn=50);
 						}	
 				} else {
 					translate([-0.1,(y*(slotWidth + 2*wallThickness)/(numHoles))+delta,height/2])
 						rotate([0,90,0]){
 							cylinder(h=slotDepth + 2*wallThickness + 10
 										,r=holeDiameter/2
-										,$fn=200);	  	
+										,$fn=50);	  	
 						}
 				}
 			}
@@ -90,7 +90,7 @@ module tripodclamp()
 					rotate([0,90,0]){
 						cylinder(h=slotDepth + 2*wallThickness + 20
 								,r=holeDiameter/2
-								,$fn=200);	  	
+								,$fn=50);	  	
 					}
 			}
 		}

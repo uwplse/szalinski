@@ -6,7 +6,7 @@ screw_dist=40;
 
 screw_m=3.1;
 
-$fn=60;
+$fn=50;
 
 difference(){
     union(){

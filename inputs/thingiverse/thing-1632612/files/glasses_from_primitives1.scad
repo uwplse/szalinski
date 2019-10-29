@@ -52,7 +52,7 @@ module circleFrames(frameThickness = 3,frameWidth = 4,bridge = 20,earDistance = 
     rotate(a=270,v=[1,0,0])
     outsidePart();
 }
-$fn=500;
+$fn=50;
 translate([tabWidth/2+earDistance/2-frameWidth,-2*tabThickness-tabTolerance-tabSeperation/2,tabWidth/2+pivotTolerance+backLength])
     rotate(a=270,v=[1,0,0])
     outsidePart();

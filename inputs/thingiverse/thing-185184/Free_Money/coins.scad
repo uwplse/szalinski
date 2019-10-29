@@ -4,7 +4,7 @@ use <write/Write.scad>;
 value="1"; //[1,5,10,25,50]
 
 /* [Hidden] */
-$fn=100;
+$fn=50;
 if (value=="1")
 {
 difference()

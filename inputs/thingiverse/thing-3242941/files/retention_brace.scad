@@ -1,4 +1,4 @@
-$fn = 180;
+$fn = 50;
 neck_dia=17;
 front_height=9;
 back_height=16;

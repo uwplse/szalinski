@@ -1,4 +1,4 @@
-$fn=64;
+$fn=50;
 DIST_MNT_HOLE=30;
 BLOCK_LEN=40;
 module e3d_mount() {

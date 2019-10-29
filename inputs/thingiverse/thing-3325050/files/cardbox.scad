@@ -2,7 +2,7 @@
 *** (c) 2018 by saarbastler.de
 ***************************************************/
 
-$fn=100;
+$fn=50;
 
 // the inner width of the box = card width
 cardWidth= 57;

@@ -4,7 +4,7 @@ cupout=10;
 wallt=2;
 holer=0.5;
 cuph=20;
-$fn=60;
+$fn=50;
 
 difference(){
     cylinder(r=cupout, h=cuph);

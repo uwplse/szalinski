@@ -20,7 +20,7 @@ groove_count = 12;    // Groove count
 
 /* [Hidden] */
 
-$fn = 64;
+$fn = 50;
 
 module groove(d1, d2, w) {
 	difference() {
@@ -38,7 +38,7 @@ module lb(internal_diameter=8, external_diameter=15, retainer_rings_depth=0.7, l
 			cylinder(r=RR_d/2, h=length     , center=true);
 		}
 		cylinder(r=internal_diameter/2, h=length+2    , center=true);
-        cylinder(r = internal_diameter/ 2, h=length+20, $fn=256, center=true);
+        cylinder(r = internal_diameter/ 2, h=length+20, $fn=50, center=true);
 		translate([0, 0, retainer_rings_offset/2-retainer_rings_width/2]) groove(external_diameter, RR_d, retainer_rings_width);
 		translate([0, 0,-retainer_rings_offset/2+retainer_rings_width/2]) groove(external_diameter, RR_d, retainer_rings_width);
         

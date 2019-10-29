@@ -14,7 +14,7 @@ switchOffsetX = 3;
 switchOffsetY = 0.8;
 
 /* [Hidden] */
-$fn = 360;
+$fn = 50;
 filamentRadius = filamentDiameter / 2;
 ptfeRadius = ptfeDiameter / 2;
 screwRadius = screwDiameter / 2;

@@ -116,7 +116,7 @@ module case_top() {
         
         // Lens
         translate([case_top_x/2, case_top_y/2-lens_y_offset, -clearance]) {
-            cylinder (d=lens_diameter, h=shell_width+2*clearance, $fn=96);
+            cylinder (d=lens_diameter, h=shell_width+2*clearance, $fn=50);
         }
     }
 
@@ -145,7 +145,7 @@ module case_top() {
                 cube ([lens_cube, lens_cube, lens_cube_wall+clearance]);
             }
             translate([lens_cube/2+lens_cube_wall, lens_cube/2+lens_cube_wall, -clearance]) {
-            cylinder (d=lens_diameter, h=shell_width+2*clearance, $fn=96);
+            cylinder (d=lens_diameter, h=shell_width+2*clearance, $fn=50);
         }
 
         }

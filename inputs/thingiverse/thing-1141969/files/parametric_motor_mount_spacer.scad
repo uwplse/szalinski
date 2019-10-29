@@ -72,5 +72,5 @@ cylinder(h=shaftDepth+tolerance,d=shaftDiameter,center=true);
 }
 
 /* [Hidden] */
-$fn=100;
+$fn=50;
 tolerance=.01;

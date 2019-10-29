@@ -1,4 +1,4 @@
-$fn=72;
+$fn=50;
 
 //Plate measures
 Plate_horizontal_size=100;

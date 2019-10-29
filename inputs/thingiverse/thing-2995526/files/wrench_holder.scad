@@ -39,7 +39,7 @@ mount_advance = 1;
 
 
 /* [Hidden] */
-$fn = 90;
+$fn = 50;
 
 
 first_mount_candidate = ((mount_diameter - thinnest_wrench_neck_thickness) / wrench_size_step) + 1 + mount_advance;

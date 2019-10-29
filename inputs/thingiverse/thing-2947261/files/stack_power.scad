@@ -8,7 +8,7 @@
 /* [General] */
 
 // Resolution
-$fn = 80;
+$fn = 50;
 
 // Base thickness
 base_plate_height = 2.4;

@@ -47,7 +47,7 @@ module base() {
     
     module cutOut() {
         ridgeDuplicator()
-             scale([supportWidth, ridgeWidth, supportHeight])rotate(a=90, v=[-1,0,0] ) cylinder( $fn=90);
+             scale([supportWidth, ridgeWidth, supportHeight])rotate(a=90, v=[-1,0,0] ) cylinder( $fn=50);
     }
     
     difference() {

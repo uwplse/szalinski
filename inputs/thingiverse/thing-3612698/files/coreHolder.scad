@@ -65,22 +65,22 @@ module roundedRectangle (width, height, thickness, r1, r2, r3, r4)
 	hull ()
 	{
 		if (r1 > 0)
-			translate ([r1, r1, 0]) cylinder (r = r1, h = thickness, $fn = 360);
+			translate ([r1, r1, 0]) cylinder (r = r1, h = thickness, $fn = 50);
 		else
 			cube ([delta, delta, thickness]);
 
 		if (r2 > 0)
-			translate ([r2, height - r2, 0]) cylinder (r = r2, h = thickness, $fn = 360);
+			translate ([r2, height - r2, 0]) cylinder (r = r2, h = thickness, $fn = 50);
 		else
 			translate ([0, height - delta, 0]) cube ([delta, delta, thickness]);
 
 		if (r3 > 0)
-			translate ([width - r3, height - r3, 0]) cylinder (r = r3, h = thickness, $fn = 360);
+			translate ([width - r3, height - r3, 0]) cylinder (r = r3, h = thickness, $fn = 50);
 		else
 			translate ([width - delta, height - delta, 0]) cube ([delta, delta, thickness]);
 
 		if (r4 > 0)
-			translate ([width - r4, r4, 0]) cylinder (r = r4, h = thickness, $fn = 360);
+			translate ([width - r4, r4, 0]) cylinder (r = r4, h = thickness, $fn = 50);
 		else
 			translate ([width - r4, 0, 0]) cube ([delta, delta, thickness]);
 	}
@@ -96,7 +96,7 @@ module insideCorner (radius, thickness, rotation)
 			difference ()
 			{
 				cube ([radius, radius, thickness]);
-				translate ([0, 0, -delta]) cylinder (r = radius, h = thickness + 2 * delta, $fn = 360);
+				translate ([0, 0, -delta]) cylinder (r = radius, h = thickness + 2 * delta, $fn = 50);
 			}
 		}
 		else if (rotation == 180)
@@ -105,7 +105,7 @@ module insideCorner (radius, thickness, rotation)
 			difference ()
 			{
 				cube ([radius, radius, thickness]);
-				translate ([0, 0, -delta]) cylinder (r = radius, h = thickness + 2 * delta, $fn = 360);
+				translate ([0, 0, -delta]) cylinder (r = radius, h = thickness + 2 * delta, $fn = 50);
 			}
 		}
 		else if (rotation == 270)
@@ -114,7 +114,7 @@ module insideCorner (radius, thickness, rotation)
 			difference ()
 			{
 				cube ([radius, radius, thickness]);
-				translate ([0, 0, -delta]) cylinder (r = radius, h = thickness + 2 * delta, $fn = 360);
+				translate ([0, 0, -delta]) cylinder (r = radius, h = thickness + 2 * delta, $fn = 50);
 			}
 		}
 		else
@@ -123,7 +123,7 @@ module insideCorner (radius, thickness, rotation)
 			difference ()
 			{
 				cube ([radius, radius, thickness]);
-				translate ([0, 0, -delta]) cylinder (r = radius, h = thickness + 2 * delta, $fn = 360);
+				translate ([0, 0, -delta]) cylinder (r = radius, h = thickness + 2 * delta, $fn = 50);
 			}
 		}
 	}
@@ -166,7 +166,7 @@ module coreHolder (nH, nV)
 			translate ([WallThickness + i * (InsideWidth + WallThickness), -delta, -delta]) cube ([InsideWidth, InsideDepth + OutsideExtension - InsideWidth / 2, totalHeight + 2 * delta]);
 
 			//	Rounded Back
-			translate ([InsideWidth / 2 + WallThickness + i * (InsideWidth + WallThickness), InsideDepth + OutsideExtension - InsideWidth / 2, BottomThickness]) cylinder (d = InsideWidth, h = totalHeight + 2 * delta, $fn = 360);
+			translate ([InsideWidth / 2 + WallThickness + i * (InsideWidth + WallThickness), InsideDepth + OutsideExtension - InsideWidth / 2, BottomThickness]) cylinder (d = InsideWidth, h = totalHeight + 2 * delta, $fn = 50);
 		}
 	}
 
@@ -185,7 +185,7 @@ module coreHolder (nH, nV)
 					translate ([(InsideWidth + 2 * WallThickness - BottomCutoutWidth) / 2 + i * (InsideWidth + WallThickness), -delta, -delta]) cube ([BottomCutoutWidth, BottomCutoutDepth + delta, BottomThickness + 2 * delta]);
 
 					//	Bottom Cutout Cylinder
-					translate ([(InsideWidth + 2 * WallThickness) / 2 + i * (InsideWidth + WallThickness), BottomCutoutDepth + delta, 0]) cylinder (d = BottomCutoutDiameter, h = 2 * (BottomThickness + 2 * delta), center = true, $fn = 360);
+					translate ([(InsideWidth + 2 * WallThickness) / 2 + i * (InsideWidth + WallThickness), BottomCutoutDepth + delta, 0]) cylinder (d = BottomCutoutDiameter, h = 2 * (BottomThickness + 2 * delta), center = true, $fn = 50);
 				}
 
 				difference ()
@@ -197,7 +197,7 @@ module coreHolder (nH, nV)
 					translate ([(InsideWidth + 2 * WallThickness - TopCutoutWidth) / 2 + i * (InsideWidth + WallThickness), InsideDepth + OutsideExtension - TopDepth - delta, BottomThickness + InsideHeight -delta])
 					{
 						cube ([TopCutoutWidth, TopCutoutDepth + delta, TopThickness + 2 * delta]);
-						translate ([TopCutoutWidth / 2, TopCutoutDepth + delta, 0]) cylinder (d = TopCutoutWidth, h = TopThickness + 2 * delta, $fn = 360);
+						translate ([TopCutoutWidth / 2, TopCutoutDepth + delta, 0]) cylinder (d = TopCutoutWidth, h = TopThickness + 2 * delta, $fn = 50);
 					}
 				}
 			}

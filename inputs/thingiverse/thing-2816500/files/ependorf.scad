@@ -4,7 +4,7 @@
 
 // You can get this file from https://www.thingiverse.com/thing:2816500
 
-$fn=100*1;
+$fn=50*1;
 
 //Number of tube along a axis
 na=3;

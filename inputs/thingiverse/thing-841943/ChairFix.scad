@@ -5,7 +5,7 @@ diameter=29;
 //Clip Thickness
 thickness=5;
 //Roundness
-$fn=256;
+$fn=50;
 
 difference(){
     cylinder(d=diameter+(thickness*2),h=height);

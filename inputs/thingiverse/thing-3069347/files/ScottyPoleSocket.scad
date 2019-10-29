@@ -26,7 +26,7 @@ module ScottyBase()
     // Base with bolt head cutout
     difference()
     {
-        cylinder(h=baseHeight, d=baseDiameter, $fn=720);
+        cylinder(h=baseHeight, d=baseDiameter, $fn=50);
         cylinder(h=baseHeight, d=boltHeadDiam, $fn=6);
     // slot cutout
     translate([-(baseDiameter/2), 0, baseHeight/2])
@@ -39,7 +39,7 @@ module ScottyMid()
     // MidSection
     translate([0, 0, baseHeight])
     {
-        cylinder(h=midSectionHeight, d=midSectionDiam, $fn=720);
+        cylinder(h=midSectionHeight, d=midSectionDiam, $fn=50);
     }
 }
 
@@ -49,7 +49,7 @@ module ScottyPegSection()
     // Section Three (peg section)
     translate([0, 0, (baseHeight + midSectionHeight)])
     {
-        cylinder(h=pegSectionHeight, d=   pegSectionDiam, $fn=720);
+        cylinder(h=pegSectionHeight, d=   pegSectionDiam, $fn=50);
     }
 }
 
@@ -83,7 +83,7 @@ module ScottyPegs()
         echo("Angle ", a, " x: ", x, "y: ", y, " z: ", z);
         translate([x, y, z])
         {
-            cylinder(h=pegHeight, d=pegDiam, $fn=720);
+            cylinder(h=pegHeight, d=pegDiam, $fn=50);
         }
     }
 }
@@ -99,12 +99,12 @@ module ScottyTop()
         difference()
         {
             translate([0, 0, z])
-            cylinder(h=topSectionHeight, d=topSectionDiam, $fn=720);
+            cylinder(h=topSectionHeight, d=topSectionDiam, $fn=50);
             translate([0, 0, zHolder])
-            cylinder(h=pvcSocketDepth, d=pvcPipeOD, $fn=720);
+            cylinder(h=pvcSocketDepth, d=pvcPipeOD, $fn=50);
         }
         translate([0, 0, zHolder])
-        cylinder(h=pvcSocketDepth, d=pvcPipeOD - (2*pvcWallThickness), $fn=720);
+        cylinder(h=pvcSocketDepth, d=pvcPipeOD - (2*pvcWallThickness), $fn=50);
     }
 }
 
@@ -126,5 +126,5 @@ difference()
 {
     ScottyOuter();
     // Bolt Hole:
-    cylinder(h = (20 + (topSectionHeight + midSectionHeight + pegSectionHeight + baseHeight)), d = throughHoleDiameter, $fn=720);
+    cylinder(h = (20 + (topSectionHeight + midSectionHeight + pegSectionHeight + baseHeight)), d = throughHoleDiameter, $fn=50);
 }

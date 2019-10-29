@@ -22,20 +22,20 @@ clr = 0.2; //[0.05,0.1,0.2,0.3,0.4]
 
 /////Box/////
 difference(){
-    cylinder(h, out_dia /2 , out_dia /2, $fn=200);
-    cylinder(h+1, ins_dia /2 , ins_dia /2, $fn=200 );
+    cylinder(h, out_dia /2 , out_dia /2, $fn=50);
+    cylinder(h+1, ins_dia /2 , ins_dia /2, $fn=50 );
 }
 difference(){
-    cylinder(h+insc, (ins_dia+wall_th-clr)/2, (ins_dia+wall_th-clr)/2, $fn=200);
-    cylinder(h+insc+1, ins_dia /2 , ins_dia /2, $fn=200 );
+    cylinder(h+insc, (ins_dia+wall_th-clr)/2, (ins_dia+wall_th-clr)/2, $fn=50);
+    cylinder(h+insc+1, ins_dia /2 , ins_dia /2, $fn=50 );
 }
-cylinder(tb_th, ins_dia /2 , ins_dia /2, $fn=200 ); //bottom
+cylinder(tb_th, ins_dia /2 , ins_dia /2, $fn=50 ); //bottom
 
 //Cover//
 translate([out_dia+10,0,0]){
 difference(){
-    cylinder(insc+tb_th+clr, out_dia/2, out_dia/2, $fn=200);
-    cylinder(insc+tb_th+1, (ins_dia+wall_th+clr)/2, (ins_dia+wall_th+clr)/2, $fn=200 );
+    cylinder(insc+tb_th+clr, out_dia/2, out_dia/2, $fn=50);
+    cylinder(insc+tb_th+1, (ins_dia+wall_th+clr)/2, (ins_dia+wall_th+clr)/2, $fn=50 );
 }
-cylinder(tb_th, out_dia/2 , out_dia/2, $fn=200 ); //top
+cylinder(tb_th, out_dia/2 , out_dia/2, $fn=50 ); //top
 }

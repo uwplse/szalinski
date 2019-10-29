@@ -43,11 +43,11 @@ module cup(cupHeight=70, innerRadius=53)
 	
 		// outer part of the cup
 		translate([0,0,0])
-		cylinder (h = cupHeight, r=55, center = centered, $fn=100);
+		cylinder (h = cupHeight, r=55, center = centered, $fn=50);
 		
 		// subtracted inner cup
 		translate([0,0,5])
-		cylinder (h = cupHeight, r=innerRadius, center = centered, $fn=100);
+		cylinder (h = cupHeight, r=innerRadius, center = centered, $fn=50);
 	}
 }
 
@@ -139,7 +139,7 @@ module balloon()
 	{
 		// balloon
 		scale ([0.8, 1, 1]) 
-		cylinder (h = 4, r=10, center = true, $fn=100);
+		cylinder (h = 4, r=10, center = true, $fn=50);
 		
 		// middle knot piece
 		knotPiece();
@@ -158,7 +158,7 @@ module knotPiece()
 {
 	translate ([0, -10.5, 0]) 
 	scale ([0.3, 0.8, 1]) 
-	cylinder (h = 4, r=2, center = true, $fn=100);
+	cylinder (h = 4, r=2, center = true, $fn=50);
 }
 
 
@@ -169,20 +169,20 @@ module blueMoon()
 	difference() 
 	{ 
 		// blue moon
-		cylinder (h = 4, r=10, center = true, $fn=100);
+		cylinder (h = 4, r=10, center = true, $fn=50);
 		
 		// top cutout
 		translate([5, 5, 0]) 
-		cylinder (h = 4.20, r=6, center = true, $fn=100);
+		cylinder (h = 4.20, r=6, center = true, $fn=50);
 				
 		// bottom cutout
 		translate([5, -5, 0]) 
-		cylinder (h = 4.20, r=6, center = true, $fn=100);
+		cylinder (h = 4.20, r=6, center = true, $fn=50);
 		
 		// remainder cutout
 		translate([10, 0, 5]) 
 		color("red")
-		cylinder (h = 14.20, r=6, center = true, $fn=100);			
+		cylinder (h = 14.20, r=6, center = true, $fn=50);			
 	}
 }
 

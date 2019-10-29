@@ -4,7 +4,7 @@ GNU v3
 */
 
 module rolna() {
-	$fn = 64;
+	$fn = 50;
 	spulka_prumer = 52.5; //diameter
 	spulka_vyska = 18; //height
 	//rozmery pro lozisko 6203

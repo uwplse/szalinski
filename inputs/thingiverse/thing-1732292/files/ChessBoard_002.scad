@@ -8,7 +8,7 @@ edge_height_coef=1.5;//[1:0.1:3]
 //printer tolerance (only affect "color 02" parts)
 tolerance=0.2;//[0:0.05:0.7]
 //definition (only affect corners)
-$fn=60;
+$fn=50;
 render="Test part";//[Corner color 01,Corner color 02,Edge color 01,Edge color 02,Center color 01,Center color 02,Test part]
 
 ////////

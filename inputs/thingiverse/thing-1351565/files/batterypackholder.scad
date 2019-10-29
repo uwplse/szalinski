@@ -22,7 +22,7 @@ vary = 3; // [1:9]
 // Filler Type between Batteries
 filler=2; // [0:None, 1:Circle, 2:Star]
 // Level of Detail
-$fn=100; // [20:Low Res, 50:Normal Res, 100:Hi Res]
+$fn=50; // [20:Low Res, 50:Normal Res, 100:Hi Res]
 
 bateria(varx,vary);
 

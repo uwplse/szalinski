@@ -33,4 +33,4 @@ module sphericalWrap(text,r=50,startLatitude=70,textHeight=10,latitudeSpacing=20
 //demo();
 sphericalWrap(text, font=fonts[font], r=radius, startLatitude=topLatitude,latitudeSpacing=latitudeSpacing,textHeight=textSize)
 cylinder(d=stylusWidth,h=stylusThickness,$fn=8);
-if (includeSphere) sphere(r=radius+0.25,$fn=72);
+if (includeSphere) sphere(r=radius+0.25,$fn=50);

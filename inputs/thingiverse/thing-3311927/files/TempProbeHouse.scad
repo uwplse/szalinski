@@ -40,7 +40,7 @@
 //       =================      Bottom Section
 //       =================
 
-$fn=200;
+$fn=50;
 
 // top, middle (you will need 6 of these), bottom
 Model = "bottom";

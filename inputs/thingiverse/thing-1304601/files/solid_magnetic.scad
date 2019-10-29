@@ -78,7 +78,7 @@ module magnet_ejection_holes(x,y,magnet_hole,
 module magnet_holder(magnet_hole=5.4) {
     // 5mm buckyballs
     if(magnet_hole > 0) {
-        translate([0,0,1]) cylinder(8,magnet_hole/2,magnet_hole/2, $fn=100);
+        translate([0,0,1]) cylinder(8,magnet_hole/2,magnet_hole/2, $fn=50);
     }
 }
 

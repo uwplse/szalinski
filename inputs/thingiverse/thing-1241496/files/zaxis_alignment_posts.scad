@@ -46,7 +46,7 @@ module alignment_post(post_radius = 5, post_height = 70, base_width = 15, curved
         }
 }
 
-$fn=60;
+$fn=50;
 actual_base_width           = post_radius * 2 < base_width ? base_width : post_radius * 2;
 holder_distance_from_post   = 20;
 distance_between_post_bases = 5;

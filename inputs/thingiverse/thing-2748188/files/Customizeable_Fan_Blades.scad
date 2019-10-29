@@ -20,7 +20,7 @@ Thickness_Body = 1;
 Axle_Diameter = 2;
 
 // Circle Resolution
-$fn = 64;
+$fn = 50;
 
 // Some helping parameter
 Length_Blades = (Outer_Diameter_Blades - Inner_Diameter_Body) / 2;

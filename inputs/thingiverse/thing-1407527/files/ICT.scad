@@ -241,7 +241,7 @@ module perimeterFillets () {
 }
 
 module fillet(r, h) {
-    $fn = 60;
+    $fn = 50;
     difference() {
         cube([r + 0.01, r + 0.01, h], center = true);
 

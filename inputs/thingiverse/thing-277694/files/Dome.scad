@@ -24,7 +24,7 @@
 //------------------------------------------------------------
 /* [OpenScad resolution] */
 // Set global resolution.
-$fn = 100 ; // [1:250]
+$fn = 50 ; // [1:250]
 
 /* [Dome size] */
 // The Height of the dome ]0,∞[.

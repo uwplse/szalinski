@@ -1,4 +1,4 @@
-$fn=360/15;
+$fn=50/15;
 spongecount=2;
 sponge1depth=70;
 sponge2depth=70;

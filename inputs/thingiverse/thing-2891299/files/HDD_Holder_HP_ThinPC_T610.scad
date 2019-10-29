@@ -21,7 +21,7 @@ $hdd_y_offset=2;
 $bed_mounting_thickness=$board_mounting_arm_thickness;
 
 
-$fn=100;
+$fn=50;
 
 difference(){
 union(){

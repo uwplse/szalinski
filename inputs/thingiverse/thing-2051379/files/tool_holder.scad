@@ -1,4 +1,4 @@
-$fn = 60;
+$fn = 50;
 min_tool_width = 33.5;
 min_tool_thickness = 13.5;
 num_tools = 5;

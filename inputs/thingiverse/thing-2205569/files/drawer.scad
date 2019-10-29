@@ -237,7 +237,7 @@ module screwtrap(){
         }  
         translate([2,4,5]){
             rotate([90,90,90]){
-               translate([0,0,-10]){ cylinder(r=screw_dia/2,h=20,$fn=100);}
+               translate([0,0,-10]){ cylinder(r=screw_dia/2,h=20,$fn=50);}
             }
         }    
     }
@@ -259,7 +259,7 @@ module nuttrap(){
         }
         translate([2,4,5]){
             rotate([90,90,90]){
-               translate([0,0,-10]){ cylinder(r=screw_dia/2,h=20,$fn=100);}
+               translate([0,0,-10]){ cylinder(r=screw_dia/2,h=20,$fn=50);}
             }
         }
     }

@@ -9,7 +9,7 @@ post_diameter = 88;
 // Height of the post covered by holder
 post_height = 15;
 
-$fn=250;
+$fn=50;
 
 module open_cup(inner_diameter, height, thickness)
 {

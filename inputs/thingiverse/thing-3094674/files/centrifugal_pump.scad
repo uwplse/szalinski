@@ -10,7 +10,7 @@
 
 /* [General] */
 // rendering precission
-$fn = 60;
+$fn = 50;
 wall_thickness = 1.6;
 view = "parts"; /* [parts, assembly_preview] */
 

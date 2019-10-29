@@ -1,5 +1,5 @@
 
-$fn=100;
+$fn=50;
 hole_radius=6;
 pipe_diameter=14; //actually radius
 thickness=2;

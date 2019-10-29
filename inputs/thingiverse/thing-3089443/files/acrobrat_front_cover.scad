@@ -24,7 +24,7 @@ roundness1 = -7.4;
 roundness2 = -11;
 
 /* [Hidden] */
-$fn = 180;
+$fn = 50;
 totalHeight = (paddingBottom) * 2 + spacing;
 standoffRadius = standoffDiameter / 2;
 radius = standoffRadius + walls;

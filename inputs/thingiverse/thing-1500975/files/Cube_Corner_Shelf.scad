@@ -28,7 +28,7 @@ if (preview_cube == "true"){
 difference(){
     
     //main body
-    $fn = 200;
+    $fn = 50;
     cylinder(h=height, r=radius );
     
     //cut the cylinder into a quarter cylinder

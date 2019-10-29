@@ -17,7 +17,7 @@ yourName = "Mr.Johnson";
 
 use <write/Write.scad> 
 
-$fn=100;
+$fn=50;
 difference()
 {
     difference()

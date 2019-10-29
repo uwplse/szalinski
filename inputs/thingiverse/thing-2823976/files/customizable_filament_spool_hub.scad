@@ -26,7 +26,7 @@ leeway = 0.5;
 
 // preview[view:north east, tilt:top diagonal]
 
-$fn = 100;
+$fn = 50;
 difference() {
     union() {
         cylinder(

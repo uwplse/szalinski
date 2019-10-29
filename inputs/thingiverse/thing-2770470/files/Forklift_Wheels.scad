@@ -1,4 +1,4 @@
-$fn = 64;
+$fn = 50;
 wheel_grooves = 24;
 wheel_diameter = 4.7;
 wheel_height = 1.2;

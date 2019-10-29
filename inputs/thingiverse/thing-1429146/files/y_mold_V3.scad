@@ -70,7 +70,7 @@ module wireSheath(len=10, rot=-1) {
 }
 
 module yMoldPositive() {
-  $fn=72;
+  $fn=50;
   union() {
     sphere(d=jointDia);
     //negative rotation

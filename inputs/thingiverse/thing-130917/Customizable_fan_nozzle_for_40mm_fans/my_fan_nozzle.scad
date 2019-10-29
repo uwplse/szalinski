@@ -11,7 +11,7 @@ nozzle_tilt = 18;
 mntholes_numberof = 2;
 mntholes_angles = [ 90, 270, 0, 180 ];
 
-$fn = 64;
+$fn = 50;
 
 module nozzle_shape( r, h )
 {

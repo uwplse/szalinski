@@ -39,5 +39,5 @@ module placed_screws(){
 }
 
 module screw_holes(){
-    cylinder(h = thickness + 1, d = screw_dia, center = true, $fn = 64);
+    cylinder(h = thickness + 1, d = screw_dia, center = true, $fn = 50);
 }

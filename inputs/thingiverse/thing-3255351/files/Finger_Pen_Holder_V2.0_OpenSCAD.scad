@@ -46,7 +46,7 @@ Distance = 0;// [0:0.5:40]
 Total_W = Ring_HD+(Ring_T*2)+(Pen_HD*2)+(Pen_T*2)+(Distance*2);
 
 //facet Number
-$fn=200;
+$fn=50;
 
 
 //////////////////////////////////////////////////////////

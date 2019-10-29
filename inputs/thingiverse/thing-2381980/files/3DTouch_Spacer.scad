@@ -34,9 +34,9 @@ module spacer() {
         cube([touchMountWidth, touchMountLength, spacerThickness], center = true);
         
         translate([touchMountWidth / 2 + 2, -touchMountBoltSpacing / 2, 0])
-        cylinder(d = 4.3, h = spacerThickness, $fn = 100);
+        cylinder(d = 4.3, h = spacerThickness, $fn = 50);
         
         translate([touchMountWidth / 2 + 2, touchMountBoltSpacing / 2, 0])
-        cylinder(d = 4.3, h = spacerThickness, $fn = 100);
+        cylinder(d = 4.3, h = spacerThickness, $fn = 50);
     }
 }

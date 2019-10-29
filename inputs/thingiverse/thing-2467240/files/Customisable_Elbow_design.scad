@@ -16,8 +16,8 @@ rib_depth = 1; // how deep are the internal ribs
 module tube_main(){
     translate([0,0,height/2+(hole_diameter+wall_thickness)/2]) union(){
         difference(){
-            cylinder(h=height, d=hole_diameter+wall_thickness, $fn=144,center=true);
-            cylinder(h=height+0.001, d=hole_diameter, $fn=144,center=true);
+            cylinder(h=height, d=hole_diameter+wall_thickness, $fn=50,center=true);
+            cylinder(h=height+0.001, d=hole_diameter, $fn=50,center=true);
         }
         for (x=[0:rib_count]){
             rotate([0,0,(360/rib_count)*x]) ribs();

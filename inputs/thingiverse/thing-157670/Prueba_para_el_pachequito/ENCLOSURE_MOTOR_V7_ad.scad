@@ -1,9 +1,9 @@
-$fn=100*1;
+$fn=50*1;
 //distance-between-axis-in-mm 
 dist=15; 
 
 
-//No sé que carallo quieres hacer
+//No se que carallo quieres hacer
 
 
 difference() 

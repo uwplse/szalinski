@@ -51,13 +51,13 @@ difference() {
 //Create the two clip catches
 hull() {
     translate([start_offset_x+clip_edge_offset, 0, connector_height-connector_wall_thickness]) cube([fudge, connector_wall_thickness, connector_wall_thickness]);
-    translate([start_offset_x+clip_edge_offset+0.35, 0, connector_height-(connector_wall_thickness/2)]) rotate([-90, 0, 0]) cylinder(connector_wall_thickness, d=0.5, $fn=72);
+    translate([start_offset_x+clip_edge_offset+0.35, 0, connector_height-(connector_wall_thickness/2)]) rotate([-90, 0, 0]) cylinder(connector_wall_thickness, d=0.5, $fn=50);
     translate([start_offset_x+clip_edge_offset, 0, connector_height-connector_wall_thickness-1]) cube([fudge, connector_wall_thickness, connector_wall_thickness]);
-    translate([start_offset_x+clip_edge_offset+0.35, 0, connector_height-(connector_wall_thickness/2)-1]) rotate([-90, 0, 0]) cylinder(connector_wall_thickness, d=0.5, $fn=72);
+    translate([start_offset_x+clip_edge_offset+0.35, 0, connector_height-(connector_wall_thickness/2)-1]) rotate([-90, 0, 0]) cylinder(connector_wall_thickness, d=0.5, $fn=50);
 }
 hull() {
-    translate([start_offset_x+connector_length-(clip_edge_offset+0.35), 0, connector_height-(connector_wall_thickness/2)]) rotate([-90, 0, 0]) cylinder(connector_wall_thickness, d=0.5, $fn=72);
+    translate([start_offset_x+connector_length-(clip_edge_offset+0.35), 0, connector_height-(connector_wall_thickness/2)]) rotate([-90, 0, 0]) cylinder(connector_wall_thickness, d=0.5, $fn=50);
     translate([start_offset_x+connector_length-clip_edge_offset, 0, connector_height-connector_wall_thickness]) cube([fudge, connector_wall_thickness, connector_wall_thickness]);
-    translate([start_offset_x+connector_length-(clip_edge_offset+0.35), 0, connector_height-(connector_wall_thickness/2)-1]) rotate([-90, 0, 0]) cylinder(connector_wall_thickness, d=0.5, $fn=72);
+    translate([start_offset_x+connector_length-(clip_edge_offset+0.35), 0, connector_height-(connector_wall_thickness/2)-1]) rotate([-90, 0, 0]) cylinder(connector_wall_thickness, d=0.5, $fn=50);
     translate([start_offset_x+connector_length-clip_edge_offset, 0, connector_height-connector_wall_thickness-1]) cube([fudge, connector_wall_thickness, connector_wall_thickness]);
 }

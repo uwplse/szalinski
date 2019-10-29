@@ -13,7 +13,7 @@ axle_hole_play=0.25;
 spool_hole_rad=spool_hole_diameter/2;
 axle_rad=axle_diameter/2+axle_hole_play;
 
-$fn=180; 
+$fn=50; 
 
 difference() {
     cylinder(r=spool_hole_rad+4, h=3); 

@@ -67,8 +67,8 @@ module lens1()
 {
     difference()
     {
-    cylinder(h=30,r1=eyepiece_r,r2=eyepiece_r, $fn=100);
-    cylinder(h=30,r1=eyepiece_r-2,r2=eyepiece_r-2, $fn=100);
+    cylinder(h=30,r1=eyepiece_r,r2=eyepiece_r, $fn=50);
+    cylinder(h=30,r1=eyepiece_r-2,r2=eyepiece_r-2, $fn=50);
     }
 }
 
@@ -86,6 +86,6 @@ difference()
 lens2();
     translate([24,21])
     {
-        cylinder(h=height,r1=eyepiece_r-2,r2=eyepiece_r-2, $fn=100);
+        cylinder(h=height,r1=eyepiece_r-2,r2=eyepiece_r-2, $fn=50);
     }
 }

@@ -77,13 +77,13 @@ module int_edge_cuter(){
         translate([rd/2,-w/2-0.1,0])
             cube([w+0.1,w+0.2,t+0.2]);
         translate([0,0,0.1])
-            cylinder(r=(rd+r+w)/2,h=t+0.2,$fn=120);
+            cylinder(r=(rd+r+w)/2,h=t+0.2,$fn=50);
     }
 }
 
 module assemble_halfs(){
         translate(t/2)
-            cylinder(r=(rd+r+w+tol)/2,h=t/2+0.1,$fn=120);
+            cylinder(r=(rd+r+w+tol)/2,h=t/2+0.1,$fn=50);
 }
 
 module extruder_mount_cuter(){
@@ -104,15 +104,15 @@ module rods_mount_cuter(atol=0){
     for(i=[0,180]){
         rotate([0,0,i]){
             translate([rd/2,0,-0.1])
-                cylinder(r=(r+atol)/2, h=t+0.2, $fn=120);
+                cylinder(r=(r+atol)/2, h=t+0.2, $fn=50);
             intersection(){
                 translate([0,-(w/2+0.2),-0.2])
                     cube([rd/2+r/2+0.2,w/2+0.2,t+0.4]);
                 difference(){
                     translate([0,0,-0.2])
-                        cylinder(r=rd/2+r/2+atol/2,h=t+0.4,$fn=120);
+                        cylinder(r=rd/2+r/2+atol/2,h=t+0.4,$fn=50);
                     translate([0,0,-0.4])
-                        cylinder(r=rd/2-r/2-atol/2,h=t+0.8,$fn=120);
+                        cylinder(r=rd/2-r/2-atol/2,h=t+0.8,$fn=50);
                 }
             }
         }

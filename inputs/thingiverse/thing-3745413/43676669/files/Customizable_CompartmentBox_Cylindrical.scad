@@ -12,7 +12,7 @@ intTk = 4;
 // External thickness
 extTk = 10;
 
-$fn=100;
+$fn=50;
 
 module circle(circles, ht, iTk, eTk, i=0, sumR=0)
 {

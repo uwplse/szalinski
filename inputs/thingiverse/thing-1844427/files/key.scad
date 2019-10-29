@@ -99,8 +99,8 @@ module key_cuts(rotation){
           c2_pos = cut_insets[i+1];
           c2_depth = cut_positions[c2_code-1];
 
-          translate([blade_length-c1_pos,+blade_width/2-cut_r-c1_depth, blade_height/2-cut_depth]) cylinder(r=cut_r,h=blade_height, $fn=100);
-          translate([blade_length-c2_pos,+blade_width/2-cut_r-c2_depth, blade_height/2-cut_depth]) cylinder(r=cut_r,h=blade_height, $fn=100);
+          translate([blade_length-c1_pos,+blade_width/2-cut_r-c1_depth, blade_height/2-cut_depth]) cylinder(r=cut_r,h=blade_height, $fn=50);
+          translate([blade_length-c2_pos,+blade_width/2-cut_r-c2_depth, blade_height/2-cut_depth]) cylinder(r=cut_r,h=blade_height, $fn=50);
         }    
       }
         // Cut entry way in blade

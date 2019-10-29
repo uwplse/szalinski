@@ -1,4 +1,4 @@
-$fn=120;
+$fn=50;
 
 difference(){
     union(){

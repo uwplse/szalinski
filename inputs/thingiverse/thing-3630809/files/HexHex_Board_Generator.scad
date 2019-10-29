@@ -91,7 +91,7 @@ module board (diameter, thickness) {
 difference () {
     board (board_diameter_mm, board_thickness);
     hexhex_arrangement(spacing) union () {
-        cylinder(h=4*board_thickness, d=hole_diameter, center=true, $fn=75);
+        cylinder(h=4*board_thickness, d=hole_diameter, center=true, $fn=50);
         difference () {
             cylinder(h=board_thickness, d=hex_diameter, center=true, $fn=6);
             cylinder(h=board_thickness, d=hex_diameter-2*hex_line_width, center=true, $fn=6);

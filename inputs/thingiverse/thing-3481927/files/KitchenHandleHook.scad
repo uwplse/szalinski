@@ -129,9 +129,9 @@ module vertical_hook() {
         // round part of hook
         rotate([90,0,0])
         difference() {
-            rotate_extrude(convexity = 10, $fn = 100)
+            rotate_extrude(convexity = 10, $fn = 50)
                 translate([r, 0, 0])
-                    circle(d = hook_diameter, $fn = 100);    
+                    circle(d = hook_diameter, $fn = 50);    
             // cut out upper half of hook
             translate([-(r+hook_diameter),0,-hook_diameter/2])
                 cube([(r+hook_diameter)*2, r+hook_diameter, hook_diameter]);

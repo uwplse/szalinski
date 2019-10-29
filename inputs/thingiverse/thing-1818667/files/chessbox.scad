@@ -1,4 +1,4 @@
-$fn = 100;
+$fn = 50;
 
 // 0 for chessbox, 1 for 2nd color chessboard squares
 onlyChessboardColor2 = 0;

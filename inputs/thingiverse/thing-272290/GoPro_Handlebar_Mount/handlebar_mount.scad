@@ -19,7 +19,7 @@ length = 1.5; //[1.5:200]
 /* [Hidden] */
 handle_bar(bar_dia=diameter, length=length, angle=angle);
 
-$fn=100;
+$fn=50;
 tolerance=0.4;
 
 module handle_bar(bar_dia=15, length=1.5, angle=0, bar_dia_extra=0.6) {

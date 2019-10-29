@@ -7,9 +7,9 @@ union() {
             translate([10,0,0]) {
                 rotate([0,90,0]) {
                     difference() {
-                        cylinder(width, r=120, $fn=320);
+                        cylinder(width, r=120, $fn=50);
                         translate([0,0,-10])
-                            cylinder(280,r=55, $fn=320);
+                            cylinder(280,r=55, $fn=50);
                     }
                 }
             }

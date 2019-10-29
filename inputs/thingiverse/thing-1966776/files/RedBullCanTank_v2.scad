@@ -32,7 +32,7 @@ module Foot(){
         translate([-(RBRad/2),-(beltrad+RivetHeight),0])
         cube([RBRad,10,beltwidth]);
         translate([0,0,-1])
-        cylinder(beltCanOverlap+1,RBRad,RBRad,$fn=90);
+        cylinder(beltCanOverlap+1,RBRad,RBRad,$fn=50);
         translate([0,0,-.001+beltCanOverlap])
         InnerDome();
     }
@@ -68,7 +68,7 @@ module Nub(nubdia,fillet){
         //ButtonTop(nubrad,fillet);
         RoundTop(nubrad+fillet,fillet);
         translate([0,0,-spherewallthick])
-        cylinder(spherewallthick,nubrad+fillet,nubrad+fillet,$fn=180);
+        cylinder(spherewallthick,nubrad+fillet,nubrad+fillet,$fn=50);
     
     
 }
@@ -88,10 +88,10 @@ module OuterDome(){
 //Belt();
 module Belt(){
     difference(){
-        cylinder(beltwidth,beltrad,beltrad,$fn=90);
+        cylinder(beltwidth,beltrad,beltrad,$fn=50);
         translate([0,0,-.001]){
-            cylinder(beltCanOverlap,RBRad,RBRad,$fn=90);
-            cylinder(beltwidth+1,innerRad,innerRad,$fn=90);
+            cylinder(beltCanOverlap,RBRad,RBRad,$fn=50);
+            cylinder(beltwidth+1,innerRad,innerRad,$fn=50);
         }
     }
 }
@@ -107,9 +107,9 @@ module InnerDome(){
 //Hemisphere(5);
 module Hemisphere(Rad){
     difference(){
-        sphere(Rad,$fn=90);
+        sphere(Rad,$fn=50);
         translate([0,0,-(Rad+1)])
-        cylinder(Rad+1,Rad+1,Rad+1,$fn=90);
+        cylinder(Rad+1,Rad+1,Rad+1,$fn=50);
     }
 }
 
@@ -120,7 +120,7 @@ module RoundTop(Rad,Height){
         //Dome
         translate([0,0,Height])
         translate([0,0,-DomeRad])
-        sphere(DomeRad, $fn=90);
+        sphere(DomeRad, $fn=50);
         
         //mask
         translate([0,0,-(DomeRad*2)])
@@ -134,20 +134,20 @@ module ButtonTop(Rad,Height){
     difference(){
         union(){
             translate([0,0,-1])
-            cylinder(Height+1,Rad,Rad,$fn=90);
+            cylinder(Height+1,Rad,Rad,$fn=50);
             torus(Rad,Height);
         }
         translate([0,0,-(Height+1)])
-        cylinder(Height+1,Rad+Height+1,Rad+Height+1,$fn=90);
+        cylinder(Height+1,Rad+Height+1,Rad+Height+1,$fn=50);
     }
 }
 
 //torus(5,2);
 //cylinder(2,5,5);
 module torus(rad,tuberad){
-    rotate_extrude(convexity = 15, $fn = 100)
+    rotate_extrude(convexity = 15, $fn = 50)
     translate([rad, 0, 0])
-    circle(tuberad, $fn = 180);
+    circle(tuberad, $fn = 50);
 }
 
 

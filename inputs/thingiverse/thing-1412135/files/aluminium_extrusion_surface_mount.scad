@@ -1,4 +1,4 @@
-$fn = 100;
+$fn = 50;
 
 // Distance between profile and surface it will be mounted against.
 SurfaceDistance = 5;

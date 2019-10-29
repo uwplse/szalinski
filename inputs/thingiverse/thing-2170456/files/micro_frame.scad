@@ -1,4 +1,4 @@
-//$fn = 64;
+//$fn = 50;
 /* [General] */
 // Duct walls
 wall = 1; // [0.1:0.1:10]

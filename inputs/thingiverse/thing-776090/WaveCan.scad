@@ -61,7 +61,7 @@ width = NumberOfCansOnBottom * CanRadius * 2
 
 
 /* [Smoothness] */
-$fn = 100;
+$fn = 50;
 /* [Hidden] */
 OVERLAP=0.1;
 

@@ -57,10 +57,10 @@ module container() {
 			//outer shape
 			cylinder(r=variant_radius, h=segment*2, $fn=shape); 
 			//overlap cylinder
-			translate([0, 0, segment*2]) cylinder(r=variant_radius-(wall_thickness+1+tolerance), h=overlap, $fn=100);
+			translate([0, 0, segment*2]) cylinder(r=variant_radius-(wall_thickness+1+tolerance), h=overlap, $fn=50);
 		}
 		// inside of container
-		translate([0, 0, string_hole_diameter+5])cylinder(r=variant_radius-(wall_thickness+1+tolerance)-2, h=(segment*2)+overlap+2, $fn=100);
+		translate([0, 0, string_hole_diameter+5])cylinder(r=variant_radius-(wall_thickness+1+tolerance)-2, h=(segment*2)+overlap+2, $fn=50);
 		// hole
 		translate([0, 0, segment*2+(segment/3)]) rotate([90,0,half_angle_between_holes+angle_between_holes+90]) cylinder(r=hole_radius, h=variant_radius+1, $fn=20);
 		// marker
@@ -76,7 +76,7 @@ module lid() {
 		// outer shape
 		cylinder(r=variant_radius, h=segment, $fn=shape);
 		// cut-out cylinder
-		translate([0, 0, string_hole_diameter+4]) cylinder(r=variant_radius-(wall_thickness+1), h=overlap+1, $fn=100);
+		translate([0, 0, string_hole_diameter+4]) cylinder(r=variant_radius-(wall_thickness+1), h=overlap+1, $fn=50);
 		// hole 
 		translate([0, 0, segment/3*2]) rotate([90,0,half_angle_between_holes+90]) cylinder(r=hole_radius, h=variant_radius+1, $fn=20);
 		// string hole

@@ -10,6 +10,6 @@ radius = width - offset;
 
 translate([offset, offset, offset])
 difference() {
-    sphere(r=radius, $fn=100);
+    sphere(r=radius, $fn=50);
     translate([-offset, -offset, -offset]) cube([width, width, width]);
 }

@@ -9,7 +9,7 @@ use<Write.scad>
 include <write/Write.scad>
 
 
-$fn=100*1;
+$fn=50*1;
 
 
 //pick from the list of available bracelet sizes
