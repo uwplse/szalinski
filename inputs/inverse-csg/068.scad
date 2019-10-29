@@ -82,7 +82,7 @@ intersection() {
       cube(size = [36.198, 36.198, 17.397], center = true);
     
       union() {
-        sphere(r = 54.298, $fn = 108);
+        sphere(r = 54.298, $fn = 50);
       
         translate([-1.067, -1.334, 0])
         cylinder(h = 36.198, r1 = 0.412, r2 = 0.412, center = true, $fn = 12);
@@ -108,7 +108,7 @@ intersection() {
       translate([3.007, 1.463, 8.6995])
       cylinder(h = 18.799, r1 = 0.274, r2 = 0.274, center = true, $fn = 12);
     
-      sphere(r = 54.298, $fn = 108);
+      sphere(r = 54.298, $fn = 50);
     }
   
     difference() {
@@ -286,7 +286,7 @@ intersection() {
             rotate([-180, 0, 30])
             cube(size = [36.198, 15.75, 0.242], center = true);
           
-            sphere(r = 54.298, $fn = 108);
+            sphere(r = 54.298, $fn = 50);
           }
         
           union() {
@@ -421,7 +421,7 @@ intersection() {
           translate([-1.063, -1.089, 8.5775])
           cylinder(h = 19.044, r1 = 0.406, r2 = 0.406, center = true, $fn = 12);
         
-          sphere(r = 54.299, $fn = 108);
+          sphere(r = 54.299, $fn = 50);
         }
       
         translate([1.068, -1.094, -9.4005])
@@ -765,7 +765,7 @@ intersection() {
       }
     
       union() {
-        sphere(r = 54.298, $fn = 108);
+        sphere(r = 54.298, $fn = 50);
       
         translate([0, 0, 8.5775])
         rotate([0, 0, -30])

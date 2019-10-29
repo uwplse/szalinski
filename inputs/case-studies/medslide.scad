@@ -82,7 +82,7 @@ union()
 
 difference()
 {
-   cylinder(h=h,r=w/2,$fn=90);
+   cylinder(h=h,r=w/2,$fn=50);
    box([-30,-50,-1],[20,100,h+2]);
    difference()
    {
@@ -93,7 +93,7 @@ difference()
             translate([0,0,t+n*(hs+t)])
                union()
             {
-               cylinder(h=hs,r=w/2-t,$fn=90);
+               cylinder(h=hs,r=w/2-t,$fn=50);
                box([5,-50,0],[50,100,hs]);
             }
             
