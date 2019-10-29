@@ -16,6 +16,7 @@ checked=$(expected:inputs/%.expected=out/%.checked)
 
 everything=$(diffs)
 
+
 .PHONY: all compile-csgs compile-csexps case-studies checked unit-tests
 
 all: $(everything)
@@ -30,6 +31,8 @@ in_offs: $(scads:inputs/%.scad=out/%.in.off)
 case-studies: $(filter out/case-studies/%, $(everything))
 unit-tests: $(filter out/unit-tests/%, $(everything))
 inverse-csg: $(filter out/inverse-csg/%, $(everything))
+
+export OPENSCADPATH=.
 
 # don't delete anything in the out directory please, Make
 .PRECIOUS: out/%.csg out/%.csexp out/%.json out/%.csexp.opt out/%.opt.scad out/%.in.off out/%.opt.off out/%.checked
@@ -59,15 +62,19 @@ out/%.in.off: out/%.csg
 out/%.opt.off: out/%.opt.scad out/%.csexp.opt
 	openscad -o $@ $< 2>> out/openscad.log
 
-out/%.diff: scripts/check_diff.py out/compare_mesh out/%.in.off out/%.opt.off
-	out/compare_mesh out/$*.in.off out/$*.opt.off $@ 1000 0.01
+out/%.diff: scripts/compare_mesh.sh out/compare_mesh out/%.in.off out/%.opt.off
+	./scripts/compare_mesh.sh out/$*.in.off out/$*.opt.off $@
 
 out/%.checked: inputs/%.expected out/%
 	$(diff) inputs/$*.expected out/$*
 	touch $@
 
-out/case-studies/report: $(filter out/case-studies/%, $(jsons))
-	./scripts/report.py $^
+out/case-studies/report.csv: ./scripts/report.py $(filter out/case-studies/%, $(jsons) $(diffs))
+	./scripts/report.py --output $@ $(filter out/case-studies/%, $(jsons))
+out/inverse-csg/report.csv: ./scripts/report.py $(filter out/inverse-csg/%, $(jsons) $(diffs))
+	./scripts/report.py --output $@ $(filter out/inverse-csg/%, $(jsons))
+out/report.csv: ./scripts/report.py $(jsons) $(diffs)
+	./scripts/report.py --output $@ $(jsons)
 
 $(tgt)/optimize $(tgt)/parse-csg: $(rust-src)
 	cargo build --release
