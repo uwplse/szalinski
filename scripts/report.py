@@ -1,24 +1,67 @@
 #!/usr/bin/env python3
 
+import csv
 import json
 import statistics
+from operator import itemgetter
 
-def improvement(data):
-    return data['final_cost'] / data['initial_cost']
+def rules_time(j):
+    return sum(
+        it['search_time'] + it['apply_time'] + it['rebuild_time']
+        for it in j['iterations']
+    )
+
+# this adds on some derivative data to the json
+def make_json(path):
+    print("Loading {}...".format(path))
+    j = json.load(open(path))
+    j['name'] = path
+    j['rules_time'] = path
+    j['set'] = path.split('/')[1]
+    j['rules_time'] = rules_time(j)
+    j['improvement'] = j['final_cost'] / j['initial_cost']
+
+    # get the difference json
+    base, ext = path[:-4], path[-4:]
+    assert ext == 'json'
+    j.update(json.load(open(base + 'diff')))
+
+    return j
 
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser()
+    parser.add_argument('--output', metavar='OUTFILE', type=str)
     parser.add_argument('jsons', metavar='JSON', type=str, nargs='+')
     args = parser.parse_args()
 
-    jsons = {path: json.load(open(path)) for path in args.jsons}
+    jsons = [make_json(path) for path in args.jsons]
 
-    hmean = statistics.harmonic_mean(improvement(j) for j in jsons.values())
+    hmean = statistics.harmonic_mean(j['improvement'] for j in jsons)
     print(f'Harmonic mean: {hmean}')
 
-    tups = [(improvement(v), k) for k,v in jsons.items()]
-    most = min(tups)
-    least = max(tups)
-    print("Most improved ({}): {}".format(most[0], most[1]))
-    print("Least improved ({}): {}".format(least[0], least[1]))
+    most = min(jsons, key=itemgetter('improvement'))
+    least = max(jsons, key=itemgetter('improvement'))
+    print("Most improved ({}): {}".format(most['improvement'], most['name']))
+    print("Least improved ({}): {}".format(least['improvement'], least['name']))
+
+    with open(args.output, 'w') as f:
+        fieldnames = [
+            'name',
+            'set',
+            'rules_time',
+            'initial_cost',
+            'final_cost',
+            'extract_time',
+            'hausdorff_distance',
+            'volume_difference',
+            'volume1',
+            'volume2',
+        ]
+
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+
+        for j in jsons:
+            row = {k: j[k] for k in fieldnames}
+            writer.writerow(row)
