@@ -17,7 +17,7 @@ macro_rules! rec {
 fn get_num(expr: &RecExpr<Cad>) -> f64 {
     let expr = expr.as_ref();
     match expr.op {
-        Cad::Num(num) => num.0.into_inner() as f64,
+        Cad::Num(num) => num.to_f64(),
         _ => panic!("Not a num"), // is panic the right thing?
     }
 }
