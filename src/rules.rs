@@ -23,7 +23,7 @@ fn rw<M: Metadata<Cad>>(name: &str, lhs: &str, rhs: &str) -> Rewrite<Cad, M> {
 
 #[rustfmt::skip]
 pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
-    vec![
+    let mut rules = vec![
         // math rules
 
         rw("add_comm", "(+ ?a ?b)", "(+ ?b ?a)"),
@@ -182,7 +182,24 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
                 var: "?items...".parse().unwrap(),
             },
         )
-    ]
+    ];
+
+    if std::env::var("SUSPECT_RULES") == Ok("1".into()) {
+        // NOTE
+        // These will break other things
+        info!("Using suspect rules");
+        rules.extend(vec![
+            rw("id", "(Trans (Vec3 0 0 0) ?a)", "?a"),
+            rw("union_comm", "(Union ?a ?b)", "(Union ?b ?a)"),
+            rw("combine_scale",
+               "(Scale (Vec3 ?a ?b ?c) (Scale (Vec3 ?d ?e ?f) ?cad))",
+               "(Scale (Vec3 (* ?a ?d) (* ?b ?e) (* ?c ?f)) ?cad)"),
+        ]);
+    } else {
+        info!("Not using suspect rules");
+    }
+
+    rules
 }
 
 fn get_float(expr: &RecExpr<Cad>) -> Num {
