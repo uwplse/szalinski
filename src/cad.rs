@@ -226,7 +226,7 @@ impl Language for Cad {
 
             Cons => 3,
             Concat => 3,
-            List => 10,
+            List => 4,
             Unsort | Unpolar | Permutation(_) => 1000,
             Vec3 => 2,
 
