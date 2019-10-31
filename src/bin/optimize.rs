@@ -122,13 +122,15 @@ pub fn optimize(
         let f = ext.find_best(root);
         (f.cost, f.expr.pretty(80))
     };
-    let to_scad_in = Cad::parse_expr(&final_expr).unwrap();
-    let final_scad = format!("{}", Scad(&to_scad_in));
     let extract_time = extract_time.elapsed().as_secs_f64();
+
     info!("Extract time: {}", extract_time);
     info!("Initial cost: {}", initial_cost);
     info!("Final cost: {}", final_cost);
     info!("Final: {}", final_expr);
+
+    let to_scad_in = Cad::parse_expr(&final_expr).unwrap();
+    let final_scad = format!("{}", Scad(&to_scad_in));
     info!("Final Scad: {}", final_scad);
 
     RunResult {

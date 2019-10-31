@@ -1,5 +1,7 @@
 use std::f64::consts;
 
+use log::*;
+
 use indexmap::IndexMap;
 use smallvec::{smallvec, SmallVec};
 
@@ -264,7 +266,7 @@ fn add_vec(egraph: &mut EGraph, v: Vec3) -> Id {
 
 pub fn solve(egraph: &mut EGraph, list: &[Vec3]) -> Vec<AddResult> {
     let mut results = solve_vec(egraph, list);
-    // println!("Solving {:?} -> {:?}", list, results);
+    info!("Solving {:?} -> {:?}", list, results);
     let (center, polar_list) = polarize(&list);
     for res in solve_vec(egraph, &polar_list) {
         let e = Expr::new(
