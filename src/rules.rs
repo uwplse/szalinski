@@ -188,6 +188,7 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
         // NOTE
         // These will break other things
         info!("Using suspect rules");
+        println!("Using suspect rules");
         rules.extend(vec![
             rw("id", "(Trans (Vec3 0 0 0) ?a)", "?a"),
             rw("union_comm", "(Union ?a ?b)", "(Union ?b ?a)"),
@@ -197,6 +198,7 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
         ]);
     } else {
         info!("Not using suspect rules");
+        println!("Not using suspect rules");
     }
 
     rules
@@ -233,7 +235,10 @@ where
     F: FnMut(usize, Id) -> K,
     K: Hash + Eq + Debug + Clone,
 {
-    return None;
+    if std::env::var("PARTITIONING") != Ok("1".into()) {
+        return None;
+    }
+
     type Pair<T> = (Vec<usize>, SmallVec<T>);
     let mut parts: IndexMap<K, Pair<_>> = Default::default();
     for (i, &id) in ids.iter().enumerate() {
