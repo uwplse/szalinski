@@ -104,7 +104,15 @@ fn eval_list(expr: &RecExpr<Cad>) -> Vec<RecExpr<Cad>> {
             let t = eval(arg(1));
             vec![t.clone(); n as usize]
         }
-        Cad::Concat => unimplemented!(),
+        Cad::Concat => {
+            let mut vec = Vec::new();
+            for list in &e.children {
+                for c in eval_list(list) {
+                    vec.push(c)
+                }
+            }
+            vec
+        }
         Cad::Map => {
             let op = &e.children[0].as_ref().op;
             let params: Vec<_> = eval_list(&e.children[1]);
