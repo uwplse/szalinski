@@ -69,9 +69,9 @@ out/%.checked: inputs/%.expected out/%
 	$(diff) inputs/$*.expected out/$*
 	touch $@
 
-out/case-studies/report.csv: ./scripts/report.py $(filter out/case-studies/%, $(jsons))
+out/case-studies/report.csv: ./scripts/report.py $(filter out/case-studies/%, $(jsons) $(diffs))
 	./scripts/report.py --output $@ $(filter out/case-studies/%, $(jsons))
-out/inverse-csg/report.csv: ./scripts/report.py $(filter out/inverse-csg/%, $(jsons))
+out/inverse-csg/report.csv: ./scripts/report.py $(filter out/inverse-csg/%, $(jsons) $(diffs))
 	./scripts/report.py --output $@ $(filter out/inverse-csg/%, $(jsons))
 out/reincarnate/report.csv: ./scripts/report.py $(filter out/reincarnate/%, $(jsons) $(diffs))
 	./scripts/report.py --output $@ $(filter out/reincarnate/%, $(jsons))
