@@ -260,11 +260,15 @@ where
         ids.push(id);
     }
 
+    if parts.len() <= 1 {
+        return None;
+    }
+
     let mut order = Vec::new();
     let mut list_ids = smallvec![];
-    for (_, (is, ids)) in parts.into_iter() {
+    for (_, (is, ids)) in &parts {
         order.extend(is);
-        list_ids.push(egraph.add(Expr::new(Cad::List, ids)).id);
+        list_ids.push(egraph.add(Expr::new(Cad::List, ids.clone())).id);
     }
     let concat = egraph.add(Expr::new(Cad::Concat, list_ids));
     let res = if order.iter().enumerate().all(|(i0, i1)| i0 == *i1) {
@@ -279,9 +283,17 @@ where
     };
 
     if !res.was_there {
-        // println!("Partition by {:?}: {:?}", k, parts);
+        debug!("Partition: {:?}", parts);
     }
     return Some(res);
+}
+
+fn get_single_cad(egraph: &EGraph, id: Id) -> Cad {
+    let nodes = &egraph[id].nodes;
+    assert_eq!(nodes.len(), 1);
+    let n = &nodes[0];
+    assert_eq!(n.children.len(), 0);
+    n.op.clone()
 }
 
 impl Applier<Cad, Meta> for ListApplier {
@@ -290,6 +302,15 @@ impl Applier<Cad, Meta> for ListApplier {
         let bests: Vec<_> = ids
             .iter()
             .map(|&id| egraph[id].metadata.best.clone())
+            .collect();
+        let ops: Option<Vec<_>> = ids
+            .iter()
+            .map(|&id| {
+                egraph[id].nodes.iter().find_map(|n| match n.op {
+                    Cad::Do => Some(get_single_cad(egraph, n.children[0])),
+                    _ => None,
+                })
+            })
             .collect();
         let mut results = vec![];
 
@@ -318,9 +339,9 @@ impl Applier<Cad, Meta> for ListApplier {
         results.extend(partition_list(egraph, ids, |i, _| ids[i]));
 
         // try to partition things by operator
-        results.extend(partition_list(egraph, ids, |i, _| {
-            bests[i].as_ref().op.clone()
-        }));
+        if let Some(ops) = ops {
+            results.extend(partition_list(egraph, ids, |i, _| ops[i].clone()));
+        }
 
         // insert repeats
         if !ids.is_empty() {
@@ -354,7 +375,7 @@ impl Applier<Cad, Meta> for SortApplier {
                 Cad::Permutation(p) => {
                     assert_eq!(nodes[0].children.len(), 0);
                     p
-                },
+                }
                 _ => panic!("expected permutation"),
             }
         };
