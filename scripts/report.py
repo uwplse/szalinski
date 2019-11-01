@@ -52,6 +52,7 @@ if __name__ == '__main__':
             'rules_time',
             'initial_cost',
             'final_cost',
+            'improvement',
             'extract_time',
             'hausdorff_distance',
             'volume_difference',
