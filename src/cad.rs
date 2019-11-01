@@ -90,6 +90,7 @@ define_term! {
         Concat = "Concat",
         List = "List",
         Unsort = "Unsort",
+        Sort = "Sort",
         Unpolar = "Unpolar",
         Permutation(Permutation),
 
@@ -225,9 +226,9 @@ impl Language for Cad {
             Do => 30,
 
             Cons => 3,
-            Concat => 3,
+            Concat => 1,
             List => 4,
-            Unsort | Unpolar | Permutation(_) => 1000,
+            Sort | Unsort | Unpolar | Permutation(_) => 1000,
             Vec3 => 2,
 
             Add => 1,

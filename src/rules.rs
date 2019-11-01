@@ -89,6 +89,9 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
 
         // unsort propagation
 
+        rw("map_unsort_r",
+           "(Map ?op ?params (Unsort ?perm ?cads))",
+           "(Unsort ?perm (Map ?op (Sort ?perm ?params) ?cads))"),
         // rw("unsort_unsort", // FIXME UNSOUND
         //    "(Unsort ?perm (Unsort ?perm2 ?list))",
         //    "(Unsort ?perm ?list)"),
@@ -181,7 +184,16 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
             ListApplier {
                 var: "?items...".parse().unwrap(),
             },
-        )
+        ),
+
+        Rewrite::new (
+            "sortapplier",
+            Cad::parse_pattern("(Sort ?perm (List ?items...))").unwrap(),
+            SortApplier {
+                perm: "?perm".parse().unwrap(),
+                items: "?items...".parse().unwrap(),
+            },
+        ),
     ];
 
     if std::env::var("SUSPECT_RULES") == Ok("1".into()) {
@@ -321,5 +333,34 @@ impl Applier<Cad, Meta> for ListApplier {
         }
 
         results
+    }
+}
+
+#[derive(Debug)]
+struct SortApplier {
+    perm: QuestionMarkName,
+    items: QuestionMarkName,
+}
+
+impl Applier<Cad, Meta> for SortApplier {
+    fn apply(&self, egraph: &mut EGraph, map: &WildMap) -> Vec<AddResult> {
+        let items = &map[&self.items];
+        let perm: &Permutation = {
+            let perm_bound = &map[&self.perm];
+            assert_eq!(perm_bound.len(), 1);
+            let nodes = &egraph[perm_bound[0]].nodes;
+            assert_eq!(nodes.len(), 1);
+            match &nodes[0].op {
+                Cad::Permutation(p) => {
+                    assert_eq!(nodes[0].children.len(), 0);
+                    p
+                },
+                _ => panic!("expected permutation"),
+            }
+        };
+
+        let sorted = perm.apply(items);
+        let e = Expr::new(Cad::List, sorted.into());
+        vec![egraph.add(e)]
     }
 }
