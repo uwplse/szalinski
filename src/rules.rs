@@ -89,19 +89,19 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
         // rw("concat_empty", "(Concat (List))", "Nil"),
         // rw("map_empty", "(Map ?op Nil Nil)", "Nil"),
 
-        // rw("map_unpart_r",
-        //    "(Map ?op (List ?params...) (Unpart ?part ?cads))",
-        //    "(Map ?op (Unpart ?part (Part ?part (List ?params...))) (Unpart ?part ?cads))"),
-
         rw("map_unpart_r",
-           "  (Map ?op ?params (Unpart ?part ?cads))",
-           "(Unpart ?part (Part ?part
-              (Map ?op ?params (Unpart ?part ?cads))))"),
+           "(Map ?op (List ?params...) (Unpart ?part ?cads))",
+           "(Map ?op (Unpart ?part (Part ?part (List ?params...))) (Unpart ?part ?cads))"),
 
-        rw("part_map",
-           "(Part ?part (Map ?op ?params ?cads))",
-           "(Part ?part (Map ?op (Unpart ?part (Part ?part ?params))
-                                 (Unpart ?part (Part ?part ?cads))))"),
+        // rw("map_unpart_r",
+        //    "  (Map ?op ?params (Unpart ?part ?cads))",
+        //    "(Unpart ?part (Part ?part
+        //       (Map ?op ?params (Unpart ?part ?cads))))"),
+
+        // rw("part_map",
+        //    "(Part ?part (Map ?op ?params ?cads))",
+        //    "(Part ?part (Map ?op (Unpart ?part (Part ?part ?params))
+        //                          (Unpart ?part (Part ?part ?cads))))"),
 
         rw("part_unpart", "(Part ?part (Unpart ?part ?list))", "?list"),
         rw("unpart_part", "(Unpart ?part (Part ?part ?list))", "?list"),
@@ -134,24 +134,32 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
 
         rw("map_unsort_l",
            "  (Map ?op (Unsort ?perm ?params) ?cads)",
-           "(Unsort ?perm (Sort ?perm
-              (Map ?op (Unsort ?perm ?params) ?cads)))"),
-           // "(Unsort ?perm (Map ?op ?params (Sort ?perm ?cads)))"),
+           // "(Unsort ?perm (Sort ?perm
+           //    (Map ?op (Unsort ?perm ?params) ?cads)))"),
+           "(Unsort ?perm (Map ?op ?params (Sort ?perm ?cads)))"),
            // "(Map ?op (Unsort ?perm ?params) (Unsort ?perm (Sort ?perm ?cads)))"),
+
         rw("map_unsort_r",
            "  (Map ?op ?params (Unsort ?perm ?cads))",
-           "(Unsort ?perm (Sort ?perm
-              (Map ?op ?params (Unsort ?perm ?cads))))"),
+           "(Unsort ?perm (Map ?op (Sort ?perm ?params) ?cads))"),
+           // "(Unsort ?perm (Sort ?perm
+           //    (Map ?op ?params (Unsort ?perm ?cads))))"),
+
+        // rw("map_unsort_unpart_r",
+        //    "  (Map ?op ?params (Unpart ?part (Unsort ?perm ?cads)))",
+        //    "(Part ?part (Sort ?perm
+        //       (Map ?op ?params (Unsort ?part (Unsort ?perm ?cads)))))"),
+
            // "(Unsort ?perm (Map ?op (Sort ?perm ?params) ?cads))"),
            // "(Map ?op (Unsort ?perm (Sort ?perm ?params)) (Unsort ?perm ?cads))"),
 
-        rw("sort_map",
-           "(Sort ?perm (Map ?op ?params ?cads))",
-           "(Map ?op (Sort ?perm ?params) (Sort ?perm ?cads))"),
+        // rw("sort_map",
+        //    "(Sort ?perm (Map ?op ?params ?cads))",
+        //    "(Map ?op (Sort ?perm ?params) (Sort ?perm ?cads))"),
 
-        rw("unsort_map",
-           "(Map ?op (Unsort ?perm ?params) (Unsort ?perm ?cads))",
-           "(Unsort ?perm (Map ?op ?params ?cads))"),
+        // rw("unsort_map",
+        //    "(Map ?op (Unsort ?perm ?params) (Unsort ?perm ?cads))",
+        //    "(Unsort ?perm (Map ?op ?params ?cads))"),
 
         rw("unsort_repeat", "(Unsort ?perm (Repeat ?n ?elem))", "(Repeat ?n ?elem)"),
            // "(Unsort ?perm (Map ?op ?params (Repeat ?n ?cad)))"),
@@ -257,7 +265,7 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
         ),
 
         Rewrite::new (
-            "unpart",
+            "unpart-unsort",
             Cad::parse_pattern("(Unpart ?part (List ?items...))").unwrap(),
             UnpartApplier {
                 part: "?part".parse().unwrap(),
@@ -265,15 +273,15 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
             },
         ),
 
-        // Rewrite::new (
-        //     "sort_unpart",
-        //     Cad::parse_pattern("(Sort ?sort (Unpart ?part (List ?items...)))").unwrap(),
-        //     SortUnpartApplier {
-        //         sort: "?sort".parse().unwrap(),
-        //         part: "?part".parse().unwrap(),
-        //         items: "?items...".parse().unwrap(),
-        //     },
-        // ),
+        Rewrite::new (
+            "sort-unpart",
+            Cad::parse_pattern("(Sort ?sort (Unpart ?part (List ?items...)))").unwrap(),
+            SortUnpartApplier {
+                sort: "?sort".parse().unwrap(),
+                part: "?part".parse().unwrap(),
+                items: "?items...".parse().unwrap(),
+            },
+        ),
 
     ];
 
@@ -551,14 +559,21 @@ impl Applier<Cad, Meta> for UnpartApplier {
         assert_eq!(len_so_far, part.total_len());
         assert_eq!(len_so_far, big_perm.len());
 
+        let is_ordered = big_perm.iter().enumerate().all(|(i1, i2)| i1 == *i2);
+
         let perm = Permutation::from_vec(big_perm);
         let perm = egraph.add(Expr::unit(Cad::Permutation(perm))).id;
         let part = egraph.add(Expr::unit(Cad::Partitioning(part))).id;
 
         let list = egraph.add(Expr::new(Cad::List, ids.into())).id;
-        let unpart = egraph.add(Expr::new(Cad::Unpart, smallvec![part, list])).id;
-        let res = egraph.add(Expr::new(Cad::Unsort, smallvec![perm, unpart]));
-        vec![res]
+        let unpart = egraph.add(Expr::new(Cad::Unpart, smallvec![part, list]));
+
+        if is_ordered {
+            vec![unpart]
+        } else {
+            let unsort = egraph.add(Expr::new(Cad::Unsort, smallvec![perm, unpart.id]));
+            vec![unsort]
+        }
     }
 }
 
@@ -571,11 +586,37 @@ struct SortUnpartApplier {
 
 impl Applier<Cad, Meta> for SortUnpartApplier {
     fn apply(&self, egraph: &mut EGraph, map: &WildMap) -> Vec<AddResult> {
-        let sort: &Permutation = get_unit!(egraph, map[&self.sort], Cad::Permutation);
-        let part: &Partitioning = get_unit!(egraph, map[&self.part], Cad::Partitioning);
+        let sort: Permutation = get_unit!(egraph, map[&self.sort], Cad::Permutation).clone();
+        let part: Partitioning = get_unit!(egraph, map[&self.part], Cad::Partitioning).clone();
         let items = &map[&self.items];
 
+        let mut sorts = vec![];
         let mut len_so_far = 0;
-        vec![]
+        for len in &part.lengths {
+            let slice = &sort.order[len_so_far..len_so_far + len];
+            if !slice
+                .iter()
+                .all(|&i| len_so_far <= i && i < len_so_far + len)
+            {
+                return vec![];
+            }
+            sorts.push(slice.iter().map(|i| i - len_so_far).collect());
+            len_so_far += len;
+        }
+
+        let sorted_lists = sorts
+            .into_iter()
+            .zip(items)
+            .map(|(p, &list_id)| {
+                let perm = Permutation::from_vec(p);
+                let sort_id = egraph.add(Expr::unit(Cad::Permutation(perm))).id;
+                egraph
+                    .add(Expr::new(Cad::Sort, smallvec![sort_id, list_id]))
+                    .id
+            })
+            .collect();
+        let list = egraph.add(Expr::new(Cad::List, sorted_lists)).id;
+        let part_id = egraph.add(Expr::unit(Cad::Partitioning(part.clone()))).id;
+        vec![egraph.add(Expr::new(Cad::Unpart, smallvec![part_id, list]))]
     }
 }

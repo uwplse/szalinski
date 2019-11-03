@@ -3,17 +3,17 @@ use std::str::FromStr;
 
 use egg::{
     define_term,
-    egraph::EClass,
     expr::{Expr, Language, RecExpr},
 };
 
 use crate::{
     num::{num, Num},
-    permute::Permutation,
+    permute::{Permutation, Partitioning},
 };
 
 use log::*;
 pub type EGraph = egg::egraph::EGraph<Cad, Meta>;
+pub type EClass = egg::egraph::EClass<Cad, Meta>;
 pub type Rewrite = egg::pattern::Rewrite<Cad, Meta>;
 
 pub type Vec3 = (Num, Num, Num);
@@ -89,10 +89,15 @@ define_term! {
         Cons = "Cons",
         Concat = "Concat",
         List = "List",
-        Unsort = "Unsort",
+
         Sort = "Sort",
+        Unsort = "Unsort",
+        Part = "Part",
+        Unpart = "Unpart",
         Unpolar = "Unpolar",
+
         Permutation(Permutation),
+        Partitioning(Partitioning),
 
         Add = "+",
         Sub = "-",
@@ -191,7 +196,7 @@ impl egg::egraph::Metadata<Cad> for Meta {
         }
     }
 
-    fn modify(eclass: &mut EClass<Cad, Self>) {
+    fn modify(eclass: &mut EClass) {
         let best = eclass.metadata.best.as_ref();
         if best.children.is_empty() {
             eclass.nodes.push(Expr::unit(best.op.clone()))
@@ -228,8 +233,12 @@ impl Language for Cad {
             Cons => 3,
             Concat => 1,
             List => 4,
-            Sort | Unsort | Unpolar | Permutation(_) => 1000,
             Vec3 => 2,
+
+            Unpolar => 1000,
+            Sort | Unsort | Part | Unpart => 1000,
+            Partitioning(_)  => 1000,
+            Permutation(_) => 1000,
 
             Add => 1,
             Sub => 1,
