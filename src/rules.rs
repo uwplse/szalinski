@@ -259,8 +259,8 @@ where
     F: FnMut(usize, Id) -> K,
     K: Hash + Eq + Debug + Clone,
 {
-    // only do it if we've enabled it
-    if std::env::var("PARTITIONING") != Ok("1".into()) {
+    // allow easy disabling
+    if std::env::var("PARTITIONING") == Ok("0".into()) {
         return None;
     }
 
