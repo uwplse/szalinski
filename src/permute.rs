@@ -43,3 +43,47 @@ impl Permutation {
         self.order.iter().map(|&i| list[i].clone()).collect()
     }
 }
+
+#[derive(PartialEq, Eq, Hash, Debug, Clone)]
+pub struct Partitioning {
+    pub lengths: Vec<usize>,
+}
+
+impl fmt::Display for Partitioning {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{:?}", self.lengths)
+    }
+}
+
+impl FromStr for Partitioning {
+    type Err = ();
+    fn from_str(_: &str) -> Result<Self, Self::Err> {
+        Err(())
+    }
+}
+
+impl Partitioning {
+    pub fn total_len(&self) -> usize {
+        for len in &self.lengths {
+            assert_ne!(*len, 0);
+        }
+        self.lengths.iter().sum()
+    }
+
+    pub fn from_vec(lengths: Vec<usize>) -> Partitioning {
+        Partitioning { lengths }
+    }
+
+    pub fn apply<T: Clone>(&self, list: &[T]) -> Vec<Vec<T>> {
+        assert_eq!(self.total_len(), list.len());
+        let mut i = 0;
+        self.lengths
+            .iter()
+            .map(|&len| {
+                let start = i;
+                i += len;
+                list[start..i].to_vec()
+            })
+            .collect()
+    }
+}
