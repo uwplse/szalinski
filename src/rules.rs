@@ -85,48 +85,14 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
 
         // partitioning
         rw("concat", "(Unpart ?part ?lists)", "(Concat ?lists)"),
-        // concat empty is subsumed by unpart dynamic rule
-        // rw("concat_empty", "(Concat (List))", "Nil"),
-        // rw("map_empty", "(Map ?op Nil Nil)", "Nil"),
 
         rw("map_unpart_r",
            "(Map ?op (List ?params...) (Unpart ?part ?cads))",
            "(Map ?op (Unpart ?part (Part ?part (List ?params...))) (Unpart ?part ?cads))"),
 
-        // rw("map_unpart_r",
-        //    "  (Map ?op ?params (Unpart ?part ?cads))",
-        //    "(Unpart ?part (Part ?part
-        //       (Map ?op ?params (Unpart ?part ?cads))))"),
-
-        // rw("part_map",
-        //    "(Part ?part (Map ?op ?params ?cads))",
-        //    "(Part ?part (Map ?op (Unpart ?part (Part ?part ?params))
-        //                          (Unpart ?part (Part ?part ?cads))))"),
-
+        // NOTE do we need part/unpart id?
         rw("part_unpart", "(Part ?part (Unpart ?part ?list))", "?list"),
         rw("unpart_part", "(Unpart ?part (Part ?part ?list))", "?list"),
-        // NOTE do we need part/unpart id?
-
-        // rw("concat_hoist_nil",
-        //    "(FoldUnion (Map ?op (Concat (List ?head1 ?tail1...))
-        //                         (Concat (List ?head2 ?tail2...))))",
-        //    "(Union
-        //        (FoldUnion (Map ?op ?head1 ?head2))
-        //        (FoldUnion (Map ?op (Concat (List ?tail1...))
-        //                            (Concat (List ?tail2...)))))"),
-
-        // rw("concat_hoist_nil",
-        //    "(Map ?op ?l1 ?l2)",
-        //    "(Concat (Cons (Map ?op ?l1 ?l2) Nil))"),
-
-        // rw("concat_hoist_cons",
-        //    "(Cons (Map ?op (Concat (List ?head1 ?tail1...))
-        //                    (Concat (List ?head2 ?tail2...)))
-        //           ?rest)",
-        //    "(Cons (Map ?op ?head1 ?head2)
-        //           (Cons (Map ?op (Concat (List ?tail1...))
-        //                          (Concat (List ?tail2...)))
-        //                 ?rest))"),
 
         // unsort propagation
         rw("sort_unsort", "(Sort ?perm (Unsort ?perm ?list))", "?list"),
@@ -134,36 +100,13 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
 
         rw("map_unsort_l",
            "  (Map ?op (Unsort ?perm ?params) ?cads)",
-           // "(Unsort ?perm (Sort ?perm
-           //    (Map ?op (Unsort ?perm ?params) ?cads)))"),
            "(Unsort ?perm (Map ?op ?params (Sort ?perm ?cads)))"),
-           // "(Map ?op (Unsort ?perm ?params) (Unsort ?perm (Sort ?perm ?cads)))"),
 
         rw("map_unsort_r",
            "  (Map ?op ?params (Unsort ?perm ?cads))",
            "(Unsort ?perm (Map ?op (Sort ?perm ?params) ?cads))"),
-           // "(Unsort ?perm (Sort ?perm
-           //    (Map ?op ?params (Unsort ?perm ?cads))))"),
-
-        // rw("map_unsort_unpart_r",
-        //    "  (Map ?op ?params (Unpart ?part (Unsort ?perm ?cads)))",
-        //    "(Part ?part (Sort ?perm
-        //       (Map ?op ?params (Unsort ?part (Unsort ?perm ?cads)))))"),
-
-           // "(Unsort ?perm (Map ?op (Sort ?perm ?params) ?cads))"),
-           // "(Map ?op (Unsort ?perm (Sort ?perm ?params)) (Unsort ?perm ?cads))"),
-
-        // rw("sort_map",
-        //    "(Sort ?perm (Map ?op ?params ?cads))",
-        //    "(Map ?op (Sort ?perm ?params) (Sort ?perm ?cads))"),
-
-        // rw("unsort_map",
-        //    "(Map ?op (Unsort ?perm ?params) (Unsort ?perm ?cads))",
-        //    "(Unsort ?perm (Map ?op ?params ?cads))"),
 
         rw("unsort_repeat", "(Unsort ?perm (Repeat ?n ?elem))", "(Repeat ?n ?elem)"),
-           // "(Unsort ?perm (Map ?op ?params (Repeat ?n ?cad)))"),
-           // "(Map ?op ?params (Repeat ?n ?cad))"),
 
         rw("unsort_fold",
            "(FoldUnion (Unsort ?perm ?x))",
@@ -173,26 +116,6 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
         rw("unpolar_trans",
            "(Map Trans (Unpolar ?n ?center ?params) ?cads)",
            "(Map Trans (Repeat ?n ?center) (Map TransPolar ?params ?cads))"),
-
-        // NOTE we do these rules in ListApplier now
-        // rw("nil_repeat",
-        //    "(List ?a)",
-        //    "(Repeat 1 ?a)"),
-
-        // rw("cons_repeat",
-        //    "(Cons ?a (Repeat ?n ?a))",
-        //    "(Repeat (+ ?n 1) ?a)"),
-
-        // rw("diff_push_union",
-        //    "(Diff (Union ?a ?b) ?c)",
-        //    "(Union (Diff ?a ?c) (Diff ?b ?c))"),
-        // rw("diff_pull_union",
-        //    "(Union (Diff ?a ?c) (Diff ?b ?c))",
-        //    "(Diff (Union ?a ?b) ?c)"),
-
-        // rw("diff",
-        //    "(Diff (Diff ?a ?b) ?c)",
-        //    "(Diff ?a (Union ?b ?c))"),
 
         // NOTE this explode the egraph
         rw("diff2",
@@ -236,7 +159,7 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
         // primitives
         rw("cylinder_scale",
            "(Cylinder (Vec3 ?h ?r1 ?r2) ?params)",
-           "(Scale (Vec3 2 1 1) (Cylinder (Vec3 1 ?r1 ?r2) ?params))"),
+           "(Scale (Vec3 ?h 1 1) (Cylinder (Vec3 1 ?r1 ?r2) ?params))"),
 
         Rewrite::new (
             "listapplier",
