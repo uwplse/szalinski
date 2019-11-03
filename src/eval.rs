@@ -106,7 +106,10 @@ fn eval_list(expr: &RecExpr<Cad>) -> Vec<RecExpr<Cad>> {
         }
         Cad::Concat => {
             let mut vec = Vec::new();
-            for list in &e.children {
+            // must look at first child, which should be a list
+            let list_arg = e.children[0].as_ref();
+            assert_eq!(list_arg.op, Cad::List);
+            for list in &list_arg.children {
                 for c in eval_list(list) {
                     vec.push(c)
                 }
