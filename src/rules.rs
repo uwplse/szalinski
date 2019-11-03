@@ -39,6 +39,8 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
 
         rw("list_nil", "Nil", "(List)"),
         rw("list_cons", "(Cons ?a (List ?b...))", "(List ?a ?b...)"),
+        rw("nil_list", "(List)", "Nil"),
+        rw("cons_list", "(List ?a ?b...)", "(Cons ?a (List ?b...))"),
 
         // cad rules
 
@@ -63,6 +65,10 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
         rw("undo_scale",   "(Do Scale       ?params ?a)", "(Scale      ?params ?a)"),
         rw("undo_rotate",  "(Do Rotate      ?params ?a)", "(Rotate     ?params ?a)"),
         rw("undo_transp",  "(Do TransPolar  ?params ?a)", "(TransPolar ?params ?a)"),
+
+        // NOTE these aren't needed right now
+        // rw("do_cylinder",   "(Cylinder      ?params ?a)", "(Do Cylinder       ?params ?a)"),
+        // rw("undo_cylinder",   "(Do Cylinder       ?params ?a)", "(Cylinder      ?params ?a)"),
 
         rw("map_nil",
            "(Cons (Do ?op ?param ?cad) Nil)",
