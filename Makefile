@@ -77,6 +77,8 @@ out/reincarnate/report.csv: ./scripts/report.py $(filter out/reincarnate/%, $(js
 	./scripts/report.py --output $@ $(filter out/reincarnate/%, $(jsons))
 out/reincarnate-new/report.csv: ./scripts/report.py $(filter out/reincarnate-new/%, $(jsons) $(diffs))
 	./scripts/report.py --output $@ $(filter out/reincarnate-new/%, $(jsons))
+out/latex-drawing/report.csv: ./scripts/report.py $(filter out/latex-drawing/%, $(jsons) $(diffs))
+	./scripts/report.py --output $@ $(filter out/latex-drawing/%, $(jsons))
 out/report.csv: ./scripts/report.py $(jsons) $(diffs)
 	./scripts/report.py --output $@ $(jsons)
 
