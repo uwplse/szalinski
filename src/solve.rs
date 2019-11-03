@@ -304,7 +304,10 @@ fn chunk_length(list: &[Num]) -> usize {
 }
 
 fn unrun(list: &[Num], n: usize) -> Option<Vec<Num>> {
-    assert_eq!(list.len() % n, 0);
+    if list.len() % n != 0 {
+        return None
+    }
+
     let all_same = |slice: &[Num]| slice.iter().all(|&x| x == slice[0]);
     if list.chunks_exact(n).all(all_same) {
         Some(list.iter().copied().step_by(n).collect())
