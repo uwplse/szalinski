@@ -210,7 +210,7 @@ impl Language for Cad {
         let cost = match self {
             Num(_) => 1,
             Bool(_) => 1,
-            Cube | Empty | Nil | Sphere | Cylinder | Hexagon | Hull => return 1,
+            Cube | Empty | Nil | Sphere | Cylinder | Hexagon | Hull => 1,
             Repeat => 1,
 
             Trans => 10,
@@ -222,12 +222,12 @@ impl Language for Cad {
             Diff => 10,
             Inter => 10,
 
-            MapI => 1,
+            MapI => return 1,
             ListVar(_) => 1,
 
             FoldUnion => 9,
             FoldInter => 9,
-            Map => 9,
+            Map => 1,
             Do => 30,
 
             Cons => 3,
