@@ -389,9 +389,11 @@ macro_rules! get_unit {
     ($egraph:expr, $eclass_list:expr, $cad:path) => {{
         let egraph = &$egraph;
         let eclass_list = &$eclass_list;
-        assert_eq!(eclass_list.len(), 1);
+        assert_eq!(eclass_list.len(), 1, "more than one eclass");
         let nodes = &egraph[eclass_list[0]].nodes;
-        assert_eq!(nodes.len(), 1);
+        if nodes.len() > 1 {
+            assert!(nodes[1..].iter().all(|n| n == &nodes[0]))
+        }
         match &nodes[0].op {
             $cad(p) => {
                 assert_eq!(nodes[0].children.len(), 0);
