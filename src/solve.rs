@@ -126,6 +126,7 @@ fn solve_list_fn(xs: &[Num]) -> Option<Formula> {
 }
 
 fn solve_and_add(egraph: &mut EGraph, xs: &[Num], ys: &[Num], zs: &[Num]) -> Option<AddResult> {
+    // println!("Solving:\n  x={:?}\n  y={:?}\n  z={:?}", xs, ys, zs);
     let mut by_chunk = IndexMap::<usize, Vec<_>>::default();
     by_chunk.entry(chunk_length(xs)).or_default().push((0, xs));
     by_chunk.entry(chunk_length(ys)).or_default().push((1, ys));
@@ -148,6 +149,7 @@ fn solve_and_add(egraph: &mut EGraph, xs: &[Num], ys: &[Num], zs: &[Num]) -> Opt
             let slice = &list[..chunk_len];
             let nums = unrun(slice, *inner)?;
             let fun = solve_list_fn(&nums)?;
+            // println!("Found: {:?}", fun);
             let var_id = egraph.add(Expr::unit(var.clone())).id;
             inserted[*index] = Some(fun.add_to_egraph(egraph, var_id));
         }
@@ -167,6 +169,7 @@ fn solve_and_add(egraph: &mut EGraph, xs: &[Num], ys: &[Num], zs: &[Num]) -> Opt
     let vec = egraph.add(Expr::new(Cad::Vec3, smallvec![x, y, z])).id;
     children.push(vec);
     let map = egraph.add(Expr::new(Cad::MapI, children));
+    // println!("inserted map: {:?}", map);
     Some(map)
 }
 
@@ -201,12 +204,10 @@ fn solve_vec(egraph: &mut EGraph, list: &[Vec3]) -> Vec<AddResult> {
     ];
 
     for perm in &perms {
-        // println!("Trying sort {:?}", perm);
         let xs = perm.apply(&xs);
         let ys = perm.apply(&ys);
         let zs = perm.apply(&zs);
         if let Some(added_mapi) = solve_and_add(egraph, &xs, &ys, &zs) {
-            // println!("Found with sort {:?}: {:?}", perm, formula);
             let p = Cad::Permutation(perm.clone());
             let e = Expr::new(
                 Cad::Unsort,
@@ -266,7 +267,7 @@ fn add_vec(egraph: &mut EGraph, v: Vec3) -> Id {
 
 pub fn solve(egraph: &mut EGraph, list: &[Vec3]) -> Vec<AddResult> {
     let mut results = solve_vec(egraph, list);
-    info!("Solving {:?} -> {:?}", list, results);
+    debug!("Solving {:?} -> {:?}", list, results);
     let (center, polar_list) = polarize(&list);
     for res in solve_vec(egraph, &polar_list) {
         let e = Expr::new(
