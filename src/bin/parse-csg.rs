@@ -282,13 +282,14 @@ fn write_csg(w: &mut impl Write, depth: usize, pair: Pair<Rule>) -> Result<()> {
             let a = mkdict(args.next().unwrap());
             write!(
                 w,
-                "(Cylinder (Vec3 {} {} {}) (Vec3 {} {} {}))",
+                "(Cylinder (Vec3 {} {} {}) (Vec3 {} {} {}) {})",
                 a["h"].as_str(),
                 a["r1"].as_str(),
                 a["r2"].as_str(),
                 a["$fn"].as_str(),
                 a["$fa"].as_str(),
                 a["$fs"].as_str(),
+                a["center"].as_str(),
             )
         }
         r => panic!(r#"Unexpected rule "{:?}""#, r),
