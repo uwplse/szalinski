@@ -197,6 +197,22 @@ impl egg::egraph::Metadata<Cad> for Meta {
     }
 
     fn modify(eclass: &mut EClass) {
+        if let Some(list1) = eclass.nodes.iter().find(|n| n.op == Cad::List) {
+            for list2 in eclass.nodes.iter().filter(|n| n.op == Cad::List) {
+                assert_eq!(list1.children.len(), list2.children.len(), "at id {}", eclass.id)
+            }
+        }
+
+        // here we prune away excess unsorts, as that will cause some stuff to spin out
+        let mut n_unsorts = 1000;
+        eclass.nodes.retain(|n| match n.op {
+            Cad::Unsort => {
+                n_unsorts -= 1;
+                n_unsorts >= 0
+            }
+            _ => true,
+        });
+
         let best = eclass.metadata.best.as_ref();
         if best.children.is_empty() {
             eclass.nodes.push(Expr::unit(best.op.clone()))
