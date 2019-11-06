@@ -2,8 +2,8 @@ use std::fmt;
 use std::str::FromStr;
 
 #[derive(PartialOrd, Ord, PartialEq, Eq, Hash, Default, Clone, Copy)]
-// pub struct Num(ordered_float::NotNan<f64>);
-pub struct Num(u64);
+pub struct Num(ordered_float::NotNan<f64>);
+// pub struct Num(u64);
 
 const EPSILON: f64 = 0.1;
 
@@ -18,8 +18,8 @@ pub fn num(n: impl Into<Num>) -> Num {
 
 impl Num {
     pub fn to_f64(self) -> f64 {
-        // self.0.into_inner()
-        f64::from_bits(self.0)
+        self.0.into_inner()
+        // f64::from_bits(self.0)
     }
 
     pub fn is_close(self, other: f64) -> bool {
@@ -31,9 +31,10 @@ impl Num {
 
 impl From<f64> for Num {
     fn from(f: f64) -> Num {
-        let d = DEFAULT_MANTISSA_BITS - MANTISSA_BITS;
-        let mask: u64 = !0 << d;
-        Num(f.to_bits() & mask)
+        Num(f.into())
+        // let d = DEFAULT_MANTISSA_BITS - MANTISSA_BITS;
+        // let mask: u64 = !0 << d;
+        // Num(f.to_bits() & mask)
         // let small = f * ROUND_RELATIVE;
         // let big = small.round() / ROUND_RELATIVE;
         // Num(big.into())
