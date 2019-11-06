@@ -204,6 +204,9 @@ fn solve_vec(egraph: &mut EGraph, list: &[Vec3]) -> Vec<AddResult> {
     ];
 
     for perm in &perms {
+        if perm.is_ordered() {
+            continue;
+        }
         let xs = perm.apply(&xs);
         let ys = perm.apply(&ys);
         let zs = perm.apply(&zs);

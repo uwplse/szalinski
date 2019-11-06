@@ -24,6 +24,10 @@ impl Permutation {
         self.order.len()
     }
 
+    pub fn is_ordered(&self) -> bool {
+        self.order.iter().enumerate().all(|(a,b)| a == *b)
+    }
+
     pub fn invert(&self) -> Permutation {
         Permutation::sort(&self.order)
     }
