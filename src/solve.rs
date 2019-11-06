@@ -127,11 +127,17 @@ fn solve_list_fn(xs: &[Num]) -> Option<Formula> {
 
 fn solve_and_add(egraph: &mut EGraph, xs: &[Num], ys: &[Num], zs: &[Num]) -> Option<AddResult> {
     // println!("Solving:\n  x={:?}\n  y={:?}\n  z={:?}", xs, ys, zs);
+    assert_eq!(xs.len(), ys.len());
+    assert_eq!(xs.len(), zs.len());
     let mut by_chunk = IndexMap::<usize, Vec<_>>::default();
     by_chunk.entry(chunk_length(xs)).or_default().push((0, xs));
     by_chunk.entry(chunk_length(ys)).or_default().push((1, ys));
     by_chunk.entry(chunk_length(zs)).or_default().push((2, zs));
     by_chunk.sort_by(|k1, _, k2, _| k2.cmp(k1));
+
+    if !by_chunk.keys().any(|len| *len == xs.len()) {
+        return None;
+    }
 
     let inners: Vec<usize> = (0..by_chunk.len())
         .map(|i| by_chunk.get_index(i + 1).map(|(k, _)| *k).unwrap_or(1))
@@ -155,14 +161,19 @@ fn solve_and_add(egraph: &mut EGraph, xs: &[Num], ys: &[Num], zs: &[Num]) -> Opt
         }
     }
 
+    let mut lens = vec![];
     let mut children: SmallVec<_> = by_chunk
         .keys()
         .zip(&inners)
         .map(|(n, inner)| {
+            assert_eq!(n % inner, 0);
             let len = n / inner;
+            lens.push(len);
             egraph.add(Expr::unit(Cad::Num(len.into()))).id
         })
         .collect();
+    // println!("lens: {:?}, {:?}", lens, xs);
+    assert_eq!(lens.iter().product::<usize>(), xs.len());
     let x = inserted[0].unwrap();
     let y = inserted[1].unwrap();
     let z = inserted[2].unwrap();
@@ -219,6 +230,7 @@ fn solve_vec(egraph: &mut EGraph, list: &[Vec3]) -> Vec<AddResult> {
             results.push(egraph.add(e));
         }
     }
+
     results
 }
 
@@ -270,7 +282,7 @@ fn add_vec(egraph: &mut EGraph, v: Vec3) -> Id {
 
 pub fn solve(egraph: &mut EGraph, list: &[Vec3]) -> Vec<AddResult> {
     let mut results = solve_vec(egraph, list);
-    debug!("Solving {:?} -> {:?}", list, results);
+    debug!("Solved {:?} -> {:?}", list, results);
     let (center, polar_list) = polarize(&list);
     for res in solve_vec(egraph, &polar_list) {
         let e = Expr::new(
@@ -308,7 +320,7 @@ fn chunk_length(list: &[Num]) -> usize {
 
 fn unrun(list: &[Num], n: usize) -> Option<Vec<Num>> {
     if list.len() % n != 0 {
-        return None
+        return None;
     }
 
     let all_same = |slice: &[Num]| slice.iter().all(|&x| x == slice[0]);
