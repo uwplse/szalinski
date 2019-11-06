@@ -22,6 +22,15 @@ fn rw<M: Metadata<Cad>>(name: &str, lhs: &str, rhs: &str) -> Rewrite<Cad, M> {
 }
 
 #[rustfmt::skip]
+pub fn pre_rules() -> Vec<Rewrite<Cad, Meta>> {
+    vec![
+        rw("union_nil", "(Union ?a ?b)", "(FoldUnion (Cons ?a (Cons ?b Nil)))"),
+        rw("union_consr", "(Union ?a (FoldUnion ?list))", "(FoldUnion (Cons ?a ?list))"),
+        rw("union_consl", "(Union (FoldUnion ?list) ?a)", "(FoldUnion (Cons ?a ?list))"),
+    ]
+}
+
+#[rustfmt::skip]
 pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
     let mut rules = vec![
         // math rules
@@ -94,8 +103,12 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
         rw("concat", "(Unpart ?part ?lists)", "(Concat ?lists)"),
 
         rw("map_unpart_r",
-           "(Map ?op (List ?params...) (Unpart ?part ?cads))",
-           "(Map ?op (Unpart ?part (Part ?part (List ?params...))) (Unpart ?part ?cads))"),
+           "(Map ?op
+              (List ?params...)
+              (Unpart ?part ?cads))",
+           "(Map ?op
+              (Unpart ?part (Part ?part (List ?params...)))
+              (Unpart ?part ?cads))"),
 
         // NOTE do we need part/unpart id?
         rw("part_unpart", "(Part ?part (Unpart ?part ?list))", "?list"),
@@ -106,12 +119,22 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
         rw("unsort_sort", "(Unsort ?perm (Sort ?perm ?list))", "?list"),
 
         rw("map_unsort_l",
-           "  (Map ?op (Unsort ?perm ?params) ?cads)",
-           "(Unsort ?perm (Map ?op ?params (Sort ?perm ?cads)))"),
+           "(Map ?op
+              (Unsort ?perm ?params)
+              ?cads)",
+           "(Unsort ?perm
+              (Map ?op
+                ?params
+                (Sort ?perm ?cads)))"),
 
         rw("map_unsort_r",
-           "  (Map ?op ?params (Unsort ?perm ?cads))",
-           "(Unsort ?perm (Map ?op (Sort ?perm ?params) ?cads))"),
+           "(Map ?op
+              ?params
+              (Unsort ?perm ?cads))",
+           "(Unsort ?perm
+              (Map ?op
+                (Sort ?perm ?params)
+                ?cads))"),
 
         rw("unsort_repeat", "(Unsort ?perm (Repeat ?n ?elem))", "(Repeat ?n ?elem)"),
 
@@ -165,8 +188,8 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
 
         // primitives
         rw("cylinder_scale",
-           "(Cylinder (Vec3 ?h ?r1 ?r2) ?params)",
-           "(Scale (Vec3 ?h 1 1) (Cylinder (Vec3 1 ?r1 ?r2) ?params))"),
+           "(Cylinder (Vec3 ?h ?r1 ?r2) ?params ?center)",
+           "(Scale (Vec3 ?h 1 1) (Cylinder (Vec3 1 ?r1 ?r2) ?params ?center))"),
 
         Rewrite::new (
             "listapplier",
@@ -194,6 +217,7 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
             },
         ),
 
+        // TODO should this perform concat when possible?
         Rewrite::new (
             "unpart-unsort",
             Cad::parse_pattern("(Unpart ?part (List ?items...))").unwrap(),
@@ -221,8 +245,8 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
         info!("Using suspect rules");
         println!("Using suspect rules");
         rules.extend(vec![
-            rw("id", "(Trans (Vec3 0 0 0) ?a)", "?a"),
             rw("union_comm", "(Union ?a ?b)", "(Union ?b ?a)"),
+            rw("id", "(Trans (Vec3 0 0 0) ?a)", "?a"),
             rw("combine_scale",
                "(Scale (Vec3 ?a ?b ?c) (Scale (Vec3 ?d ?e ?f) ?cad))",
                "(Scale (Vec3 (* ?a ?d) (* ?b ?e) (* ?c ?f)) ?cad)"),

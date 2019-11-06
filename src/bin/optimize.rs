@@ -38,6 +38,7 @@ fn run_one(egraph: &mut EGraph, rules: &[Rewrite], limit: usize) -> IterationRes
     let apply_time = Instant::now();
 
     for m in matches {
+        debug!("Applying {} {} times", m.rewrite.name, m.len());
         let actually_matched = m.apply_with_limit(egraph, limit).len();
         if egraph.total_size() > limit {
             error!("Node limit exceeded. {} > {}", egraph.total_size(), limit);
@@ -102,8 +103,25 @@ pub fn optimize(
 
     let (mut egraph, root) = EGraph::from_expr(&initial_expr_cad);
 
+    let pre_rule_time = Instant::now();
+    let pre_rules = szalinski_egg::rules::pre_rules();
+    let mut old_size = 0;
+    loop {
+        for rule in &pre_rules {
+            rule.run(&mut egraph);
+        }
+        let new_size = egraph.total_size();
+        if new_size == old_size {
+            break;
+        }
+        old_size = new_size;
+    }
+    let pre_rule_time = pre_rule_time.elapsed();
+    info!("Pre rule time: {:?}", pre_rule_time);
+
     let rules = szalinski_egg::rules::rules();
     let mut iterations = vec![];
+
 
     for i in 0..iters {
         info!("\n\nIteration {}\n", i);
