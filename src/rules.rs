@@ -298,10 +298,11 @@ where
     let list_of_lists = egraph.add(Expr::new(Cad::List, list_ids)).id;
     let concat = egraph.add(Expr::new(Cad::Unpart, smallvec![part_id, list_of_lists]));
 
-    let res = if order.iter().enumerate().all(|(i0, i1)| i0 == *i1) {
+    let perm = Permutation::from_vec(order);
+    let res = if perm.is_ordered() {
         concat
     } else {
-        let p = Cad::Permutation(Permutation::from_vec(order));
+        let p = Cad::Permutation(perm);
         let e = Expr::new(
             Cad::Unsort,
             smallvec![egraph.add(Expr::unit(p)).id, concat.id],
@@ -491,9 +492,8 @@ impl Applier<Cad, Meta> for UnpartApplier {
         assert_eq!(len_so_far, part.total_len());
         assert_eq!(len_so_far, big_perm.len());
 
-        let is_ordered = big_perm.iter().enumerate().all(|(i1, i2)| i1 == *i2);
-
         let perm = Permutation::from_vec(big_perm);
+        let is_ordered = perm.is_ordered();
         let perm = egraph.add(Expr::unit(Cad::Permutation(perm))).id;
         let part = egraph.add(Expr::unit(Cad::Partitioning(part))).id;
 
