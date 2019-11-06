@@ -109,7 +109,7 @@ pub fn eval(expr: &RecExpr<Cad>) -> RecExpr<Cad> {
         Cad::Bool(b) => rec!(Cad::Bool(*b)),
         Cad::Cube => rec!(Cad::Cube, eval(arg(0)), eval(arg(1))),
         Cad::Sphere => rec!(Cad::Sphere, eval(arg(0)), eval(arg(1))),
-        Cad::Cylinder => rec!(Cad::Cylinder, eval(arg(0)), eval(arg(1))),
+        Cad::Cylinder => rec!(Cad::Cylinder, eval(arg(0)), eval(arg(1)), eval(arg(2))),
         Cad::Hexagon => rec!(Cad::Hexagon),
         Cad::Empty => rec!(Cad::Empty),
         Cad::Num(f) => rec!(Cad::Num(*f)),
@@ -223,14 +223,14 @@ impl<'a> fmt::Display for Scad<'a> {
         let child = |i: usize| Scad(&expr.children[i]);
         match &expr.op {
             Cad::Num(float) => write!(f, "{}", float),
-            Cad::Bool(b) => write!(f, "center = {}", b),
+            Cad::Bool(b) => write!(f, "{}", b),
             Cad::Vec3 => write!(f, "[{}, {}, {}]", child(0), child(1), child(2)),
             Cad::Add => write!(f, "{} + {}", child(0), child(1)),
             Cad::Sub => write!(f, "{} - {}", child(0), child(1)),
             Cad::Mul => write!(f, "{} * {}", child(0), child(1)),
             Cad::Div => write!(f, "{} / {}", child(0), child(1)),
             Cad::Empty => writeln!(f, "sphere(r=0);"),
-            Cad::Cube => writeln!(f, "cube({}, {});", child(0), child(1)),
+            Cad::Cube => writeln!(f, "cube({}, center={});", child(0), child(1)),
             Cad::Sphere => writeln!(
                 f,
                 "sphere(r = {}, $fn = {}, $fa = {}, $fs = {});",
@@ -241,13 +241,14 @@ impl<'a> fmt::Display for Scad<'a> {
             ),
             Cad::Cylinder => writeln!(
                 f,
-                "cylinder(h = {}, r1 = {}, r2 = {}, $fn = {}, $fa = {}, $fs = {});",
+                "cylinder(h = {}, r1 = {}, r2 = {}, $fn = {}, $fa = {}, $fs = {}, center = {});",
                 get_vec3_nums(&arg(0)).0,
                 get_vec3_nums(&arg(0)).1,
                 get_vec3_nums(&arg(0)).2,
                 get_vec3_nums(&arg(1)).0,
                 get_vec3_nums(&arg(1)).1,
-                get_vec3_nums(&arg(1)).2
+                get_vec3_nums(&arg(1)).2,
+                child(2),
             ),
             Cad::Hexagon => writeln!(f, "cylinder();"),
             Cad::Hull => write!(f, "hull() {{ {} }}", child(0)),
