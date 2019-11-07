@@ -342,7 +342,7 @@ where
 
 fn get_single_cad(egraph: &EGraph, id: Id) -> Cad {
     let nodes = &egraph[id].nodes;
-    assert_eq!(nodes.len(), 1);
+    assert!(nodes.iter().all(|n| n == &nodes[0]));
     let n = &nodes[0];
     assert_eq!(n.children.len(), 0);
     n.op.clone()
