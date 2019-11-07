@@ -1,11 +1,15 @@
 use std::time::Instant;
 
-use log::*;
 use indexmap::IndexMap;
+use log::*;
 use serde::Serialize;
 
-use egg::{extract::{calculate_cost, Extractor}, parse::ParsableLanguage};
-use szalinski_egg::cad::{Rewrite, Cad, EGraph};
+use egg::{
+    expr::RecExpr,
+    extract::{calculate_cost, Extractor},
+    parse::ParsableLanguage,
+};
+use szalinski_egg::cad::{Cad, EGraph, Rewrite};
 use szalinski_egg::eval::Scad;
 
 #[derive(Serialize)]
@@ -76,7 +80,7 @@ fn run_one(egraph: &mut EGraph, rules: &[Rewrite], limit: usize) -> IterationRes
         egraph_classes,
         search_time,
         apply_time,
-        rebuild_time
+        rebuild_time,
     }
 }
 
@@ -88,21 +92,11 @@ pub struct RunResult {
     pub final_expr: String,
     pub final_cost: u64,
     pub extract_time: f64,
-    pub final_scad: String
+    pub final_scad: String,
 }
 
-pub fn optimize(
-    initial_expr: &str,
-    iters: usize,
-    limit: usize,
-) -> RunResult {
-
-    let initial_expr = initial_expr.to_string();
-    let initial_expr_cad = Cad::parse_expr(&initial_expr).unwrap();
-    let initial_cost = calculate_cost(&initial_expr_cad);
-
-    let (mut egraph, root) = EGraph::from_expr(&initial_expr_cad);
-
+pub fn pre_optimize(expr: &RecExpr<Cad>) -> RecExpr<Cad> {
+    let (mut egraph, root) = EGraph::from_expr(&expr);
     let pre_rule_time = Instant::now();
     let pre_rules = szalinski_egg::rules::pre_rules();
     let mut old_size = 0;
@@ -119,9 +113,22 @@ pub fn optimize(
     let pre_rule_time = pre_rule_time.elapsed();
     info!("Pre rule time: {:?}", pre_rule_time);
 
+    let ext = Extractor::new(&egraph);
+    let best = ext.find_best(root);
+    info!("Pre-processed: {}", best.expr.pretty(80));
+    best.expr
+}
+
+pub fn optimize(initial_expr: &str, iters: usize, limit: usize) -> RunResult {
+    let initial_expr = initial_expr.to_string();
+    let initial_expr_cad = Cad::parse_expr(&initial_expr).unwrap();
+    let initial_cost = calculate_cost(&initial_expr_cad);
+
+    let initial_expr_cad = pre_optimize(&initial_expr_cad);
+    let (mut egraph, root) = EGraph::from_expr(&initial_expr_cad);
+
     let rules = szalinski_egg::rules::rules();
     let mut iterations = vec![];
-
 
     for i in 0..iters {
         info!("\n\nIteration {}\n", i);
