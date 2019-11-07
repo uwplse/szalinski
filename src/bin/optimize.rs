@@ -5,7 +5,6 @@ use log::*;
 use serde::Serialize;
 
 use egg::{
-    expr::RecExpr,
     extract::{calculate_cost, Extractor},
     parse::ParsableLanguage,
 };
@@ -129,14 +128,14 @@ pub struct RunResult {
     pub stop_reason: StopReason,
 }
 
-pub fn pre_optimize(expr: &RecExpr<Cad>) -> RecExpr<Cad> {
-    let (mut egraph, root) = EGraph::from_expr(&expr);
+pub fn pre_optimize(egraph: &mut EGraph) {
+    // let (mut egraph, root) = EGraph::from_expr(&expr);
     let pre_rule_time = Instant::now();
     let pre_rules = szalinski_egg::rules::pre_rules();
     let mut old_size = 0;
     loop {
         for rule in &pre_rules {
-            rule.run(&mut egraph);
+            rule.run(egraph);
         }
         let new_size = egraph.total_size();
         if new_size == old_size {
@@ -146,11 +145,6 @@ pub fn pre_optimize(expr: &RecExpr<Cad>) -> RecExpr<Cad> {
     }
     let pre_rule_time = pre_rule_time.elapsed();
     info!("Pre rule time: {:?}", pre_rule_time);
-
-    let ext = Extractor::new(&egraph);
-    let best = ext.find_best(root);
-    info!("Pre-processed: {}", best.expr.pretty(80));
-    best.expr
 }
 
 pub fn optimize(initial_expr: &str, iters: usize, limit: usize, timeout: Duration) -> RunResult {
@@ -158,8 +152,8 @@ pub fn optimize(initial_expr: &str, iters: usize, limit: usize, timeout: Duratio
     let initial_expr_cad = Cad::parse_expr(&initial_expr).unwrap();
     let initial_cost = calculate_cost(&initial_expr_cad);
 
-    let initial_expr_cad = pre_optimize(&initial_expr_cad);
     let (mut egraph, root) = EGraph::from_expr(&initial_expr_cad);
+    pre_optimize(&mut egraph);
 
     let rules = szalinski_egg::rules::rules();
     let mut iterations = vec![];

@@ -25,7 +25,6 @@ fn rw<M: Metadata<Cad>>(name: &str, lhs: &str, rhs: &str) -> Rewrite<Cad, M> {
 pub fn pre_rules() -> Vec<Rewrite<Cad, Meta>> {
     vec![
         rw("union_nil", "(Union ?a ?b)", "(FoldUnion (Cons ?a (Cons ?b Nil)))"),
-        rw("union_consr", "(Union ?a (FoldUnion ?list))", "(FoldUnion (Cons ?a ?list))"),
         rw("union_consl", "(Union (FoldUnion ?list) ?a)", "(FoldUnion (Cons ?a ?list))"),
     ]
 }
@@ -55,7 +54,6 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
 
         rw("union_nil", "(Union ?a ?b)", "(FoldUnion (Cons ?a (Cons ?b Nil)))"),
         rw("union_consr", "(Union ?a (FoldUnion ?list))", "(FoldUnion (Cons ?a ?list))"),
-        rw("union_consl", "(Union (FoldUnion ?list) ?a)", "(FoldUnion (Cons ?a ?list))"),
         rw("fold_repeat",
            "(FoldUnion (Map ?op (Repeat ?n ?param) ?cads))",
            "(Do ?op ?param (FoldUnion ?cads))"),
