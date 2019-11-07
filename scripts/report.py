@@ -50,6 +50,7 @@ if __name__ == '__main__':
             'name',
             'set',
             'rules_time',
+            'stop_reason',
             'initial_cost',
             'final_cost',
             'improvement',
