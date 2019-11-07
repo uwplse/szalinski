@@ -1,4 +1,4 @@
-use std::time::Instant;
+use std::time::{Duration, Instant};
 
 use indexmap::IndexMap;
 use log::*;
@@ -12,6 +12,14 @@ use egg::{
 use szalinski_egg::cad::{Cad, EGraph, Rewrite};
 use szalinski_egg::eval::Scad;
 
+#[derive(Debug, Serialize)]
+pub enum StopReason {
+    Saturated,
+    NodeLimit(usize),
+    IterLimit(usize),
+    TimeOut(Duration),
+}
+
 #[derive(Serialize)]
 pub struct IterationResult {
     pub egraph_nodes: usize,
@@ -22,17 +30,30 @@ pub struct IterationResult {
     pub rebuild_time: f64,
 }
 
-fn run_one(egraph: &mut EGraph, rules: &[Rewrite], limit: usize) -> IterationResult {
+fn run_one(
+    start_time: &Instant,
+    egraph: &mut EGraph,
+    rules: &[Rewrite],
+    limit: usize,
+    timeout: Duration,
+) -> (IterationResult, Option<StopReason>) {
     let egraph_nodes = egraph.total_size();
     let egraph_classes = egraph.number_of_classes();
     let search_time = Instant::now();
+    let mut stop = None;
 
     let mut applications = Vec::new();
     let mut matches = Vec::new();
+    let mut should_apply = true;
     for rule in rules.iter() {
         let ms = rule.search(&egraph);
         if !ms.is_empty() {
             matches.push(ms);
+        }
+        if start_time.elapsed() > timeout {
+            stop = Some(StopReason::TimeOut(timeout));
+            should_apply = false;
+            break;
         }
     }
 
@@ -41,17 +62,25 @@ fn run_one(egraph: &mut EGraph, rules: &[Rewrite], limit: usize) -> IterationRes
 
     let apply_time = Instant::now();
 
-    for m in matches {
-        debug!("Applying {} {} times", m.rewrite.name, m.len());
-        let actually_matched = m.apply_with_limit(egraph, limit).len();
-        if egraph.total_size() > limit {
-            error!("Node limit exceeded. {} > {}", egraph.total_size(), limit);
-            break;
-        }
+    if should_apply {
+        for m in matches {
+            debug!("Applying {} {} times", m.rewrite.name, m.len());
+            let actually_matched = m.apply_with_limit(egraph, limit).len();
+            if egraph.total_size() > limit {
+                error!("Node limit exceeded. {} > {}", egraph.total_size(), limit);
+                stop = Some(StopReason::NodeLimit(limit));
+                break;
+            }
 
-        if actually_matched > 0 {
-            applications.push((&m.rewrite.name, actually_matched));
-            info!("Applied {} {} times", m.rewrite.name, actually_matched);
+            if actually_matched > 0 {
+                applications.push((&m.rewrite.name, actually_matched));
+                info!("Applied {} {} times", m.rewrite.name, actually_matched);
+            }
+
+            if start_time.elapsed() > timeout {
+                stop = Some(StopReason::TimeOut(timeout));
+                break;
+            }
         }
     }
 
@@ -74,14 +103,18 @@ fn run_one(egraph: &mut EGraph, rules: &[Rewrite], limit: usize) -> IterationRes
         egraph.number_of_classes()
     );
 
-    IterationResult {
+    let it = IterationResult {
         applied,
         egraph_nodes,
         egraph_classes,
         search_time,
         apply_time,
         rebuild_time,
+    };
+    if stop.is_none() && it.applied.is_empty() {
+        stop = Some(StopReason::Saturated);
     }
+    (it, stop)
 }
 
 #[derive(Serialize)]
@@ -93,6 +126,7 @@ pub struct RunResult {
     pub final_cost: u64,
     pub extract_time: f64,
     pub final_scad: String,
+    pub stop_reason: StopReason,
 }
 
 pub fn pre_optimize(expr: &RecExpr<Cad>) -> RecExpr<Cad> {
@@ -119,7 +153,7 @@ pub fn pre_optimize(expr: &RecExpr<Cad>) -> RecExpr<Cad> {
     best.expr
 }
 
-pub fn optimize(initial_expr: &str, iters: usize, limit: usize) -> RunResult {
+pub fn optimize(initial_expr: &str, iters: usize, limit: usize, timeout: Duration) -> RunResult {
     let initial_expr = initial_expr.to_string();
     let initial_expr_cad = Cad::parse_expr(&initial_expr).unwrap();
     let initial_cost = calculate_cost(&initial_expr_cad);
@@ -130,16 +164,16 @@ pub fn optimize(initial_expr: &str, iters: usize, limit: usize) -> RunResult {
     let rules = szalinski_egg::rules::rules();
     let mut iterations = vec![];
 
-    for i in 0..iters {
-        info!("\n\nIteration {}\n", i);
-        let res = run_one(&mut egraph, &rules, limit);
-        let empty = res.applied.is_empty();
-        iterations.push(res);
-        if empty {
-            info!("Stopping early!");
-            break;
-        }
-    }
+    let start_time = Instant::now();
+    let stop_reason = (0..iters)
+        .find_map(|i| {
+            info!("\n\nIteration {}\n", i);
+            let (res, stop) = run_one(&start_time, &mut egraph, &rules, limit, timeout);
+            iterations.push(res);
+            stop
+        })
+        .unwrap_or(StopReason::IterLimit(iters));
+    info!("Stopping {:?}", stop_reason);
 
     let extract_time = Instant::now();
     let (final_cost, final_expr) = {
@@ -166,6 +200,7 @@ pub fn optimize(initial_expr: &str, iters: usize, limit: usize) -> RunResult {
         final_expr,
         extract_time,
         final_scad,
+        stop_reason,
     }
 }
 
@@ -178,7 +213,11 @@ fn main() {
     let input = std::fs::read_to_string(&args[1]).expect("failed to read input");
     let iters = 100;
     let limit = 3_000_000;
-    let result = optimize(&input, iters, limit);
+    let timeout = std::env::var("OPT_TIMEOUT")
+        .map(|s| s.parse().unwrap())
+        .unwrap_or(60.0 * 10.0);
+    info!("Using OPT_TIMEOUT={}", timeout);
+    let result = optimize(&input, iters, limit, Duration::from_secs_f64(timeout));
 
     let out_file = std::fs::File::create(&args[2]).expect("failed to open output");
     serde_json::to_writer_pretty(out_file, &result).unwrap();
