@@ -238,7 +238,7 @@ impl Language for Cad {
             Diff => 10,
             Inter => 10,
 
-            MapI => return 1,
+            MapI => 1,
             ListVar(_) => 1,
 
             FoldUnion => 9,
