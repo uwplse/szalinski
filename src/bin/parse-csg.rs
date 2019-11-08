@@ -11,8 +11,9 @@ use pest_derive::Parser;
 
     program = { SOI ~ instr* ~ EOI }
 
-    instr = _{ "group();" | group | hull | union | diff | inter | matrix |
+    instr = _{ empty_group | group | hull | union | diff | inter | matrix |
               cylinder | cube | sphere }
+        empty_group = { "group();" }
         group      = { "group()" ~ scope }
         hull       = { "hull()" ~ scope }
         union      = { "union()" ~ scope }
@@ -59,36 +60,27 @@ fn write_op<'a>(
     name: &str,
     ps: impl IntoIterator<Item = Pair<'a, Rule>>,
 ) -> Result<()> {
-    use std::collections::VecDeque;
-
-    fn fold(w: &mut impl Write, d: usize, name: &str, v: &mut VecDeque<Pair<Rule>>) -> Result<()> {
-        match v.len() {
-            0 => panic!("Shouldn't hit zero"),
-            1 => write_csg(w, d, v.pop_front().unwrap()),
-            2 => {
-                write!(w, "({}", name)?;
-                indent(w, d)?;
-                write_csg(w, d, v.pop_front().unwrap())?;
-                indent(w, d)?;
-                write_csg(w, d, v.pop_front().unwrap())?;
-                write!(w, ")")
+    let ps: Vec<_> = ps.into_iter().collect();
+    match ps.len() {
+        0 => panic!("shouldn't be empty: {}", name),
+        // 0 => Ok(()),
+        1 => write_csg(w, depth, ps[0].clone()),
+        2 => {
+            write!(w, "(Binop {}", name)?;
+            for p in ps {
+                indent(w, depth + 1)?;
+                write_csg(w, depth + 1, p)?;
             }
-            _ => {
-                write!(w, "({}", name)?;
-                indent(w, d)?;
-                write_csg(w, d, v.pop_front().unwrap())?;
-                indent(w, d)?;
-                fold(w, d, name, v)?;
-                write!(w, ")")
-            }
+            write!(w, ")")
         }
-    }
-
-    let mut ps: VecDeque<_> = ps.into_iter().collect();
-    if ps.is_empty() {
-        write!(w, "Empty")
-    } else {
-        fold(w, depth, name, &mut ps)
+        _ => {
+            write!(w, "(Fold {} (List", name)?;
+            for p in ps {
+                indent(w, depth + 1)?;
+                write_csg(w, depth + 1, p)?;
+            }
+            write!(w, "))")
+        },
     }
 }
 
@@ -164,7 +156,7 @@ fn get_rotate(mat: &[Vec<f64>]) -> Option<(f64, f64, f64)> {
     assert_eq!(mat[3][3], 1.0);
 
     let (x, y, z) = if eps(mat[2][0].abs(), 1.0) {
-        let atan = (mat[0][1]/mat[0][2]).atan();
+        let atan = (mat[0][1] / mat[0][2]).atan();
         // let atan = mat[0][1].atan2(mat[0][2]);
         let (y, x) = if mat[2][0] < 0.0 {
             (std::f64::consts::PI / 2.0, atan)
@@ -197,20 +189,10 @@ fn write_csg(w: &mut impl Write, depth: usize, pair: Pair<Rule>) -> Result<()> {
     let d = depth + 1;
 
     match rule {
+        Rule::empty_group => write!(w, "Empty"),
         Rule::group => write_op(w, d, "Union", args),
         Rule::union => write_op(w, d, "Union", args),
-        Rule::diff => {
-            if let Some(first) = args.next() {
-                write!(w, "(Diff")?;
-                indent(w, d)?;
-                write_csg(w, d, first)?;
-                indent(w, d)?;
-                write_op(w, d + 1, "Union", args)?;
-                write!(w, ")")
-            } else {
-                write!(w, "Empty")
-            }
-        }
+        Rule::diff => write_op(w, d, "Diff", args),
         Rule::inter => write_op(w, d, "Inter", args),
         Rule::hull => {
             write!(w, "(Hull")?;
@@ -229,11 +211,11 @@ fn write_csg(w: &mut impl Write, depth: usize, pair: Pair<Rule>) -> Result<()> {
                 .collect();
 
             if let Some((x, y, z)) = get_trans(&mat) {
-                write!(w, "(Trans (Vec3 {} {} {})", x, y, z)?;
+                write!(w, "(Affine Trans (Vec3 {} {} {})", x, y, z)?;
             } else if let Some((x, y, z)) = get_scale(&mat) {
-                write!(w, "(Scale (Vec3 {} {} {})", x, y, z)?;
+                write!(w, "(Affine Scale (Vec3 {} {} {})", x, y, z)?;
             } else if let Some((x, y, z)) = get_rotate(&mat) {
-                write!(w, "(Rotate (Vec3 {} {} {})", x, y, z)?;
+                write!(w, "(Affine Rotate (Vec3 {} {} {})", x, y, z)?;
             } else {
                 #[rustfmt::skip]
                 panic!(

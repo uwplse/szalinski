@@ -37,21 +37,6 @@ impl fmt::Display for ListVar {
     }
 }
 
-#[derive(PartialEq, Eq, Hash, Debug, Clone)]
-pub struct Variable(pub String);
-impl FromStr for Variable {
-    type Err = ();
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        warn!("Parsing a variable: {}", s);
-        Ok(Variable(s.into()))
-    }
-}
-impl fmt::Display for Variable {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", self.0)
-    }
-}
-
 define_term! {
     #[derive(Debug, PartialEq, Eq, Hash, Clone)]
     pub enum Cad {
@@ -69,8 +54,6 @@ define_term! {
         ListVar(ListVar),
         Repeat = "Repeat",
 
-        Float = "Float",
-
         Trans = "Trans",
         TransPolar = "TransPolar",
         Scale = "Scale",
@@ -80,10 +63,11 @@ define_term! {
         Diff = "Diff",
         Inter = "Inter",
 
-        Map = "Map",
-        Do = "Do",
-        FoldUnion = "FoldUnion",
-        FoldInter = "FoldInter",
+        Map2 = "Map2",
+        Fold = "Fold",
+        Affine = "Affine",
+        Binop = "Binop",
+
         Vec3 = "Vec3",
 
         Cons = "Cons",
@@ -103,8 +87,6 @@ define_term! {
         Sub = "-",
         Mul = "*",
         Div = "/",
-
-        Variable(Variable),
     }
 }
 
@@ -224,45 +206,37 @@ impl Language for Cad {
     fn cost(&self, children: &[u64]) -> u64 {
         use Cad::*;
         let cost = match self {
-            Num(_) => 1,
-            Bool(_) => 1,
-            Cube | Empty | Nil | Sphere | Cylinder | Hexagon | Hull => 1,
-            Repeat => 1,
+            Num(_) | Bool(_) | ListVar(_) => 1,
+            Add | Sub | Mul | Div => 1,
 
-            Trans => 10,
-            TransPolar => 10,
-            Scale => 10,
-            Rotate => 10,
+            Cube | Empty | Nil | Sphere | Cylinder | Hexagon | Hull => 100,
 
-            Union => 10,
-            Diff => 10,
-            Inter => 10,
+            Trans => 100,
+            TransPolar => 100,
+            Scale => 100,
+            Rotate => 100,
 
-            MapI => 1,
-            ListVar(_) => 1,
+            Union => 100,
+            Diff => 100,
+            Inter => 100,
 
-            FoldUnion => 9,
-            FoldInter => 9,
-            Map => 1,
-            Do => 30,
+            Repeat => 100,
+            MapI => 100,
+            Fold => 100,
+            Map2 => 100,
+            Affine => 100,
+            Binop => 100,
 
-            Cons => 3,
-            Concat => 1,
-            List => 4,
-            Vec3 => 2,
+            Concat => 100,
+            Cons => 100,
+            List => 100,
+            Vec3 => 100,
 
-            Unpolar => 1000,
-            Sort | Unsort | Part | Unpart => 1000,
-            Partitioning(_)  => 1000,
-            Permutation(_) => 1000,
+            Unpolar => 10_000,
+            Sort | Unsort | Part | Unpart => 10_000,
+            Partitioning(_)  => 10_000,
+            Permutation(_) => 10_000,
 
-            Add => 1,
-            Sub => 1,
-            Mul => 1,
-            Div => 1,
-            Float => 1,
-
-            Variable(_) => 3,
         };
 
         cost + children.iter().sum::<u64>()
