@@ -189,6 +189,13 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
            "(Cylinder (Vec3 ?h ?r1 ?r2) ?params ?center)",
            "(Scale (Vec3 ?h 1 1) (Cylinder (Vec3 1 ?r1 ?r2) ?params ?center))"),
 
+        rw("repeat_mapi", "(Repeat ?n ?x)", "(MapI ?n ?x)"),
+
+        // mapi
+        rw("map_repeat",
+           "(Map ?op (MapI ?n ?formula) (MapI ?n ?cad))",
+           "(MapI ?n (Do ?op ?formula ?cad))"),
+
         Rewrite::new (
             "listapplier",
             Cad::parse_pattern("(List ?items...)").unwrap(),
