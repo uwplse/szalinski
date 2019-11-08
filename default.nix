@@ -14,6 +14,7 @@ pkgs.mkShell {
     rust
     (python3.withPackages (pp: [
       pp.matplotlib
+      pp.numpy
     ]))
     openscad
     cgal
