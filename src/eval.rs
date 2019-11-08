@@ -22,15 +22,6 @@ fn get_num(expr: &RecExpr<Cad>) -> f64 {
     }
 }
 
-fn get_vec3_comps(expr: &RecExpr<Cad>) -> (RecExpr<Cad>, RecExpr<Cad>, RecExpr<Cad>) {
-    let expr = expr.as_ref();
-    let arg = |i: usize| expr.children[i].clone();
-    match expr.op {
-        Cad::Vec3 => (arg(0), arg(1), arg(2)),
-        _ => panic!("Not a vec3"), // is panic the right thing?
-    }
-}
-
 fn get_vec3_nums(expr: &RecExpr<Cad>) -> (f64, f64, f64) {
     let expr = expr.as_ref();
     let arg = |i: usize| expr.children[i].clone();
@@ -69,32 +60,12 @@ fn mk_vec((x, y, z): (f64, f64, f64)) -> RecExpr<Cad> {
     )
 }
 
-fn eval_fun(expr: &RecExpr<Cad>, ctx: &FunCtx) -> f64 {
-    let expr = expr.as_ref();
-    match &expr.op {
-        Cad::Num(_) => get_num(&rec!(expr.op.clone())),
-        Cad::ListVar(v) => ctx[v.0] as f64,
-        Cad::Add => {
-            let a = expr.children[0].clone();
-            let b = expr.children[1].clone();
-            eval_fun(&a, ctx) + eval_fun(&b, ctx)
-        }
-        Cad::Mul => {
-            let a = expr.children[0].clone();
-            let b = expr.children[1].clone();
-            eval_fun(&a, ctx) * eval_fun(&b, ctx)
-        }
-        // TODO sub and div
-        _ => panic!("Cannot evaluate non-arithmetic functions: {}", expr.op),
-    }
-}
-
 fn mk_list(exprs: Vec<RecExpr<Cad>>) -> RecExpr<Cad> {
     Expr::new(Cad::List, exprs.into()).into()
 }
 
-fn eval_list(expr: &RecExpr<Cad>) -> Vec<RecExpr<Cad>> {
-    let list = eval(expr);
+fn eval_list(cx: Option<&FunCtx>, expr: &RecExpr<Cad>) -> Vec<RecExpr<Cad>> {
+    let list = eval(cx, expr);
     let list = list.as_ref();
     match &list.op {
         Cad::List => list.children.clone().into_vec(),
@@ -102,51 +73,77 @@ fn eval_list(expr: &RecExpr<Cad>) -> Vec<RecExpr<Cad>> {
     }
 }
 
-pub fn eval(expr: &RecExpr<Cad>) -> RecExpr<Cad> {
+pub fn eval(cx: Option<&FunCtx>, expr: &RecExpr<Cad>) -> RecExpr<Cad> {
     let e = expr.as_ref();
     let arg = |i: usize| &e.children[i];
     match &e.op {
-        Cad::Bool(b) => rec!(Cad::Bool(*b)),
-        Cad::Cube => rec!(Cad::Cube, eval(arg(0)), eval(arg(1))),
-        Cad::Sphere => rec!(Cad::Sphere, eval(arg(0)), eval(arg(1))),
-        Cad::Cylinder => rec!(Cad::Cylinder, eval(arg(0)), eval(arg(1)), eval(arg(2))),
+        // arith
+        Cad::Bool(_) => expr.clone(),
+        Cad::Num(_) => expr.clone(),
+        Cad::ListVar(v) => {
+            let n = cx.unwrap()[v.0];
+            rec!(Cad::Num(n.into()))
+        }
+        Cad::Add => {
+            let a = get_num(&eval(cx, arg(0)));
+            let b = get_num(&eval(cx, arg(1)));
+            rec!(Cad::Num((a + b).into()))
+        }
+        Cad::Mul => {
+            let a = get_num(&eval(cx, arg(0)));
+            let b = get_num(&eval(cx, arg(1)));
+            rec!(Cad::Num((a * b).into()))
+        }
+        // cad
+        Cad::Cube => rec!(Cad::Cube, eval(cx, arg(0)), eval(cx, arg(1))),
+        Cad::Sphere => rec!(Cad::Sphere, eval(cx, arg(0)), eval(cx, arg(1))),
+        Cad::Cylinder => rec!(
+            Cad::Cylinder,
+            eval(cx, arg(0)),
+            eval(cx, arg(1)),
+            eval(cx, arg(2))
+        ),
         Cad::Hexagon => rec!(Cad::Hexagon),
         Cad::Empty => rec!(Cad::Empty),
-        Cad::Num(f) => rec!(Cad::Num(*f)),
-        Cad::Vec3 => rec!(Cad::Vec3, eval(arg(0)), eval(arg(1)), eval(arg(2))),
-        Cad::Hull => rec!(Cad::Hull, eval(arg(0))),
-        Cad::Trans => rec!(Cad::Trans, eval(arg(0)), eval(arg(1))),
+        Cad::Vec3 => rec!(
+            Cad::Vec3,
+            eval(cx, arg(0)),
+            eval(cx, arg(1)),
+            eval(cx, arg(2))
+        ),
+        Cad::Hull => rec!(Cad::Hull, eval(cx, arg(0))),
+        Cad::Trans => rec!(Cad::Trans, eval(cx, arg(0)), eval(cx, arg(1))),
         Cad::TransPolar => {
-            let param = eval(arg(0));
+            let param = eval(cx, arg(0));
             let pnums = get_vec3_nums(&param);
             let cnums = to_cartesian(pnums);
-            rec!(Cad::Trans, mk_vec(cnums), eval(arg(1)))
+            rec!(Cad::Trans, mk_vec(cnums), eval(cx, arg(1)))
         }
-        Cad::Scale => rec!(Cad::Scale, eval(arg(0)), eval(arg(1))),
-        Cad::Rotate => rec!(Cad::Rotate, eval(arg(0)), eval(arg(1))),
-        Cad::Diff => rec!(Cad::Diff, eval(arg(0)), eval(arg(1))),
-        Cad::Inter => rec!(Cad::Inter, eval(arg(0)), eval(arg(1))),
-        Cad::Union => rec!(Cad::Union, eval(arg(0)), eval(arg(1))),
-        Cad::FoldUnion => rec!(Cad::FoldUnion, eval(arg(0))),
-        Cad::FoldInter => rec!(Cad::FoldInter, eval(arg(0))),
+        Cad::Scale => rec!(Cad::Scale, eval(cx, arg(0)), eval(cx, arg(1))),
+        Cad::Rotate => rec!(Cad::Rotate, eval(cx, arg(0)), eval(cx, arg(1))),
+        Cad::Diff => rec!(Cad::Diff, eval(cx, arg(0)), eval(cx, arg(1))),
+        Cad::Inter => rec!(Cad::Inter, eval(cx, arg(0)), eval(cx, arg(1))),
+        Cad::Union => rec!(Cad::Union, eval(cx, arg(0)), eval(cx, arg(1))),
+        Cad::FoldUnion => rec!(Cad::FoldUnion, eval(cx, arg(0))),
+        Cad::FoldInter => rec!(Cad::FoldInter, eval(cx, arg(0))),
 
         // lists
         Cad::Nil => mk_list(vec![]),
         Cad::Cons => {
-            let mut list = eval_list(arg(1));
-            list.insert(0, eval(arg(0)));
+            let mut list = eval_list(cx, arg(1));
+            list.insert(0, eval(cx, arg(0)));
             mk_list(list)
         }
-        Cad::List => mk_list(e.children.iter().map(|e| eval(e)).collect()),
+        Cad::List => mk_list(e.children.iter().map(|e| eval(cx, e)).collect()),
         Cad::Repeat => {
-            let n = get_num(&eval(arg(0)));
-            let t = eval(arg(1));
+            let n = get_num(&eval(cx, arg(0)));
+            let t = eval(cx, arg(1));
             mk_list(vec![t.clone(); n as usize])
         }
         Cad::Concat => {
             let mut vec = Vec::new();
-            for list in eval_list(&e.children[0]) {
-                for c in eval_list(&list) {
+            for list in eval_list(cx, &e.children[0]) {
+                for c in eval_list(cx, &list) {
                     vec.push(c)
                 }
             }
@@ -154,8 +151,8 @@ pub fn eval(expr: &RecExpr<Cad>) -> RecExpr<Cad> {
         }
         Cad::Map => {
             let op = &e.children[0].as_ref().op;
-            let params: Vec<_> = eval_list(&e.children[1]);
-            let cads: Vec<_> = eval_list(&e.children[2]);
+            let params: Vec<_> = eval_list(cx, &e.children[1]);
+            let cads: Vec<_> = eval_list(cx, &e.children[2]);
             mk_list(
                 params
                     .into_iter()
@@ -165,7 +162,7 @@ pub fn eval(expr: &RecExpr<Cad>) -> RecExpr<Cad> {
             )
         }
         Cad::MapI => {
-            let (x, y, z) = get_vec3_comps(e.children.last().unwrap());
+            let body = e.children.last().unwrap();
             let bounds: Vec<usize> = e.children[..e.children.len() - 1]
                 .iter()
                 .map(|n| get_num(n) as usize)
@@ -176,7 +173,7 @@ pub fn eval(expr: &RecExpr<Cad>) -> RecExpr<Cad> {
                 1 => {
                     for i in 0..bounds[0] {
                         ctx.insert("i", i);
-                        vec.push((eval_fun(&x, &ctx), eval_fun(&y, &ctx), eval_fun(&z, &ctx)));
+                        vec.push(eval(Some(&ctx), body));
                     }
                 }
                 2 => {
@@ -184,7 +181,7 @@ pub fn eval(expr: &RecExpr<Cad>) -> RecExpr<Cad> {
                         ctx.insert("i", i);
                         for j in 0..bounds[1] {
                             ctx.insert("j", j);
-                            vec.push((eval_fun(&x, &ctx), eval_fun(&y, &ctx), eval_fun(&z, &ctx)));
+                            vec.push(eval(Some(&ctx), body));
                         }
                     }
                 }
@@ -195,11 +192,7 @@ pub fn eval(expr: &RecExpr<Cad>) -> RecExpr<Cad> {
                             ctx.insert("j", j);
                             for k in 0..bounds[2] {
                                 ctx.insert("k", k);
-                                vec.push((
-                                    eval_fun(&x, &ctx),
-                                    eval_fun(&y, &ctx),
-                                    eval_fun(&z, &ctx),
-                                ));
+                                vec.push(eval(Some(&ctx), body));
                             }
                         }
                     }
@@ -207,7 +200,7 @@ pub fn eval(expr: &RecExpr<Cad>) -> RecExpr<Cad> {
                 _ => unimplemented!(),
             }
 
-            mk_list(vec.into_iter().map(mk_vec).collect())
+            mk_list(vec)
         }
         cad => panic!("can't eval({:?})", cad),
     }
@@ -217,7 +210,7 @@ pub struct Scad<'a>(pub &'a RecExpr<Cad>);
 
 impl<'a> fmt::Display for Scad<'a> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let expr = eval(self.0);
+        let expr = eval(None, self.0);
         let expr = expr.as_ref();
         let arg = |i: usize| expr.children[i].clone();
         let child = |i: usize| Scad(&expr.children[i]);
