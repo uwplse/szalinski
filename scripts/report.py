@@ -15,11 +15,15 @@ def rules_time(j):
 def make_json(path):
     print("Loading {}...".format(path))
     j = json.load(open(path))
+    iters = j['iterations']
     j['name'] = path
     j['rules_time'] = path
     j['set'] = path.split('/')[1]
     j['rules_time'] = rules_time(j)
     j['improvement'] = j['final_cost'] / j['initial_cost']
+    j['iters'] = len(iters)
+    j['nodes'] = iters[-1]['egraph_nodes']
+    j['classes'] = iters[-1]['egraph_classes']
 
     # get the difference json
     base, ext = path[:-4], path[-4:]
@@ -51,6 +55,9 @@ if __name__ == '__main__':
             'set',
             'rules_time',
             'stop_reason',
+            'iters',
+            'nodes',
+            'classes',
             'initial_cost',
             'final_cost',
             'improvement',
