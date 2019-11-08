@@ -18,7 +18,7 @@ if __name__ == '__main__':
         data = list(csv.DictReader(f))
 
     imps = [((float(r['improvement'])) * 100, float(r['initial_cost'])) for r in data]
-    bounds = list([0, 100, 300, 1000, 3000])
+    bounds = list([0, 10_000, 30_000, 100_000, 300_000])
     n = len(bounds)
     # bounds = [(3000, 'inf'), (1000, 3000), (300, 1000), (100, 300), (0, 100)]
     for i in range(n):
@@ -28,7 +28,7 @@ if __name__ == '__main__':
         d = [imp for (imp, init) in imps if lower < init <= upper]
         plt.hist(
             d,
-            bins=100,
+            # bins=100,
             label="{} < initial cost ≤ {}".format(lower, upper),
             color=gray(i / len(bounds)),
             cumulative=1,

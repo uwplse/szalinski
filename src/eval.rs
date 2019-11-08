@@ -112,20 +112,43 @@ pub fn eval(cx: Option<&FunCtx>, expr: &RecExpr<Cad>) -> RecExpr<Cad> {
             eval(cx, arg(2))
         ),
         Cad::Hull => rec!(Cad::Hull, eval(cx, arg(0))),
-        Cad::Trans => rec!(Cad::Trans, eval(cx, arg(0)), eval(cx, arg(1))),
-        Cad::TransPolar => {
-            let param = eval(cx, arg(0));
-            let pnums = get_vec3_nums(&param);
-            let cnums = to_cartesian(pnums);
-            rec!(Cad::Trans, mk_vec(cnums), eval(cx, arg(1)))
+
+        Cad::Trans | Cad::Scale | Cad::Rotate | Cad::TransPolar => {
+            if !e.children.is_empty() {
+                panic!("Got an affine with children: {}", expr.pretty(80))
+            }
+            rec!(e.op.clone())
         }
-        Cad::Scale => rec!(Cad::Scale, eval(cx, arg(0)), eval(cx, arg(1))),
-        Cad::Rotate => rec!(Cad::Rotate, eval(cx, arg(0)), eval(cx, arg(1))),
-        Cad::Diff => rec!(Cad::Diff, eval(cx, arg(0)), eval(cx, arg(1))),
-        Cad::Inter => rec!(Cad::Inter, eval(cx, arg(0)), eval(cx, arg(1))),
-        Cad::Union => rec!(Cad::Union, eval(cx, arg(0)), eval(cx, arg(1))),
-        Cad::FoldUnion => rec!(Cad::FoldUnion, eval(cx, arg(0))),
-        Cad::FoldInter => rec!(Cad::FoldInter, eval(cx, arg(0))),
+
+        Cad::Affine => {
+            let aff = eval(cx, arg(0)).as_ref().op.clone();
+            match aff {
+                Cad::Trans | Cad::Scale | Cad::Rotate => {
+                    let param = eval(cx, arg(1));
+                    let cad = eval(cx, arg(2));
+                    rec!(Cad::Affine, rec!(aff), param, cad)
+                }
+                Cad::TransPolar => {
+                    let param = eval(cx, arg(1));
+                    let cad = eval(cx, arg(2));
+                    let pnums = get_vec3_nums(&param);
+                    let cnums = to_cartesian(pnums);
+                    rec!(Cad::Affine, rec!(Cad::Trans), mk_vec(cnums), cad)
+                }
+                _ => panic!("expected affine kind, got {:?}", aff),
+            }
+        }
+
+        Cad::Diff => rec!(Cad::Diff),
+        Cad::Inter => rec!(Cad::Inter),
+        Cad::Union => rec!(Cad::Union),
+
+        Cad::Fold => rec!(Cad::Fold, eval(cx, arg(0)), eval(cx, arg(1))),
+        Cad::Binop => rec!(
+            Cad::Fold,
+            eval(cx, arg(0)),
+            rec!(Cad::List, eval(cx, arg(1)), eval(cx, arg(2)))
+        ),
 
         // lists
         Cad::Nil => mk_list(vec![]),
@@ -149,7 +172,7 @@ pub fn eval(cx: Option<&FunCtx>, expr: &RecExpr<Cad>) -> RecExpr<Cad> {
             }
             mk_list(vec)
         }
-        Cad::Map => {
+        Cad::Map2 => {
             let op = &e.children[0].as_ref().op;
             let params: Vec<_> = eval_list(cx, &e.children[1]);
             let cads: Vec<_> = eval_list(cx, &e.children[2]);
@@ -157,7 +180,7 @@ pub fn eval(cx: Option<&FunCtx>, expr: &RecExpr<Cad>) -> RecExpr<Cad> {
                 params
                     .into_iter()
                     .zip(cads)
-                    .map(|(p, c)| rec!(op.clone(), p, c))
+                    .map(|(p, c)| rec!(Cad::Affine, rec!(op.clone()), p, c))
                     .collect(),
             )
         }
@@ -245,22 +268,18 @@ impl<'a> fmt::Display for Scad<'a> {
             ),
             Cad::Hexagon => writeln!(f, "cylinder();"),
             Cad::Hull => write!(f, "hull() {{ {} }}", child(0)),
-            Cad::Trans => write!(f, "translate ({}) {}", child(0), child(1)),
-            Cad::Scale => write!(f, "scale ({}) {}", child(0), child(1)),
-            Cad::Rotate => write!(f, "rotate ({}) {}", child(0), child(1)),
-            Cad::Union => write!(f, "union () {{ {} {} }}", child(0), child(1)),
-            Cad::Inter => write!(f, "intersection () {{ {} {} }}", child(0), child(1)),
-            Cad::Diff => write!(f, "difference () {{ {} {} }}", child(0), child(1)),
-            Cad::FoldUnion => {
-                write!(f, "union () {{")?;
-                for cad in &arg(0).as_ref().children {
-                    write!(f, "  {}", Scad(cad))?;
-                }
-                write!(f, "}}")
-            }
-            Cad::FoldInter => {
-                write!(f, "intersection () {{")?;
-                for cad in &arg(0).as_ref().children {
+
+            Cad::Trans => write!(f, "translate"),
+            Cad::Scale => write!(f, "scale"),
+            Cad::Rotate => write!(f, "rotate"),
+            Cad::Affine => write!(f, "{} ({}) {}", child(0), child(1), child(2)),
+
+            Cad::Union => write!(f, "union"),
+            Cad::Inter => write!(f, "intersection"),
+            Cad::Diff => write!(f, "difference"),
+            Cad::Fold => {
+                writeln!(f, "{} () {{", child(0))?;
+                for cad in &arg(1).as_ref().children {
                     write!(f, "  {}", Scad(cad))?;
                 }
                 write!(f, "}}")
