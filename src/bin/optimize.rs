@@ -205,7 +205,7 @@ fn main() {
         panic!("Usage: optimize <input> <output>")
     }
     let input = std::fs::read_to_string(&args[1]).expect("failed to read input");
-    let iters = 100;
+    let iters = 300;
     let limit = 3_000_000;
     let timeout = std::env::var("OPT_TIMEOUT")
         .map(|s| s.parse().unwrap())

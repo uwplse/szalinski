@@ -24,8 +24,11 @@ fn rw<M: Metadata<Cad>>(name: &str, lhs: &str, rhs: &str) -> Rewrite<Cad, M> {
 #[rustfmt::skip]
 pub fn pre_rules() -> Vec<Rewrite<Cad, Meta>> {
     vec![
-        rw("union_nil", "(Union ?a ?b)", "(FoldUnion (Cons ?a (Cons ?b Nil)))"),
-        rw("union_consl", "(Union (FoldUnion ?list) ?a)", "(FoldUnion (Cons ?a ?list))"),
+        rw("fold_nil", "(Binop ?bop ?a ?b)", "(Fold ?bop (List ?a ?b))"),
+        rw("union_consl", "(Binop Union (Fold Union ?list) ?a)", "(Fold Union (Cons ?a ?list))"),
+        rw("inter_consl", "(Binop Inter (Fold Inter ?list) ?a)", "(Fold Inter (Cons ?a ?list))"),
+        // rw("union_consr", "(Binop Union ?a (Fold Union ?list))", "(Fold Union (Cons ?a ?list))"),
+        // rw("inter_consr", "(Binop Inter ?a (Fold Inter ?list))", "(Fold Inter (Cons ?a ?list))"),
     ]
 }
 
@@ -52,38 +55,26 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
 
         // cad rules
 
-        rw("union_nil", "(Union ?a ?b)", "(FoldUnion (Cons ?a (Cons ?b Nil)))"),
-        rw("union_consr", "(Union ?a (FoldUnion ?list))", "(FoldUnion (Cons ?a ?list))"),
+        rw("fold_nil", "(Binop ?bop ?a ?b)", "(Fold ?bop (List ?a ?b))"),
+
+        // rw("diff_to_union",
+        //    "(Fold Diff (List ?a ?rest...))",
+        //    "(Binop Diff ?a (Fold Union (List ?rest...)))"),
+
         rw("fold_repeat",
-           "(FoldUnion (Map ?op (Repeat ?n ?param) ?cads))",
-           "(Do ?op ?param (FoldUnion ?cads))"),
+           "(Fold ?bop (Map2 ?aff (Repeat ?n ?param) ?cads))",
+           "(Affine ?aff ?param (Fold ?bop ?cads))"),
 
         rw("fold_op",
-           "(FoldUnion (Do ?op ?param ?cad))",
-           "(Do ?op ?param (FoldUnion ?cad))"),
-
-        rw("inter_nil", "(Inter ?a ?b)", "(FoldInter (Cons ?a (Cons ?b Nil)))"),
-        rw("inter_cons", "(Inter ?a (FoldInter ?list))", "(FoldInter (Cons ?a ?list))"),
-
-        rw("do_trans",   "(Trans      ?params ?a)", "(Do Trans       ?params ?a)"),
-        rw("do_scale",   "(Scale      ?params ?a)", "(Do Scale       ?params ?a)"),
-        rw("do_rotate",  "(Rotate     ?params ?a)", "(Do Rotate      ?params ?a)"),
-        rw("do_transp",  "(TransPolar ?params ?a)", "(Do TransPolar  ?params ?a)"),
-        rw("undo_trans",   "(Do Trans       ?params ?a)", "(Trans      ?params ?a)"),
-        rw("undo_scale",   "(Do Scale       ?params ?a)", "(Scale      ?params ?a)"),
-        rw("undo_rotate",  "(Do Rotate      ?params ?a)", "(Rotate     ?params ?a)"),
-        rw("undo_transp",  "(Do TransPolar  ?params ?a)", "(TransPolar ?params ?a)"),
-
-        // NOTE these aren't needed right now
-        // rw("do_cylinder",   "(Cylinder      ?params ?a)", "(Do Cylinder       ?params ?a)"),
-        // rw("undo_cylinder",   "(Do Cylinder       ?params ?a)", "(Cylinder      ?params ?a)"),
+           "(Fold ?bop (Affine ?aff ?param ?cad))",
+           "(Affine ?aff ?param (Fold ?bop ?cad))"),
 
         rw("map_nil",
-           "(Cons (Do ?op ?param ?cad) Nil)",
-           "(Map ?op (Cons ?param Nil) (Cons ?cad Nil))"),
+           "(Cons (Affine ?aff ?param ?cad) Nil)",
+           "(Map2 ?aff (Cons ?param Nil) (Cons ?cad Nil))"),
         rw("map_cons",
-           "(Cons (Do ?op ?param ?cad) (Map ?op ?params ?cads))",
-           "(Map ?op (Cons ?param ?params) (Cons ?cad ?cads))"),
+           "(Cons (Affine ?aff ?param ?cad) (Map2 ?aff ?params ?cads))",
+           "(Map2 ?aff (Cons ?param ?params) (Cons ?cad ?cads))"),
 
         rw("union_trans",
            "(Union (Trans ?x ?y ?z ?a) (Trans ?x ?y ?z ?b))",
@@ -101,10 +92,10 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
         rw("concat", "(Unpart ?part ?lists)", "(Concat ?lists)"),
 
         rw("map_unpart_r",
-           "(Map ?op
+           "(Map2 ?op
               (List ?params...)
               (Unpart ?part ?cads))",
-           "(Map ?op
+           "(Map2 ?op
               (Unpart ?part (Part ?part (List ?params...)))
               (Unpart ?part ?cads))"),
 
@@ -117,38 +108,36 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
         rw("unsort_sort", "(Unsort ?perm (Sort ?perm ?list))", "?list"),
 
         rw("map_unsort_l",
-           "(Map ?op
+           "(Map2 ?op
               (Unsort ?perm ?params)
               ?cads)",
            "(Unsort ?perm
-              (Map ?op
+              (Map2 ?op
                 ?params
                 (Sort ?perm ?cads)))"),
 
         rw("map_unsort_r",
-           "(Map ?op
+           "(Map2 ?op
               ?params
               (Unsort ?perm ?cads))",
            "(Unsort ?perm
-              (Map ?op
+              (Map2 ?op
                 (Sort ?perm ?params)
                 ?cads))"),
 
         rw("unsort_repeat", "(Unsort ?perm (Repeat ?n ?elem))", "(Repeat ?n ?elem)"),
 
-        rw("unsort_fold",
-           "(FoldUnion (Unsort ?perm ?x))",
-           "(FoldUnion ?x)"),
+        rw("fold_union_unsort", "(Fold Union (Unsort ?perm ?x))", "(Fold Union ?x)"),
+        rw("fold_inter_unsort", "(Fold Inter (Unsort ?perm ?x))", "(Fold Inter ?x)"),
 
         // unpolar
         rw("unpolar_trans",
-           "(Map Trans (Unpolar ?n ?center ?params) ?cads)",
-           "(Map Trans (Repeat ?n ?center) (Map TransPolar ?params ?cads))"),
+           "(Map2 Trans (Unpolar ?n ?center ?params) ?cads)",
+           "(Map2 Trans (Repeat ?n ?center) (Map2 TransPolar ?params ?cads))"),
+        // rw("unpolar_trans0",
+        //    "(Map2 Trans (Unpolar ?n (Vec3 0 0 0) ?params) ?cads)",
+        //    "(Map2 TransPolar ?params ?cads)"),
 
-        // NOTE this explode the egraph
-        rw("diff2",
-           "(Diff ?a (Union ?b ?c))",
-           "(Diff (Diff ?a ?b) ?c)"),
 
         // NOTE these explode graph on cads/pldi2020-eval/input/cnc_endmills_holder_nohull.csexp
         // rw("combine_trans",
@@ -159,14 +148,14 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
         //    "(Rotate (+ ?a ?d) (+ ?b ?e) (+ ?c ?f) ?cad)"),
 
         rw("lift_op",
-           "(Union (Do ?op ?params ?a) (Do ?op ?params ?b))",
-           "(Do ?op ?params (Union ?a ?b))"),
+           "(Union (Affine ?op ?params ?a) (Affine ?op ?params ?b))",
+           "(Affine ?op ?params (Union ?a ?b))"),
 
-        rw("rotate_zero", "(Rotate (Vec3 0 0 0) ?a)", "(Trans (Vec3 0 0 0) ?a)"),
-        rw("scale_zero",  "(Scale  (Vec3 1 1 1) ?a)", "(Trans (Vec3 0 0 0) ?a)"),
-        rw("zero_rotate", "(Trans (Vec3 0 0 0) ?a)", "(Rotate (Vec3 0 0 0) ?a)"),
+        rw("rotate_zero", "(Affine Rotate (Vec3 0 0 0) ?a)", "(Affine Trans (Vec3 0 0 0) ?a)"),
+        rw("scale_zero",  "(Affine Scale  (Vec3 1 1 1) ?a)", "(Affine Trans (Vec3 0 0 0) ?a)"),
+        rw("zero_rotate", "(Affine Trans (Vec3 0 0 0) ?a)", "(Affine Rotate (Vec3 0 0 0) ?a)"),
 
-        rw("scale_flip", "(Scale (Vec3 -1 -1 1) ?a)", "(Rotate (Vec3 0 0 180) ?a)"),
+        rw("scale_flip", "(Affine Scale (Vec3 -1 -1 1) ?a)", "(Affine Rotate (Vec3 0 0 180) ?a)"),
 
         // rw("scale_trans",
         //    "(Scale (Vec3 ?a ?b ?c) (Trans (Vec3 ?x ?y ?z) ?m))",
@@ -187,14 +176,19 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
         // primitives
         rw("cylinder_scale",
            "(Cylinder (Vec3 ?h ?r1 ?r2) ?params ?center)",
-           "(Scale (Vec3 ?h 1 1) (Cylinder (Vec3 1 ?r1 ?r2) ?params ?center))"),
+           "(Affine Scale (Vec3 ?h 1 1)
+              (Cylinder (Vec3 1 ?r1 ?r2) ?params ?center))"),
+        rw("cube_scale",
+           "(Cube (Vec3 ?x ?y ?z) ?params ?center)",
+           "(Affine Scale (Vec3 ?x ?y ?z)
+              (Cube (Vec3 1 1 1) ?params ?center))"),
 
-        rw("repeat_mapi", "(Repeat ?n ?x)", "(MapI ?n ?x)"),
+        // rw("repeat_mapi", "(Repeat ?n ?x)", "(MapI ?n ?x)"),
 
         // mapi
         rw("map_repeat",
-           "(Map ?op (MapI ?n ?formula) (MapI ?n ?cad))",
-           "(MapI ?n (Do ?op ?formula ?cad))"),
+           "(Map2 ?op (MapI ?n ?formula) (MapI ?n ?cad))",
+           "(MapI ?n (Affine ?op ?formula ?cad))"),
 
         Rewrite::new (
             "listapplier",
@@ -241,7 +235,6 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
                 items: "?items...".parse().unwrap(),
             },
         ),
-
     ];
 
     if std::env::var("SUSPECT_RULES") == Ok("1".into()) {
@@ -251,10 +244,10 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
         println!("Using suspect rules");
         rules.extend(vec![
             rw("union_comm", "(Union ?a ?b)", "(Union ?b ?a)"),
-            rw("id", "(Trans (Vec3 0 0 0) ?a)", "?a"),
+            rw("id", "(Affine Trans (Vec3 0 0 0) ?a)", "?a"),
             rw("combine_scale",
-               "(Scale (Vec3 ?a ?b ?c) (Scale (Vec3 ?d ?e ?f) ?cad))",
-               "(Scale (Vec3 (* ?a ?d) (* ?b ?e) (* ?c ?f)) ?cad)"),
+               "(Affine Scale (Vec3 ?a ?b ?c) (Affine Scale (Vec3 ?d ?e ?f) ?cad))",
+               "(Affine Scale (Vec3 (* ?a ?d) (* ?b ?e) (* ?c ?f)) ?cad)"),
         ]);
     } else {
         info!("Not using suspect rules");
@@ -364,7 +357,7 @@ impl Applier<Cad, Meta> for ListApplier {
             .iter()
             .map(|&id| {
                 egraph[id].nodes.iter().find_map(|n| match n.op {
-                    Cad::Do => Some(get_single_cad(egraph, n.children[0])),
+                    Cad::Affine => Some(get_single_cad(egraph, n.children[0])),
                     _ => None,
                 })
             })
