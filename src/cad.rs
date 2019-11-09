@@ -205,6 +205,7 @@ impl egg::egraph::Metadata<Cad> for Meta {
 impl Language for Cad {
     fn cost(&self, children: &[u64]) -> u64 {
         use Cad::*;
+        const BIG: u64 = 100_000_000;
         let cost = match self {
             Num(_) | Bool(_) | ListVar(_) => 1,
             Add | Sub | Mul | Div => 1,
@@ -232,10 +233,10 @@ impl Language for Cad {
             List => 100,
             Vec3 => 100,
 
-            Unpolar => 10_000,
-            Sort | Unsort | Part | Unpart => 10_000,
-            Partitioning(_)  => 10_000,
-            Permutation(_) => 10_000,
+            Unpolar => BIG,
+            Sort | Unsort | Part | Unpart => BIG,
+            Partitioning(_)  => BIG,
+            Permutation(_) => BIG,
 
         };
 
