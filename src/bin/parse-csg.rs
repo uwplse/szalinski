@@ -60,10 +60,9 @@ fn write_op<'a>(
     name: &str,
     ps: impl IntoIterator<Item = Pair<'a, Rule>>,
 ) -> Result<()> {
-    let ps: Vec<_> = ps.into_iter().collect();
+    let ps: Vec<_> = ps.into_iter().filter(|p| has_content(p.clone())).collect();
     match ps.len() {
-        0 => panic!("shouldn't be empty: {}", name),
-        // 0 => Ok(()),
+        0 => panic!(),
         1 => write_csg(w, depth, ps[0].clone()),
         2 => {
             write!(w, "(Binop {}", name)?;
@@ -80,7 +79,7 @@ fn write_op<'a>(
                 write_csg(w, depth + 1, p)?;
             }
             write!(w, "))")
-        },
+        }
     }
 }
 
@@ -183,13 +182,26 @@ fn get_rotate(mat: &[Vec<f64>]) -> Option<(f64, f64, f64)> {
     Some((r2deg(x), r2deg(y), r2deg(z)))
 }
 
+fn has_content(pair: Pair<Rule>) -> bool {
+    let rule = pair.as_rule();
+    match rule {
+        Rule::empty_group => false,
+        Rule::sphere | Rule::cube | Rule::cylinder => true,
+        Rule::group | Rule::union | Rule::diff | Rule::inter | Rule::hull | Rule::matrix => {
+            pair.into_inner().any(|p| has_content(p))
+        }
+        Rule::mat => false,
+        r => panic!(r#"Unexpected rule "{:?}""#, r),
+    }
+}
+
 fn write_csg(w: &mut impl Write, depth: usize, pair: Pair<Rule>) -> Result<()> {
     let rule = pair.as_rule();
     let mut args = pair.into_inner();
     let d = depth + 1;
 
     match rule {
-        Rule::empty_group => write!(w, "Empty"),
+        Rule::empty_group => Ok(()),
         Rule::group => write_op(w, d, "Union", args),
         Rule::union => write_op(w, d, "Union", args),
         Rule::diff => write_op(w, d, "Diff", args),
