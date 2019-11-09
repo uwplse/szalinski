@@ -65,6 +65,9 @@ out/%.opt.off: out/%.opt.scad out/%.csexp.opt
 out/%.diff: scripts/compare_mesh.sh out/compare_mesh out/%.in.off out/%.opt.off
 	./scripts/compare_mesh.sh out/$*.in.off out/$*.opt.off $@
 
+out/%.diff.scad: scripts/create-diff-scad.sh inputs/%.scad out/%.opt.scad
+	$^ $@
+
 out/%.checked: inputs/%.expected out/%
 	$(diff) inputs/$*.expected out/$*
 	touch $@
