@@ -2,7 +2,7 @@ use std::f64::consts;
 
 use log::*;
 
-use indexmap::IndexMap;
+use indexmap::{indexset, IndexMap};
 use smallvec::{smallvec, SmallVec};
 
 use crate::{
@@ -199,6 +199,9 @@ fn solve_vec(egraph: &mut EGraph, list: &[Vec3]) -> Vec<AddResult> {
     let xs: Vec<Num> = list.iter().map(|v| v.0).collect();
     let ys: Vec<Num> = list.iter().map(|v| v.1).collect();
     let zs: Vec<Num> = list.iter().map(|v| v.2).collect();
+    let xys: Vec<(Num, Num)> = list.iter().map(|v| (v.0, v.1)).collect();
+    let yzs: Vec<(Num, Num)> = list.iter().map(|v| (v.1, v.2)).collect();
+    let xzs: Vec<(Num, Num)> = list.iter().map(|v| (v.0, v.2)).collect();
 
     let len = xs.len();
     assert_eq!(len, ys.len());
@@ -208,10 +211,13 @@ fn solve_vec(egraph: &mut EGraph, list: &[Vec3]) -> Vec<AddResult> {
 
     results.extend(solve_and_add(egraph, &xs, &ys, &zs));
 
-    let perms = [
+    let perms = indexset![
         Permutation::sort(&xs),
         Permutation::sort(&ys),
         Permutation::sort(&zs),
+        Permutation::sort(&xys),
+        Permutation::sort(&yzs),
+        Permutation::sort(&xzs),
     ];
 
     for perm in &perms {
