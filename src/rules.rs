@@ -183,7 +183,7 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
            "(Affine Scale (Vec3 ?x ?y ?z)
               (Cube (Vec3 1 1 1) ?params ?center))"),
 
-        // rw("repeat_mapi", "(Repeat ?n ?x)", "(MapI ?n ?x)"),
+        rw("repeat_mapi", "(Repeat ?n ?x)", "(MapI ?n ?x)"),
 
         // mapi
         rw("map_repeat",
