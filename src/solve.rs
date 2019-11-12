@@ -76,6 +76,8 @@ struct Deg2 {
     c: f64,
 }
 
+sz_param!(SOLVE_ROUND: f64);
+
 fn solve_deg1(vs: &[Num]) -> Option<Deg1> {
     let i1 = 0.0;
     let i2 = 1.0;
@@ -84,10 +86,9 @@ fn solve_deg1(vs: &[Num]) -> Option<Deg1> {
     let b = (o1 * i2) - (o2 * i1) / (i2 - i1);
     let a = (o2 - b) / i2;
 
-    const ROUND: f64 = 0.01;
-
-    let aa = (a / ROUND).round() * ROUND;
-    let bb = (b / ROUND).round() * ROUND;
+    let rnd = *SOLVE_ROUND;
+    let aa = (a / rnd).round() * rnd;
+    let bb = (b / rnd).round() * rnd;
 
     let close = |a, b| {
         vs.iter()
