@@ -83,8 +83,21 @@ fn solve_deg1(vs: &[Num]) -> Option<Deg1> {
     let o2 = vs[1].to_f64();
     let b = (o1 * i2) - (o2 * i1) / (i2 - i1);
     let a = (o2 - b) / i2;
-    let mut ivs = vs.iter().enumerate();
-    if ivs.all(|(i, &v)| v.is_close(a * f(i) + b)) {
+
+    const ROUND: f64 = 0.01;
+
+    let aa = (a / ROUND).round() * ROUND;
+    let bb = (b / ROUND).round() * ROUND;
+
+    let close = |a, b| {
+        vs.iter()
+            .enumerate()
+            .all(|(i, &v)| v.is_close(a * f(i) + b))
+    };
+
+    if close(aa, bb) {
+        Some(Deg1 { a: aa, b: bb })
+    } else if close(a, b) {
         Some(Deg1 { a, b })
     } else {
         None
