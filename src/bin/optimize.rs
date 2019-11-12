@@ -155,6 +155,9 @@ pub fn optimize(initial_expr: &str, iters: usize, limit: usize, timeout: Duratio
 
     let (mut egraph, root) = EGraph::from_expr(&initial_expr_cad);
     pre_optimize(&mut egraph);
+    let best = Extractor::new(&egraph).find_best(root).expr;
+    info!("Pre extracting: {}", best.pretty(80));
+    let (mut egraph, root) = EGraph::from_expr(&best);
 
     let rules = szalinski_egg::rules::rules();
     let mut iterations = vec![];
