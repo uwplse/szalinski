@@ -176,12 +176,30 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
         // primitives
         rw("cylinder_scale",
            "(Cylinder (Vec3 ?h ?r1 ?r2) ?params ?center)",
-           "(Affine Scale (Vec3 ?h 1 1)
+           "(Affine Scale (Vec3 1 1 ?h)
               (Cylinder (Vec3 1 ?r1 ?r2) ?params ?center))"),
+        rw("scale_cylinder",
+           "(Affine Scale (Vec3 1 1 ?h)
+              (Cylinder (Vec3 1 ?r1 ?r2) ?params ?center))",
+           "(Cylinder (Vec3 ?h ?r1 ?r2) ?params ?center)"),
+
         rw("cube_scale",
-           "(Cube (Vec3 ?x ?y ?z) ?params ?center)",
+           "(Cube (Vec3 ?x ?y ?z) ?center)",
            "(Affine Scale (Vec3 ?x ?y ?z)
-              (Cube (Vec3 1 1 1) ?params ?center))"),
+              (Cube (Vec3 1 1 1) ?center))"),
+        rw("scale_cube",
+           "(Affine Scale (Vec3 ?x ?y ?z)
+              (Cube (Vec3 1 1 1) ?center))",
+           "(Cube (Vec3 ?x ?y ?z) ?center)"),
+
+        rw("sphere_scale",
+           "(Sphere ?r ?params)",
+           "(Affine Scale (Vec3 ?r ?r ?r)
+              (Sphere 1 ?params))"),
+        rw("scale_sphere",
+           "(Affine Scale (Vec3 ?r ?r ?r)
+              (Sphere 1 ?params))",
+           "(Sphere ?r ?params)"),
 
         rw("repeat_mapi", "(Repeat ?n ?x)", "(MapI ?n ?x)"),
 
