@@ -316,7 +316,8 @@ where
     K: Hash + Eq + Debug + Clone,
 {
     // allow easy disabling
-    if std::env::var("PARTITIONING") == Ok("0".into()) {
+    sz_param!(PARTITIONING: bool);
+    if !*PARTITIONING {
         return None;
     }
 
