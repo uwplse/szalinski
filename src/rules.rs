@@ -4,10 +4,11 @@ use egg::{
     egraph::{AddResult, Metadata},
     expr::{Expr, Id, QuestionMarkName, RecExpr},
     parse::ParsableLanguage,
-    pattern::{Applier, Rewrite, WildMap},
+    pattern::{Applier, Rewrite, WildMap, Condition},
 };
 
-use indexmap::IndexMap;
+use indexmap::{IndexMap, IndexSet};
+use itertools::Itertools;
 use log::*;
 use smallvec::{smallvec, SmallVec};
 
@@ -21,6 +22,15 @@ fn rw<M: Metadata<Cad>>(name: &str, lhs: &str, rhs: &str) -> Rewrite<Cad, M> {
     Cad::parse_rewrite(name, lhs, rhs).unwrap()
 }
 
+fn cond_rw<M: Metadata<Cad>>(name: &str, lhs: &str, rhs: &str, l_eq: &str, r_eq: &str) -> Rewrite<Cad, M> {
+    let mut rw = rw(name, lhs, rhs);
+    rw.conditions.push(Condition {
+        lhs: Cad::parse_pattern(l_eq).unwrap(),
+        rhs: Cad::parse_pattern(r_eq).unwrap(),
+    });
+    rw
+}
+
 #[rustfmt::skip]
 pub fn pre_rules() -> Vec<Rewrite<Cad, Meta>> {
     vec![
@@ -29,6 +39,11 @@ pub fn pre_rules() -> Vec<Rewrite<Cad, Meta>> {
         rw("inter_consl", "(Binop Inter (Fold Inter ?list) ?a)", "(Fold Inter (Cons ?a ?list))"),
         // rw("union_consr", "(Binop Union ?a (Fold Union ?list))", "(Fold Union (Cons ?a ?list))"),
         // rw("inter_consr", "(Binop Inter ?a (Fold Inter ?list))", "(Fold Inter (Cons ?a ?list))"),
+        rw("list_nil", "Nil", "(List)"),
+        rw("list_cons", "(Cons ?a (List ?b...))", "(List ?a ?b...)"),
+        rw("nil_list", "(List)", "Nil"),
+        rw("cons_list", "(List ?a ?b...)", "(Cons ?a (List ?b...))"),
+
     ]
 }
 
@@ -46,16 +61,17 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
         rw("mul_one", "(* 1 ?a)", "?a"),
         rw("mul_comm", "(* ?a ?b)", "(* ?b ?a)"),
 
+        rw("div_one", "(/ ?a 1)", "?a"),
+        rw("mul_div", "(* ?a (/ ?b ?a))", "?b"),
+        rw("div_mul", "(/ (* ?a ?b) ?a)", "?b"),
+        // rw("mul_div_div", "(* (/ ?a ?b) (/ ?c ?d))", "(/ (* ?a ?c) (* ?b ?d))"),
+        // rw("div_div", "(/ (/ ?a ?b) ?a)", "(/ 1 ?b)"),
+
         // list rules
 
-        rw("list_nil", "Nil", "(List)"),
-        rw("list_cons", "(Cons ?a (List ?b...))", "(List ?a ?b...)"),
-        rw("nil_list", "(List)", "Nil"),
-        rw("cons_list", "(List ?a ?b...)", "(Cons ?a (List ?b...))"),
+        rw("fold_nil", "(Binop ?bop ?a ?b)", "(Fold ?bop (List ?a ?b))"),
 
         // cad rules
-
-        rw("fold_nil", "(Binop ?bop ?a ?b)", "(Fold ?bop (List ?a ?b))"),
 
         // rw("diff_to_union",
         //    "(Fold Diff (List ?a ?rest...))",
@@ -69,12 +85,12 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
            "(Fold ?bop (Affine ?aff ?param ?cad))",
            "(Affine ?aff ?param (Fold ?bop ?cad))"),
 
-        rw("map_nil",
-           "(Cons (Affine ?aff ?param ?cad) Nil)",
-           "(Map2 ?aff (Cons ?param Nil) (Cons ?cad Nil))"),
-        rw("map_cons",
-           "(Cons (Affine ?aff ?param ?cad) (Map2 ?aff ?params ?cads))",
-           "(Map2 ?aff (Cons ?param ?params) (Cons ?cad ?cads))"),
+        rw("flatten_union",
+           "(Fold Union (List (Fold Union (List ?list...)) ?rest...))",
+           "(Fold Union (List ?rest... ?list...))"),
+        rw("flatten_inter",
+           "(Fold Inter (List (Fold Inter (List ?list...)) ?rest...))",
+           "(Fold Inter (List ?rest... ?list...))"),
 
         rw("union_trans",
            "(Union (Trans ?x ?y ?z ?a) (Trans ?x ?y ?z ?b))",
@@ -91,39 +107,59 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
         // partitioning
         rw("concat", "(Unpart ?part ?lists)", "(Concat ?lists)"),
 
-        rw("map_unpart_r",
-           "(Map2 ?op
-              (List ?params...)
-              (Unpart ?part ?cads))",
-           "(Map2 ?op
-              (Unpart ?part (Part ?part (List ?params...)))
-              (Unpart ?part ?cads))"),
+        // rw("map_unpart_r",
+        //    "(Map2 ?op
+        //       (List ?params...)
+        //       (Unpart ?part ?cads))",
+        //    "(Map2 ?op
+        //       (Unpart ?part (Part ?part (List ?params...)))
+        //       (Unpart ?part ?cads))"),
+
+        rw("map_unpart_r2",
+           "  (Map2 ?op ?params (Unpart ?part ?cads))",
+           "(Unpart ?part (Part ?part
+              (Map2 ?op ?params (Unpart ?part ?cads))))"),
 
         // NOTE do we need part/unpart id?
         rw("part_unpart", "(Part ?part (Unpart ?part ?list))", "?list"),
         rw("unpart_part", "(Unpart ?part (Part ?part ?list))", "?list"),
 
         // unsort propagation
+        // rw("sort_repeat", "(Sort ?perm (Repeat ?n ?elem))", "(Repeat ?n ?elem)"),
         rw("sort_unsort", "(Sort ?perm (Unsort ?perm ?list))", "?list"),
         rw("unsort_sort", "(Unsort ?perm (Sort ?perm ?list))", "?list"),
 
         rw("map_unsort_l",
-           "(Map2 ?op
-              (Unsort ?perm ?params)
-              ?cads)",
-           "(Unsort ?perm
-              (Map2 ?op
-                ?params
-                (Sort ?perm ?cads)))"),
+           "  (Map2 ?op (Unsort ?perm ?params) ?cads)",
+           "(Unsort ?perm (Sort ?perm
+              (Map2 ?op (Unsort ?perm ?params) ?cads)))"),
 
         rw("map_unsort_r",
-           "(Map2 ?op
-              ?params
-              (Unsort ?perm ?cads))",
-           "(Unsort ?perm
-              (Map2 ?op
-                (Sort ?perm ?params)
-                ?cads))"),
+           "  (Map2 ?op ?params (Unsort ?perm ?cads))",
+           "(Unsort ?perm (Sort ?perm
+              (Map2 ?op ?params (Unsort ?perm ?cads))))"),
+
+        // rw("sort_map2",
+        //    "(Sort ?perm (Map2 ?op ?params ?cads))",
+        //    "(Map2 ?op (Sort ?perm ?params) (Sort ?perm ?cads))"),
+
+        // rw("map_unsort_l",
+        //    "(Map2 ?op
+        //       (Unsort ?perm ?params)
+        //       ?cads)",
+        //    "(Unsort ?perm
+        //       (Map2 ?op
+        //         ?params
+        //         (Sort ?perm ?cads)))"),
+
+        // rw("map_unsort_r",
+        //    "(Map2 ?op
+        //       ?params
+        //       (Unsort ?perm ?cads))",
+        //    "(Unsort ?perm
+        //       (Map2 ?op
+        //         (Sort ?perm ?params)
+        //         ?cads))"),
 
         rw("unsort_repeat", "(Unsort ?perm (Repeat ?n ?elem))", "(Repeat ?n ?elem)"),
 
@@ -139,14 +175,6 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
         //    "(Map2 TransPolar ?params ?cads)"),
 
 
-        // NOTE these explode graph on cads/pldi2020-eval/input/cnc_endmills_holder_nohull.csexp
-        // rw("combine_trans",
-        //    "(Trans ?a ?b ?c (Trans ?d ?e ?f ?cad))",
-        //    "(Trans (+ ?a ?d) (+ ?b ?e) (+ ?c ?f) ?cad)"),
-        // rw("combine_rotate",
-        //    "(Rotate ?a ?b ?c (Rotate ?d ?e ?f ?cad))",
-        //    "(Rotate (+ ?a ?d) (+ ?b ?e) (+ ?c ?f) ?cad)"),
-
         rw("lift_op",
            "(Union (Affine ?op ?params ?a) (Affine ?op ?params ?b))",
            "(Affine ?op ?params (Union ?a ?b))"),
@@ -157,13 +185,13 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
 
         rw("scale_flip", "(Affine Scale (Vec3 -1 -1 1) ?a)", "(Affine Rotate (Vec3 0 0 180) ?a)"),
 
-        // rw("scale_trans",
-        //    "(Scale (Vec3 ?a ?b ?c) (Trans (Vec3 ?x ?y ?z) ?m))",
-        //    "(Trans (Vec3 (* ?a ?x) (* ?b ?y) (* ?c ?z)) (Scale (Vec3 ?a ?b ?c) ?m))"),
+        rw("scale_trans",
+           "(Affine Scale (Vec3 ?a ?b ?c) (Affine Trans (Vec3 ?x ?y ?z) ?m))",
+           "(Affine Trans (Vec3 (* ?a ?x) (* ?b ?y) (* ?c ?z)) (Affine Scale (Vec3 ?a ?b ?c) ?m))"),
 
-        // rw("trans_scale",
-        //    "(Trans (Vec3 ?x ?y ?z) (Scale (Vec3 ?a ?b ?c) ?m))",
-        //    "(Scale (Vec3 ?a ?b ?c) (Trans (Vec3 (/ ?x ?a) (/ ?y ?b) (/ ?z ?c)) ?m))"),
+        rw("trans_scale",
+           "(Affine Trans (Vec3 ?x ?y ?z) (Affine Scale (Vec3 ?a ?b ?c) ?m))",
+           "(Affine Scale (Vec3 ?a ?b ?c) (Affine Trans (Vec3 (/ ?x ?a) (/ ?y ?b) (/ ?z ?c)) ?m))"),
 
         // rw("scale_rotate",
         //    "(Scale (Vec3 ?a ?a ?a) (Rotate (Vec3 ?x ?y ?z) ?m))",
@@ -217,6 +245,25 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
            "(Map2 ?op (MapI ?n ?formula) (MapI ?n ?cad))",
            "(MapI ?n (Affine ?op ?formula ?cad))"),
 
+        cond_rw("map_mapi2",
+                "(Map2 ?op (MapI ?n1 ?n2 ?formula) (Repeat ?n ?cad))",
+                "(MapI ?n1 ?n2 (Affine ?op ?formula ?cad))",
+                "?n", "(* ?n1 ?n2)"),
+        rw("mapi2_mapi2",
+           "(Map2 ?op (MapI ?n1 ?n2 ?param) (MapI ?n1 ?n2 ?cad))",
+           "(MapI ?n1 ?n2 (Affine ?op ?param ?cad))"),
+
+        // affine rules
+
+        rw("id", "(Affine Trans (Vec3 0 0 0) ?a)", "?a"),
+
+        rw("combine_scale",
+           "(Affine Scale (Vec3 ?a ?b ?c) (Affine Scale (Vec3 ?d ?e ?f) ?cad))",
+           "(Affine Scale (Vec3 (* ?a ?d) (* ?b ?e) (* ?c ?f)) ?cad)"),
+        rw("combine_trans",
+           "(Affine Trans (Vec3 ?a ?b ?c) (Affine Trans (Vec3 ?d ?e ?f) ?cad))",
+           "(Affine Trans (Vec3 (+ ?a ?d) (+ ?b ?e) (+ ?c ?f)) ?cad)"),
+
         Rewrite::new (
             "listapplier",
             Cad::parse_pattern("(List ?items...)").unwrap(),
@@ -262,6 +309,7 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
                 items: "?items...".parse().unwrap(),
             },
         ),
+
     ];
 
     if std::env::var("SUSPECT_RULES") == Ok("1".into()) {
@@ -271,7 +319,6 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
         println!("Using suspect rules");
         rules.extend(vec![
             rw("union_comm", "(Union ?a ?b)", "(Union ?b ?a)"),
-            rw("id", "(Affine Trans (Vec3 0 0 0) ?a)", "?a"),
             rw("combine_scale",
                "(Affine Scale (Vec3 ?a ?b ?c) (Affine Scale (Vec3 ?d ?e ?f) ?cad))",
                "(Affine Scale (Vec3 (* ?a ?d) (* ?b ?e) (* ?c ?f)) ?cad)"),
@@ -374,9 +421,73 @@ fn get_single_cad(egraph: &EGraph, id: Id) -> Cad {
     n.op.clone()
 }
 
+fn get_affines(egraph: &EGraph, id: Id, affine_kind: &Cad) -> Vec<(Id, Id)> {
+    egraph[id]
+        .nodes
+        .iter()
+        .filter_map(|n| {
+            if n.op != Cad::Affine {
+                return None;
+            }
+            let kind = get_single_cad(egraph, n.children[0]);
+            if affine_kind == &kind {
+                Some((n.children[1], n.children[2]))
+            } else {
+                None
+            }
+        })
+        .collect()
+}
+
+fn insert_map2s(egraph: &mut EGraph, list_ids: &[Id]) -> Vec<AddResult> {
+    let mut results = vec![];
+
+    for cad in &[Cad::Trans, Cad::Scale, Cad::Rotate] {
+        let affs_list: Vec<Vec<_>> = list_ids
+            .iter()
+            .map(|&id| get_affines(egraph, id, cad))
+            .collect();
+
+        let sizes: IndexSet<usize> = affs_list.iter().map(|a| a.len()).collect();
+
+        // which size (by index) does a list have?
+        let which: Vec<usize> = affs_list
+            .iter()
+            .map(|a| sizes.iter().position(|s| *s == a.len()).unwrap())
+            .collect();
+
+        let aff_id = egraph.add(Expr::unit(cad.clone())).id;
+
+        // HACK just part a hard limit here so it doesn't get out of hand
+        const STUCTURE_MATCH_LIMIT: usize = 2;
+        let total: usize = sizes.iter().product();
+        if total > STUCTURE_MATCH_LIMIT {
+            warn!("Exceeding structure match limit: {} > {}", total, STUCTURE_MATCH_LIMIT);
+        }
+
+        for choices in sizes.iter().map(|&n| 0..n).multi_cartesian_product()
+            .take(STUCTURE_MATCH_LIMIT)
+        {
+            let (param_ids, cad_ids): (Vec<Id>, Vec<Id>) = affs_list
+                .iter()
+                .zip(&which)
+                .map(|(affs, &which_choice)| affs[choices[which_choice]])
+                .unzip();
+
+            let param_list_id = egraph.add(Expr::new(Cad::List, param_ids.into())).id;
+            let cad_list_id = egraph.add(Expr::new(Cad::List, cad_ids.into())).id;
+            let map2 = Expr::new(Cad::Map2, smallvec![aff_id, param_list_id, cad_list_id]);
+            results.push(egraph.add(map2))
+        }
+    }
+
+    results
+}
+
 impl Applier<Cad, Meta> for ListApplier {
     fn apply(&self, egraph: &mut EGraph, map: &WildMap) -> Vec<AddResult> {
         let ids = &map[&self.var];
+        // println!("ids: {:?}", ids);
         let bests: Vec<_> = ids
             .iter()
             .map(|&id| egraph[id].metadata.best.clone())
@@ -399,6 +510,8 @@ impl Applier<Cad, Meta> for ListApplier {
         {
             return results;
         }
+
+        results.extend(insert_map2s(egraph, ids));
 
         // try to solve a list
         if let Some(vec_list) = bests.iter().map(get_vec).collect::<Option<Vec<Vec3>>>() {
