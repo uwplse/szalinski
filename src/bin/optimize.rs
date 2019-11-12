@@ -206,10 +206,13 @@ fn main() {
     }
     let input = std::fs::read_to_string(&args[1]).expect("failed to read input");
     let iters = 300;
-    let limit = 3_000_000;
+    let limit = std::env::var("OPT_NODE_LIMIT")
+        .map(|s| s.replace('_', "").parse().unwrap())
+        .unwrap_or(3_000_000);
     let timeout = std::env::var("OPT_TIMEOUT")
         .map(|s| s.parse().unwrap())
         .unwrap_or(60.0 * 10.0);
+    info!("Using OPT_NODE_LIMIT={}", limit);
     info!("Using OPT_TIMEOUT={}", timeout);
     let result = optimize(&input, iters, limit, Duration::from_secs_f64(timeout));
 
