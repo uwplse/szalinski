@@ -16,7 +16,6 @@ checked=$(expected:inputs/%.expected=out/%.checked)
 
 everything=$(diffs)
 
-
 .PHONY: all compile-csgs compile-csexps case-studies checked unit-tests
 
 all: $(everything)
@@ -47,8 +46,9 @@ out/%.csg: inputs/%.scad
 out/%.csexp: out/%.csg $(tgt)/parse-csg
 	$(tgt)/parse-csg $< $@
 
-out/%.json: out/%.csexp $(tgt)/optimize
-	$(tgt)/optimize $< $@
+# use all the environment variables from this file
+out/%.json: out/%.csexp $(tgt)/optimize sz_params
+	export $$(cat sz_params | xargs) && $(tgt)/optimize $< $@
 
 out/%.csexp.opt: out/%.json
 	jq -r .final_expr $< > $@

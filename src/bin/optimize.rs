@@ -8,6 +8,7 @@ use egg::{
     extract::{calculate_cost, Extractor},
     parse::ParsableLanguage,
 };
+use szalinski_egg::sz_param;
 use szalinski_egg::cad::{Cad, EGraph, Rewrite};
 use szalinski_egg::eval::Scad;
 
@@ -205,16 +206,12 @@ fn main() {
         panic!("Usage: optimize <input> <output>")
     }
     let input = std::fs::read_to_string(&args[1]).expect("failed to read input");
-    let iters = 300;
-    let limit = std::env::var("OPT_NODE_LIMIT")
-        .map(|s| s.replace('_', "").parse().unwrap())
-        .unwrap_or(3_000_000);
-    let timeout = std::env::var("OPT_TIMEOUT")
-        .map(|s| s.parse().unwrap())
-        .unwrap_or(60.0 * 10.0);
-    info!("Using OPT_NODE_LIMIT={}", limit);
-    info!("Using OPT_TIMEOUT={}", timeout);
-    let result = optimize(&input, iters, limit, Duration::from_secs_f64(timeout));
+
+    sz_param!(ITERATIONS: usize);
+    sz_param!(NODE_LIMIT: usize);
+    sz_param!(TIMEOUT: f64);
+
+    let result = optimize(&input, *ITERATIONS, *NODE_LIMIT, Duration::from_secs_f64(*TIMEOUT));
 
     let out_file = std::fs::File::create(&args[2]).expect("failed to open output");
     serde_json::to_writer_pretty(out_file, &result).unwrap();

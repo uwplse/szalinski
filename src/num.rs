@@ -5,10 +5,11 @@ use std::str::FromStr;
 pub struct Num(ordered_float::NotNan<f64>);
 // pub struct Num(u64);
 
-const EPSILON: f64 = 0.1;
 
 const DEFAULT_MANTISSA_BITS: usize = 52;
-const MANTISSA_BITS: usize = 52;
+
+sz_param!(EPSILON: f64);
+sz_param!(MANTISSA_BITS: usize);
 
 // const ROUND_RELATIVE: f64 = 0.01;
 
