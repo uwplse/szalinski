@@ -5,7 +5,7 @@ with import <nixpkgs> {
   ];
 };
 let
-  rustChannel = rustChannelOf { channel = "1.38.0"; };
+  rustChannel = rustChannelOf { channel = "1.39.0"; };
   rust = rustChannel.rust;
 in
 pkgs.mkShell {
