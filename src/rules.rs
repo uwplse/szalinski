@@ -185,14 +185,6 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
 
         rw("scale_flip", "(Affine Scale (Vec3 -1 -1 1) ?a)", "(Affine Rotate (Vec3 0 0 180) ?a)"),
 
-        rw("rotate_zero_intro", "?a", "(Affine Rotate (Vec3 0 0 0) ?a)"),
-        rw("trans_zero_intro", "?a", "(Affine Trans (Vec3 0 0 0) ?a)"),
-        rw("scale_zero_intro", "?a", "(Affine Scale (Vec3 1 1 1) ?a)"),
-
-        rw("rotate_zero_elim", "(Affine Rotate (Vec3 0 0 0) ?a)", "?a"),
-        rw("trans_zero_elim", "(Affine Trans (Vec3 0 0 0) ?a)", "?a"),
-        rw("scale_zero_elim", "(Affine Scale (Vec3 1 1 1) ?a)", "?a"),
-
         rw("scale_trans",
            "(Affine Scale (Vec3 ?a ?b ?c) (Affine Trans (Vec3 ?x ?y ?z) ?m))",
            "(Affine Trans (Vec3 (* ?a ?x) (* ?b ?y) (* ?c ?z))
@@ -320,6 +312,30 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
         ),
 
     ];
+
+    // add the intro rules only for cads
+    let id_affines = &[
+        ("scale", "Affine Scale (Vec3 1 1 1)"),
+        ("trans", "Affine Trans (Vec3 0 0 0)"),
+        ("rotate", "Affine Rotate (Vec3 0 0 0)"),
+    ];
+    let possible_cads = &[
+        ("affine", "(Affine ?op ?param ?cad)"),
+        ("bop", "(Binop ?op ?cad1 ?cad2)"),
+        ("fold", "(Fold ?op ?cads)"),
+    ];
+    for (aff_name, id_aff) in id_affines {
+        for (cad_name, cad) in possible_cads {
+            let outer = &format!("({} {})", id_aff, cad);
+            let intro = &format!("id_{}_{}_intro", aff_name, cad_name);
+            rules.push(rw(intro, cad, outer));
+        }
+
+        // elim rules work for everything
+        let elim = &format!("id_{}_elim", aff_name);
+        let outer = &format!("({} ?a)", id_aff);
+        rules.push(rw(elim, outer, "?a"));
+    }
 
     if std::env::var("SUSPECT_RULES") == Ok("1".into()) {
         // NOTE
