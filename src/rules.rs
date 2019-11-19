@@ -439,40 +439,76 @@ fn get_affines(egraph: &EGraph, id: Id, affine_kind: &Cad) -> Vec<(Id, Id)> {
         .collect()
 }
 
+type AffineSig = [usize; 3];
+fn affine_signature(egraph: &EGraph, id: Id) -> AffineSig {
+    let mut scales = 0;
+    let mut rotates = 0;
+    let mut translates = 0;
+    for n in &egraph[id].nodes {
+        if n.op == Cad::Affine {
+            let kind = get_single_cad(egraph, n.children[0]);
+            #[rustfmt::skip]
+            match kind {
+                Cad::Trans => {translates += 1;}
+                Cad::Scale => {scales += 1;}
+                Cad::Rotate => {rotates += 1;}
+                _ => (),
+            };
+        }
+    }
+    [translates, scales, rotates]
+}
+
+// HACK just part a hard limit here so it doesn't get out of hand
+sz_param!(STRUCTURE_MATCH_LIMIT: usize);
+
 fn insert_map2s(egraph: &mut EGraph, list_ids: &[Id]) -> Vec<AddResult> {
     let mut results = vec![];
 
-    for cad in &[Cad::Trans, Cad::Scale, Cad::Rotate] {
+    let sigs: Vec<AffineSig> = list_ids
+        .iter()
+        .map(|&id| affine_signature(egraph, id))
+        .collect();
+    let unique_sigs: IndexSet<AffineSig> = sigs.iter().cloned().collect();
+
+    for (cadi, cad) in [Cad::Trans, Cad::Scale, Cad::Rotate].iter().enumerate() {
         let affs_list: Vec<Vec<_>> = list_ids
             .iter()
             .map(|&id| get_affines(egraph, id, cad))
             .collect();
 
-        let sizes: IndexSet<usize> = affs_list.iter().map(|a| a.len()).collect();
-
-        // which size (by index) does a list have?
-        let which: Vec<usize> = affs_list
+        assert!(affs_list
             .iter()
-            .map(|a| sizes.iter().position(|s| *s == a.len()).unwrap())
-            .collect();
+            .zip(&sigs)
+            .all(|(affs, sig)| affs.len() == sig[cadi]));
 
         let aff_id = egraph.add(Expr::unit(cad.clone())).id;
 
-        // HACK just part a hard limit here so it doesn't get out of hand
-        const STUCTURE_MATCH_LIMIT: usize = 2;
-        let total: usize = sizes.iter().product();
-        if total > STUCTURE_MATCH_LIMIT {
-            warn!("Exceeding structure match limit: {} > {}", total, STUCTURE_MATCH_LIMIT);
+        let unique_sig_lengths = || unique_sigs.iter().map(|&sig| sig[cadi]);
+
+        let total: usize = unique_sig_lengths().product();
+        if total > *STRUCTURE_MATCH_LIMIT {
+            warn!(
+                "Exceeding structure match limit: {} > {}",
+                total, *STRUCTURE_MATCH_LIMIT
+            );
         }
 
-        for choices in sizes.iter().map(|&n| 0..n).multi_cartesian_product()
-            .take(STUCTURE_MATCH_LIMIT)
+        for choices in unique_sig_lengths()
+            .map(|len| 0..len)
+            .multi_cartesian_product()
+            .take(*STRUCTURE_MATCH_LIMIT)
         {
             let (param_ids, cad_ids): (Vec<Id>, Vec<Id>) = affs_list
                 .iter()
-                .zip(&which)
-                .map(|(affs, &which_choice)| affs[choices[which_choice]])
+                .zip(&sigs)
+                .map(|(affs, sig)| {
+                    let unique_sig_i = unique_sigs.get_full(sig).unwrap().0;
+                    affs[choices[unique_sig_i]]
+                })
                 .unzip();
+
+            assert_eq!(param_ids.len(), cad_ids.len());
 
             let param_list_id = egraph.add(Expr::new(Cad::List, param_ids.into())).id;
             let cad_list_id = egraph.add(Expr::new(Cad::List, cad_ids.into())).id;
