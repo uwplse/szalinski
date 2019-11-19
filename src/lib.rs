@@ -22,6 +22,6 @@ pub mod cad;
 pub mod rules;
 
 pub mod eval;
-mod num;
+pub mod num;
 mod permute;
 mod solve;

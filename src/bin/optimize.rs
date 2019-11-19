@@ -5,7 +5,7 @@ use log::*;
 use serde::Serialize;
 
 use egg::{
-    expr::RecExpr,
+    expr::{Cost, RecExpr},
     extract::{calculate_cost, Extractor},
     parse::ParsableLanguage,
 };
@@ -29,7 +29,7 @@ pub struct IterationResult {
     pub search_time: f64,
     pub apply_time: f64,
     pub rebuild_time: f64,
-    pub best_cost: u64,
+    pub best_cost: Cost,
 }
 
 fn run_one(
@@ -126,10 +126,10 @@ fn run_one(
 #[derive(Serialize)]
 pub struct RunResult {
     pub initial_expr: String,
-    pub initial_cost: u64,
+    pub initial_cost: Cost,
     pub iterations: Vec<IterationResult>,
     pub final_expr: String,
-    pub final_cost: u64,
+    pub final_cost: Cost,
     pub extract_time: f64,
     pub final_scad: String,
     pub stop_reason: StopReason,
