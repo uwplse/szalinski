@@ -3,7 +3,7 @@ use std::str::FromStr;
 
 use egg::{
     define_term,
-    expr::{Expr, Language, RecExpr},
+    expr::{Cost, Expr, Language, RecExpr},
 };
 
 use crate::{
@@ -92,7 +92,7 @@ define_term! {
 
 #[derive(Debug, Clone)]
 pub struct Meta {
-    pub cost: u64,
+    pub cost: Cost,
     pub best: RecExpr<Cad>,
 }
 
@@ -203,35 +203,36 @@ impl egg::egraph::Metadata<Cad> for Meta {
 }
 
 impl Language for Cad {
-    fn cost(&self, children: &[u64]) -> u64 {
+    fn cost(&self, children: &[Cost]) -> Cost {
         use Cad::*;
-        const BIG: u64 = 100_000_000;
+        const BIG: f64 = 100_000_000.0;
+        const SMALL: f64 = 0.001;
+
         let cost = match self {
-            Num(_) | Bool(_) | ListVar(_) => 1,
-            Add | Sub | Mul | Div => 1,
+            Num(n) => {
+                let s = format!("{}", n);
+                0.000001 * s.len() as Cost
+            }
+            Bool(_) | ListVar(_) => SMALL,
+            Add | Sub | Mul | Div => SMALL,
 
-            Cube | Empty | Nil | Sphere | Cylinder | Hexagon | Hull => 100,
+            Cube | Empty | Nil | Sphere | Cylinder | Hexagon | Hull => 1.0,
 
-            Trans => 100,
-            TransPolar => 100,
-            Scale => 100,
-            Rotate => 100,
+            Trans | TransPolar | Scale | Rotate => 1.0,
 
-            Union => 100,
-            Diff => 100,
-            Inter => 100,
+            Union | Diff | Inter => 1.0,
 
-            Repeat => 100,
-            MapI => 100,
-            Fold => 100,
-            Map2 => 100,
-            Affine => 100,
-            Binop => 100,
+            Repeat => 0.99,
+            MapI => 1.0,
+            Fold => 1.0,
+            Map2 => 1.0,
+            Affine => 1.0,
+            Binop => 1.0,
 
-            Concat => 100,
-            Cons => 100,
-            List => 100,
-            Vec3 => 100,
+            Concat => 1.0,
+            Cons => 1.0,
+            List => 1.0,
+            Vec3 => 1.0,
 
             Unpolar => BIG,
             Sort | Unsort | Part | Unpart => BIG,
@@ -240,6 +241,6 @@ impl Language for Cad {
 
         };
 
-        cost + children.iter().sum::<u64>()
+        cost + children.iter().sum::<Cost>()
     }
 }
