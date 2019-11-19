@@ -119,6 +119,10 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
            "  (Map2 ?op ?params (Unpart ?part ?cads))",
            "(Unpart ?part (Part ?part
               (Map2 ?op ?params (Unpart ?part ?cads))))"),
+        rw("map_unpart_l2",
+           "  (Map2 ?op (Unpart ?part ?params) ?cads)",
+           "(Unpart ?part (Part ?part
+              (Map2 ?op (Unpart ?part ?params) ?cads)))"),
 
         // NOTE do we need part/unpart id?
         rw("part_unpart", "(Part ?part (Unpart ?part ?list))", "?list"),
@@ -179,15 +183,20 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
            "(Union (Affine ?op ?params ?a) (Affine ?op ?params ?b))",
            "(Affine ?op ?params (Union ?a ?b))"),
 
-        rw("rotate_zero", "(Affine Rotate (Vec3 0 0 0) ?a)", "(Affine Trans (Vec3 0 0 0) ?a)"),
-        rw("scale_zero",  "(Affine Scale  (Vec3 1 1 1) ?a)", "(Affine Trans (Vec3 0 0 0) ?a)"),
-        rw("zero_rotate", "(Affine Trans (Vec3 0 0 0) ?a)", "(Affine Rotate (Vec3 0 0 0) ?a)"),
-
         rw("scale_flip", "(Affine Scale (Vec3 -1 -1 1) ?a)", "(Affine Rotate (Vec3 0 0 180) ?a)"),
+
+        rw("rotate_zero_intro", "?a", "(Affine Rotate (Vec3 0 0 0) ?a)"),
+        rw("trans_zero_intro", "?a", "(Affine Trans (Vec3 0 0 0) ?a)"),
+        rw("scale_zero_intro", "?a", "(Affine Scale (Vec3 1 1 1) ?a)"),
+
+        rw("rotate_zero_elim", "(Affine Rotate (Vec3 0 0 0) ?a)", "?a"),
+        rw("trans_zero_elim", "(Affine Trans (Vec3 0 0 0) ?a)", "?a"),
+        rw("scale_zero_elim", "(Affine Scale (Vec3 1 1 1) ?a)", "?a"),
 
         rw("scale_trans",
            "(Affine Scale (Vec3 ?a ?b ?c) (Affine Trans (Vec3 ?x ?y ?z) ?m))",
-           "(Affine Trans (Vec3 (* ?a ?x) (* ?b ?y) (* ?c ?z)) (Affine Scale (Vec3 ?a ?b ?c) ?m))"),
+           "(Affine Trans (Vec3 (* ?a ?x) (* ?b ?y) (* ?c ?z))
+              (Affine Scale (Vec3 ?a ?b ?c) ?m))"),
 
         rw("trans_scale",
            "(Affine Trans (Vec3 ?x ?y ?z) (Affine Scale (Vec3 ?a ?b ?c) ?m))",
