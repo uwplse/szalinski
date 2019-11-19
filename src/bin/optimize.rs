@@ -5,12 +5,13 @@ use log::*;
 use serde::Serialize;
 
 use egg::{
+    expr::RecExpr,
     extract::{calculate_cost, Extractor},
     parse::ParsableLanguage,
 };
-use szalinski_egg::sz_param;
 use szalinski_egg::cad::{Cad, EGraph, Rewrite};
 use szalinski_egg::eval::Scad;
+use szalinski_egg::sz_param;
 
 #[derive(Debug, Serialize)]
 pub enum StopReason {
@@ -28,11 +29,13 @@ pub struct IterationResult {
     pub search_time: f64,
     pub apply_time: f64,
     pub rebuild_time: f64,
+    pub best_cost: u64,
 }
 
 fn run_one(
     start_time: &Instant,
     egraph: &mut EGraph,
+    root: u32,
     rules: &[Rewrite],
     limit: usize,
     timeout: Duration,
@@ -103,6 +106,8 @@ fn run_one(
         egraph.number_of_classes()
     );
 
+    let best_cost = Extractor::new(&egraph).find_best(root).cost;
+
     let it = IterationResult {
         applied,
         egraph_nodes,
@@ -110,6 +115,7 @@ fn run_one(
         search_time,
         apply_time,
         rebuild_time,
+        best_cost,
     };
     if stop.is_none() && it.applied.is_empty() {
         stop = Some(StopReason::Saturated);
@@ -127,6 +133,12 @@ pub struct RunResult {
     pub extract_time: f64,
     pub final_scad: String,
     pub stop_reason: StopReason,
+
+    // metrics
+    pub ast_size: usize,
+    pub ast_depth: usize,
+    pub n_mapis: usize,
+    pub depth_under_mapis: usize,
 }
 
 pub fn pre_optimize(egraph: &mut EGraph) {
@@ -166,7 +178,7 @@ pub fn optimize(initial_expr: &str, iters: usize, limit: usize, timeout: Duratio
     let stop_reason = (0..iters)
         .find_map(|i| {
             info!("\n\nIteration {}\n", i);
-            let (res, stop) = run_one(&start_time, &mut egraph, &rules, limit, timeout);
+            let (res, stop) = run_one(&start_time, &mut egraph, root, &rules, limit, timeout);
             iterations.push(res);
             stop
         })
@@ -174,19 +186,16 @@ pub fn optimize(initial_expr: &str, iters: usize, limit: usize, timeout: Duratio
     info!("Stopping {:?}", stop_reason);
 
     let extract_time = Instant::now();
-    let (final_cost, final_expr) = {
-        let ext = Extractor::new(&egraph);
-        let f = ext.find_best(root);
-        (f.cost, f.expr.pretty(80))
-    };
+    let best = Extractor::new(&egraph).find_best(root);
     let extract_time = extract_time.elapsed().as_secs_f64();
+    let pretty = best.expr.pretty(80);
 
     info!("Extract time: {}", extract_time);
     info!("Initial cost: {}", initial_cost);
-    info!("Final cost: {}", final_cost);
-    info!("Final: {}", final_expr);
+    info!("Final cost: {}", best.cost);
+    info!("Final: {}", pretty);
 
-    let to_scad_in = Cad::parse_expr(&final_expr).unwrap();
+    let to_scad_in = Cad::parse_expr(&pretty).unwrap();
     let final_scad = format!("{}", Scad(&to_scad_in));
     info!("Final Scad: {}", final_scad);
 
@@ -194,11 +203,51 @@ pub fn optimize(initial_expr: &str, iters: usize, limit: usize, timeout: Duratio
         initial_expr,
         initial_cost,
         iterations,
-        final_cost,
-        final_expr,
+        final_cost: best.cost,
+        final_expr: pretty,
         extract_time,
         final_scad,
         stop_reason,
+        ast_size: ast_size(&best.expr),
+        ast_depth: ast_depth(&best.expr),
+        n_mapis: n_mapis(&best.expr),
+        depth_under_mapis: depth_under_mapis(&best.expr),
+    }
+}
+
+fn ast_size(e: &RecExpr<Cad>) -> usize {
+    let e = e.as_ref();
+    let sum_children: usize = e.children.iter().map(ast_size).sum();
+    match e.op {
+        Cad::Vec3 => 1,
+        _ => 1 + sum_children,
+    }
+}
+
+fn ast_depth(e: &RecExpr<Cad>) -> usize {
+    let e = e.as_ref();
+    let max_children = e.children.iter().map(ast_depth).max().unwrap_or(0);
+    match e.op {
+        Cad::Vec3 => 1,
+        _ => 1 + max_children,
+    }
+}
+
+fn n_mapis(e: &RecExpr<Cad>) -> usize {
+    let e = e.as_ref();
+    let sum_children: usize = e.children.iter().map(n_mapis).sum();
+    sum_children
+        + match e.op {
+            Cad::MapI => 1,
+            _ => 0,
+        }
+}
+
+fn depth_under_mapis(expr: &RecExpr<Cad>) -> usize {
+    let e = expr.as_ref();
+    match e.op {
+        Cad::MapI => ast_depth(expr) - 1,
+        _ => e.children.iter().map(n_mapis).sum(),
     }
 }
 
@@ -214,7 +263,12 @@ fn main() {
     sz_param!(NODE_LIMIT: usize);
     sz_param!(TIMEOUT: f64);
 
-    let result = optimize(&input, *ITERATIONS, *NODE_LIMIT, Duration::from_secs_f64(*TIMEOUT));
+    let result = optimize(
+        &input,
+        *ITERATIONS,
+        *NODE_LIMIT,
+        Duration::from_secs_f64(*TIMEOUT),
+    );
 
     let out_file = std::fs::File::create(&args[2]).expect("failed to open output");
     serde_json::to_writer_pretty(out_file, &result).unwrap();
