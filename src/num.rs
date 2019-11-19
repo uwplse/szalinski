@@ -7,7 +7,8 @@ pub struct Num(u64);
 
 const DEFAULT_MANTISSA_BITS: usize = 52;
 
-sz_param!(EPSILON: f64);
+sz_param!(ABS_EPSILON: f64);
+sz_param!(REL_EPSILON: f64);
 sz_param!(MANTISSA_BITS: usize);
 
 // const ROUND_RELATIVE: f64 = 0.01;
@@ -22,8 +23,17 @@ impl Num {
         f64::from_bits(self.0)
     }
 
-    pub fn is_close(self, other: impl Into<Num>) -> bool {
-        (self.to_f64() - other.into().to_f64()).abs() < *EPSILON
+    pub fn is_close(self, other: impl Clone + Into<Num>) -> bool {
+        let a = self.to_f64();
+        let b = other.into().to_f64();
+
+        let diff = (a - b).abs();
+        if diff <= *ABS_EPSILON {
+            return true;
+        }
+
+        let max = a.abs().max(b.abs());
+        diff <= max * *REL_EPSILON
     }
 }
 
