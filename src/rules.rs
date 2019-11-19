@@ -4,7 +4,7 @@ use egg::{
     egraph::{AddResult, Metadata},
     expr::{Expr, Id, QuestionMarkName, RecExpr},
     parse::ParsableLanguage,
-    pattern::{Applier, Rewrite, WildMap, Condition},
+    pattern::{Applier, Condition, Rewrite, WildMap},
 };
 
 use indexmap::{IndexMap, IndexSet};
@@ -22,7 +22,13 @@ fn rw<M: Metadata<Cad>>(name: &str, lhs: &str, rhs: &str) -> Rewrite<Cad, M> {
     Cad::parse_rewrite(name, lhs, rhs).unwrap()
 }
 
-fn cond_rw<M: Metadata<Cad>>(name: &str, lhs: &str, rhs: &str, l_eq: &str, r_eq: &str) -> Rewrite<Cad, M> {
+fn cond_rw<M: Metadata<Cad>>(
+    name: &str,
+    lhs: &str,
+    rhs: &str,
+    l_eq: &str,
+    r_eq: &str,
+) -> Rewrite<Cad, M> {
     let mut rw = rw(name, lhs, rhs);
     rw.conditions.push(Condition {
         lhs: Cad::parse_pattern(l_eq).unwrap(),
