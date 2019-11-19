@@ -409,9 +409,11 @@ where
         ids.push(id);
     }
 
-    if parts.len() <= 1 {
+    sz_param!(PARTITIONING_MAX: usize);
+    if parts.len() <= 1 || parts.len() > *PARTITIONING_MAX {
         return None;
     }
+    // println!("parts: {:?}", parts);
 
     let mut order = Vec::new();
     let mut list_ids = smallvec![];
