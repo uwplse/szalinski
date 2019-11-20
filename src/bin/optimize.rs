@@ -10,7 +10,7 @@ use egg::{
     parse::ParsableLanguage,
 };
 use szalinski_egg::cad::{Cad, EGraph, Rewrite};
-use szalinski_egg::eval::Scad;
+use szalinski_egg::eval::{Scad, remove_empty};
 use szalinski_egg::sz_param;
 
 #[derive(Debug, Serialize)]
@@ -167,6 +167,8 @@ pub fn optimize(initial_expr: &str, iters: usize, limit: usize, timeout: Duratio
     let initial_expr = initial_expr.to_string();
     let initial_expr_cad = Cad::parse_expr(&initial_expr).unwrap();
     let initial_cost = calculate_cost(&initial_expr_cad);
+    let initial_expr_cad = remove_empty(&initial_expr_cad).expect("input was empty");
+    info!("Without empty: {}", initial_expr_cad.pretty(80));
 
     let (mut egraph, mut root) = EGraph::from_expr(&initial_expr_cad);
     pre_optimize(&mut egraph);
