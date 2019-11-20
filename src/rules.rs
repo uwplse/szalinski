@@ -572,6 +572,17 @@ impl Applier<Cad, Meta> for ListApplier {
             .collect();
         let mut results = vec![];
 
+        // insert repeats
+        if ids.len() > 1 {
+            let i0 = egraph.find(ids[0]);
+            if ids.iter().all(|id| i0 == egraph.find(*id)) {
+                let len = Expr::unit(Cad::Num(ids.len().into()));
+                let e = Expr::new(Cad::Repeat, smallvec![egraph.add(len).id, i0]);
+                results.push(egraph.add(e));
+                return results;
+            }
+        }
+
         // don't partition a list of lists
         if ids
             .iter()
@@ -611,15 +622,6 @@ impl Applier<Cad, Meta> for ListApplier {
             results.extend(partition_list(egraph, ids, |i, _| ops[i].clone()));
         }
 
-        // insert repeats
-        if ids.len() > 1 {
-            let i0 = egraph.find(ids[0]);
-            if ids.iter().all(|id| i0 == egraph.find(*id)) {
-                let len = Expr::unit(Cad::Num(ids.len().into()));
-                let e = Expr::new(Cad::Repeat, smallvec![egraph.add(len).id, i0]);
-                results.push(egraph.add(e))
-            }
-        }
 
         results
     }
