@@ -161,16 +161,25 @@ pub fn pre_optimize(egraph: &mut EGraph) {
     info!("Pre rule time: {:?}", pre_rule_time);
 }
 
+sz_param!(PRE_EXTRACT: bool);
+
 pub fn optimize(initial_expr: &str, iters: usize, limit: usize, timeout: Duration) -> RunResult {
     let initial_expr = initial_expr.to_string();
     let initial_expr_cad = Cad::parse_expr(&initial_expr).unwrap();
     let initial_cost = calculate_cost(&initial_expr_cad);
 
-    let (mut egraph, root) = EGraph::from_expr(&initial_expr_cad);
+    let (mut egraph, mut root) = EGraph::from_expr(&initial_expr_cad);
     pre_optimize(&mut egraph);
-    let best = Extractor::new(&egraph).find_best(root).expr;
-    info!("Pre extracting: {}", best.pretty(80));
-    let (mut egraph, root) = EGraph::from_expr(&best);
+
+    if *PRE_EXTRACT {
+        let best = Extractor::new(&egraph).find_best(root).expr;
+        info!("Pre extracting: {}", best.pretty(80));
+        let (eg, r) = EGraph::from_expr(&best);
+        egraph = eg;
+        root = r;
+    }
+
+    let root = root;
 
     let rules = szalinski_egg::rules::rules();
     let mut iterations = vec![];
