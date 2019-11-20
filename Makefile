@@ -41,10 +41,10 @@ print-%:
 
 out/%.csg: inputs/%.scad
 	@mkdir -p $(dir $@)
-	openscad -o $@ $<
+	timeout 10s openscad -o $@ $<
 
-out/%.csexp: out/%.csg $(tgt)/parse-csg
-	$(tgt)/parse-csg $< $@
+out/%.csexp: out/%.csg $(tgt)/parse-csg sz_params
+	export $$(cat sz_params | xargs) && $(tgt)/parse-csg $< $@
 
 # use all the environment variables from this file
 out/%.json: out/%.csexp $(tgt)/optimize sz_params
@@ -56,11 +56,11 @@ out/%.csexp.opt: out/%.json
 out/%.opt.scad: out/%.json
 	jq -r .final_scad $< > $@
 
-out/%.in.off: out/%.csg
-	openscad -o $@ $< 2>> out/openscad.log
+out/%.in.off: out/%.csg scripts/openscad-or-timeout.sh
+	./scripts/openscad-or-timeout.sh $< $@
 
-out/%.opt.off: out/%.opt.scad out/%.csexp.opt
-	openscad -o $@ $< 2>> out/openscad.log
+out/%.opt.off: out/%.opt.scad out/%.csexp.opt scripts/openscad-or-timeout.sh
+	./scripts/openscad-or-timeout.sh $< $@
 
 out/%.diff: scripts/compare_mesh.sh out/compare_mesh out/%.in.off out/%.opt.off
 	./scripts/compare_mesh.sh out/$*.in.off out/$*.opt.off $@
