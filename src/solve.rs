@@ -213,9 +213,15 @@ fn solve_vec(egraph: &mut EGraph, list: &[Vec3]) -> Vec<AddResult> {
     let xs: Vec<Num> = list.iter().map(|v| v.0).collect();
     let ys: Vec<Num> = list.iter().map(|v| v.1).collect();
     let zs: Vec<Num> = list.iter().map(|v| v.2).collect();
+
     let xys: Vec<(Num, Num)> = list.iter().map(|v| (v.0, v.1)).collect();
+    let yxs: Vec<(Num, Num)> = list.iter().map(|v| (v.1, v.0)).collect();
+
     let yzs: Vec<(Num, Num)> = list.iter().map(|v| (v.1, v.2)).collect();
+    let zys: Vec<(Num, Num)> = list.iter().map(|v| (v.2, v.1)).collect();
+
     let xzs: Vec<(Num, Num)> = list.iter().map(|v| (v.0, v.2)).collect();
+    let zxs: Vec<(Num, Num)> = list.iter().map(|v| (v.2, v.0)).collect();
 
     let len = xs.len();
     assert_eq!(len, ys.len());
@@ -229,9 +235,15 @@ fn solve_vec(egraph: &mut EGraph, list: &[Vec3]) -> Vec<AddResult> {
         Permutation::sort(&xs),
         Permutation::sort(&ys),
         Permutation::sort(&zs),
+
         Permutation::sort(&xys),
+        Permutation::sort(&yxs),
+
         Permutation::sort(&yzs),
+        Permutation::sort(&zys),
+
         Permutation::sort(&xzs),
+        Permutation::sort(&zxs),
     ];
 
     for perm in &perms {
