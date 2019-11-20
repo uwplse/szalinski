@@ -43,7 +43,6 @@ define_term! {
         Cube = "Cube",
         Sphere = "Sphere",
         Cylinder = "Cylinder",
-        Hexagon = "Hexagon",
         Empty = "Empty",
         Hull = "Hull",
         Nil = "Nil",
@@ -216,7 +215,7 @@ impl Language for Cad {
             Bool(_) | ListVar(_) => SMALL,
             Add | Sub | Mul | Div => SMALL,
 
-            Cube | Empty | Nil | Sphere | Cylinder | Hexagon | Hull => 1.0,
+            Cube | Empty | Nil | Sphere | Cylinder | Hull => 1.0,
 
             Trans | TransPolar | Scale | Rotate => 1.0,
 
