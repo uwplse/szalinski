@@ -386,10 +386,10 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
     rules
 }
 
-fn get_float(expr: &RecExpr<Cad>) -> Num {
+fn get_float(expr: &RecExpr<Cad>) -> Option<Num> {
     match expr.as_ref().op {
-        Cad::Num(f) => f.clone(),
-        _ => panic!("Expected float, got {}", expr.to_sexp()),
+        Cad::Num(f) => Some(f.clone()),
+        _ => None
     }
 }
 
@@ -397,9 +397,9 @@ fn get_vec(expr: &RecExpr<Cad>) -> Option<Vec3> {
     if Cad::Vec3 == expr.as_ref().op {
         let args = &expr.as_ref().children;
         assert_eq!(args.len(), 3);
-        let f0 = get_float(&args[0]);
-        let f1 = get_float(&args[1]);
-        let f2 = get_float(&args[2]);
+        let f0 = get_float(&args[0])?;
+        let f1 = get_float(&args[1])?;
+        let f2 = get_float(&args[2])?;
         Some((f0, f1, f2))
     } else {
         None
@@ -812,5 +812,27 @@ impl Applier<Cad, Meta> for SortUnpartApplier {
         let list = egraph.add(Expr::new(Cad::List, sorted_lists)).id;
         let part_id = egraph.add(Expr::unit(Cad::Partitioning(part.clone()))).id;
         vec![egraph.add(Expr::new(Cad::Unpart, smallvec![part_id, list]))]
+    }
+}
+
+#[derive(Debug)]
+struct CancelIfNotZero {
+    bound: QuestionMarkName,
+    check: QuestionMarkName,
+}
+
+impl Applier<Cad, Meta> for CancelIfNotZero {
+    fn apply(&self, egraph: &mut EGraph, map: &WildMap) -> Vec<AddResult> {
+        // let check: &Num = get_unit!(egraph, map[&self.check], Cad::Num);
+        let check = map[&self.check][0];
+        let zero = Expr::unit(Cad::Num(0.into()));
+        if egraph[check].nodes.iter().any(|node| node == &zero) {
+            vec![]
+        } else {
+            vec![AddResult {
+                id: map[&self.bound][0],
+                was_there: true
+            }]
+        }
     }
 }
