@@ -472,6 +472,7 @@ fn get_affines(egraph: &EGraph, id: Id, affine_kind: &Cad) -> Vec<(Id, Id)> {
         .collect()
 }
 
+sz_param!(AFFINE_SIGNATURE_MAX_LEN: usize);
 type AffineSig = [usize; 3];
 fn affine_signature(egraph: &EGraph, id: Id) -> AffineSig {
     let mut scales = 0;
@@ -489,6 +490,9 @@ fn affine_signature(egraph: &EGraph, id: Id) -> AffineSig {
             };
         }
     }
+    translates = AFFINE_SIGNATURE_MAX_LEN.min(translates);
+    scales = AFFINE_SIGNATURE_MAX_LEN.min(scales);
+    rotates = AFFINE_SIGNATURE_MAX_LEN.min(rotates);
     [translates, scales, rotates]
 }
 
@@ -513,7 +517,7 @@ fn insert_map2s(egraph: &mut EGraph, list_ids: &[Id]) -> Vec<AddResult> {
         assert!(affs_list
             .iter()
             .zip(&sigs)
-            .all(|(affs, sig)| affs.len() == sig[cadi]));
+            .all(|(affs, sig)| affs.len() >= sig[cadi]));
 
         let aff_id = egraph.add(Expr::unit(cad.clone())).id;
 
