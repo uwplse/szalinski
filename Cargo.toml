@@ -22,6 +22,9 @@ pest_derive = "2"
 env_logger = "0.6"
 once_cell = "1"
 
+rand = "0.7"
+rand_pcg = "0.2"
+
 [dependencies.egg]
 git = "https://github.com/mwillsey/egg.git"
 rev = "d9a61a7abdcf227b30a010e72bb0cc5a0dc35286"
