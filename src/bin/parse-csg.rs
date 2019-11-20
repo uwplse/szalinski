@@ -1,8 +1,14 @@
 use std::collections::HashMap;
 use std::io::{Result, Write};
+use std::sync::{Arc, Mutex};
+
+use rand::{seq::SliceRandom, SeedableRng};
+use rand_pcg::Pcg64;
 
 use pest::{iterators::Pair, Parser};
 use pest_derive::Parser;
+
+use szalinski_egg::sz_param;
 
 #[derive(Parser)]
 #[grammar_inline = r#"
@@ -54,31 +60,81 @@ fn eps(a: f64, b: f64) -> bool {
     (a - b).abs() < 0.001
 }
 
+sz_param!(PARSE_BINARIZE: bool);
+sz_param!(
+    PARSE_SHUFFLE_RNG: Option<Arc<Mutex<Pcg64>>> = |seed: u64| {
+        if seed == 0 {
+            None
+        } else {
+            let rng = Pcg64::seed_from_u64(seed);
+            Some(Arc::new(Mutex::new(rng)))
+        }
+    }
+);
+
 fn write_op<'a>(
     w: &mut impl Write,
     depth: usize,
     name: &str,
     ps: impl IntoIterator<Item = Pair<'a, Rule>>,
 ) -> Result<()> {
-    let ps: Vec<_> = ps.into_iter().filter(|p| has_content(p.clone())).collect();
-    match ps.len() {
-        0 => panic!(),
-        1 => write_csg(w, depth, ps[0].clone()),
-        2 => {
-            write!(w, "(Binop {}", name)?;
-            for p in ps {
+    fn write_op_rec<'a>(
+        w: &mut impl Write,
+        depth: usize,
+        name: &str,
+        ps: &mut Vec<Pair<'a, Rule>>,
+    ) -> Result<()> {
+        match ps.len() {
+            0 => panic!(),
+            1 => write_csg(w, depth, ps[0].clone()),
+            _ => {
+                let last = ps.pop().unwrap();
+                write!(w, "(Binop {}", name)?;
                 indent(w, depth + 1)?;
-                write_csg(w, depth + 1, p)?;
+                write_op_rec(w, depth + 1, name, ps)?;
+                indent(w, depth + 1)?;
+                write_csg(w, depth + 1, last)?;
+                write!(w, ")")
             }
-            write!(w, ")")
         }
-        _ => {
-            write!(w, "(Fold {} (List", name)?;
-            for p in ps {
-                indent(w, depth + 1)?;
-                write_csg(w, depth + 1, p)?;
+    }
+
+    let mut ps: Vec<_> = ps.into_iter().filter(|p| has_content(p.clone())).collect();
+    // let mut ps: Vec<_> = ps.into_iter().collect();
+    // ps = filter_content(ps);
+    // let mut ps: Vec<_> = ps.into_iter().collect();
+
+    if let Some(rng) = PARSE_SHUFFLE_RNG.as_ref() {
+        let mut rng = rng.lock().unwrap();
+        if name.contains("Diff") {
+            ps[1..].shuffle(&mut *rng)
+        } else {
+            ps.shuffle(&mut *rng)
+        }
+    }
+
+    if *PARSE_BINARIZE {
+        write_op_rec(w, depth, name, &mut ps)
+    } else {
+        match ps.len() {
+            0 => panic!(),
+            1 => write_csg(w, depth, ps[0].clone()),
+            2 => {
+                write!(w, "(Binop {}", name)?;
+                for p in ps {
+                    indent(w, depth + 1)?;
+                    write_csg(w, depth + 1, p)?;
+                }
+                write!(w, ")")
             }
-            write!(w, "))")
+            _ => {
+                write!(w, "(Fold {} (List", name)?;
+                for p in ps {
+                    indent(w, depth + 1)?;
+                    write_csg(w, depth + 1, p)?;
+                }
+                write!(w, "))")
+            }
         }
     }
 }
@@ -291,6 +347,7 @@ fn write_csg(w: &mut impl Write, depth: usize, pair: Pair<Rule>) -> Result<()> {
 }
 
 fn main() {
+    let _ = env_logger::builder().is_test(false).try_init();
     let args: Vec<String> = std::env::args().collect();
     if args.len() != 3 {
         panic!("Usage: parse-csg <input> <output>")
