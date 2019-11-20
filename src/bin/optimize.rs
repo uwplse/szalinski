@@ -97,6 +97,7 @@ fn run_one(
     }
 
     let rebuild_time = Instant::now();
+    szalinski_egg::num::unify_close_nums(egraph);
     egraph.rebuild();
     let rebuild_time = rebuild_time.elapsed().as_secs_f64();
     info!("Rebuild time: {}", rebuild_time);
