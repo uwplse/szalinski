@@ -14,6 +14,120 @@ macro_rules! rec {
     };
 }
 
+pub fn remove_empty(expr: &RecExpr<Cad>) -> Option<RecExpr<Cad>> {
+    let e = expr.as_ref();
+    let child = |i: usize| e.children[i].clone();
+    let recurse = |i: usize| remove_empty(&e.children[i]);
+    use Cad::*;
+    let res = match e.op {
+        Empty => None,
+        Hull => Some(rec!(Hull, recurse(0)?)),
+        Cube => {
+            let v = get_vec3_nums(&child(0));
+            if v.0 == 0.0 || v.1 == 0.0 || v.2 == 0.0 {
+                None
+            } else {
+                Some(expr.clone())
+            }
+        }
+        Sphere => {
+            let r = get_num(&child(0));
+            if r == 0.0 {
+                None
+            } else {
+                Some(expr.clone())
+            }
+        }
+        Cylinder => {
+            let (h, r1, r2) = get_vec3_nums(&child(0));
+            if h == 0.0 || (r1, r2) == (0.0, 0.0) {
+                None
+            } else {
+                Some(expr.clone())
+            }
+        }
+        Affine => {
+            let cad = recurse(2)?;
+            Some(rec!(Affine, child(0), child(1), cad))
+            // TODO check scale
+        }
+        Binop => {
+            let bop = child(0).as_ref().op.clone();
+            let a = recurse(1);
+            let b = recurse(2);
+            match bop {
+                Union => {
+                    if a.is_none() || b.is_none() {
+                        a.or(b)
+                    } else {
+                        Some(rec!(Binop, rec!(bop), a.unwrap(), b.unwrap()))
+                    }
+                }
+                Inter => {
+                    if a.is_none() || b.is_none() {
+                        None
+                    } else {
+                        Some(rec!(Binop, rec!(bop), a.unwrap(), b.unwrap()))
+                    }
+                }
+                Diff => {
+                    if a.is_none() {
+                        b
+                    } else if b.is_none() {
+                        a
+                    } else {
+                        Some(rec!(Binop, rec!(bop), a.unwrap(), b.unwrap()))
+                    }
+                }
+                _ => panic!("unexpected binop: {:?}", bop),
+            }
+        }
+        Fold => {
+            let bop = child(0).as_ref().op.clone();
+            let list = child(1);
+            assert_eq!(list.as_ref().op, List);
+            let listargs = list.as_ref().children.iter().map(|e| remove_empty(e));
+            match bop {
+                Union => {
+                    let non_empty: Vec<RecExpr<Cad>> = listargs.filter_map(|e| e).collect();
+                    if non_empty.is_empty() {
+                        None
+                    } else {
+                        let listexpr = Expr::new(List, non_empty.into());
+                        Some(rec!(Fold, rec!(Union), listexpr.into()))
+                    }
+                }
+                Inter => {
+                    let args: Option<Vec<RecExpr<Cad>>> = listargs.collect();
+                    let listexpr = Expr::new(List, args?.into());
+                    Some(rec!(Fold, rec!(Inter), listexpr.into()))
+                }
+                Diff => {
+                    let mut listargs = listargs;
+                    // if first is empty, then we are empty
+                    let first = listargs.next().unwrap()?;
+
+                    let non_empty: Vec<RecExpr<Cad>> = listargs.filter_map(|e| e).collect();
+                    if non_empty.is_empty() {
+                        Some(first)
+                    } else {
+                        let mut args = vec![first];
+                        args.extend(non_empty);
+                        let listexpr = Expr::new(List, args.into());
+                        Some(rec!(Fold, rec!(Diff), listexpr.into()))
+                    }
+                }
+                _ => panic!("unexpected binop: {:?}", bop),
+            }
+        }
+        _ => panic!("unexpected cad: {}", expr.pretty(80)),
+    };
+    if res.is_none() {
+        // println!("Found empty: {}", expr.pretty(80));
+    }
+    res
+}
+
 fn get_num(expr: &RecExpr<Cad>) -> f64 {
     let expr = expr.as_ref();
     match expr.op {
@@ -103,7 +217,7 @@ pub fn eval(cx: Option<&FunCtx>, expr: &RecExpr<Cad>) -> RecExpr<Cad> {
             eval(cx, arg(1)),
             eval(cx, arg(2))
         ),
-        Cad::Hexagon => rec!(Cad::Hexagon),
+        // Cad::Hexagon => rec!(Cad::Hexagon),
         Cad::Empty => rec!(Cad::Empty),
         Cad::Vec3 => rec!(
             Cad::Vec3,
@@ -266,7 +380,7 @@ impl<'a> fmt::Display for Scad<'a> {
                 get_vec3_nums(&arg(1)).2,
                 child(2),
             ),
-            Cad::Hexagon => writeln!(f, "cylinder();"),
+            // Cad::Hexagon => writeln!(f, "cylinder();"),
             Cad::Hull => write!(f, "hull() {{ {} }}", child(0)),
 
             Cad::Trans => write!(f, "translate"),
