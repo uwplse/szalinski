@@ -40,15 +40,23 @@ fn cond_rw<M: Metadata<Cad>>(
 #[rustfmt::skip]
 pub fn pre_rules() -> Vec<Rewrite<Cad, Meta>> {
     vec![
+        rw("union_comm", "(Binop Union ?a ?b)", "(Binop Union ?b ?a)"),
+        rw("inter_comm", "(Binop Inter ?a ?b)", "(Binop Inter ?b ?a)"),
         rw("fold_nil", "(Binop ?bop ?a ?b)", "(Fold ?bop (List ?a ?b))"),
-        rw("union_consl", "(Binop Union (Fold Union ?list) ?a)", "(Fold Union (Cons ?a ?list))"),
-        rw("inter_consl", "(Binop Inter (Fold Inter ?list) ?a)", "(Fold Inter (Cons ?a ?list))"),
+        rw("consl", "(Binop ?bop (Fold ?bop (List ?items...)) ?a)", "(Fold ?bop (List ?items... ?a))"),
         // rw("union_consr", "(Binop Union ?a (Fold Union ?list))", "(Fold Union (Cons ?a ?list))"),
         // rw("inter_consr", "(Binop Inter ?a (Fold Inter ?list))", "(Fold Inter (Cons ?a ?list))"),
-        rw("list_nil", "Nil", "(List)"),
-        rw("list_cons", "(Cons ?a (List ?b...))", "(List ?a ?b...)"),
-        rw("nil_list", "(List)", "Nil"),
-        rw("cons_list", "(List ?a ?b...)", "(Cons ?a (List ?b...))"),
+        // rw("list_nil", "Nil", "(List)"),
+        // rw("list_cons", "(Cons ?a (List ?b...))", "(List ?a ?b...)"),
+        // rw("nil_list", "(List)", "Nil"),
+        // rw("cons_list", "(List ?a ?b...)", "(Cons ?a (List ?b...))"),
+
+        rw("flatten_union",
+           "(Fold Union (List (Fold Union (List ?list...)) ?rest...))",
+           "(Fold Union (List ?rest... ?list...))"),
+        rw("flatten_inter",
+           "(Fold Inter (List (Fold Inter (List ?list...)) ?rest...))",
+           "(Fold Inter (List ?rest... ?list...))"),
 
     ]
 }
@@ -68,8 +76,24 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
         rw("mul_comm", "(* ?a ?b)", "(* ?b ?a)"),
 
         rw("div_one", "(/ ?a 1)", "?a"),
-        rw("mul_div", "(* ?a (/ ?b ?a))", "?b"),
-        rw("div_mul", "(/ (* ?a ?b) ?a)", "?b"),
+        // rw("mul_div", "(* ?a (/ ?b ?a))", "?b"),
+        // rw("div_mul", "(/ (* ?a ?b) ?a)", "?b"),
+        Rewrite::new (
+            "mul_div",
+            Cad::parse_pattern("(* ?a (/ ?b ?a))").unwrap(),
+            CancelIfNotZero {
+                check: "?a".parse().unwrap(),
+                bound: "?b".parse().unwrap(),
+            },
+        ),
+        Rewrite::new (
+            "div_mul",
+            Cad::parse_pattern("(/ (* ?a ?b) ?a)").unwrap(),
+            CancelIfNotZero {
+                check: "?a".parse().unwrap(),
+                bound: "?b".parse().unwrap(),
+            },
+        ),
         // rw("mul_div_div", "(* (/ ?a ?b) (/ ?c ?d))", "(/ (* ?a ?c) (* ?b ?d))"),
         // rw("div_div", "(/ (/ ?a ?b) ?a)", "(/ 1 ?b)"),
 
@@ -91,12 +115,12 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
            "(Fold ?bop (Affine ?aff ?param ?cad))",
            "(Affine ?aff ?param (Fold ?bop ?cad))"),
 
-        rw("flatten_union",
-           "(Fold Union (List (Fold Union (List ?list...)) ?rest...))",
-           "(Fold Union (List ?rest... ?list...))"),
-        rw("flatten_inter",
-           "(Fold Inter (List (Fold Inter (List ?list...)) ?rest...))",
-           "(Fold Inter (List ?rest... ?list...))"),
+        // rw("flatten_union",
+        //    "(Fold Union (List (Fold Union (List ?list...)) ?rest...))",
+        //    "(Fold Union (List ?rest... ?list...))"),
+        // rw("flatten_inter",
+        //    "(Fold Inter (List (Fold Inter (List ?list...)) ?rest...))",
+        //    "(Fold Inter (List ?rest... ?list...))"),
 
         rw("union_trans",
            "(Union (Trans ?x ?y ?z ?a) (Trans ?x ?y ?z ?b))",
