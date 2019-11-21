@@ -11,17 +11,16 @@ use pest_derive::Parser;
 use szalinski_egg::sz_param;
 
 #[derive(Parser)]
-#[grammar_inline = r#"
+#[grammar_inline = r###"
     WHITESPACE = _{ " " | "\t" | "\r" | "\n" }
-    ident = { "$"? ~ ASCII_ALPHANUMERIC* }
+    ident = @{ "$"? ~ (ASCII_ALPHANUMERIC | "_")+ }
 
     program = { SOI ~ instr* ~ EOI }
 
-    instr = _{ empty_group | group | hull | union | diff | inter | matrix |
-              cylinder | cube | sphere }
+    instr = _{ empty_group | group | union | diff | inter | matrix |
+              cylinder | cube | sphere | anything | anything_one }
         empty_group = { "group();" }
         group      = { "group()" ~ scope }
-        hull       = { "hull()" ~ scope }
         union      = { "union()" ~ scope }
         diff       = { "difference()" ~ scope }
         inter      = { "intersection()" ~ scope }
@@ -29,8 +28,10 @@ use szalinski_egg::sz_param;
         cylinder   = { "cylinder(" ~ args ~ ")" ~ scope }
         cube       = { "cube(" ~ args ~ ")" ~ scope }
         sphere     = { "sphere(" ~ args ~ ")" ~ scope }
+        anything   = { ident ~ "(" ~ args ~ ")" ~ scope }
+        anything_one = { ident ~ "(" ~ value ~ ")" ~ scope }
 
-    scope = _{ "{" ~ instr* ~ "}" | ";" }
+    scope = _{ "{" ~ ("#"? ~ instr)* ~ "}" | ";" }
 
     num = {
        "-"? ~ ASCII_DIGIT+ ~ ("." ~ ASCII_DIGIT*)?
@@ -38,14 +39,19 @@ use szalinski_egg::sz_param;
     }
     vec4 = { "[" ~ num ~ "," ~ num ~ "," ~ num ~ "," ~ num ~ "]" }
     mat  =  { "[" ~ vec4 ~ "," ~ vec4 ~ "," ~ vec4 ~ "," ~ vec4 ~ "]" }
-
     vec3 = { "[" ~ num ~ "," ~ num ~ "," ~ num ~ "]" }
-    value = _{ num | vec3 | bool }
+
+    list =  { "[" ~ values ~ "]" }
+    string = @{ "\"" ~ (!"\"" ~ ANY)* ~ "\"" }
+
+    values = _{ value? ~ ("," ~ value)* }
+    value = _{ num | vec3 | bool | list | string | undef }
+    undef = { "undef" }
     bool = { "true" | "false" }
 
     arg = { ident ~ "=" ~ value }
-    args = { arg ~ ("," ~ arg)* }
-"#]
+    args = { arg? ~ ("," ~ arg)* }
+"###]
 pub struct CSGParser;
 
 fn indent(w: &mut impl Write, depth: usize) -> Result<()> {
@@ -85,7 +91,7 @@ fn write_op<'a>(
         ps: &mut Vec<Pair<'a, Rule>>,
     ) -> Result<()> {
         match ps.len() {
-            0 => panic!(),
+            0 => panic!("Found an empty subtree under {}", name),
             1 => write_csg(w, depth, ps[0].clone()),
             _ => {
                 let last = ps.pop().unwrap();
@@ -156,14 +162,17 @@ fn vec3(p: Pair<Rule>) -> (f64, f64, f64) {
 
 fn mkdict(args: Pair<Rule>) -> HashMap<String, Pair<Rule>> {
     assert_eq!(args.as_rule(), Rule::args);
-    args.into_inner()
+    let d = args
+        .into_inner()
         .map(|p| {
             let mut ps = p.into_inner();
             let k = ps.next().unwrap().as_str().into();
             let v = ps.next().unwrap();
             (k, v)
         })
-        .collect()
+        .collect();
+    // println!("dict: {:?}", d);
+    d
 }
 
 macro_rules! matrix_assert {
@@ -227,6 +236,22 @@ fn get_rotate(mat: &[Vec<f64>]) -> Option<(f64, f64, f64)> {
         (x, y, z)
     };
 
+    let (cx, cy, cz) = (x.cos(), y.cos(), z.cos());
+    let (sx, sy, sz) = (x.sin(), y.sin(), z.sin());
+
+    #[rustfmt::skip]
+    let guess = vec![
+        vec![cy*cz, cz*sx*sy - cx*sz, cx*cz*sy + sx*sz, 0.0],
+        vec![cy*sz, cx*cz + sx*sy*sz, cx*sy*sz - cz*sx, 0.0],
+        vec![  -sy,            cy*sx,            cx*cy, 0.0],
+        vec![  0.0,              0.0,              0.0, 1.0]
+    ];
+
+    if guess != mat {
+        return None;
+    }
+
+
     let r2deg = |f| {
         let d = 180.0 * f / std::f64::consts::PI;
         if d < 0.0 {
@@ -235,7 +260,7 @@ fn get_rotate(mat: &[Vec<f64>]) -> Option<(f64, f64, f64)> {
             d
         }
     };
-    Some((r2deg(x), r2deg(y), r2deg(z)))
+    Some(dbg!((r2deg(x), r2deg(y), r2deg(z))))
 }
 
 fn has_content(pair: Pair<Rule>) -> bool {
@@ -243,10 +268,12 @@ fn has_content(pair: Pair<Rule>) -> bool {
     match rule {
         Rule::empty_group => false,
         Rule::sphere | Rule::cube | Rule::cylinder => true,
-        Rule::group | Rule::union | Rule::diff | Rule::inter | Rule::hull | Rule::matrix => {
+        Rule::group | Rule::union | Rule::diff | Rule::inter | Rule::matrix => {
             pair.into_inner().any(|p| has_content(p))
         }
         Rule::mat => false,
+        Rule::anything => true,
+        Rule::anything_one => true,
         r => panic!(r#"Unexpected rule "{:?}""#, r),
     }
 }
@@ -257,17 +284,21 @@ fn write_csg(w: &mut impl Write, depth: usize, pair: Pair<Rule>) -> Result<()> {
     let d = depth + 1;
 
     match rule {
+        Rule::anything | Rule::anything_one => {
+            let op = args.next().unwrap();
+            let inside = args.next().unwrap().as_str().replace('"', "\\\"");
+            write!(w, "(\"{}({})\"", op.as_str(), inside)?;
+            indent(w, d)?;
+            for arg in args.filter(|p| has_content(p.clone())) {
+                write_csg(w, d + 1, arg)?;
+            }
+            write!(w, ")")
+        }
         Rule::empty_group => Ok(()),
         Rule::group => write_op(w, d, "Union", args),
         Rule::union => write_op(w, d, "Union", args),
         Rule::diff => write_op(w, d, "Diff", args),
         Rule::inter => write_op(w, d, "Inter", args),
-        Rule::hull => {
-            write!(w, "(Hull")?;
-            indent(w, d)?;
-            write_op(w, d, "Union", args)?;
-            write!(w, ")")
-        }
         Rule::matrix => {
             let mat = args.next().unwrap();
             let mat: Vec<Vec<f64>> = mat
@@ -286,18 +317,19 @@ fn write_csg(w: &mut impl Write, depth: usize, pair: Pair<Rule>) -> Result<()> {
                 write!(w, "(Affine Rotate (Vec3 {} {} {})", x, y, z)?;
             } else {
                 #[rustfmt::skip]
-                panic!(
-                    "Unknown transform: [
-  [{} {} {} {}],
-  [{} {} {} {}],
-  [{} {} {} {}],
-  [{} {} {} {}]
-]",
+                write!(
+                    w,
+                    r#"("multmatrix([
+  [{}, {}, {}, {}],
+  [{}, {}, {}, {}],
+  [{}, {}, {}, {}],
+  [{}, {}, {}, {}]
+])""#,
                     mat[0][0], mat[0][1], mat[0][2], mat[0][3],
                     mat[1][0], mat[1][1], mat[1][2], mat[1][3],
                     mat[2][0], mat[2][1], mat[2][2], mat[2][3],
                     mat[3][0], mat[3][1], mat[3][2], mat[3][3],
-                );
+                )?;
             }
             indent(w, d)?;
             write_op(w, d, "Union", args)?;
