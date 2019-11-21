@@ -1,0 +1,11 @@
+$fn=6;
+tolerance=0.1;
+cylinder(d=10,h=3);
+//translate([0,0,-3])cylinder(d=10,h=3,$fn=90);
+translate([20,0,0])difference(){
+    union(){
+        cylinder(d=20,h=3);
+        //translate([0,0,-3])cylinder(d=20,h=3,$fn=90);
+    }
+    translate([0,0,-0.5])cylinder(d=10+tolerance,h=4);
+}

@@ -1,0 +1,75 @@
+difference(){
+	union(){
+		cylinder(h=3,r1=42,r2=44.5,center=false);
+		translate([0,0,3]){
+			cylinder(h=36,r=44.5,center=false);
+		}
+
+	}
+	translate([0,0,3]){
+		cylinder(h=34,r=41.5,center=false);
+		cylinder(h=100,r=38.5,center=false);
+	}
+	translate([-50,0,0]){
+		cube([100,50,100]);
+	}
+
+	translate([-30,-30,0]){
+		cylinder(h=30,r1=4,r2=0,center=false);
+	}
+	translate([-28,-28,0]){
+		cylinder(h=30,r1=6,r2=0,center=false);
+	}
+	translate([30,-30,0]){
+		cylinder(h=30,r1=4,r2=0,center=false);
+	}
+	translate([28,-28,0]){
+		cylinder(h=30,r1=6,r2=0,center=false);
+	}
+
+	translate([-39,-17,0]){
+		cylinder(h=30,r1=4,r2=0,center=false);
+	}
+	translate([-36,-16,0]){
+		cylinder(h=30,r1=6,r2=0,center=false);
+	}
+	translate([39,-17,0]){
+		cylinder(h=30,r1=4,r2=0,center=false);
+	}
+	translate([36,-16,0]){
+		cylinder(h=30,r1=6,r2=0,center=false);
+	}
+	translate([-17,-39,0]){
+		cylinder(h=30,r1=4,r2=0,center=false);
+	}
+	translate([-16,-36,0]){
+		cylinder(h=30,r1=6,r2=0,center=false);
+	}
+	translate([17,-39,0]){
+		cylinder(h=30,r1=4,r2=0,center=false);
+	}
+	translate([16,-36,0]){
+		cylinder(h=30,r1=6,r2=0,center=false);
+	}
+	translate([-42,0,0]){
+		cylinder(h=30,r1=4,r2=0,center=false);
+	}
+	translate([-38,0,0]){
+		cylinder(h=30,r1=6,r2=0,center=false);
+	}
+	translate([42,0,0]){
+		cylinder(h=30,r1=4,r2=0,center=false);
+	}
+	translate([38,0,0]){
+		cylinder(h=30,r1=6,r2=0,center=false);
+	}
+	translate([-13,-46,3]){
+		cube([26,15,100]);
+	}
+}
+difference(){
+	cylinder(h=4,r1=33,r2=20,centre=false);
+	translate([-50,0,0]){
+		cube([100,50,100]);
+	}
+}

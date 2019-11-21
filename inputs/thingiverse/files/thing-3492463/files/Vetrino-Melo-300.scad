@@ -1,0 +1,20 @@
+difference(){
+cylinder(r=13,h=3,$fn=500);
+    translate([0,0,0])cylinder (r=11.5,h=3.1,$fn=500);
+}
+difference(){
+    translate([0,0,3])cylinder(r1=13,r2=18,h=5,$fn=500);
+translate([0,0,3])cylinder(r1=11.5,r2=16.5,h=5,$fn=500);
+}
+difference(){
+translate([0,0,8])cylinder(r=18,h=13,$fn=500);
+translate([0,0,8])cylinder(r=16.5,h=13,$fn=500);
+}
+difference(){
+    translate([0,0,21])cylinder(r1=18,r2=13,h=5,$fn=500);
+    translate([0,0,21])cylinder(r1=16.5,r2=11.5,h=5,$fn=500);
+}
+difference(){
+    translate([0,0,26])cylinder(r=13,h=3,$fn=500);
+    translate([0,0,26])cylinder(r=11.5,h=3,$fn=500);
+}

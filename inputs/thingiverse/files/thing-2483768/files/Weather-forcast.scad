@@ -1,0 +1,116 @@
+$fn=100;
+translate([0,-2,0])
+difference()
+  {
+  union()
+    {
+    difference()
+      {
+      minkowski() 
+        {   
+        union()
+          {
+          translate([0,50,0])cylinder(d=100,h=46,center=true);
+          translate([0,-100,0])intersection()
+            {
+            cylinder(d=400,h=46,center=true,$fn=200);
+            translate([-100,100,0])cube([200,200,60],center=true);
+            }
+          }
+        sphere(r=2);  
+        }
+      union()
+        {
+        translate([0,50,0])cylinder(d=96,h=46,center=true);
+        translate([0,-100,0])
+        intersection()
+          {
+          cylinder(d=396,h=46,center=true);
+          translate([-98,98,0])cube([198,198,46],center=true);
+          }
+        }
+      translate([-100,-98,0])cube([300,200,50],center=true);
+
+      translate([5,50,-23])resize([37,46,50])cylinder(d=39,h=50);
+
+      hull(){translate([-20,78,0])cylinder(d=5,h=50);translate([-63,78,0])cylinder(d=5,h=50);;}
+      hull(){translate([-25,70,0])cylinder(d=5,h=50);translate([-80,70,0])cylinder(d=5,h=50);;}
+      hull(){translate([-28,62,0])cylinder(d=5,h=50);translate([-94,62,0])cylinder(d=5,h=50);;}
+      hull(){translate([-30,54,0])cylinder(d=5,h=50);translate([-105,54,0])cylinder(d=5,h=50);;}
+      hull(){translate([-31,46,0])cylinder(d=5,h=50);translate([-115,46,0])cylinder(d=5,h=50);;}
+      hull(){translate([-30,38,0])cylinder(d=5,h=50);translate([-123,38,0])cylinder(d=5,h=50);;}
+      hull(){translate([-28,30,0])cylinder(d=5,h=50);translate([-129,30,0])cylinder(d=5,h=50);;}
+      hull(){translate([-25,22,0])cylinder(d=5,h=50);translate([-134,22,0])cylinder(d=5,h=50);;}
+      }
+    translate([-76,4,0])cube([192,4,47],center=true);   
+    #difference()
+      {
+      translate([5,47.5,23])cube([44,55,3],center=true);   
+      translate([5,47.5,23])cube([38,51,4],center=true);   
+      }
+    translate([5,50,23])difference()
+      {
+      $fn = 200;
+      resize([42,52,4])rotate_extrude(convexity = 10) translate([30, 0, 0])circle(r = 4);
+      translate([0,0,-5])resize([45,60,5])cylinder(d=39,h=1,$fn=100);
+      //#cube([32,1,10], center=true);
+      //#cube([1,40,10], center=true);
+      }
+  }
+  rotate([90,0,0])translate([11,19,-5.5])cylinder(d=8,h=3.5);
+  rotate([90,0,0])translate([11,-19,-5.5])cylinder(d=8,h=3.5);
+  rotate([90,0,0])translate([-166,19,-5.5])cylinder(d=8,h=3.5);
+  rotate([90,0,0])translate([-166,-19,-5.5])cylinder(d=8,h=3.5);
+  translate([-38.5,8.5,-50])
+    {
+    hull()
+      {
+      translate([17,0,0])cylinder(d=8,h=50);cylinder(d=8,h=50);;
+      }
+    }
+  hull()
+    {
+    rotate([90,0,0])translate([-10,0,-8])cylinder(d=44,h=10);
+    rotate([90,0,0])translate([-145,0,-8])cylinder(d=44,h=10);
+    }
+  }
+
+
+translate([0,3,100])
+  {
+  difference()
+    {
+    minkowski() 
+      {    
+      translate([-76,0,0])cube([192+3,3,50+3],center=true);
+      sphere(r=2);
+      }    
+    translate([-76,2.5,0])cube([192,2.5,50],center=true);
+    #rotate([90,0,0])translate([11,19,-1.5])cylinder(d=8,h=3);
+    #rotate([90,0,0])translate([11,-19,-1.5])cylinder(d=8,h=3);
+    #rotate([90,0,0])translate([-166,19,-1.5])cylinder(d=8,h=3);
+    #rotate([90,0,0])translate([-166,-19,-1.5])cylinder(d=8,h=3);
+    }
+  translate([-30,6,-3])
+    {
+    difference()
+      {
+      cube([30,8,38],center=true);
+      translate([0,2.5,0])cube([26,5,35],center=true);
+      cube([21,10,31],center=true);
+      translate([0,2.5,-17])cube([22,6,6],center=true);
+      translate([-17,2.5,-14])cube([12,4.5,6],center=true);
+      }
+    translate([-14,0,18])rotate([90,90,0])linear_extrude(height = 8, center = true, convexity = 10, twist = 0)polygon(points=[[4,0],[0,4],[0,0]]);
+    translate([14,0,18])rotate([90,-180,0])linear_extrude(height = 8, center = true, convexity = 10, twist = 0)polygon(points=[[4,0],[0,4],[0,0]]);
+    }    
+  translate([-90,6,1])
+    {
+    difference()
+      {
+      cube([55,8,39],center=true);
+      translate([0,0,0])cube([52,10,36],center=true);
+      translate([28,0,018])cube([10,8,10],center=true);
+      }
+    }  
+  }
