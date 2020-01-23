@@ -16,14 +16,22 @@ macro_rules! rec {
 
 pub fn remove_empty(expr: &RecExpr<Cad>) -> Option<RecExpr<Cad>> {
     let e = expr.as_ref();
-    let child = |i: usize| e.children[i].clone();
+    let child = |i: usize| &e.children[i];
     let recurse = |i: usize| remove_empty(&e.children[i]);
     use Cad::*;
     let res = match e.op {
         Empty => None,
+        BlackBox(ref b) => {
+            let args = e.children.iter().map(|c| remove_empty(c).unwrap_or_else(|| rec!(Empty))).collect();
+            Some(Expr::new(BlackBox(b.clone()), args).into())
+        }
         Hull => Some(rec!(Hull, recurse(0)?)),
+        List => {
+            let args = e.children.iter().map(|c| remove_empty(c).unwrap_or_else(|| rec!(Empty))).collect();
+            Some(Expr::new(List, args).into())
+        }
         Cube => {
-            let v = get_vec3_nums(&child(0));
+            let v = get_vec3_nums(child(0));
             if v.0 == 0.0 || v.1 == 0.0 || v.2 == 0.0 {
                 None
             } else {
@@ -31,7 +39,7 @@ pub fn remove_empty(expr: &RecExpr<Cad>) -> Option<RecExpr<Cad>> {
             }
         }
         Sphere => {
-            let r = get_num(&child(0));
+            let r = get_num(child(0));
             if r == 0.0 {
                 None
             } else {
@@ -39,7 +47,7 @@ pub fn remove_empty(expr: &RecExpr<Cad>) -> Option<RecExpr<Cad>> {
             }
         }
         Cylinder => {
-            let (h, r1, r2) = get_vec3_nums(&child(0));
+            let (h, r1, r2) = get_vec3_nums(child(0));
             if h == 0.0 || (r1, r2) == (0.0, 0.0) {
                 None
             } else {
@@ -48,7 +56,7 @@ pub fn remove_empty(expr: &RecExpr<Cad>) -> Option<RecExpr<Cad>> {
         }
         Affine => {
             let cad = recurse(2)?;
-            Some(rec!(Affine, child(0), child(1), cad))
+            Some(rec!(Affine, child(0).clone(), child(1).clone(), cad))
             // TODO check scale
         }
         Binop => {
@@ -191,6 +199,10 @@ pub fn eval(cx: Option<&FunCtx>, expr: &RecExpr<Cad>) -> RecExpr<Cad> {
     let e = expr.as_ref();
     let arg = |i: usize| &e.children[i];
     match &e.op {
+        Cad::BlackBox(ref b) => {
+            let args = e.children.iter().map(|c| eval(cx, c)).collect();
+            Expr::new(Cad::BlackBox(b.clone()), args).into()
+        }
         // arith
         Cad::Bool(_) => expr.clone(),
         Cad::Num(_) => expr.clone(),
@@ -381,7 +393,13 @@ impl<'a> fmt::Display for Scad<'a> {
                 child(2),
             ),
             // Cad::Hexagon => writeln!(f, "cylinder();"),
-            Cad::Hull => write!(f, "hull() {{ {} }}", child(0)),
+            Cad::Hull => {
+                write!(f, "hull() {{")?;
+                for cad in &arg(0).as_ref().children {
+                    write!(f, "  {}", Scad(cad))?;
+                }
+                write!(f, "}}")
+            },
 
             Cad::Trans => write!(f, "translate"),
             Cad::Scale => write!(f, "scale"),
@@ -394,6 +412,13 @@ impl<'a> fmt::Display for Scad<'a> {
             Cad::Fold => {
                 writeln!(f, "{} () {{", child(0))?;
                 for cad in &arg(1).as_ref().children {
+                    write!(f, "  {}", Scad(cad))?;
+                }
+                write!(f, "}}")
+            }
+            Cad::BlackBox(b) => {
+                writeln!(f, "{} {{", b)?;
+                for cad in &expr.children {
                     write!(f, "  {}", Scad(cad))?;
                 }
                 write!(f, "}}")

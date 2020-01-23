@@ -10,7 +10,7 @@ use egg::{
     parse::ParsableLanguage,
 };
 use szalinski_egg::cad::{Cad, EGraph, Rewrite};
-use szalinski_egg::eval::{Scad, remove_empty};
+use szalinski_egg::eval::{remove_empty, Scad};
 use szalinski_egg::sz_param;
 
 #[derive(Debug, Serialize)]
@@ -31,6 +31,8 @@ pub struct IterationResult {
     pub rebuild_time: f64,
     pub best_cost: Cost,
 }
+
+sz_param!(UNIFY_CLOSE_NUMS: bool);
 
 fn run_one(
     start_time: &Instant,
@@ -97,7 +99,9 @@ fn run_one(
     }
 
     let rebuild_time = Instant::now();
-    szalinski_egg::num::unify_close_nums(egraph);
+    if *UNIFY_CLOSE_NUMS {
+        szalinski_egg::num::unify_close_nums(egraph);
+    }
     egraph.rebuild();
     let rebuild_time = rebuild_time.elapsed().as_secs_f64();
     info!("Rebuild time: {}", rebuild_time);
@@ -142,26 +146,37 @@ pub struct RunResult {
     pub depth_under_mapis: usize,
 }
 
-pub fn pre_optimize(egraph: &mut EGraph) {
+pub fn pre_optimize(egraph: &mut EGraph, root: u32) {
     // let (mut egraph, root) = EGraph::from_expr(&expr);
     let pre_rule_time = Instant::now();
     let pre_rules = szalinski_egg::rules::pre_rules();
-    let mut old_size = 0;
-    for i in 0..100 {
-        info!("Pre iter {}. time: {:?}", i, pre_rule_time.elapsed());
-        for rule in &pre_rules {
-            if egraph.total_size() > 50_000 {
-                break
-            }
-            rule.run(egraph);
-        }
-        let new_size = egraph.total_size();
-        if new_size == old_size {
-            break;
-        }
-        old_size = new_size;
-        egraph.rebuild();
-    }
+    let iters = 100;
+    let limit = 50_000;
+    let timeout = Duration::from_secs(1);
+    let stop_reason = (0..iters)
+        .find_map(|i| {
+            info!("\n\nIteration {}\n", i);
+            let (_, stop) = run_one(&pre_rule_time, egraph, root, &pre_rules, limit, timeout);
+            stop
+        })
+        .unwrap_or(StopReason::IterLimit(iters));
+    info!("Stopping {:?}", stop_reason);
+    // let mut old_size = 0;
+    // for i in 0..100 {
+    //     info!("Pre iter {}. time: {:?}", i, pre_rule_time.elapsed());
+    //     for rule in &pre_rules {
+    //         if egraph.total_size() > 50_000 {
+    //             break
+    //         }
+    //         rule.run(egraph);
+    //     }
+    //     let new_size = egraph.total_size();
+    //     if new_size == old_size {
+    //         break;
+    //     }
+    //     old_size = new_size;
+    //     egraph.rebuild();
+    // }
     let pre_rule_time = pre_rule_time.elapsed();
     info!("Pre rule time: {:?}", pre_rule_time);
 }
@@ -176,7 +191,7 @@ pub fn optimize(initial_expr: &str, iters: usize, limit: usize, timeout: Duratio
     info!("Without empty: {}", initial_expr_cad.pretty(80));
 
     let (mut egraph, mut root) = EGraph::from_expr(&initial_expr_cad);
-    pre_optimize(&mut egraph);
+    pre_optimize(&mut egraph, root);
 
     if *PRE_EXTRACT {
         let best = Extractor::new(&egraph).find_best(root).expr;
@@ -188,7 +203,7 @@ pub fn optimize(initial_expr: &str, iters: usize, limit: usize, timeout: Duratio
 
     let root = root;
 
-    let rules = szalinski_egg::rules::rules();
+    let mut rules = szalinski_egg::rules::rules();
     let mut iterations = vec![];
 
     let start_time = Instant::now();
@@ -196,6 +211,19 @@ pub fn optimize(initial_expr: &str, iters: usize, limit: usize, timeout: Duratio
         .find_map(|i| {
             info!("\n\nIteration {}\n", i);
             let (res, stop) = run_one(&start_time, &mut egraph, root, &rules, limit, timeout);
+            rules.retain(|r| {
+                let count = res.applied.get(&r.name).copied().unwrap_or(0);
+                let apply_limit = 200_000;
+                if count > apply_limit {
+                    warn!(
+                        "Applied {} too many times: {} > {}",
+                        r.name, count, apply_limit
+                    );
+                    false
+                } else {
+                    true
+                }
+            });
             iterations.push(res);
             stop
         })
@@ -212,8 +240,8 @@ pub fn optimize(initial_expr: &str, iters: usize, limit: usize, timeout: Duratio
     info!("Final cost: {}", best.cost);
     info!("Final: {}", pretty);
 
-    let to_scad_in = Cad::parse_expr(&pretty).unwrap();
-    let final_scad = format!("{}", Scad(&to_scad_in));
+    // let to_scad_in = Cad::parse_expr(&pretty).unwrap();
+    let final_scad = format!("{}", Scad(&best.expr));
     info!("Final Scad: {}", final_scad);
 
     RunResult {
