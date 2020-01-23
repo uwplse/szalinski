@@ -37,6 +37,22 @@ impl fmt::Display for ListVar {
     }
 }
 
+#[derive(PartialEq, Eq, Hash, Debug, Clone)]
+pub struct BlackBox(String);
+impl FromStr for BlackBox {
+    type Err = ();
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        debug!("Parsing black box: {}", s);
+        Ok(BlackBox(s.to_owned()))
+    }
+}
+impl fmt::Display for BlackBox {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let s = self.0.replace("\\\"", "\"");
+        write!(f, "{}", s)
+    }
+}
+
 define_term! {
     #[derive(Debug, PartialEq, Eq, Hash, Clone)]
     pub enum Cad {
@@ -86,6 +102,7 @@ define_term! {
         Sub = "-",
         Mul = "*",
         Div = "/",
+        BlackBox(BlackBox),
     }
 }
 
@@ -125,7 +142,7 @@ fn eval(op: Cad, args: &[Cad]) -> Option<Cad> {
             match (a(0), a(1)) {
                 (Num(f1), Num(f2)) => {
                     let f = f1.to_f64() / f2.to_f64();
-                    if f.is_finite() {
+                    if f.is_finite() && !f2.is_close(0) {
                         Some(Num(num(f)))
                     } else {
                         None
@@ -180,19 +197,23 @@ impl egg::egraph::Metadata<Cad> for Meta {
     fn modify(eclass: &mut EClass) {
         if let Some(list1) = eclass.nodes.iter().find(|n| n.op == Cad::List) {
             for list2 in eclass.nodes.iter().filter(|n| n.op == Cad::List) {
-                assert_eq!(list1.children.len(), list2.children.len(), "at id {}", eclass.id)
+                assert_eq!(list1.children.len(), list2.children.len(), "at id {}, nodes:\n{:#?}", eclass.id, eclass.nodes)
             }
         }
 
-        // here we prune away excess unsorts, as that will cause some stuff to spin out
-        let mut n_unsorts = 1000;
-        eclass.nodes.retain(|n| match n.op {
-            Cad::Unsort => {
-                n_unsorts -= 1;
-                n_unsorts >= 0
-            }
-            _ => true,
-        });
+        // // here we prune away excess unsorts, as that will cause some stuff to spin out
+        // let mut n_unsorts = 0;
+        // let limit = 1000;
+        // eclass.nodes.retain(|n| match n.op {
+        //     Cad::Unsort => {
+        //         n_unsorts += 1;
+        //         n_unsorts <= limit
+        //     }
+        //     _ => true,
+        // });
+        // if n_unsorts > limit {
+        //     warn!("Went over unsort limit: {} > {}", n_unsorts, limit);
+        // }
 
         let best = eclass.metadata.best.as_ref();
         if best.children.is_empty() {
@@ -215,6 +236,7 @@ impl Language for Cad {
             Bool(_) | ListVar(_) => SMALL,
             Add | Sub | Mul | Div => SMALL,
 
+            BlackBox(_) => 1.0,
             Cube | Empty | Nil | Sphere | Cylinder | Hull => 1.0,
 
             Trans | TransPolar | Scale | Rotate => 1.0,

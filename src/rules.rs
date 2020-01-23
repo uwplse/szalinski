@@ -4,7 +4,7 @@ use egg::{
     egraph::{AddResult, Metadata},
     expr::{Expr, Id, QuestionMarkName, RecExpr},
     parse::ParsableLanguage,
-    pattern::{Applier, Condition, Rewrite, WildMap},
+    pattern::{Applier, Condition, Pattern, Rewrite, WildMap},
 };
 
 use indexmap::{IndexMap, IndexSet};
@@ -20,6 +20,17 @@ use crate::{
 
 fn rw<M: Metadata<Cad>>(name: &str, lhs: &str, rhs: &str) -> Rewrite<Cad, M> {
     Cad::parse_rewrite(name, lhs, rhs).unwrap()
+}
+
+fn posrw(name: &str, lhs: &str, rhs: &str, pos: &[&str]) -> Rewrite<Cad, Meta> {
+    Rewrite::new (
+        name,
+        Cad::parse_pattern(lhs).unwrap(),
+        ApplyIfPos {
+            pattern: Cad::parse_pattern(rhs).unwrap(),
+            check: pos.iter().map(|p| p.parse().unwrap()).collect()
+        },
+    )
 }
 
 fn cond_rw<M: Metadata<Cad>>(
@@ -209,9 +220,9 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
         //    "(Map2 TransPolar ?params ?cads)"),
 
 
-        rw("lift_op",
-           "(Union (Affine ?op ?params ?a) (Affine ?op ?params ?b))",
-           "(Affine ?op ?params (Union ?a ?b))"),
+        // rw("lift_op",
+        //    "(Union (Affine ?op ?params ?a) (Affine ?op ?params ?b))",
+        //    "(Affine ?op ?params (Union ?a ?b))"),
 
         rw("scale_flip", "(Affine Scale (Vec3 -1 -1 1) ?a)", "(Affine Rotate (Vec3 0 0 180) ?a)"),
 
@@ -237,37 +248,49 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
            "(Cylinder (Vec3 ?h ?r1 ?r2) ?params ?center)",
            "(Affine Scale (Vec3 1 1 ?h)
               (Cylinder (Vec3 1 ?r1 ?r2) ?params ?center))"),
-        rw("scale_cone",
-           "(Affine Scale (Vec3 1 1 ?h)
+        posrw(
+            "scale_cone",
+            "(Affine Scale (Vec3 1 1 ?h)
               (Cylinder (Vec3 1 ?r1 ?r2) ?params ?center))",
-           "(Cylinder (Vec3 ?h ?r1 ?r2) ?params ?center)"),
+            "(Cylinder (Vec3 ?h ?r1 ?r2) ?params ?center)",
+            &["?h"]
+        ),
 
         rw("cylinder_scale",
            "(Cylinder (Vec3 ?h ?r ?r) ?params ?center)",
            "(Affine Scale (Vec3 ?r ?r ?h)
               (Cylinder (Vec3 1 1 1) ?params ?center))"),
-        rw("scale_cylinder",
-           "(Affine Scale (Vec3 ?r ?r ?h)
+        posrw(
+            "scale_cylinder",
+            "(Affine Scale (Vec3 ?r ?r ?h)
               (Cylinder (Vec3 1 1 1) ?params ?center))",
-           "(Cylinder (Vec3 ?h ?r ?r) ?params ?center)"),
+            "(Cylinder (Vec3 ?h ?r ?r) ?params ?center)",
+            &["?r", "?h"]
+        ),
 
         rw("cube_scale",
            "(Cube (Vec3 ?x ?y ?z) ?center)",
            "(Affine Scale (Vec3 ?x ?y ?z)
               (Cube (Vec3 1 1 1) ?center))"),
-        rw("scale_cube",
-           "(Affine Scale (Vec3 ?x ?y ?z)
+        posrw(
+            "scale_cube",
+            "(Affine Scale (Vec3 ?x ?y ?z)
               (Cube (Vec3 1 1 1) ?center))",
-           "(Cube (Vec3 ?x ?y ?z) ?center)"),
+            "(Cube (Vec3 ?x ?y ?z) ?center)",
+            &["?x", "?y", "?z"]
+        ),
 
         rw("sphere_scale",
            "(Sphere ?r ?params)",
            "(Affine Scale (Vec3 ?r ?r ?r)
               (Sphere 1 ?params))"),
-        rw("scale_sphere",
-           "(Affine Scale (Vec3 ?r ?r ?r)
+        posrw(
+            "scale_sphere",
+            "(Affine Scale (Vec3 ?r ?r ?r)
               (Sphere 1 ?params))",
-           "(Sphere ?r ?params)"),
+            "(Sphere ?r ?params)",
+            &["?r"]
+        ),
 
         rw("repeat_mapi", "(Repeat ?n ?x)", "(MapI ?n ?x)"),
 
@@ -383,13 +406,15 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
         println!("Not using suspect rules");
     }
 
+    println!("Using {} rules", rules.len());
+
     rules
 }
 
 fn get_float(expr: &RecExpr<Cad>) -> Option<Num> {
     match expr.as_ref().op {
         Cad::Num(f) => Some(f.clone()),
-        _ => None
+        _ => None,
     }
 }
 
@@ -471,11 +496,12 @@ where
 }
 
 fn get_single_cad(egraph: &EGraph, id: Id) -> Cad {
-    let nodes = &egraph[id].nodes;
-    assert!(nodes.iter().all(|n| n == &nodes[0]));
-    let n = &nodes[0];
-    assert_eq!(n.children.len(), 0);
-    n.op.clone()
+    // let nodes = &egraph[id].nodes;
+    // assert!(nodes.iter().all(|n| n == &nodes[0]));
+    // let n = &nodes[0];
+    // assert_eq!(n.children.len(), 0);
+    // n.op.clone()
+    egraph[id].metadata.best.as_ref().op.clone()
 }
 
 fn get_affines(egraph: &EGraph, id: Id, affine_kind: &Cad) -> Vec<(Id, Id)> {
@@ -581,9 +607,20 @@ fn insert_map2s(egraph: &mut EGraph, list_ids: &[Id]) -> Vec<AddResult> {
     results
 }
 
+fn num_sign(n: Num) -> i32 {
+    let f = n.to_f64();
+    if f < 0.0 {
+        -1
+    } else if f > 0.0 {
+        1
+    } else {
+        0
+    }
+}
+
 impl Applier<Cad, Meta> for ListApplier {
     fn apply(&self, egraph: &mut EGraph, map: &WildMap) -> Vec<AddResult> {
-        let ids = &map[&self.var];
+        let ids: Vec<Id> = map[&self.var].iter().map(|id| egraph.find(*id)).collect();
         // println!("ids: {:?}", ids);
         let bests: Vec<_> = ids
             .iter()
@@ -619,7 +656,7 @@ impl Applier<Cad, Meta> for ListApplier {
             return results;
         }
 
-        results.extend(insert_map2s(egraph, ids));
+        results.extend(insert_map2s(egraph, &ids));
 
         // try to solve a list
         if let Some(vec_list) = bests.iter().map(get_vec).collect::<Option<Vec<Vec3>>>() {
@@ -627,29 +664,34 @@ impl Applier<Cad, Meta> for ListApplier {
             if len > 2 {
                 results.extend(crate::solve::solve(egraph, &vec_list));
             }
+            // results.extend(partition_list(egraph, &ids, |i, _| {
+            //     let s0 = num_sign(vec_list[i].0);
+            //     let s1 = num_sign(vec_list[i].1);
+            //     let s2 = num_sign(vec_list[i].2);
+            //     (s0, s1, s2)
+            // }));
             // try to partition things by coordinate
-            results.extend(partition_list(egraph, ids, |i, _| vec_list[i].0));
-            results.extend(partition_list(egraph, ids, |i, _| vec_list[i].1));
-            results.extend(partition_list(egraph, ids, |i, _| vec_list[i].2));
-            results.extend(partition_list(egraph, ids, |i, _| {
+            results.extend(partition_list(egraph, &ids, |i, _| vec_list[i].0));
+            results.extend(partition_list(egraph, &ids, |i, _| vec_list[i].1));
+            results.extend(partition_list(egraph, &ids, |i, _| vec_list[i].2));
+            results.extend(partition_list(egraph, &ids, |i, _| {
                 (vec_list[i].0, vec_list[i].1)
             }));
-            results.extend(partition_list(egraph, ids, |i, _| {
+            results.extend(partition_list(egraph, &ids, |i, _| {
                 (vec_list[i].0, vec_list[i].2)
             }));
-            results.extend(partition_list(egraph, ids, |i, _| {
+            results.extend(partition_list(egraph, &ids, |i, _| {
                 (vec_list[i].1, vec_list[i].2)
             }));
         }
 
         // try to partition things by eclass
-        results.extend(partition_list(egraph, ids, |i, _| ids[i]));
+        results.extend(partition_list(egraph, &ids, |i, _| ids[i]));
 
         // try to partition things by operator
         if let Some(ops) = ops {
-            results.extend(partition_list(egraph, ids, |i, _| ops[i].clone()));
+            results.extend(partition_list(egraph, &ids, |i, _| ops[i].clone()));
         }
-
 
         results
     }
@@ -660,13 +702,13 @@ macro_rules! get_unit {
         let egraph = &$egraph;
         let eclass_list = &$eclass_list;
         assert_eq!(eclass_list.len(), 1, "more than one eclass");
-        let nodes = &egraph[eclass_list[0]].nodes;
-        if nodes.len() > 1 {
-            assert!(nodes[1..].iter().all(|n| n == &nodes[0]))
-        }
-        match &nodes[0].op {
+        // let nodes = &egraph[eclass_list[0]].nodes;
+        // if nodes.len() > 1 {
+        //     assert!(nodes[1..].iter().all(|n| n == &nodes[0]))
+        // }
+        match &egraph[eclass_list[0]].metadata.best.as_ref().op {
             $cad(p) => {
-                assert_eq!(nodes[0].children.len(), 0);
+                // assert_eq!(nodes[0].children.len(), 0);
                 p
             }
             _ => panic!("expected {}", stringify!($cad)),
@@ -831,8 +873,30 @@ impl Applier<Cad, Meta> for CancelIfNotZero {
         } else {
             vec![AddResult {
                 id: map[&self.bound][0],
-                was_there: true
+                was_there: true,
             }]
         }
+    }
+}
+
+#[derive(Debug)]
+struct ApplyIfPos {
+    pattern: Pattern<Cad>,
+    check: Vec<QuestionMarkName>,
+}
+
+impl Applier<Cad, Meta> for ApplyIfPos {
+    fn apply(&self, egraph: &mut EGraph, map: &WildMap) -> Vec<AddResult> {
+        for q in &self.check {
+            let numid = map[q][0];
+            for node in &egraph[numid].nodes {
+                if let Cad::Num(num) = node.op {
+                    if num.to_f64() <= 0.0 {
+                        return vec![]
+                    }
+                }
+            }
+        }
+        self.pattern.apply(egraph, map)
     }
 }

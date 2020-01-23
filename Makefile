@@ -1,4 +1,4 @@
-CC_WITH_FLAGS ?= g++ -lCGAL -lgmp -lmpfr
+CC_FLAGS ?= -lCGAL -lgmp -lmpfr
 
 tgt=target/release
 diff=git --no-pager diff --no-index --word-diff=color --ignore-space-at-eol
@@ -6,7 +6,7 @@ diff=git --no-pager diff --no-index --word-diff=color --ignore-space-at-eol
 rust-src=$(shell find src/ -type f)
 
 scads=$(shell find inputs -type f -name "*.scad")
-csgs=$(scads:inputs/%.scad=out/%.csg)
+csgs=$(scads:inputs/%.scad=out/%.fn.csg)
 csexps=$(scads:inputs/%.scad=out/%.csexp)
 jsons=$(scads:inputs/%.scad=out/%.json)
 diffs=$(scads:inputs/%.scad=out/%.diff)
@@ -34,21 +34,24 @@ inverse-csg: $(filter out/inverse-csg/%, $(everything))
 export OPENSCADPATH=.
 
 # don't delete anything in the out directory please, Make
-.PRECIOUS: out/%.csg out/%.csexp out/%.json out/%.csexp.opt out/%.opt.scad out/%.in.off out/%.opt.off out/%.checked
+.PRECIOUS: out/%.raw.csg out/%.fn.csg out/%.csexp out/%.json out/%.csexp.opt out/%.opt.scad out/%.in.off out/%.opt.off out/%.checked
 
 print-%:
 	@echo '$*=$($*)'
 
-out/%.csg: inputs/%.scad
+out/%.raw.csg: inputs/%.scad
 	@mkdir -p $(dir $@)
-	timeout 10s openscad -o $@ $<
+	timeout 100s openscad -o $@ $<
 
-out/%.csexp: out/%.csg $(tgt)/parse-csg sz_params
-	export $$(cat sz_params | xargs) && $(tgt)/parse-csg $< $@
+out/%.fn.csg: ./scripts/reduce-fn.py out/%.raw.csg
+	$^ $@
+
+out/%.csexp: out/%.fn.csg $(tgt)/parse-csg sz_params
+	export $$(cat sz_params | xargs) && timeout 10s $(tgt)/parse-csg $< $@
 
 # use all the environment variables from this file
 out/%.json: out/%.csexp $(tgt)/optimize sz_params
-	export $$(cat sz_params | xargs) && $(tgt)/optimize $< $@
+	export $$(cat sz_params | xargs) && timeout 150s $(tgt)/optimize $< $@
 
 out/%.csexp.opt: out/%.json
 	jq -r .final_expr $< > $@
@@ -56,7 +59,7 @@ out/%.csexp.opt: out/%.json
 out/%.opt.scad: out/%.json
 	jq -r .final_scad $< > $@
 
-out/%.in.off: out/%.csg scripts/openscad-or-timeout.sh
+out/%.in.off: out/%.fn.csg scripts/openscad-or-timeout.sh
 	./scripts/openscad-or-timeout.sh $< $@
 
 out/%.opt.off: out/%.opt.scad out/%.csexp.opt scripts/openscad-or-timeout.sh
@@ -91,4 +94,4 @@ $(tgt)/optimize $(tgt)/parse-csg: $(rust-src)
 	cargo build --release
 
 out/compare_mesh: scripts/compare_mesh.cpp
-	$(CC_WITH_FLAGS) $< -O2 -o $@
+	g++ $< -O2 -o $@ $(CC_FLAGS)
