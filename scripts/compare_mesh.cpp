@@ -2,6 +2,7 @@
 #include <CGAL/Polyhedron_items_with_id_3.h>
 #include <CGAL/Polyhedron_3.h>
 #include <CGAL/Surface_mesh.h>
+#include <CGAL/Polygon_mesh_processing/bbox.h>
 #include <CGAL/Polygon_mesh_processing/corefinement.h>
 #include <CGAL/Polygon_mesh_processing/distance.h>
 #include <CGAL/Polygon_mesh_processing/remesh.h>

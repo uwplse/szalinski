@@ -27,7 +27,7 @@ set -e
 
 case "$timeout1$timeout2" in
     "11")
-        echo "in 11"
+        echo "in 11: all good"
         haus=$(run out/compare_mesh $in1 $in2 $hausdorff_samples)
         vol1=$(run out/compare_mesh $in1)
         vol2=$(run out/compare_mesh $in2)

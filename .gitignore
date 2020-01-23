@@ -10,6 +10,7 @@ flame.svg
 
 # output
 out
+out.*
 
 # gcc
 env.txt
@@ -17,3 +18,5 @@ compare_mesh
 
 bad/thingiverse*
 bad/inputs*
+
+__pycache__
