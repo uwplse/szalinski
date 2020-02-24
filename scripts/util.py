@@ -33,7 +33,7 @@ def load_json(path):
         diff_file = json.load(open(base + 'diff'))
     except FileNotFoundError:
         print("WARNING: can't open {}".format(base + 'diff'))
-        return None
+        return j
 
     j.update(diff_file)
 
