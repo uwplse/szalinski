@@ -66,7 +66,7 @@ fn eps(a: f64, b: f64) -> bool {
     (a - b).abs() < 0.001
 }
 
-sz_param!(PARSE_BINARIZE: bool);
+const PARSE_BINARIZE: bool = false;
 sz_param!(
     PARSE_SHUFFLE_RNG: Option<Arc<Mutex<Pcg64>>> = |seed: u64| {
         if seed == 0 {
@@ -119,7 +119,7 @@ fn write_op<'a>(
         }
     }
 
-    if *PARSE_BINARIZE {
+    if PARSE_BINARIZE {
         write_op_rec(w, depth, name, &mut ps)
     } else {
         match ps.len() {

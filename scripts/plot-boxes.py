@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
-import re
 import csv
+import glob
 import numpy as np
 import matplotlib.pyplot as plt
 import multiprocessing
@@ -10,13 +10,9 @@ import util
 
 import json
 
-pool = multiprocessing.Pool()
-
 def gray(i):
     i = i ** 0.5
     return (i, i, i)
-
-keep = re.compile(r'"(hull|multmatrix)\(.*?\)"')
 
 def improvement_before(j, secs):
     init = j['initial_cost']
@@ -29,31 +25,32 @@ def improvement_before(j, secs):
         cost = it['best_cost']
     return j['final_cost'] / init
 
-
-dirs = {
-    'Slightly Perturbed': '/mnt/hdd/scratch/sz-backup-2019-11-21-6pm/',
-    'Slightly Perturbed\n1 second timeout': '/mnt/hdd/scratch/sz-backup-2019-11-21-6pm/',
-    'Perturbed': '/mnt/hdd/scratch/sz-backup-2019-11-22-8am-perturb/',
-    'Perturbed\nNo InvTrans': '/mnt/hdd/scratch/sz-backup-2019-11-22-8am-perturb-no-semtag/',
-    'Perturbed\nNo CAD':'/mnt/hdd/scratch/sz-backup-2019-11-22-9am-perturb-no-cad/',
+names = {
+    'Slightly Perturbed': '/**/*.normal.json',
+    'Slightly Perturbed\n1 second timeout': '/**/*.normal.json',
+    'Perturbed': '/**/*.perturb.json',
+    'Perturbed\nNo InvTrans': '/**/*.perturb-noinv.json',
+    'Perturbed\nNo CAD': '/**/*.perturb-nocad.json',
 }
 
 all_data = {}
-keep = re.compile(r'"(hull|multmatrix)\(.*?\)"')
 
-for name, directory in dirs.items():
-    dir_data = []
-    with open(directory + 'json_list') as json_list:
-        lines = [(directory + path).strip() for path in json_list.readlines()[:]]
-        js = pool.map(util.load_json, lines)
-        for j in js:
-            if j and '"' not in keep.sub('', j['initial_expr']):
-                dir_data.append(j)
-    all_data[name] = dir_data
+with multiprocessing.Pool() as pool:
+    for name, pattern in names.items():
+        files = glob.glob('out/thingiverse/' + pattern, recursive=True)
+        # lines = [(directory + path).strip() for path in json_list.readlines()[:]]
+        all_data[name] = pool.map(util.load_json, files)
+        # for j in js:
+        #     if j and '"' not in keep.sub('', j['initial_expr']):
+        #         dir_data.append(j)
+        # all_data[name] = dir_data
+
+for name, data in all_data.items():
+    print('Found', len(data), 'for', name.replace('\n', ' '))
 
 plt.rc('xtick', labelsize=9)
 plt.rc('ytick', labelsize=9)
-fig, axes = plt.subplots(ncols=len(dirs), sharey=True, figsize=(14, 5))
+fig, axes = plt.subplots(ncols=len(names), sharey=True, figsize=(14, 5))
 fig.subplots_adjust(wspace=0.1)
 
 SIZES=[0, 30, 100, 300]
@@ -84,15 +81,15 @@ for ax, (name, data) in zip(axes, all_data.items()):
 
 gap = 1
 positions = [
-    (i * len(dirs)) + i * gap + j
+    (i * len(names)) + i * gap + j
     for i in range(len(SIZES))
-    for j in range(len(dirs))
+    for j in range(len(names))
 ]
 print(positions)
 
 axes[0].set(ylabel='% shrunk')
 plt.savefig('plot.pdf', bbox_inches='tight', dpi=500)
-plt.show()
+# plt.show()
 
 
 

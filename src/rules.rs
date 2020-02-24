@@ -74,6 +74,11 @@ pub fn pre_rules() -> Vec<Rewrite<Cad, Meta>> {
 
 #[rustfmt::skip]
 pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
+
+
+    sz_param!(CAD_IDENTS: bool);
+    sz_param!(INV_TRANS: bool);
+
     let mut rules = vec![
         // math rules
 
@@ -148,150 +153,6 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
         // partitioning
         rw("concat", "(Unpart ?part ?lists)", "(Concat ?lists)"),
 
-        // rw("map_unpart_r",
-        //    "(Map2 ?op
-        //       (List ?params...)
-        //       (Unpart ?part ?cads))",
-        //    "(Map2 ?op
-        //       (Unpart ?part (Part ?part (List ?params...)))
-        //       (Unpart ?part ?cads))"),
-
-        rw("map_unpart_r2",
-           "  (Map2 ?op ?params (Unpart ?part ?cads))",
-           "(Unpart ?part (Part ?part
-              (Map2 ?op ?params (Unpart ?part ?cads))))"),
-        rw("map_unpart_l2",
-           "  (Map2 ?op (Unpart ?part ?params) ?cads)",
-           "(Unpart ?part (Part ?part
-              (Map2 ?op (Unpart ?part ?params) ?cads)))"),
-
-        // NOTE do we need part/unpart id?
-        rw("part_unpart", "(Part ?part (Unpart ?part ?list))", "?list"),
-        rw("unpart_part", "(Unpart ?part (Part ?part ?list))", "?list"),
-
-        // unsort propagation
-        // rw("sort_repeat", "(Sort ?perm (Repeat ?n ?elem))", "(Repeat ?n ?elem)"),
-        rw("sort_unsort", "(Sort ?perm (Unsort ?perm ?list))", "?list"),
-        rw("unsort_sort", "(Unsort ?perm (Sort ?perm ?list))", "?list"),
-
-        rw("map_unsort_l",
-           "  (Map2 ?op (Unsort ?perm ?params) ?cads)",
-           "(Unsort ?perm (Sort ?perm
-              (Map2 ?op (Unsort ?perm ?params) ?cads)))"),
-
-        rw("map_unsort_r",
-           "  (Map2 ?op ?params (Unsort ?perm ?cads))",
-           "(Unsort ?perm (Sort ?perm
-              (Map2 ?op ?params (Unsort ?perm ?cads))))"),
-
-        // rw("sort_map2",
-        //    "(Sort ?perm (Map2 ?op ?params ?cads))",
-        //    "(Map2 ?op (Sort ?perm ?params) (Sort ?perm ?cads))"),
-
-        // rw("map_unsort_l",
-        //    "(Map2 ?op
-        //       (Unsort ?perm ?params)
-        //       ?cads)",
-        //    "(Unsort ?perm
-        //       (Map2 ?op
-        //         ?params
-        //         (Sort ?perm ?cads)))"),
-
-        // rw("map_unsort_r",
-        //    "(Map2 ?op
-        //       ?params
-        //       (Unsort ?perm ?cads))",
-        //    "(Unsort ?perm
-        //       (Map2 ?op
-        //         (Sort ?perm ?params)
-        //         ?cads))"),
-
-        rw("unsort_repeat", "(Unsort ?perm (Repeat ?n ?elem))", "(Repeat ?n ?elem)"),
-
-        rw("fold_union_unsort", "(Fold Union (Unsort ?perm ?x))", "(Fold Union ?x)"),
-        rw("fold_inter_unsort", "(Fold Inter (Unsort ?perm ?x))", "(Fold Inter ?x)"),
-
-        // unpolar
-        rw("unpolar_trans",
-           "(Map2 Trans (Unpolar ?n ?center ?params) ?cads)",
-           "(Map2 Trans (Repeat ?n ?center) (Map2 TransPolar ?params ?cads))"),
-        // rw("unpolar_trans0",
-        //    "(Map2 Trans (Unpolar ?n (Vec3 0 0 0) ?params) ?cads)",
-        //    "(Map2 TransPolar ?params ?cads)"),
-
-
-        // rw("lift_op",
-        //    "(Union (Affine ?op ?params ?a) (Affine ?op ?params ?b))",
-        //    "(Affine ?op ?params (Union ?a ?b))"),
-
-        rw("scale_flip", "(Affine Scale (Vec3 -1 -1 1) ?a)", "(Affine Rotate (Vec3 0 0 180) ?a)"),
-
-        rw("scale_trans",
-           "(Affine Scale (Vec3 ?a ?b ?c) (Affine Trans (Vec3 ?x ?y ?z) ?m))",
-           "(Affine Trans (Vec3 (* ?a ?x) (* ?b ?y) (* ?c ?z))
-              (Affine Scale (Vec3 ?a ?b ?c) ?m))"),
-
-        rw("trans_scale",
-           "(Affine Trans (Vec3 ?x ?y ?z) (Affine Scale (Vec3 ?a ?b ?c) ?m))",
-           "(Affine Scale (Vec3 ?a ?b ?c) (Affine Trans (Vec3 (/ ?x ?a) (/ ?y ?b) (/ ?z ?c)) ?m))"),
-
-        // rw("scale_rotate",
-        //    "(Scale (Vec3 ?a ?a ?a) (Rotate (Vec3 ?x ?y ?z) ?m))",
-        //    "(Rotate (Vec3 ?x ?y ?z) (Scale (Vec3 ?a ?a ?a) ?m))"),
-
-        // rw("rotate_scale",
-        //    "(Scale (Vec3 ?a ?a ?a) (Rotate (Vec3 ?x ?y ?z) ?m))",
-        //    "(Rotate (Vec3 ?x ?y ?z) (Scale (Vec3 ?a ?a ?a) ?m))"),
-
-        // primitives
-        rw("cone_scale",
-           "(Cylinder (Vec3 ?h ?r1 ?r2) ?params ?center)",
-           "(Affine Scale (Vec3 1 1 ?h)
-              (Cylinder (Vec3 1 ?r1 ?r2) ?params ?center))"),
-        posrw(
-            "scale_cone",
-            "(Affine Scale (Vec3 1 1 ?h)
-              (Cylinder (Vec3 1 ?r1 ?r2) ?params ?center))",
-            "(Cylinder (Vec3 ?h ?r1 ?r2) ?params ?center)",
-            &["?h"]
-        ),
-
-        rw("cylinder_scale",
-           "(Cylinder (Vec3 ?h ?r ?r) ?params ?center)",
-           "(Affine Scale (Vec3 ?r ?r ?h)
-              (Cylinder (Vec3 1 1 1) ?params ?center))"),
-        posrw(
-            "scale_cylinder",
-            "(Affine Scale (Vec3 ?r ?r ?h)
-              (Cylinder (Vec3 1 1 1) ?params ?center))",
-            "(Cylinder (Vec3 ?h ?r ?r) ?params ?center)",
-            &["?r", "?h"]
-        ),
-
-        rw("cube_scale",
-           "(Cube (Vec3 ?x ?y ?z) ?center)",
-           "(Affine Scale (Vec3 ?x ?y ?z)
-              (Cube (Vec3 1 1 1) ?center))"),
-        posrw(
-            "scale_cube",
-            "(Affine Scale (Vec3 ?x ?y ?z)
-              (Cube (Vec3 1 1 1) ?center))",
-            "(Cube (Vec3 ?x ?y ?z) ?center)",
-            &["?x", "?y", "?z"]
-        ),
-
-        rw("sphere_scale",
-           "(Sphere ?r ?params)",
-           "(Affine Scale (Vec3 ?r ?r ?r)
-              (Sphere 1 ?params))"),
-        posrw(
-            "scale_sphere",
-            "(Affine Scale (Vec3 ?r ?r ?r)
-              (Sphere 1 ?params))",
-            "(Sphere ?r ?params)",
-            &["?r"]
-        ),
-
         rw("repeat_mapi", "(Repeat ?n ?x)", "(MapI ?n ?x)"),
 
         // mapi
@@ -307,17 +168,173 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
            "(Map2 ?op (MapI ?n1 ?n2 ?param) (MapI ?n1 ?n2 ?cad))",
            "(MapI ?n1 ?n2 (Affine ?op ?param ?cad))"),
 
-        // affine rules
+    ];
 
-        rw("id", "(Affine Trans (Vec3 0 0 0) ?a)", "?a"),
+    if *INV_TRANS {
+        rules.extend(vec![
+            // rw("map_unpart_r",
+            //    "(Map2 ?op
+            //       (List ?params...)
+            //       (Unpart ?part ?cads))",
+            //    "(Map2 ?op
+            //       (Unpart ?part (Part ?part (List ?params...)))
+            //       (Unpart ?part ?cads))"),
 
-        rw("combine_scale",
-           "(Affine Scale (Vec3 ?a ?b ?c) (Affine Scale (Vec3 ?d ?e ?f) ?cad))",
-           "(Affine Scale (Vec3 (* ?a ?d) (* ?b ?e) (* ?c ?f)) ?cad)"),
-        rw("combine_trans",
-           "(Affine Trans (Vec3 ?a ?b ?c) (Affine Trans (Vec3 ?d ?e ?f) ?cad))",
-           "(Affine Trans (Vec3 (+ ?a ?d) (+ ?b ?e) (+ ?c ?f)) ?cad)"),
+            rw("map_unpart_r2",
+               "  (Map2 ?op ?params (Unpart ?part ?cads))",
+               "(Unpart ?part (Part ?part
+              (Map2 ?op ?params (Unpart ?part ?cads))))"),
+            rw("map_unpart_l2",
+               "  (Map2 ?op (Unpart ?part ?params) ?cads)",
+               "(Unpart ?part (Part ?part
+              (Map2 ?op (Unpart ?part ?params) ?cads)))"),
 
+            // NOTE do we need part/unpart id?
+            rw("part_unpart", "(Part ?part (Unpart ?part ?list))", "?list"),
+            rw("unpart_part", "(Unpart ?part (Part ?part ?list))", "?list"),
+
+            // unsort propagation
+            // rw("sort_repeat", "(Sort ?perm (Repeat ?n ?elem))", "(Repeat ?n ?elem)"),
+            rw("sort_unsort", "(Sort ?perm (Unsort ?perm ?list))", "?list"),
+            rw("unsort_sort", "(Unsort ?perm (Sort ?perm ?list))", "?list"),
+
+            rw("map_unsort_l",
+               "  (Map2 ?op (Unsort ?perm ?params) ?cads)",
+               "(Unsort ?perm (Sort ?perm
+              (Map2 ?op (Unsort ?perm ?params) ?cads)))"),
+
+            rw("map_unsort_r",
+               "  (Map2 ?op ?params (Unsort ?perm ?cads))",
+               "(Unsort ?perm (Sort ?perm
+              (Map2 ?op ?params (Unsort ?perm ?cads))))"),
+
+            // rw("sort_map2",
+            //    "(Sort ?perm (Map2 ?op ?params ?cads))",
+            //    "(Map2 ?op (Sort ?perm ?params) (Sort ?perm ?cads))"),
+
+            // rw("map_unsort_l",
+            //    "(Map2 ?op
+            //       (Unsort ?perm ?params)
+            //       ?cads)",
+            //    "(Unsort ?perm
+            //       (Map2 ?op
+            //         ?params
+            //         (Sort ?perm ?cads)))"),
+
+            // rw("map_unsort_r",
+            //    "(Map2 ?op
+            //       ?params
+            //       (Unsort ?perm ?cads))",
+            //    "(Unsort ?perm
+            //       (Map2 ?op
+            //         (Sort ?perm ?params)
+            //         ?cads))"),
+
+            rw("unsort_repeat", "(Unsort ?perm (Repeat ?n ?elem))", "(Repeat ?n ?elem)"),
+
+            rw("fold_union_unsort", "(Fold Union (Unsort ?perm ?x))", "(Fold Union ?x)"),
+            rw("fold_inter_unsort", "(Fold Inter (Unsort ?perm ?x))", "(Fold Inter ?x)"),
+
+            // unpolar
+            rw("unpolar_trans",
+               "(Map2 Trans (Unpolar ?n ?center ?params) ?cads)",
+               "(Map2 Trans (Repeat ?n ?center) (Map2 TransPolar ?params ?cads))"),
+            // rw("unpolar_trans0",
+            //    "(Map2 Trans (Unpolar ?n (Vec3 0 0 0) ?params) ?cads)",
+            //    "(Map2 TransPolar ?params ?cads)"),
+
+
+            // rw("lift_op",
+            //    "(Union (Affine ?op ?params ?a) (Affine ?op ?params ?b))",
+            //    "(Affine ?op ?params (Union ?a ?b))"),
+        ]);
+    }
+
+    if *CAD_IDENTS {
+        rules.extend(vec![
+            rw("scale_flip", "(Affine Scale (Vec3 -1 -1 1) ?a)", "(Affine Rotate (Vec3 0 0 180) ?a)"),
+
+            rw("scale_trans",
+               "(Affine Scale (Vec3 ?a ?b ?c) (Affine Trans (Vec3 ?x ?y ?z) ?m))",
+               "(Affine Trans (Vec3 (* ?a ?x) (* ?b ?y) (* ?c ?z))
+              (Affine Scale (Vec3 ?a ?b ?c) ?m))"),
+
+            rw("trans_scale",
+               "(Affine Trans (Vec3 ?x ?y ?z) (Affine Scale (Vec3 ?a ?b ?c) ?m))",
+               "(Affine Scale (Vec3 ?a ?b ?c) (Affine Trans (Vec3 (/ ?x ?a) (/ ?y ?b) (/ ?z ?c)) ?m))"),
+
+            // rw("scale_rotate",
+            //    "(Scale (Vec3 ?a ?a ?a) (Rotate (Vec3 ?x ?y ?z) ?m))",
+            //    "(Rotate (Vec3 ?x ?y ?z) (Scale (Vec3 ?a ?a ?a) ?m))"),
+
+            // rw("rotate_scale",
+            //    "(Scale (Vec3 ?a ?a ?a) (Rotate (Vec3 ?x ?y ?z) ?m))",
+            //    "(Rotate (Vec3 ?x ?y ?z) (Scale (Vec3 ?a ?a ?a) ?m))"),
+
+            // primitives
+            rw("cone_scale",
+               "(Cylinder (Vec3 ?h ?r1 ?r2) ?params ?center)",
+               "(Affine Scale (Vec3 1 1 ?h)
+              (Cylinder (Vec3 1 ?r1 ?r2) ?params ?center))"),
+            posrw(
+                "scale_cone",
+                "(Affine Scale (Vec3 1 1 ?h)
+              (Cylinder (Vec3 1 ?r1 ?r2) ?params ?center))",
+                "(Cylinder (Vec3 ?h ?r1 ?r2) ?params ?center)",
+                &["?h"]
+            ),
+
+            rw("cylinder_scale",
+               "(Cylinder (Vec3 ?h ?r ?r) ?params ?center)",
+               "(Affine Scale (Vec3 ?r ?r ?h)
+              (Cylinder (Vec3 1 1 1) ?params ?center))"),
+            posrw(
+                "scale_cylinder",
+                "(Affine Scale (Vec3 ?r ?r ?h)
+              (Cylinder (Vec3 1 1 1) ?params ?center))",
+                "(Cylinder (Vec3 ?h ?r ?r) ?params ?center)",
+                &["?r", "?h"]
+            ),
+
+            rw("cube_scale",
+               "(Cube (Vec3 ?x ?y ?z) ?center)",
+               "(Affine Scale (Vec3 ?x ?y ?z)
+              (Cube (Vec3 1 1 1) ?center))"),
+            posrw(
+                "scale_cube",
+                "(Affine Scale (Vec3 ?x ?y ?z)
+              (Cube (Vec3 1 1 1) ?center))",
+                "(Cube (Vec3 ?x ?y ?z) ?center)",
+                &["?x", "?y", "?z"]
+            ),
+
+            rw("sphere_scale",
+               "(Sphere ?r ?params)",
+               "(Affine Scale (Vec3 ?r ?r ?r)
+              (Sphere 1 ?params))"),
+            posrw(
+                "scale_sphere",
+                "(Affine Scale (Vec3 ?r ?r ?r)
+              (Sphere 1 ?params))",
+                "(Sphere ?r ?params)",
+                &["?r"]
+            ),
+
+            // affine rules
+
+            rw("id", "(Affine Trans (Vec3 0 0 0) ?a)", "?a"),
+
+            rw("combine_scale",
+               "(Affine Scale (Vec3 ?a ?b ?c) (Affine Scale (Vec3 ?d ?e ?f) ?cad))",
+               "(Affine Scale (Vec3 (* ?a ?d) (* ?b ?e) (* ?c ?f)) ?cad)"),
+            rw("combine_trans",
+               "(Affine Trans (Vec3 ?a ?b ?c) (Affine Trans (Vec3 ?d ?e ?f) ?cad))",
+               "(Affine Trans (Vec3 (+ ?a ?d) (+ ?b ?e) (+ ?c ?f)) ?cad)"),
+
+        ]);
+    }
+
+    rules.extend(vec![
         Rewrite::new (
             "listapplier",
             Cad::parse_pattern("(List ?items...)").unwrap(),
@@ -364,30 +381,32 @@ pub fn rules() -> Vec<Rewrite<Cad, Meta>> {
             },
         ),
 
-    ];
+    ]);
 
-    // add the intro rules only for cads
-    let id_affines = &[
-        ("scale", "Affine Scale (Vec3 1 1 1)"),
-        ("trans", "Affine Trans (Vec3 0 0 0)"),
-        ("rotate", "Affine Rotate (Vec3 0 0 0)"),
-    ];
-    let possible_cads = &[
-        ("affine", "(Affine ?op ?param ?cad)"),
-        ("bop", "(Binop ?op ?cad1 ?cad2)"),
-        ("fold", "(Fold ?op ?cads)"),
-    ];
-    for (aff_name, id_aff) in id_affines {
-        for (cad_name, cad) in possible_cads {
-            let outer = &format!("({} {})", id_aff, cad);
-            let intro = &format!("id_{}_{}_intro", aff_name, cad_name);
-            rules.push(rw(intro, cad, outer));
+    if *CAD_IDENTS {
+        // add the intro rules only for cads
+        let id_affines = &[
+            ("scale", "Affine Scale (Vec3 1 1 1)"),
+            ("trans", "Affine Trans (Vec3 0 0 0)"),
+            ("rotate", "Affine Rotate (Vec3 0 0 0)"),
+        ];
+        let possible_cads = &[
+            ("affine", "(Affine ?op ?param ?cad)"),
+            ("bop", "(Binop ?op ?cad1 ?cad2)"),
+            ("fold", "(Fold ?op ?cads)"),
+        ];
+        for (aff_name, id_aff) in id_affines {
+            for (cad_name, cad) in possible_cads {
+                let outer = &format!("({} {})", id_aff, cad);
+                let intro = &format!("id_{}_{}_intro", aff_name, cad_name);
+                rules.push(rw(intro, cad, outer));
+            }
+
+            // elim rules work for everything
+            let elim = &format!("id_{}_elim", aff_name);
+            let outer = &format!("({} ?a)", id_aff);
+            rules.push(rw(elim, outer, "?a"));
         }
-
-        // elim rules work for everything
-        let elim = &format!("id_{}_elim", aff_name);
-        let outer = &format!("({} ?a)", id_aff);
-        rules.push(rw(elim, outer, "?a"));
     }
 
     if std::env::var("SUSPECT_RULES") == Ok("1".into()) {
@@ -607,6 +626,7 @@ fn insert_map2s(egraph: &mut EGraph, list_ids: &[Id]) -> Vec<AddResult> {
     results
 }
 
+#[allow(dead_code)]
 fn num_sign(n: Num) -> i32 {
     let f = n.to_f64();
     if f < 0.0 {
