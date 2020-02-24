@@ -25,7 +25,7 @@ impl Permutation {
     }
 
     pub fn is_ordered(&self) -> bool {
-        self.order.iter().enumerate().all(|(a,b)| a == *b)
+        self.order.iter().enumerate().all(|(a, b)| a == *b)
     }
 
     pub fn invert(&self) -> Permutation {

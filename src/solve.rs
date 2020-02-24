@@ -3,17 +3,14 @@ use std::f64::consts;
 use log::*;
 
 use indexmap::{indexset, IndexMap};
-use smallvec::{smallvec, SmallVec};
 
 use crate::{
     cad::{Cad, EGraph, ListVar as LV, Vec3},
     num::Num,
     permute::Permutation,
 };
-use egg::{
-    egraph::AddResult,
-    expr::{Expr, Id},
-};
+
+use egg::{ENode, Id};
 
 fn f(u: usize) -> f64 {
     u as f64
@@ -33,9 +30,9 @@ enum Formula {
 }
 
 macro_rules! eadd {
-    ($egraph:expr, $op:expr) => {$egraph.add(Expr::unit($op)).id};
+    ($egraph:expr, $op:expr) => {$egraph.add(ENode::leaf($op))};
     ($egraph:expr, $op:expr, $($arg:expr),*) => {
-        $egraph.add(Expr::new($op, smallvec![$($arg),*])).id
+        $egraph.add(ENode::new($op, vec![$($arg),*]))
     };
 }
 
@@ -139,7 +136,7 @@ fn solve_list_fn(xs: &[Num]) -> Option<Formula> {
     None
 }
 
-fn solve_and_add(egraph: &mut EGraph, xs: &[Num], ys: &[Num], zs: &[Num]) -> Option<AddResult> {
+fn solve_and_add(egraph: &mut EGraph, xs: &[Num], ys: &[Num], zs: &[Num]) -> Option<Id> {
     // println!("Solving:\n  x={:?}\n  y={:?}\n  z={:?}", xs, ys, zs);
     assert_eq!(xs.len(), ys.len());
     assert_eq!(xs.len(), zs.len());
@@ -170,20 +167,20 @@ fn solve_and_add(egraph: &mut EGraph, xs: &[Num], ys: &[Num], zs: &[Num]) -> Opt
             let nums = unrun(slice, *inner)?;
             let fun = solve_list_fn(&nums)?;
             // println!("Found: {:?}", fun);
-            let var_id = egraph.add(Expr::unit(var.clone())).id;
+            let var_id = egraph.add(ENode::leaf(var.clone()));
             inserted[*index] = Some(fun.add_to_egraph(egraph, var_id));
         }
     }
 
     let mut lens = vec![];
-    let mut children: SmallVec<_> = by_chunk
+    let mut children: Vec<_> = by_chunk
         .keys()
         .zip(&inners)
         .map(|(n, inner)| {
             assert_eq!(n % inner, 0);
             let len = n / inner;
             lens.push(len);
-            egraph.add(Expr::unit(Cad::Num(len.into()))).id
+            egraph.add(ENode::leaf(Cad::Num(len.into())))
         })
         .collect();
     // println!("lens: {:?}, {:?}", lens, xs);
@@ -191,14 +188,14 @@ fn solve_and_add(egraph: &mut EGraph, xs: &[Num], ys: &[Num], zs: &[Num]) -> Opt
     let x = inserted[0].unwrap();
     let y = inserted[1].unwrap();
     let z = inserted[2].unwrap();
-    let vec = egraph.add(Expr::new(Cad::Vec3, smallvec![x, y, z])).id;
+    let vec = egraph.add(ENode::new(Cad::Vec3, vec![x, y, z]));
     children.push(vec);
-    let map = egraph.add(Expr::new(Cad::MapI, children));
+    let map = egraph.add(ENode::new(Cad::MapI, children));
     // println!("inserted map: {:?}", map);
     Some(map)
 }
 
-fn solve_vec(egraph: &mut EGraph, list: &[Vec3]) -> Vec<AddResult> {
+fn solve_vec(egraph: &mut EGraph, list: &[Vec3]) -> Vec<Id> {
     // print!("Solving: [");
     // for v in list {
     //     print!("({:.2}, {:.2}, {:.2}), ", v.0, v.1, v.2);
@@ -235,13 +232,10 @@ fn solve_vec(egraph: &mut EGraph, list: &[Vec3]) -> Vec<AddResult> {
         Permutation::sort(&xs),
         Permutation::sort(&ys),
         Permutation::sort(&zs),
-
         Permutation::sort(&xys),
         Permutation::sort(&yxs),
-
         Permutation::sort(&yzs),
         Permutation::sort(&zys),
-
         Permutation::sort(&xzs),
         Permutation::sort(&zxs),
     ];
@@ -255,10 +249,7 @@ fn solve_vec(egraph: &mut EGraph, list: &[Vec3]) -> Vec<AddResult> {
         let zs = perm.apply(&zs);
         if let Some(added_mapi) = solve_and_add(egraph, &xs, &ys, &zs) {
             let p = Cad::Permutation(perm.clone());
-            let e = Expr::new(
-                Cad::Unsort,
-                smallvec![egraph.add(Expr::unit(p)).id, added_mapi.id,],
-            );
+            let e = ENode::new(Cad::Unsort, vec![egraph.add(ENode::leaf(p)), added_mapi]);
             results.push(egraph.add(e));
         }
     }
@@ -299,30 +290,30 @@ fn add_num(egraph: &mut EGraph, n: Num) -> Id {
 
     for &known_n in NS {
         if n == known_n.into() {
-            return egraph.add(Expr::unit(Cad::Num(known_n.into()))).id;
+            return egraph.add(ENode::leaf(Cad::Num(known_n.into())));
         }
     }
-    egraph.add(Expr::unit(Cad::Num(n))).id
+    egraph.add(ENode::leaf(Cad::Num(n)))
 }
 
 fn add_vec(egraph: &mut EGraph, v: Vec3) -> Id {
     let x = add_num(egraph, v.0);
     let y = add_num(egraph, v.1);
     let z = add_num(egraph, v.2);
-    egraph.add(Expr::new(Cad::Vec3, smallvec![x, y, z])).id
+    egraph.add(ENode::new(Cad::Vec3, vec![x, y, z]))
 }
 
-pub fn solve(egraph: &mut EGraph, list: &[Vec3]) -> Vec<AddResult> {
+pub fn solve(egraph: &mut EGraph, list: &[Vec3]) -> Vec<Id> {
     let mut results = solve_vec(egraph, list);
     debug!("Solved {:?} -> {:?}", list, results);
     let (center, polar_list) = polarize(&list);
     for res in solve_vec(egraph, &polar_list) {
-        let e = Expr::new(
+        let e = ENode::new(
             Cad::Unpolar,
-            smallvec![
+            vec![
                 add_num(egraph, list.len().into()),
                 add_vec(egraph, center),
-                res.id
+                res,
             ],
         );
         results.push(egraph.add(e));
