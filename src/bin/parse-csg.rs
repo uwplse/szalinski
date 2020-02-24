@@ -251,7 +251,6 @@ fn get_rotate(mat: &[Vec<f64>]) -> Option<(f64, f64, f64)> {
     //     return None;
     // }
 
-
     let r2deg = |f| {
         let d = 180.0 * f / std::f64::consts::PI;
         if d < 0.0 {
@@ -331,23 +330,23 @@ fn write_csg(w: &mut impl Write, depth: usize, pair: Pair<Rule>) -> Result<()> {
                     mat[3][0], mat[3][1], mat[3][2], mat[3][3],
                 );
             }
-/*
-                #[rustfmt::skip]
-                write!(
-                    w,
-                    r#"("multmatrix([
-  [{}, {}, {}, {}],
-  [{}, {}, {}, {}],
-  [{}, {}, {}, {}],
-  [{}, {}, {}, {}]
-])""#,
-                    mat[0][0], mat[0][1], mat[0][2], mat[0][3],
-                    mat[1][0], mat[1][1], mat[1][2], mat[1][3],
-                    mat[2][0], mat[2][1], mat[2][2], mat[2][3],
-                    mat[3][0], mat[3][1], mat[3][2], mat[3][3],
-                )?;
-            }
-*/
+            /*
+                            #[rustfmt::skip]
+                            write!(
+                                w,
+                                r#"("multmatrix([
+              [{}, {}, {}, {}],
+              [{}, {}, {}, {}],
+              [{}, {}, {}, {}],
+              [{}, {}, {}, {}]
+            ])""#,
+                                mat[0][0], mat[0][1], mat[0][2], mat[0][3],
+                                mat[1][0], mat[1][1], mat[1][2], mat[1][3],
+                                mat[2][0], mat[2][1], mat[2][2], mat[2][3],
+                                mat[3][0], mat[3][1], mat[3][2], mat[3][3],
+                            )?;
+                        }
+            */
             indent(w, d)?;
             write_op(w, d, "Union", args)?;
             write!(w, ")")
