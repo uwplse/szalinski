@@ -4,7 +4,7 @@ timeout=180s
 in=$1
 out=$2
 
-timeout $timeout openscad -o $out $in 2>> out/openscad.log
+timeout --foreground $timeout openscad -o $out $in 2>> out/openscad.log
 case "$?" in
 0) ;;
 124) echo "sztimeout=$timeout" > $out ;;
