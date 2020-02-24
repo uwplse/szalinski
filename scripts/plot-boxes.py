@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import sys
 import csv
 import glob
 import numpy as np
@@ -38,12 +39,7 @@ all_data = {}
 with multiprocessing.Pool() as pool:
     for name, pattern in names.items():
         files = glob.glob('out/thingiverse/' + pattern, recursive=True)
-        # lines = [(directory + path).strip() for path in json_list.readlines()[:]]
         all_data[name] = pool.map(util.load_json, files)
-        # for j in js:
-        #     if j and '"' not in keep.sub('', j['initial_expr']):
-        #         dir_data.append(j)
-        # all_data[name] = dir_data
 
 for name, data in all_data.items():
     print('Found', len(data), 'for', name.replace('\n', ' '))
@@ -88,12 +84,8 @@ positions = [
 print(positions)
 
 axes[0].set(ylabel='% shrunk')
-plt.savefig('plot.pdf', bbox_inches='tight', dpi=500)
+
+filename = sys.argv[1]
+plt.savefig(filename, bbox_inches='tight', dpi=500)
+print('Saved plot to', filename)
 # plt.show()
-
-
-
-# for infile in files:
-#     with open(infile) as f:
-#         j = json.load(f)
-#         print(len(j))
