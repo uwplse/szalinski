@@ -1,20 +1,19 @@
 use std::fmt;
 use std::str::FromStr;
 
-use egg::{
-    define_term,
-    expr::{Cost, Expr, Language, RecExpr},
-};
+use egg::*;
 
 use crate::{
     num::{num, Num},
-    permute::{Permutation, Partitioning},
+    permute::{Partitioning, Permutation},
 };
 
-use log::*;
-pub type EGraph = egg::egraph::EGraph<Cad, Meta>;
-pub type EClass = egg::egraph::EClass<Cad, Meta>;
-pub type Rewrite = egg::pattern::Rewrite<Cad, Meta>;
+use log::debug;
+
+pub type EGraph = egg::EGraph<Cad, Meta>;
+pub type EClass = egg::EClass<Cad, Meta>;
+pub type Rewrite = egg::Rewrite<Cad, Meta>;
+pub type Cost = f64;
 
 pub type Vec3 = (Num, Num, Num);
 
@@ -53,8 +52,7 @@ impl fmt::Display for BlackBox {
     }
 }
 
-define_term! {
-    #[derive(Debug, PartialEq, Eq, Hash, Clone)]
+define_language! {
     pub enum Cad {
         Cube = "Cube",
         Sphere = "Sphere",
@@ -155,7 +153,7 @@ fn eval(op: Cad, args: &[Cad]) -> Option<Cad> {
     }
 }
 
-impl egg::egraph::Metadata<Cad> for Meta {
+impl Metadata<Cad> for Meta {
     type Error = std::convert::Infallible;
     fn merge(&self, other: &Self) -> Self {
         if self.cost <= other.cost {
@@ -165,7 +163,7 @@ impl egg::egraph::Metadata<Cad> for Meta {
         }
     }
 
-    fn make(expr: Expr<Cad, &Self>) -> Self {
+    fn make(expr: ENode<Cad, &Self>) -> Self {
         let expr = if expr.children.is_empty() {
             expr
         } else {
@@ -184,20 +182,26 @@ impl egg::egraph::Metadata<Cad> for Meta {
 
             const_args
                 .and_then(|a| eval(expr.op.clone(), &a))
-                .map(Expr::unit)
-                .unwrap_or_else(|| Expr::new(expr.op.clone(), args.clone()))
+                .map(ENode::leaf)
+                .unwrap_or_else(|| ENode::new(expr.op.clone(), args.clone()))
         };
 
         Self {
             best: expr.map_children(|c| c.best.clone()).into(),
-            cost: expr.map_children(|c| c.cost).cost(),
+            cost: CostFn.cost(&expr.map_children(|c| c.cost)),
         }
     }
 
     fn modify(eclass: &mut EClass) {
         if let Some(list1) = eclass.nodes.iter().find(|n| n.op == Cad::List) {
             for list2 in eclass.nodes.iter().filter(|n| n.op == Cad::List) {
-                assert_eq!(list1.children.len(), list2.children.len(), "at id {}, nodes:\n{:#?}", eclass.id, eclass.nodes)
+                assert_eq!(
+                    list1.children.len(),
+                    list2.children.len(),
+                    "at id {}, nodes:\n{:#?}",
+                    eclass.id,
+                    eclass.nodes
+                )
             }
         }
 
@@ -217,19 +221,22 @@ impl egg::egraph::Metadata<Cad> for Meta {
 
         let best = eclass.metadata.best.as_ref();
         if best.children.is_empty() {
-            eclass.nodes.push(Expr::unit(best.op.clone()))
+            eclass.nodes.push(ENode::leaf(best.op.clone()))
         }
     }
 }
 
 
-impl Language for Cad {
-    fn cost(&self, children: &[Cost]) -> Cost {
+pub struct CostFn;
+impl egg::CostFunction<Cad> for CostFn {
+    type Cost = Cost;
+
+    fn cost(&mut self, enode: &ENode<Cad, Cost>) -> Cost {
         use Cad::*;
         const BIG: f64 = 100_000_000.0;
         const SMALL: f64 = 0.001;
 
-        let cost = match self {
+        let cost = match enode.op {
             Num(n) => {
                 let s = format!("{}", n);
                 0.000001 * s.len() as Cost
@@ -258,12 +265,13 @@ impl Language for Cad {
 
             Unpolar => BIG,
             Sort | Unsort | Part | Unpart => BIG,
-            Partitioning(_)  => BIG,
+            Partitioning(_) => BIG,
             Permutation(_) => BIG,
-
         };
 
-        cost + children.iter().sum::<Cost>()
+        cost + enode.children.iter().sum::<Cost>()
     }
 }
 
+// impl Language for Cad {
+// }

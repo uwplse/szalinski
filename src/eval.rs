@@ -1,16 +1,15 @@
 use std::collections::HashMap;
 
-use smallvec::smallvec;
 use std::fmt;
 
-use egg::expr::{Expr, RecExpr};
+use egg::{ENode, RecExpr};
 
 use crate::cad::Cad;
 
 macro_rules! rec {
-    ($op:expr) => {RecExpr::from(Expr::unit($op))};
+    ($op:expr) => {RecExpr::from(ENode::leaf($op))};
     ($op:expr, $($arg:expr),*) => {
-        RecExpr::from(Expr::new($op, smallvec![$($arg),*]))
+        RecExpr::from(ENode::new($op, vec![$($arg),*]))
     };
 }
 
@@ -22,13 +21,21 @@ pub fn remove_empty(expr: &RecExpr<Cad>) -> Option<RecExpr<Cad>> {
     let res = match e.op {
         Empty => None,
         BlackBox(ref b) => {
-            let args = e.children.iter().map(|c| remove_empty(c).unwrap_or_else(|| rec!(Empty))).collect();
-            Some(Expr::new(BlackBox(b.clone()), args).into())
+            let args: Vec<_> = e
+                .children
+                .iter()
+                .map(|c| remove_empty(c).unwrap_or_else(|| rec!(Empty)))
+                .collect();
+            Some(ENode::new(BlackBox(b.clone()), args).into())
         }
         Hull => Some(rec!(Hull, recurse(0)?)),
         List => {
-            let args = e.children.iter().map(|c| remove_empty(c).unwrap_or_else(|| rec!(Empty))).collect();
-            Some(Expr::new(List, args).into())
+            let args: Vec<_> = e
+                .children
+                .iter()
+                .map(|c| remove_empty(c).unwrap_or_else(|| rec!(Empty)))
+                .collect();
+            Some(ENode::new(List, args).into())
         }
         Cube => {
             let v = get_vec3_nums(child(0));
@@ -101,13 +108,13 @@ pub fn remove_empty(expr: &RecExpr<Cad>) -> Option<RecExpr<Cad>> {
                     if non_empty.is_empty() {
                         None
                     } else {
-                        let listexpr = Expr::new(List, non_empty.into());
+                        let listexpr = ENode::new(List, non_empty);
                         Some(rec!(Fold, rec!(Union), listexpr.into()))
                     }
                 }
                 Inter => {
                     let args: Option<Vec<RecExpr<Cad>>> = listargs.collect();
-                    let listexpr = Expr::new(List, args?.into());
+                    let listexpr = ENode::new(List, args?);
                     Some(rec!(Fold, rec!(Inter), listexpr.into()))
                 }
                 Diff => {
@@ -121,7 +128,7 @@ pub fn remove_empty(expr: &RecExpr<Cad>) -> Option<RecExpr<Cad>> {
                     } else {
                         let mut args = vec![first];
                         args.extend(non_empty);
-                        let listexpr = Expr::new(List, args.into());
+                        let listexpr = ENode::new(List, args);
                         Some(rec!(Fold, rec!(Diff), listexpr.into()))
                     }
                 }
@@ -183,7 +190,7 @@ fn mk_vec((x, y, z): (f64, f64, f64)) -> RecExpr<Cad> {
 }
 
 fn mk_list(exprs: Vec<RecExpr<Cad>>) -> RecExpr<Cad> {
-    Expr::new(Cad::List, exprs.into()).into()
+    ENode::new(Cad::List, exprs).into()
 }
 
 fn eval_list(cx: Option<&FunCtx>, expr: &RecExpr<Cad>) -> Vec<RecExpr<Cad>> {
@@ -200,8 +207,8 @@ pub fn eval(cx: Option<&FunCtx>, expr: &RecExpr<Cad>) -> RecExpr<Cad> {
     let arg = |i: usize| &e.children[i];
     match &e.op {
         Cad::BlackBox(ref b) => {
-            let args = e.children.iter().map(|c| eval(cx, c)).collect();
-            Expr::new(Cad::BlackBox(b.clone()), args).into()
+            let args: Vec<_> = e.children.iter().map(|c| eval(cx, c)).collect();
+            ENode::new(Cad::BlackBox(b.clone()), args).into()
         }
         // arith
         Cad::Bool(_) => expr.clone(),
@@ -399,7 +406,7 @@ impl<'a> fmt::Display for Scad<'a> {
                     write!(f, "  {}", Scad(cad))?;
                 }
                 write!(f, "}}")
-            },
+            }
 
             Cad::Trans => write!(f, "translate"),
             Cad::Scale => write!(f, "scale"),

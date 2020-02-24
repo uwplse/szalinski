@@ -3,7 +3,7 @@ use std::str::FromStr;
 
 use log::*;
 
-use crate::cad::{EGraph, Cad};
+use crate::cad::{Cad, EGraph};
 
 #[derive(PartialOrd, Ord, PartialEq, Eq, Hash, Default, Clone, Copy)]
 // pub struct Num(ordered_float::NotNan<f64>);
