@@ -53,6 +53,7 @@ case "$timeout1$timeout2" in
         vol1='"unknown"'
         vol2='"unknown"'
         vol_diff='"unknown"'
+        exit 1
     ;;
     *)
         echo "Unexpected result: $timeout1 $timeout2"

@@ -41,7 +41,7 @@ inverse-csg: $(filter out/inverse-csg/%, $(everything))
 export OPENSCADPATH=.
 
 # don't delete anything in the out directory please, Make
-.PRECIOUS: out/%.raw.csg out/%.fn.csg out/%.csexp out/%.json out/%.csexp.opt out/%.opt.scad out/%.in.off out/%.opt.off out/%.checked
+.SECONDARY:
 
 ## program compilation and utility stuff
 
@@ -61,7 +61,7 @@ print-%:
 
 out/%.raw.csg: inputs/%.scad
 	@mkdir -p $(dir $@)
-	timeout 100s openscad -o $@ $<
+	openscad -o $@ $<
 
 out/%.fn.csg: ./scripts/reduce-fn.py out/%.raw.csg
 	$^ $@
@@ -75,13 +75,13 @@ out/%.perturb.csexp: out/%.fn.csg $(tgt)/parse-csg sz_params
 ## The actual running of the tool
 
 out/%.normal.json: out/%.normal.csexp $(tgt)/optimize sz_params
-	export $$(cat sz_params | xargs) && timeout 150s $(tgt)/optimize $< $@
+	export $$(cat sz_params | xargs) && $(tgt)/optimize $< $@
 out/%.perturb.json: out/%.perturb.csexp $(tgt)/optimize sz_params
-	export $$(cat sz_params | xargs) && timeout 150s $(tgt)/optimize $< $@
+	export $$(cat sz_params | xargs) && $(tgt)/optimize $< $@
 out/%.perturb-nocad.json: out/%.perturb.csexp $(tgt)/optimize sz_params
-	export $$(cat sz_params | xargs) SZ_CAD_IDENTS=false && timeout 150s $(tgt)/optimize $< $@
+	export $$(cat sz_params | xargs) SZ_CAD_IDENTS=false && $(tgt)/optimize $< $@
 out/%.perturb-noinv.json: out/%.perturb.csexp $(tgt)/optimize sz_params
-	export $$(cat sz_params | xargs) SZ_INV_TRANS=false && timeout 150s $(tgt)/optimize $< $@
+	export $$(cat sz_params | xargs) SZ_INV_TRANS=false && $(tgt)/optimize $< $@
 
 ## Checking of diffs
 
@@ -100,7 +100,7 @@ out/%.opt.off: out/%.opt.scad out/%.csexp.opt scripts/openscad-or-timeout.sh
 out/%.normal.diff: scripts/compare_mesh.sh out/compare_mesh out/%.in.off out/%.normal.opt.off
 	./scripts/compare_mesh.sh out/$*.in.off out/$*.normal.opt.off $@
 
-out/%.diff.scad: scripts/create-diff-scad.sh inputs/%.scad out/%.opt.scad
+out/%.diff.scad: scripts/create-diff-scad.sh inputs/%.scad out/%.normal.opt.scad
 	$^ $@
 
 out/%.checked: inputs/%.expected out/%
@@ -130,8 +130,8 @@ thingiverse-perturb-nocad: $(filter out/thingiverse/%, $(jsons-perturb-nocad))
 thingiverse-perturb-noinv: $(filter out/thingiverse/%, $(jsons-perturb-noinv))
 thingiverse-all: thingiverse-normal thingiverse-perturb thingiverse-perturb-nocad thingiverse-perturb-noinv
 
-plot.pdf: ./scripts/plot-boxes.py thingiverse-all
-	python3 $<
+out/fig14.pdf: ./scripts/plot-boxes.py thingiverse-all
+	python3 $< $@
 
 # out/case-studies/report.csv: ./scripts/report.py $(filter out/case-studies/%, $(jsons) $(diffs))
 #	./scripts/report.py --output $@ $(filter out/case-studies/%, $(jsons))
