@@ -222,6 +222,52 @@ impl egg::egraph::Metadata<Cad> for Meta {
     }
 }
 
+/*
+impl Language for Cad {
+    fn cost(&self, children: &[f64]) -> f64 {
+        use Cad::*;
+        const BIG: f64 = 100_000_000.0;
+        const SMALL: f64 = 0.001;
+
+        let cost = match self {
+            Num(n) => {
+                let s = format!("{}", n);
+                0.000001 * (s.len() as f64)
+            }
+            Bool(_) | ListVar(_) => SMALL,
+            Add | Sub | Mul | Div => SMALL,
+
+            BlackBox(_) => 1.0,
+            Cube | Empty | Nil | Sphere | Cylinder | Hull => 1.0,
+
+            Trans | TransPolar | Scale | Rotate => 1.0,
+
+            Union | Diff | Inter => 1.0,
+
+            Repeat => 0.99,
+            MapI => 1.0,
+            Fold => 1.0,
+            Map2 => 1.0,
+            Affine => 1.0,
+            Binop => 1.0,
+
+            Concat => 1.0,
+            Cons => 1.0,
+            List => 0.99,
+            Vec3 => 1.0,
+
+            Unpolar => BIG,
+            Sort | Unsort | Part | Unpart => BIG,
+            Partitioning(_)  => BIG,
+            Permutation(_) => BIG,
+
+        };
+
+        cost + children.iter().sum::<f64>()
+    }
+}
+*/
+
 impl Language for Cad {
     fn cost(&self, children: &[Cost]) -> Cost {
         use Cad::*;
@@ -265,3 +311,4 @@ impl Language for Cad {
         cost + children.iter().sum::<Cost>()
     }
 }
+
