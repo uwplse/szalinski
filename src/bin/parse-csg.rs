@@ -236,20 +236,20 @@ fn get_rotate(mat: &[Vec<f64>]) -> Option<(f64, f64, f64)> {
         (x, y, z)
     };
 
-    let (cx, cy, cz) = (x.cos(), y.cos(), z.cos());
-    let (sx, sy, sz) = (x.sin(), y.sin(), z.sin());
+    // let (cx, cy, cz) = (x.cos(), y.cos(), z.cos());
+    // let (sx, sy, sz) = (x.sin(), y.sin(), z.sin());
 
-    #[rustfmt::skip]
-    let guess = vec![
-        vec![cy*cz, cz*sx*sy - cx*sz, cx*cz*sy + sx*sz, 0.0],
-        vec![cy*sz, cx*cz + sx*sy*sz, cx*sy*sz - cz*sx, 0.0],
-        vec![  -sy,            cy*sx,            cx*cy, 0.0],
-        vec![  0.0,              0.0,              0.0, 1.0]
-    ];
+    // #[rustfmt::skip]
+    // let guess = vec![
+    //     vec![cy*cz, cz*sx*sy - cx*sz, cx*cz*sy + sx*sz, 0.0],
+    //     vec![cy*sz, cx*cz + sx*sy*sz, cx*sy*sz - cz*sx, 0.0],
+    //     vec![  -sy,            cy*sx,            cx*cy, 0.0],
+    //     vec![  0.0,              0.0,              0.0, 1.0]
+    // ];
 
-    if guess != mat {
-        return None;
-    }
+    // if guess != mat {
+    //     return None;
+    // }
 
 
     let r2deg = |f| {
@@ -260,7 +260,8 @@ fn get_rotate(mat: &[Vec<f64>]) -> Option<(f64, f64, f64)> {
             d
         }
     };
-    Some(dbg!((r2deg(x), r2deg(y), r2deg(z))))
+    Some((r2deg(x), r2deg(y), r2deg(z)))
+    // Some(dbg!((r2deg(x), r2deg(y), r2deg(z))))
 }
 
 fn has_content(pair: Pair<Rule>) -> bool {
@@ -317,6 +318,21 @@ fn write_csg(w: &mut impl Write, depth: usize, pair: Pair<Rule>) -> Result<()> {
                 write!(w, "(Affine Rotate (Vec3 {} {} {})", x, y, z)?;
             } else {
                 #[rustfmt::skip]
+                panic!(
+                    "Unknown transform: [
+  [{} {} {} {}],
+  [{} {} {} {}],
+  [{} {} {} {}],
+  [{} {} {} {}]
+]",
+                    mat[0][0], mat[0][1], mat[0][2], mat[0][3],
+                    mat[1][0], mat[1][1], mat[1][2], mat[1][3],
+                    mat[2][0], mat[2][1], mat[2][2], mat[2][3],
+                    mat[3][0], mat[3][1], mat[3][2], mat[3][3],
+                );
+            }
+/*
+                #[rustfmt::skip]
                 write!(
                     w,
                     r#"("multmatrix([
@@ -331,6 +347,7 @@ fn write_csg(w: &mut impl Write, depth: usize, pair: Pair<Rule>) -> Result<()> {
                     mat[3][0], mat[3][1], mat[3][2], mat[3][3],
                 )?;
             }
+*/
             indent(w, d)?;
             write_op(w, d, "Union", args)?;
             write!(w, ")")
