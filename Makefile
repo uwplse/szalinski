@@ -1,4 +1,4 @@
-CC_FLAGS ?= -lCGAL -lgmp -lmpfr
+CC_WITH_FLAGS ?= g++ -lCGAL -lgmp -lmpfr
 
 tgt=target/release
 diff=git --no-pager diff --no-index --word-diff=color --ignore-space-at-eol
@@ -34,6 +34,8 @@ csexps: $(csexps)
 checked: $(checked)
 in_offs: $(scads:inputs/%.scad=out/%.in.off)
 
+aec-table2: $(filter out/aec-table2/%, $(everything))
+aec-fig15: $(filter out/aec-fig15/%, $(everything))
 case-studies: $(filter out/case-studies/%, $(everything))
 unit-tests: $(filter out/unit-tests/%, $(everything))
 inverse-csg: $(filter out/inverse-csg/%, $(everything))
