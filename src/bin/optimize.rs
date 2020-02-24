@@ -150,6 +150,7 @@ pub fn pre_optimize(egraph: &mut EGraph, root: u32) {
     // let (mut egraph, root) = EGraph::from_expr(&expr);
     let pre_rule_time = Instant::now();
     let pre_rules = szalinski_egg::rules::pre_rules();
+    /*
     let iters = 100;
     let limit = 50_000;
     let timeout = Duration::from_secs(1);
@@ -161,22 +162,23 @@ pub fn pre_optimize(egraph: &mut EGraph, root: u32) {
         })
         .unwrap_or(StopReason::IterLimit(iters));
     info!("Stopping {:?}", stop_reason);
-    // let mut old_size = 0;
-    // for i in 0..100 {
-    //     info!("Pre iter {}. time: {:?}", i, pre_rule_time.elapsed());
-    //     for rule in &pre_rules {
-    //         if egraph.total_size() > 50_000 {
-    //             break
-    //         }
-    //         rule.run(egraph);
-    //     }
-    //     let new_size = egraph.total_size();
-    //     if new_size == old_size {
-    //         break;
-    //     }
-    //     old_size = new_size;
-    //     egraph.rebuild();
-    // }
+    */
+    let mut old_size = 0;
+    for i in 0..100 {
+        info!("Pre iter {}. time: {:?}", i, pre_rule_time.elapsed());
+        for rule in &pre_rules {
+            if egraph.total_size() > 50_000 {
+                break
+            }
+            rule.run(egraph);
+        }
+        let new_size = egraph.total_size();
+        if new_size == old_size {
+            break;
+        }
+        old_size = new_size;
+        egraph.rebuild();
+    }
     let pre_rule_time = pre_rule_time.elapsed();
     info!("Pre rule time: {:?}", pre_rule_time);
 }
