@@ -13,6 +13,8 @@ csgs=$(scads:inputs/%.scad=out/%.fn.csg)
 
 csexps=$(scads:inputs/%.scad=out/%.normal.csexp)
 jsons=$(scads:inputs/%.scad=out/%.normal.json)
+jsons-normal-nocad=$(scads:inputs/%.scad=out/%.normal-nocad.json)
+jsons-normal-noinv=$(scads:inputs/%.scad=out/%.normal-noinv.json)
 jsons-perturb=$(scads:inputs/%.scad=out/%.perturb.json)
 jsons-perturb-nocad=$(scads:inputs/%.scad=out/%.perturb-nocad.json)
 jsons-perturb-noinv=$(scads:inputs/%.scad=out/%.perturb-noinv.json)
@@ -34,7 +36,8 @@ csexps: $(csexps)
 checked: $(checked)
 in_offs: $(scads:inputs/%.scad=out/%.in.off)
 
-aec-table2: $(filter out/aec-table2/%, $(everything))
+aec-table2-nocad: $(filter out/aec-table2/%, $(jsons-normal-nocad))
+aec-table2-noinv: $(filter out/aec-table2/%, $(jsons-normal-noinv))
 aec-fig15: $(filter out/aec-fig15/%, $(everything))
 case-studies: $(filter out/case-studies/%, $(everything))
 unit-tests: $(filter out/unit-tests/%, $(everything))
@@ -78,6 +81,10 @@ out/%.perturb.csexp: out/%.fn.csg $(tgt)/parse-csg sz_params
 
 out/%.normal.json: out/%.normal.csexp $(tgt)/optimize sz_params
 	export $$(cat sz_params | xargs) && $(tgt)/optimize $< $@
+out/%.normal-nocad.json: out/%.normal.csexp $(tgt)/optimize sz_params
+	export $$(cat sz_params | xargs) SZ_CAD_IDENTS=false && $(tgt)/optimize $< $@
+out/%.normal-noinv.json: out/%.normal.csexp $(tgt)/optimize sz_params
+	export $$(cat sz_params | xargs) SZ_INV_TRANS=false && $(tgt)/optimize $< $@
 out/%.perturb.json: out/%.perturb.csexp $(tgt)/optimize sz_params
 	export $$(cat sz_params | xargs) && $(tgt)/optimize $< $@
 out/%.perturb-nocad.json: out/%.perturb.csexp $(tgt)/optimize sz_params
