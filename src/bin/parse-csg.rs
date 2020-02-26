@@ -420,10 +420,3 @@ fn parse(w: &mut impl Write, s: &str) -> Result<()> {
     assert_eq!(eoi.as_rule(), Rule::EOI);
     write_op(w, 0, "Union", top_level)
 }
-
-#[test]
-fn test_file() {
-    let stdout = std::io::stdout();
-    let s = std::fs::read_to_string("test.csg").unwrap();
-    parse(&mut stdout.lock(), &s).unwrap();
-}

@@ -6,14 +6,10 @@ use log::*;
 use crate::cad::{Cad, EGraph};
 
 #[derive(PartialOrd, Ord, PartialEq, Eq, Hash, Default, Clone, Copy)]
-// pub struct Num(ordered_float::NotNan<f64>);
-pub struct Num(u64);
+pub struct Num(ordered_float::NotNan<f64>);
 
-const DEFAULT_MANTISSA_BITS: usize = 52;
-
-sz_param!(ABS_EPSILON: f64);
-sz_param!(REL_EPSILON: f64);
-sz_param!(MANTISSA_BITS: usize);
+sz_param!(ABS_EPSILON: f64 = 0.0001);
+sz_param!(REL_EPSILON: f64 = 0.0001);
 
 // const ROUND_RELATIVE: f64 = 0.01;
 
@@ -23,8 +19,7 @@ pub fn num(n: impl Into<Num>) -> Num {
 
 impl Num {
     pub fn to_f64(self) -> f64 {
-        // self.0.into_inner()
-        f64::from_bits(self.0)
+        self.0.into_inner()
     }
 
     pub fn is_close(self, other: impl Clone + Into<Num>) -> bool {
@@ -45,13 +40,7 @@ impl Num {
 
 impl From<f64> for Num {
     fn from(f: f64) -> Num {
-        // Num(f.into())
-        let d = DEFAULT_MANTISSA_BITS - *MANTISSA_BITS;
-        let mask: u64 = !0 << d;
-        Num(f.to_bits() & mask)
-        // let small = f * ROUND_RELATIVE;
-        // let big = small.round() / ROUND_RELATIVE;
-        // Num(big.into())
+        Num(f.into())
     }
 }
 
