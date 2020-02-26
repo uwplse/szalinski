@@ -57,7 +57,7 @@ def main():
     data = {}
     for n in nms:
         data.update({n: (get_scad_loc(n), get_mesh_loc(n), get_c_in(n), get_c_out(n), get_no_cad(n), get_no_inv(n))})
-    res = open("../out/table2.csv", "w")
+    res = open("../out/aec-table2/table2.csv", "w")
     res.write("Id, SCAD, #Tri, c_in, c_out, No CAD, No Inv \n")
     res.write("TackleBox" + "," +
             data["TackleBox"][0] + "," +
