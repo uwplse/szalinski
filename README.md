@@ -62,6 +62,20 @@ This document contains the following parts:
 ## Running the tools
 
 ### Reproducing Table 2
+Navigate to the directory that contains the `Makefile` and
+type the following three commands one after the other.
+
+```
+$ make aec-table2
+$ make aec-table2-nocad
+$ make aec-table2-noinv
+```
+Each of them should finish within 5 minutes.
+After they all finish running, navigate to the `scripts` directory
+and type `python table2`. To view the content of the table, type
+`cat ../out/aec-table2/table2.csv | column -t -s,` and compare the numbers
+with `Table 2` in the paper.
+
 
 ### Reproducing Figure 14
 
