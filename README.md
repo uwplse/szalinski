@@ -71,7 +71,7 @@ with `Table 2` in the paper.
 
 NOTE: Our tool has significantly improved since the PLDI deadline.
 As a result, for several case studies, the numbers in the last three
-columns of the table are lower (hence better in this case) that what is
+columns of the table are lower (hence better in this case) than what is
 reported in the paper.
 
 
