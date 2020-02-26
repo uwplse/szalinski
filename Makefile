@@ -40,6 +40,7 @@ aec-table2-nocad: $(filter out/aec-table2/%, $(jsons-normal-nocad))
 aec-table2-noinv: $(filter out/aec-table2/%, $(jsons-normal-noinv))
 aec-table2: $(filter out/aec-table2/%, $(jsons))
 aec-fig15: $(filter out/aec-fig15/%, $(jsons))
+aec-fig15-valid: $(filter out/aec-fig15/%, $(diffs))
 case-studies: $(filter out/case-studies/%, $(jsons))
 unit-tests: $(filter out/unit-tests/%, $(jsons))
 inverse-csg: $(filter out/inverse-csg/%, $(jsons))
@@ -143,8 +144,10 @@ thingiverse-all: thingiverse-normal thingiverse-perturb thingiverse-perturb-noca
 out/aec-table2/table2.csv: ./scripts/table2.py aec-table2-nocad aec-table2-noinv aec-table2
 	python3 $< $@
 
-
 out/fig14.pdf: ./scripts/plot-boxes.py thingiverse-all
+	python3 $< $@
+
+out/aec-fig15/hausdorff: ./scripts/hausdorff.py aec-fig15-valid
 	python3 $< $@
 
 # out/case-studies/report.csv: ./scripts/report.py $(filter out/case-studies/%, $(jsons) $(diffs))
