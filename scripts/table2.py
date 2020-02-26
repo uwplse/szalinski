@@ -2,6 +2,7 @@
 
 import os
 import json
+import re
 
 def get_scad_loc(nm):
     fnm = "data/aec-table2-orig-scad-progs/" + nm + ".scad"
@@ -11,22 +12,14 @@ def get_scad_loc(nm):
             count += 1
     return str(count)
 
+mesh_faces_re = re.compile(r'(OFF)?[ \n]*(\d+)[ \n]+(\d+)')
 def get_mesh_loc(nm):
     fnm = "out/aec-table2/" + nm + ".in.off"
-    l = ""
     with open(fnm, 'r') as f:
         text = f.read()
-    text.replace("OFF", "")
-    text = text.strip()
+        print(text)
 
-    for i, x in enumerate(text.splitlines()):
-        if i == 0:
-            l = l + x
-        else:
-            continue
-
-    splts = l.split(' ')
-    return splts[1]
+    return mesh_faces_re.match(text).group(3)
 
 def get_c_in(nm):
     fnm = "out/aec-table2/" + nm + ".normal.json"
