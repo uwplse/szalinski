@@ -73,7 +73,7 @@ struct Deg2 {
     c: f64,
 }
 
-sz_param!(SOLVE_ROUND: f64);
+sz_param!(SOLVE_ROUND: f64 = 0.01);
 
 fn solve_deg1(vs: &[Num]) -> Option<Deg1> {
     let i1 = 0.0;
