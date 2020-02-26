@@ -112,8 +112,14 @@ We validated all our results reported in the paper.
 Our experience indicates that OpenSCAD's compilation
 step is often very slow. Therefore, the commands
 mentioned in the above steps do not perform validation.
-We encourage you to validate whichever example you like.
-In order validate an example, type the following:
+In order to validate an example, type:
+ `make out/dir_name/example_name.normal.diff`. Then open the generated
+ file and check that the Hausdorff distance and volume difference
+ numbers are close to 0.
+
+For many example, CGAL crashes or is slow at computing the Hausdorff distance.
+For these, we recommend a manual validation if you are interested.
+In order to validate an example, type the following:
 `make out/dir_name/example_name.diff.scad`. You can open the generated `.scad`
 file in OpenSCAD (already installed in the VM). In OpenSCAD, click on the
 `Render` button (the second button from the right) in the toolbar.
