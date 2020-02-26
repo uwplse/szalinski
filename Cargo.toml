@@ -28,9 +28,9 @@ rand_pcg = "0.2"
 [dependencies.egg]
 # version = "0.2"
 features = ["serde-1"]
-# git = "https://github.com/mwillsey/egg.git"
-# rev = "d9a61a7abdcf227b30a010e72bb0cc5a0dc35286"
-path = "/home/mwillsey/src/egg"
+git = "https://github.com/mwillsey/egg.git"
+rev = "730752407f8de7eb3137a27f88e4e02993023039"
+# path = "/home/mwillsey/src/egg"
 
 [dev-dependencies]
 colored-diff = "0.2"
