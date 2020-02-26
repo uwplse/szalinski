@@ -38,6 +38,7 @@ in_offs: $(scads:inputs/%.scad=out/%.in.off)
 
 aec-table2-nocad: $(filter out/aec-table2/%, $(jsons-normal-nocad))
 aec-table2-noinv: $(filter out/aec-table2/%, $(jsons-normal-noinv))
+aec-table2: $(filter out/aec-table2/%, $(everything))
 aec-fig15: $(filter out/aec-fig15/%, $(everything))
 case-studies: $(filter out/case-studies/%, $(everything))
 unit-tests: $(filter out/unit-tests/%, $(everything))
