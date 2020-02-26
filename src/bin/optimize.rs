@@ -5,7 +5,7 @@ use log::*;
 use serde::Serialize;
 
 use egg::*;
-use szalinski_egg::cad::{Cad, Cost, EGraph, Rewrite};
+use szalinski_egg::cad::{Cad, Cost, EGraph, Rewrite, Meta, CostFn};
 use szalinski_egg::eval::{remove_empty, Scad};
 use szalinski_egg::sz_param;
 
@@ -124,23 +124,23 @@ use szalinski_egg::sz_param;
 //     (it, stop)
 // }
 
-// #[derive(Serialize)]
-// pub struct RunResult {
-//     pub initial_expr: String,
-//     pub initial_cost: Cost,
-//     pub iterations: Vec<IterationResult>,
-//     pub final_expr: String,
-//     pub final_cost: Cost,
-//     pub extract_time: f64,
-//     pub final_scad: String,
-//     pub stop_reason: StopReason,
+#[derive(Serialize)]
+pub struct RunResult {
+    pub initial_expr: String,
+    pub initial_cost: Cost,
+    pub iterations: Vec<Iteration<MyIterData>>,
+    pub final_expr: String,
+    pub final_cost: Cost,
+    pub extract_time: f64,
+    pub final_scad: String,
+    pub stop_reason: StopReason,
 
-//     // metrics
-//     pub ast_size: usize,
-//     pub ast_depth: usize,
-//     pub n_mapis: usize,
-//     pub depth_under_mapis: usize,
-// }
+    // metrics
+    pub ast_size: usize,
+    pub ast_depth: usize,
+    pub n_mapis: usize,
+    pub depth_under_mapis: usize,
+}
 
 // pub fn pre_optimize(egraph: &mut EGraph, root: u32) {
 //     // let (mut egraph, root) = EGraph::from_expr(&expr);
@@ -256,41 +256,58 @@ use szalinski_egg::sz_param;
 //     }
 // }
 
-// fn ast_size(e: &RecExpr<Cad>) -> usize {
-//     let e = e.as_ref();
-//     let sum_children: usize = e.children.iter().map(ast_size).sum();
-//     match e.op {
-//         Cad::Vec3 => 1,
-//         _ => 1 + sum_children,
-//     }
-// }
+fn ast_size(e: &RecExpr<Cad>) -> usize {
+    let e = e.as_ref();
+    let sum_children: usize = e.children.iter().map(ast_size).sum();
+    match e.op {
+        Cad::Vec3 => 1,
+        _ => 1 + sum_children,
+    }
+}
 
-// fn ast_depth(e: &RecExpr<Cad>) -> usize {
-//     let e = e.as_ref();
-//     let max_children = e.children.iter().map(ast_depth).max().unwrap_or(0);
-//     match e.op {
-//         Cad::Vec3 => 1,
-//         _ => 1 + max_children,
-//     }
-// }
+fn ast_depth(e: &RecExpr<Cad>) -> usize {
+    let e = e.as_ref();
+    let max_children = e.children.iter().map(ast_depth).max().unwrap_or(0);
+    match e.op {
+        Cad::Vec3 => 1,
+        _ => 1 + max_children,
+    }
+}
 
-// fn n_mapis(e: &RecExpr<Cad>) -> usize {
-//     let e = e.as_ref();
-//     let sum_children: usize = e.children.iter().map(n_mapis).sum();
-//     sum_children
-//         + match e.op {
-//             Cad::MapI => 1,
-//             _ => 0,
-//         }
-// }
+fn n_mapis(e: &RecExpr<Cad>) -> usize {
+    let e = e.as_ref();
+    let sum_children: usize = e.children.iter().map(n_mapis).sum();
+    sum_children
+        + match e.op {
+            Cad::MapI => 1,
+            _ => 0,
+        }
+}
 
-// fn depth_under_mapis(expr: &RecExpr<Cad>) -> usize {
-//     let e = expr.as_ref();
-//     match e.op {
-//         Cad::MapI => ast_depth(expr) - 1,
-//         _ => e.children.iter().map(n_mapis).sum(),
-//     }
-// }
+fn depth_under_mapis(expr: &RecExpr<Cad>) -> usize {
+    let e = expr.as_ref();
+    match e.op {
+        Cad::MapI => ast_depth(expr) - 1,
+        _ => e.children.iter().map(n_mapis).sum(),
+    }
+}
+
+#[derive(Serialize)]
+pub struct MyIterData {
+    best_cost: Cost,
+}
+
+impl IterationData<Cad, Meta> for MyIterData {
+    fn make(runner: &MyRunner) -> Self {
+        let root = runner.roots[0];
+        let best_cost = Extractor::new(&runner.egraph, CostFn).find_best(root).0;
+        MyIterData { best_cost }
+    }
+}
+
+type MyRunner = egg::Runner<Cad, Meta, MyIterData>;
+
+sz_param!(PRE_EXTRACT: bool);
 
 fn main() {
     let _ = env_logger::builder().is_test(false).try_init();
@@ -306,13 +323,84 @@ fn main() {
 
     let initial_expr = input.parse().expect("Couldn't parse input");
     let initial_expr = remove_empty(&initial_expr).expect("input was empty");
+    let initial_cost = CostFn.cost_rec(&initial_expr);
+
+    let initial_expr = if *PRE_EXTRACT {
+        let pre_rules = szalinski_egg::rules::pre_rules();
+        let runner = MyRunner::default()
+            .with_iter_limit(*ITERATIONS)
+            .with_node_limit(*NODE_LIMIT)
+            .with_time_limit(Duration::from_secs_f64(1.0))
+            .with_expr(&initial_expr)
+            .run(&pre_rules);
+        Extractor::new(&runner.egraph, CostFn).find_best(runner.roots[0]).1
+    } else {
+        initial_expr
+    };
 
     let rules = szalinski_egg::rules::rules();
-    let (egraph, report) = SimpleRunner::default()
+    let runner = MyRunner::default()
         .with_iter_limit(*ITERATIONS)
         .with_node_limit(*NODE_LIMIT)
         .with_time_limit(Duration::from_secs_f64(*TIMEOUT))
-        .run_expr(initial_expr, &rules);
+        // .with_scheduler(SimpleScheduler)
+        .with_scheduler(
+            // SimpleScheduler
+            BackoffScheduler::new(5, 1_000)
+                .do_not_ban("scale_cube")
+            //     // dynamic rules
+                // .do_not_ban("listapplier")
+            //     .do_not_ban("sortapplier")
+            //     .do_not_ban("partapplier")
+            //     .do_not_ban("unpart-unsort")
+            //     .do_not_ban("sort-unpart")
+            //     // inv trans
+            //     .do_not_ban("map_unpart_r2")
+            //     .do_not_ban("map_unpart_l2")
+            //     .do_not_ban("part_unpart")
+            //     .do_not_ban("unpart_part")
+            //     .do_not_ban("sort_unsort")
+            //     .do_not_ban("unsort_sort")
+            //     .do_not_ban("map_unsort_l")
+            //     .do_not_ban("map_unsort_r")
+            //     .do_not_ban("unsort_repeat")
+            //     .do_not_ban("fold_union_unsort")
+            //     .do_not_ban("fold_inter_unsort")
+            //     .do_not_ban("unpolar_trans")
+            // // // normal
+            //     .do_not_ban("fold_repeat")
+            //     .do_not_ban("map_repeat")
+            //     .do_not_ban("map_mapi2")
+            //     .do_not_ban("mapi2_mapi2")
+        )
+        .with_expr(&initial_expr)
+        .run(&rules);
+
+    info!("Stopping after {} iters: {:?}",
+          runner.iterations.len(),
+          runner.stop_reason);
+
+    let root = runner.roots[0];
+    let extract_time = Instant::now();
+    let best = Extractor::new(&runner.egraph, CostFn).find_best(root);
+    let extract_time = extract_time.elapsed().as_secs_f64();
+
+    println!("Best ({}): {}", best.0, best.1.pretty(80));
+
+    let report = RunResult {
+        initial_expr: initial_expr.pretty(80),
+        initial_cost,
+        iterations: runner.iterations,
+        final_cost: best.0,
+        final_expr: best.1.pretty(80),
+        extract_time,
+        final_scad: format!("{}", Scad(&best.1)),
+        stop_reason: runner.stop_reason.unwrap(),
+        ast_size: ast_size(&best.1),
+        ast_depth: ast_depth(&best.1),
+        n_mapis: n_mapis(&best.1),
+        depth_under_mapis: depth_under_mapis(&best.1),
+    };
 
     let out_file = std::fs::File::create(&args[2]).expect("failed to open output");
     serde_json::to_writer_pretty(out_file, &report).unwrap();

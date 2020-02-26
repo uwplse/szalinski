@@ -106,6 +106,7 @@ define_language! {
 
 #[derive(Debug, Clone)]
 pub struct Meta {
+    pub list: Option<Vec<Id>>,
     pub cost: Cost,
     pub best: RecExpr<Cad>,
 }
@@ -156,40 +157,70 @@ fn eval(op: Cad, args: &[Cad]) -> Option<Cad> {
 impl Metadata<Cad> for Meta {
     type Error = std::convert::Infallible;
     fn merge(&self, other: &Self) -> Self {
+        let list = self.list.as_ref().or(other.list.as_ref()).cloned();
+
         if self.cost <= other.cost {
-            self.clone()
+            Self {
+                list,
+                ..self.clone()
+            }
         } else {
-            other.clone()
+            Self {
+                list,
+                ..other.clone()
+            }
         }
     }
 
-    fn make(expr: ENode<Cad, &Self>) -> Self {
-        let expr = if expr.children.is_empty() {
-            expr
-        } else {
-            let args = &expr.children;
-            let const_args: Option<Vec<Cad>> = args
-                .iter()
-                .map(|meta| {
-                    let e = meta.best.as_ref();
-                    if e.children.is_empty() {
-                        Some(e.op.clone())
-                    } else {
-                        None
-                    }
-                })
-                .collect();
+    fn make(egraph: &EGraph, enode: &ENode<Cad>) -> Self {
+        let const_args: Option<Vec<Cad>> = enode
+            .children
+            .iter()
+            .map(|&id| {
+                let e = egraph[id].metadata.best.as_ref();
+                if e.children.is_empty() {
+                    Some(e.op.clone())
+                } else {
+                    None
+                }
+            })
+            .collect();
 
-            const_args
-                .and_then(|a| eval(expr.op.clone(), &a))
-                .map(ENode::leaf)
-                .unwrap_or_else(|| ENode::new(expr.op.clone(), args.clone()))
+        let best = const_args
+            .and_then(|a| eval(enode.op.clone(), &a))
+            .map(|op| recexpr!(op))
+            .unwrap_or_else(|| {
+                enode
+                    .map_children(|id| egraph[id].metadata.best.clone())
+                    .into()
+            });
+
+        let cost = CostFn.cost(&enode.map_children(|id| egraph[id].metadata.cost));
+
+        let list = match enode.op {
+            Cad::Nil => Some(vec![]),
+            Cad::Cons => {
+                assert_eq!(enode.children.len(), 2);
+                let head = std::iter::once(enode.children[0]);
+                let tail_meta = &egraph[enode.children[1]].metadata;
+                tail_meta
+                    .list
+                    .as_ref()
+                    .map(|tail|
+                         head.chain(tail.iter().copied()).collect())
+                // let tail = tail_meta
+                //     .list
+                //     .as_ref()
+                //     .expect("should be a list here")
+                //     .iter()
+                //     .copied();
+                // Some(head.chain(tail).collect())
+            }
+            Cad::List => Some(enode.children.iter().copied().collect()),
+            _ => None,
         };
 
-        Self {
-            best: expr.map_children(|c| c.best.clone()).into(),
-            cost: CostFn.cost(&expr.map_children(|c| c.cost)),
-        }
+        Self { list, best, cost }
     }
 
     fn modify(eclass: &mut EClass) {
@@ -203,6 +234,10 @@ impl Metadata<Cad> for Meta {
                     eclass.nodes
                 )
             }
+        }
+
+        if let Some(list) = &eclass.metadata.list {
+            eclass.nodes.push(ENode::new(Cad::List, list.clone()))
         }
 
         // // here we prune away excess unsorts, as that will cause some stuff to spin out
