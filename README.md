@@ -70,11 +70,15 @@ $ make aec-table2
 $ make aec-table2-nocad
 $ make aec-table2-noinv
 ```
-Each of them should finish within 5 minutes.
-After they all finish running, navigate to the `scripts` directory
-and type `python table2`. To view the content of the table, type
-`cat ../out/aec-table2/table2.csv | column -t -s,` and compare the numbers
+They should each finish within 5 minutes.
+Then type `make out/aec-table2/table2.csv`.
+This will reproduce `Table 2` from the paper.
+To view the content of the table, type
+`cat out/aec-table2/table2.csv | column -t -s,` and compare the numbers
 with `Table 2` in the paper.
+NOTE: our tool has significantly improved since the PLDI deadline.
+As a result, for some of these case studies, the numbers in 
+
 
 
 ### Reproducing Figure 14

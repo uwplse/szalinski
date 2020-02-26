@@ -140,6 +140,10 @@ thingiverse-perturb-nocad: $(filter out/thingiverse/%, $(jsons-perturb-nocad))
 thingiverse-perturb-noinv: $(filter out/thingiverse/%, $(jsons-perturb-noinv))
 thingiverse-all: thingiverse-normal thingiverse-perturb thingiverse-perturb-nocad thingiverse-perturb-noinv
 
+out/aec-table2/table2.csv: ./scripts/table2.py
+	python3 $< $@
+
+
 out/fig14.pdf: ./scripts/plot-boxes.py thingiverse-all
 	python3 $< $@
 

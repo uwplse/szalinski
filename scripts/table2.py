@@ -2,7 +2,7 @@ import os
 import json
 
 def get_scad_loc(nm):
-    fnm = "../data/aec-table2-orig-scad-progs/" + nm + ".scad"
+    fnm = "data/aec-table2-orig-scad-progs/" + nm + ".scad"
     count = 0
     with open(fnm, 'r') as f:
         for l in f:
@@ -10,7 +10,7 @@ def get_scad_loc(nm):
     return str(count)
 
 def get_mesh_loc(nm):
-    fnm = "../out/aec-table2/" + nm + ".in.off"
+    fnm = "out/aec-table2/" + nm + ".in.off"
     l = ""
     with open(fnm, 'r') as f:
         for i, x in enumerate(f):
@@ -22,31 +22,31 @@ def get_mesh_loc(nm):
     return splts[1]
 
 def get_c_in(nm):
-    fnm = "../out/aec-table2/" + nm + ".normal.json"
+    fnm = "out/aec-table2/" + nm + ".normal.json"
     with open(fnm) as f:
         js = json.load(f)
     return str(js["initial_cost"])
 
 def get_c_out(nm):
-    fnm = "../out/aec-table2/" + nm + ".normal.json"
+    fnm = "out/aec-table2/" + nm + ".normal.json"
     with open(fnm) as f:
         js = json.load(f)
-    return str(js["ast_size"])
+    return str(js["final_cost"])
 
 def get_no_cad(nm):
-    fnm = "../out/aec-table2/" + nm + ".normal-nocad.json"
+    fnm = "out/aec-table2/" + nm + ".normal-nocad.json"
     with open(fnm) as f:
         js = json.load(f)
-    return str(js["ast_size"])
+    return str(js["final_cost"])
 
 def get_no_inv(nm):
-    fnm = "../out/aec-table2/" + nm + ".normal-noinv.json"
+    fnm = "out/aec-table2/" + nm + ".normal-noinv.json"
     with open(fnm) as f:
         js = json.load(f)
-    return str(js["ast_size"])
+    return str(js["final_cost"])
 
 def main():
-    tab2_dir = "../out/aec-table2/"
+    tab2_dir = "out/aec-table2/"
     nms = []
     for f in os.listdir(tab2_dir):
         if f.endswith('.normal.csexp.opt'):
@@ -57,8 +57,8 @@ def main():
     data = {}
     for n in nms:
         data.update({n: (get_scad_loc(n), get_mesh_loc(n), get_c_in(n), get_c_out(n), get_no_cad(n), get_no_inv(n))})
-    res = open("../out/aec-table2/table2.csv", "w")
-    res.write("Id, SCAD, #Tri, c_in, c_out, No CAD, No Inv \n")
+    res = open("out/aec-table2/table2.csv", "w")
+    res.write("Id, SCAD, #Tri, c_in, c_out, No CAD, No Inv\n")
     res.write("TackleBox" + "," +
             data["TackleBox"][0] + "," +
             data["TackleBox"][1] + "," +
