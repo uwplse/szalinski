@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import os
 import json
 
@@ -13,11 +15,16 @@ def get_mesh_loc(nm):
     fnm = "out/aec-table2/" + nm + ".in.off"
     l = ""
     with open(fnm, 'r') as f:
-        for i, x in enumerate(f):
-            if i == 1:
-                l = l + x
-            else:
-                continue
+        text = f.read()
+    text.replace("OFF", "")
+    text = text.strip()
+
+    for i, x in enumerate(text.splitlines()):
+        if i == 0:
+            l = l + x
+        else:
+            continue
+
     splts = l.split(' ')
     return splts[1]
 
@@ -50,6 +57,7 @@ def main():
     nms = []
     for f in os.listdir(tab2_dir):
         if f.endswith('.normal.csexp.opt'):
+            print(f)
             n = f.split('.')[0]
             nms.append(n)
         else:
