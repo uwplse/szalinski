@@ -83,7 +83,7 @@ positions = [
 ]
 print(positions)
 
-axes[0].set(ylabel='% shrunk')
+axes[0].set(ylabel='% shrunk (higher is better)')
 
 filename = sys.argv[1]
 plt.savefig(filename, bbox_inches='tight', dpi=500)
