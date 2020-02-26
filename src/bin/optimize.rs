@@ -1,11 +1,10 @@
 use std::time::{Duration, Instant};
 
-use indexmap::IndexMap;
 use log::*;
 use serde::Serialize;
 
 use egg::*;
-use szalinski_egg::cad::{Cad, Cost, EGraph, Rewrite, Meta, CostFn};
+use szalinski_egg::cad::{Cad, Cost, CostFn, Meta};
 use szalinski_egg::eval::{remove_empty, Scad};
 use szalinski_egg::sz_param;
 
@@ -333,7 +332,9 @@ fn main() {
             .with_time_limit(Duration::from_secs_f64(1.0))
             .with_expr(&initial_expr)
             .run(&pre_rules);
-        Extractor::new(&runner.egraph, CostFn).find_best(runner.roots[0]).1
+        Extractor::new(&runner.egraph, CostFn)
+            .find_best(runner.roots[0])
+            .1
     } else {
         initial_expr
     };
@@ -346,39 +347,39 @@ fn main() {
         // .with_scheduler(SimpleScheduler)
         .with_scheduler(
             // SimpleScheduler
-            BackoffScheduler::new(5, 1_000)
-                .do_not_ban("scale_cube")
-            //     // dynamic rules
-                // .do_not_ban("listapplier")
-            //     .do_not_ban("sortapplier")
-            //     .do_not_ban("partapplier")
-            //     .do_not_ban("unpart-unsort")
-            //     .do_not_ban("sort-unpart")
-            //     // inv trans
-            //     .do_not_ban("map_unpart_r2")
-            //     .do_not_ban("map_unpart_l2")
-            //     .do_not_ban("part_unpart")
-            //     .do_not_ban("unpart_part")
-            //     .do_not_ban("sort_unsort")
-            //     .do_not_ban("unsort_sort")
-            //     .do_not_ban("map_unsort_l")
-            //     .do_not_ban("map_unsort_r")
-            //     .do_not_ban("unsort_repeat")
-            //     .do_not_ban("fold_union_unsort")
-            //     .do_not_ban("fold_inter_unsort")
-            //     .do_not_ban("unpolar_trans")
-            // // // normal
-            //     .do_not_ban("fold_repeat")
-            //     .do_not_ban("map_repeat")
-            //     .do_not_ban("map_mapi2")
-            //     .do_not_ban("mapi2_mapi2")
+            BackoffScheduler::new(5, 1_000).do_not_ban("scale_cube"), //     // dynamic rules
+                                                                      // .do_not_ban("listapplier")
+                                                                      //     .do_not_ban("sortapplier")
+                                                                      //     .do_not_ban("partapplier")
+                                                                      //     .do_not_ban("unpart-unsort")
+                                                                      //     .do_not_ban("sort-unpart")
+                                                                      //     // inv trans
+                                                                      //     .do_not_ban("map_unpart_r2")
+                                                                      //     .do_not_ban("map_unpart_l2")
+                                                                      //     .do_not_ban("part_unpart")
+                                                                      //     .do_not_ban("unpart_part")
+                                                                      //     .do_not_ban("sort_unsort")
+                                                                      //     .do_not_ban("unsort_sort")
+                                                                      //     .do_not_ban("map_unsort_l")
+                                                                      //     .do_not_ban("map_unsort_r")
+                                                                      //     .do_not_ban("unsort_repeat")
+                                                                      //     .do_not_ban("fold_union_unsort")
+                                                                      //     .do_not_ban("fold_inter_unsort")
+                                                                      //     .do_not_ban("unpolar_trans")
+                                                                      // // // normal
+                                                                      //     .do_not_ban("fold_repeat")
+                                                                      //     .do_not_ban("map_repeat")
+                                                                      //     .do_not_ban("map_mapi2")
+                                                                      //     .do_not_ban("mapi2_mapi2")
         )
         .with_expr(&initial_expr)
         .run(&rules);
 
-    info!("Stopping after {} iters: {:?}",
-          runner.iterations.len(),
-          runner.stop_reason);
+    info!(
+        "Stopping after {} iters: {:?}",
+        runner.iterations.len(),
+        runner.stop_reason
+    );
 
     let root = runner.roots[0];
     let extract_time = Instant::now();

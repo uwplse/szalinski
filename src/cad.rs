@@ -206,8 +206,7 @@ impl Metadata<Cad> for Meta {
                 tail_meta
                     .list
                     .as_ref()
-                    .map(|tail|
-                         head.chain(tail.iter().copied()).collect())
+                    .map(|tail| head.chain(tail.iter().copied()).collect())
                 // let tail = tail_meta
                 //     .list
                 //     .as_ref()
@@ -260,7 +259,6 @@ impl Metadata<Cad> for Meta {
         }
     }
 }
-
 
 pub struct CostFn;
 impl egg::CostFunction<Cad> for CostFn {
