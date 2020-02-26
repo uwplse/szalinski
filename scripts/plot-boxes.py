@@ -23,7 +23,7 @@ def improvement_before(j, secs):
         time += it['search_time'] + it['apply_time'] + it['rebuild_time']
         if time > secs:
             return cost / init
-        cost = it['best_cost']
+        cost = it['data']['best_cost']
     return j['final_cost'] / init
 
 names = {
