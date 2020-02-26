@@ -17,7 +17,6 @@ def get_mesh_loc(nm):
     fnm = "out/aec-table2/" + nm + ".in.off"
     with open(fnm, 'r') as f:
         text = f.read()
-        print(text)
 
     return mesh_faces_re.match(text).group(3)
 
