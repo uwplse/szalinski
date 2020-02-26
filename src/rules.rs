@@ -46,6 +46,16 @@ pub fn pre_rules() -> Vec<Rewrite> {
         rw!("inter_comm"; "(Binop Inter ?a ?b)" => "(Binop Inter ?b ?a)"),
         rw!("fold_nil"; "(Binop ?bop ?a ?b)" => "(Fold ?bop (List ?a ?b))"),
         rw!("fold_cons"; "(Binop ?bop ?a (Fold ?bop ?list))" => "(Fold ?bop (Cons ?a ?list))"),
+
+        rw!(
+            "flatten_union";
+            "(Fold Union ?list)" => {
+                let list = "?list".parse().unwrap();
+                let op = Cad::Union;
+                Flatten { list, op }
+            }
+        ),
+
         // rw!("union_consr"; "(Binop Union (Fold Union ?list) ?a)" => "(Fold Union (Cons ?a ?list))"),
         // rw!("inter_consr"; "(Binop Inter (Fold Inter ?list) ?a)" => "(Fold Inter (Cons ?a ?list))"),
 
@@ -614,7 +624,7 @@ macro_rules! get_meta_list {
             Some(ids) => ids,
             None => return vec![],
         }
-    }
+    };
 }
 
 impl Applier<Cad, Meta> for ListApplier {
@@ -842,19 +852,48 @@ impl Applier<Cad, Meta> for SortUnpartApplier {
             len_so_far += len;
         }
 
-        let sorted_lists = sorts
-            .into_iter()
-            .zip(items)
-            .map(|(p, list_id)| {
-                let perm = Permutation::from_vec(p);
-                let sort_id = egraph.add(ENode::leaf(Cad::Permutation(perm)));
-                egraph
-                    .add(ENode::new(Cad::Sort, vec![sort_id, list_id]))
-
-            });
+        let sorted_lists = sorts.into_iter().zip(items).map(|(p, list_id)| {
+            let perm = Permutation::from_vec(p);
+            let sort_id = egraph.add(ENode::leaf(Cad::Permutation(perm)));
+            egraph.add(ENode::new(Cad::Sort, vec![sort_id, list_id]))
+        });
         let sorted = ENode::new(Cad::List, sorted_lists);
         let list = egraph.add(sorted);
         let part_id = egraph.add(ENode::leaf(Cad::Partitioning(part.clone())));
         vec![egraph.add(ENode::new(Cad::Unpart, vec![part_id, list]))]
+    }
+}
+
+#[derive(Debug)]
+struct Flatten {
+    op: Cad,
+    list: Var,
+}
+
+impl Applier<Cad, Meta> for Flatten {
+    fn apply_one(&self, egraph: &mut EGraph, _: Id, map: &Subst) -> Vec<Id> {
+        fn get_nested_fold<'a>(egraph: &'a EGraph, op: &'a Cad, id: Id) -> Option<&'a [Id]> {
+            let is_op = |i| egraph[i].nodes.iter().any(|c| &c.op == op);
+            let get_list = |i| egraph[i].metadata.list.as_ref().map(Vec::as_slice);
+            egraph[id]
+                .nodes
+                .iter()
+                .find(|n| n.op == Cad::Fold && is_op(n.children[0]))
+                .and_then(|n| get_list(n.children[1]))
+        }
+
+        let ids = get_meta_list!(egraph, map[&self.list]);
+        let mut new_ids = Vec::new();
+        for id in ids {
+            match get_nested_fold(egraph, &self.op, *id) {
+                Some(ids) => new_ids.extend(ids.iter().copied()),
+                None => new_ids.push(*id),
+            }
+        }
+
+        let new_list = egraph.add(ENode::new(Cad::List, new_ids));
+        let op = egraph.add(enode!(self.op.clone()));
+        let new_fold = egraph.add(enode!(Cad::Fold, op, new_list));
+        vec![new_fold]
     }
 }
