@@ -32,7 +32,7 @@ This document contains the following parts:
 * How to run Szalinski
   - Reproducing Table 2
   - Reproducing Figure 14
-  - Reproducing Figure 15
+  - Reproducing Figure 15 (** recommend trying first because this takes less time  **)
   - Validation
 
 * How to set up Szalinski on a different machine (this is also how we set up
@@ -77,7 +77,7 @@ To view the content of the table, type
 `cat out/aec-table2/table2.csv | column -t -s,` and compare the numbers
 with `Table 2` in the paper.
 
-*NOTE:* We have significantly improved Szalinski since the PLDI deadline.
+**NOTE:** We have significantly improved Szalinski since the PLDI deadline.
 As a result, for several case studies, the numbers in the last three
 columns of the table are lower (hence better in this case) than what is
 reported in the paper.
@@ -129,7 +129,7 @@ You can validate any example from our evaluation by typing:
 Then open the generated `.diff` file and check
 that the Hausdorff distance is within some epsilon of 0.
 
-*NOTE:* For many example, CGAL crashes or is slow at computing the Hausdorff distance.
+**NOTE:** For many example, CGAL crashes or is slow at computing the Hausdorff distance.
 For these, we recommend a manual validation if you are interested.
 In order to validate an example, type the following:
 `make out/dir_name/example_name.diff.scad`. You can open the generated `.scad`

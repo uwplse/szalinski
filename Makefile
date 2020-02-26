@@ -12,6 +12,7 @@ scads=$(shell find inputs -type f -name "*.scad")
 csgs=$(scads:inputs/%.scad=out/%.fn.csg)
 
 csexps=$(scads:inputs/%.scad=out/%.normal.csexp)
+csexp-opts=$(scads:inputs/%.scad=out/%.normal.csexp.opt)
 jsons=$(scads:inputs/%.scad=out/%.normal.json)
 jsons-normal-nocad=$(scads:inputs/%.scad=out/%.normal-nocad.json)
 jsons-normal-noinv=$(scads:inputs/%.scad=out/%.normal-noinv.json)
@@ -39,11 +40,8 @@ in_offs: $(scads:inputs/%.scad=out/%.in.off)
 aec-table2-nocad: $(filter out/aec-table2/%, $(jsons-normal-nocad))
 aec-table2-noinv: $(filter out/aec-table2/%, $(jsons-normal-noinv))
 aec-table2: $(filter out/aec-table2/%, $(jsons))
-aec-fig15: $(filter out/aec-fig15/%, $(jsons))
+aec-fig15: $(filter out/aec-fig15/%, $(csexp-opts))
 aec-fig15-valid: $(filter out/aec-fig15/%, $(diffs))
-case-studies: $(filter out/case-studies/%, $(jsons))
-unit-tests: $(filter out/unit-tests/%, $(jsons))
-inverse-csg: $(filter out/inverse-csg/%, $(jsons))
 
 export OPENSCADPATH=.
 
