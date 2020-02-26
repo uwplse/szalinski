@@ -32,7 +32,7 @@ This document contains the following parts:
 * How to run Szalinski
   - Reproducing Table 2
   - Reproducing Figure 14
-  - Reproducing Figure 15 (** recommend trying first because this takes less time  **)
+  - Reproducing Figure 15 (**recommend trying first because this takes less time**)
   - Validation
 
 * How to set up Szalinski on a different machine (this is also how we set up
