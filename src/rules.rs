@@ -30,7 +30,7 @@ fn is_pos(vars: &[&'static str]) -> impl Fn(&mut EGraph, Id, &Subst) -> bool {
         vars.iter().all(|v| {
             egraph[subst[&v]].nodes.iter().all(|n| {
                 if let Cad::Num(num) = n.op {
-                    num.to_f64() <= 0.0
+                    num.to_f64() > 0.0
                 } else {
                     true
                 }
@@ -45,7 +45,19 @@ pub fn pre_rules() -> Vec<Rewrite> {
         rw!("union_comm"; "(Binop Union ?a ?b)" => "(Binop Union ?b ?a)"),
         rw!("inter_comm"; "(Binop Inter ?a ?b)" => "(Binop Inter ?b ?a)"),
         rw!("fold_nil"; "(Binop ?bop ?a ?b)" => "(Fold ?bop (List ?a ?b))"),
-        rw!("consl"; "(Binop ?bop (Fold ?bop (List ?items...)) ?a)" => "(Fold ?bop (List ?items... ?a))"),
+        rw!("fold_cons"; "(Binop ?bop ?a (Fold ?bop ?list))" => "(Fold ?bop (Cons ?a ?list))"),
+        // rw!("union_consr"; "(Binop Union (Fold Union ?list) ?a)" => "(Fold Union (Cons ?a ?list))"),
+        // rw!("inter_consr"; "(Binop Inter (Fold Inter ?list) ?a)" => "(Fold Inter (Cons ?a ?list))"),
+
+        // TODO can't parse this now
+        // rw!("consl"; "(Binop ?bop (Fold ?bop (List ?items...)) ?a)" => "(Fold ?bop (List ?items... ?a))"),
+
+        //     "(Fold Union (List (Fold Union (List ?list...)) ?rest...))" =>
+        //     "(Fold Union (List ?rest... ?list...))"),
+        // rw!("flatten_inter";
+        //     "(Fold Inter (List (Fold Inter (List ?list...)) ?rest...))" =>
+        //     "(Fold Inter (List ?rest... ?list...))"),
+
         // rw!("union_consr"; "(Binop Union ?a (Fold Union ?list))" => "(Fold Union (Cons ?a ?list))"),
         // rw!("inter_consr"; "(Binop Inter ?a (Fold Inter ?list))" => "(Fold Inter (Cons ?a ?list))"),
         // rw!("list_nil"; "Nil" => "(List)"),
@@ -53,12 +65,6 @@ pub fn pre_rules() -> Vec<Rewrite> {
         // rw!("nil_list"; "(List)" => "Nil"),
         // rw!("cons_list"; "(List ?a ?b...)" => "(Cons ?a (List ?b...))"),
 
-        rw!("flatten_union";
-            "(Fold Union (List (Fold Union (List ?list...)) ?rest...))" =>
-            "(Fold Union (List ?rest... ?list...))"),
-        rw!("flatten_inter";
-            "(Fold Inter (List (Fold Inter (List ?list...)) ?rest...))" =>
-            "(Fold Inter (List ?rest... ?list...))"),
 
     ]
 }
@@ -71,6 +77,21 @@ pub fn rules() -> Vec<Rewrite> {
     sz_param!(INV_TRANS: bool);
 
     let mut rules = vec![
+        // rw!("union_comm"; "(Binop Union ?a ?b)" => "(Binop Union ?b ?a)"),
+        // rw!("inter_comm"; "(Binop Inter ?a ?b)" => "(Binop Inter ?b ?a)"),
+        // rw!("fold_nil"; "(Binop ?bop ?a ?b)" => "(Fold ?bop (List ?a ?b))"),
+        // rw!("fold_cons"; "(Binop ?bop ?a (Fold ?bop ?list))" => "(Fold ?bop (Cons ?a ?list))"),
+        // rw!("union_consr"; "(Binop Union (Fold Union ?list) ?a)" => "(Fold Union (Cons ?a ?list))"),
+        // rw!("inter_consr"; "(Binop Inter (Fold Inter ?list) ?a)" => "(Fold Inter (Cons ?a ?list))"),
+
+        // rw("flatten_union",
+        //    "(Fold Union (List (Fold Union (List ?list...)) ?rest...))",
+        //    "(Fold Union (List ?rest... ?list...))"),
+        // rw("flatten_inter",
+        //    "(Fold Inter (List (Fold Inter (List ?list...)) ?rest...))",
+        //    "(Fold Inter (List ?rest... ?list...))"),
+
+
         // math rules
 
         rw!("add_comm"; "(+ ?a ?b)" => "(+ ?b ?a)"),
@@ -105,13 +126,6 @@ pub fn rules() -> Vec<Rewrite> {
         rw!("fold_repeat"; "(Fold ?bop (Map2 ?aff (Repeat ?n ?param) ?cads))"=> "(Affine ?aff ?param (Fold ?bop ?cads))"),
 
         rw!("fold_op"; "(Fold ?bop (Affine ?aff ?param ?cad))"=> "(Affine ?aff ?param (Fold ?bop ?cad))"),
-
-        // rw("flatten_union",
-        //    "(Fold Union (List (Fold Union (List ?list...)) ?rest...))",
-        //    "(Fold Union (List ?rest... ?list...))"),
-        // rw("flatten_inter",
-        //    "(Fold Inter (List (Fold Inter (List ?list...)) ?rest...))",
-        //    "(Fold Inter (List ?rest... ?list...))"),
 
         rw!("union_trans"; "(Union (Trans ?x ?y ?z ?a) (Trans ?x ?y ?z ?b))"=> "(Trans ?x ?y ?z (Union ?a ?b))"),
 
@@ -295,54 +309,52 @@ pub fn rules() -> Vec<Rewrite> {
         ]);
     }
 
-    // rules.extend(vec![
-    //     Rewrite::new (
-    //         "listapplier",
-    //         Cad::parse_pattern("(List ?items...)").unwrap(),
-    //         ListApplier {
-    //             var: "?items...".parse().unwrap(),
-    //         },
-    //     ),
+    rules.push(rw!(
+        "listapplier";
+        "?list" => {
+            let var = "?list".parse().unwrap();
+            ListApplier { var }
+        }
+    ));
 
-    //     Rewrite::new (
-    //         "sortapplier",
-    //         Cad::parse_pattern("(Sort ?perm (List ?items...))").unwrap(),
-    //         SortApplier {
-    //             perm: "?perm".parse().unwrap(),
-    //             items: "?items...".parse().unwrap(),
-    //         },
-    //     ),
+    rules.push(rw!(
+        "sortapplier";
+        "(Sort ?perm ?list)" => {
+            let perm = "?perm".parse().unwrap();
+            let list = "?list".parse().unwrap();
+            SortApplier { perm, list }
+        }
+    ));
 
-    //     Rewrite::new (
-    //         "partapplier",
-    //         Cad::parse_pattern("(Part ?part (List ?items...))").unwrap(),
-    //         PartApplier {
-    //             part: "?part".parse().unwrap(),
-    //             items: "?items...".parse().unwrap(),
-    //         },
-    //     ),
+    rules.push(rw!(
+        "partapplier";
+        "(Part ?part ?list)" => {
+            let part = "?part".parse().unwrap();
+            let list = "?list".parse().unwrap();
+            PartApplier { part, list }
+        }
+    ));
 
-    //     // TODO should this perform concat when possible?
-    //     Rewrite::new (
-    //         "unpart-unsort",
-    //         Cad::parse_pattern("(Unpart ?part (List ?items...))").unwrap(),
-    //         UnpartApplier {
-    //             part: "?part".parse().unwrap(),
-    //             items: "?items...".parse().unwrap(),
-    //         },
-    //     ),
+    // TODO should this perform concat when possible?
+    rules.push(rw!(
+        "unpart-unsort";
+        "(Unpart ?part ?list)" => {
+            let part = "?part".parse().unwrap();
+            let list = "?list".parse().unwrap();
+            UnpartApplier { part, list }
+        }
+    ));
 
-    //     Rewrite::new (
-    //         "sort-unpart",
-    //         Cad::parse_pattern("(Sort ?sort (Unpart ?part (List ?items...)))").unwrap(),
-    //         SortUnpartApplier {
-    //             sort: "?sort".parse().unwrap(),
-    //             part: "?part".parse().unwrap(),
-    //             items: "?items...".parse().unwrap(),
-    //         },
-    //     ),
+    rules.push(rw!(
+        "sort-unpart";
+        "(Sort ?sort (Unpart ?part ?list))" => {
+            let part = "?part".parse().unwrap();
+            let sort = "?sort".parse().unwrap();
+            let list = "?list".parse().unwrap();
+            SortUnpartApplier { sort, part, list }
+        }
+    ));
 
-    // ]);
 
     if *CAD_IDENTS {
         // add the intro rules only for cads
@@ -596,83 +608,96 @@ fn num_sign(n: Num) -> i32 {
     }
 }
 
+macro_rules! get_meta_list {
+    ($egraph:expr, $eclass:expr) => {
+        match &$egraph[$eclass].metadata.list {
+            Some(ids) => ids,
+            None => return vec![],
+        }
+    }
+}
+
 impl Applier<Cad, Meta> for ListApplier {
     fn apply_one(&self, egraph: &mut EGraph, _: Id, map: &Subst) -> Vec<Id> {
-        todo!()
-        // let ids: Vec<Id> = map[&self.var].iter().map(|id| egraph.find(*id)).collect();
-        // // println!("ids: {:?}", ids);
-        // let bests: Vec<_> = ids
-        //     .iter()
-        //     .map(|&id| egraph[id].metadata.best.clone())
-        //     .collect();
-        // let ops: Option<Vec<_>> = ids
-        //     .iter()
-        //     .map(|&id| {
-        //         egraph[id].nodes.iter().find_map(|n| match n.op {
-        //             Cad::Affine => Some(get_single_cad(egraph, n.children[0])),
-        //             _ => None,
-        //         })
-        //     })
-        //     .collect();
-        // let mut results = vec![];
+        let ids = get_meta_list!(egraph, map[&self.var]).clone();
+        // println!("LISTAPPLIER: {:?}", ids);
+        // println!("ids: {:?}", ids);
+        let bests: Vec<_> = ids
+            .iter()
+            .map(|&id| egraph[id].metadata.best.clone())
+            .collect();
+        let ops: Option<Vec<_>> = ids
+            .iter()
+            .map(|&id| {
+                egraph[id].nodes.iter().find_map(|n| match n.op {
+                    Cad::Affine => Some(get_single_cad(egraph, n.children[0])),
+                    _ => None,
+                })
+            })
+            .collect();
+        let mut results = vec![];
 
-        // // insert repeats
-        // if ids.len() > 1 {
-        //     let i0 = egraph.find(ids[0]);
-        //     if ids.iter().all(|id| i0 == egraph.find(*id)) {
-        //         let len = ENode::leaf(Cad::Num(ids.len().into()));
-        //         let e = ENode::new(Cad::Repeat, vec![egraph.add(len), i0]);
-        //         results.push(egraph.add(e));
-        //         return results;
-        //     }
-        // }
+        // insert repeats
+        if ids.len() > 1 {
+            let i0 = egraph.find(ids[0]);
+            if ids.iter().all(|id| i0 == egraph.find(*id)) {
+                let len = ENode::leaf(Cad::Num(ids.len().into()));
+                let e = ENode::new(Cad::Repeat, vec![egraph.add(len), i0]);
+                results.push(egraph.add(e));
+                return results;
+            }
+        }
 
-        // // don't partition a list of lists
-        // if ids
-        //     .iter()
-        //     .any(|&id| egraph[id].nodes.iter().any(|n| n.op == Cad::List))
-        // {
-        //     return results;
-        // }
+        // don't partition a list of lists
+        if ids
+            .iter()
+            .any(|&id| egraph[id].nodes.iter().any(|n| n.op == Cad::List))
+        {
+            return results;
+        }
 
-        // results.extend(insert_map2s(egraph, &ids));
+        results.extend(insert_map2s(egraph, &ids));
 
-        // // try to solve a list
-        // if let Some(vec_list) = bests.iter().map(get_vec).collect::<Option<Vec<Vec3>>>() {
-        //     let len = vec_list.len();
-        //     if len > 2 {
-        //         results.extend(crate::solve::solve(egraph, &vec_list));
-        //     }
-        //     // results.extend(partition_list(egraph, &ids, |i, _| {
-        //     //     let s0 = num_sign(vec_list[i].0);
-        //     //     let s1 = num_sign(vec_list[i].1);
-        //     //     let s2 = num_sign(vec_list[i].2);
-        //     //     (s0, s1, s2)
-        //     // }));
-        //     // try to partition things by coordinate
-        //     results.extend(partition_list(egraph, &ids, |i, _| vec_list[i].0));
-        //     results.extend(partition_list(egraph, &ids, |i, _| vec_list[i].1));
-        //     results.extend(partition_list(egraph, &ids, |i, _| vec_list[i].2));
-        //     results.extend(partition_list(egraph, &ids, |i, _| {
-        //         (vec_list[i].0, vec_list[i].1)
-        //     }));
-        //     results.extend(partition_list(egraph, &ids, |i, _| {
-        //         (vec_list[i].0, vec_list[i].2)
-        //     }));
-        //     results.extend(partition_list(egraph, &ids, |i, _| {
-        //         (vec_list[i].1, vec_list[i].2)
-        //     }));
-        // }
+        // try to solve a list
+        if let Some(vec_list) = bests.iter().map(get_vec).collect::<Option<Vec<Vec3>>>() {
+            let len = vec_list.len();
+            if len > 2 {
+                let solved = crate::solve::solve(egraph, &vec_list);
+                // if !solved.is_empty() {
+                //     println!("Solved!: {:?}", solved);
+                // }
+                results.extend(solved);
+            }
+            // results.extend(partition_list(egraph, &ids, |i, _| {
+            //     let s0 = num_sign(vec_list[i].0);
+            //     let s1 = num_sign(vec_list[i].1);
+            //     let s2 = num_sign(vec_list[i].2);
+            //     (s0, s1, s2)
+            // }));
+            // try to partition things by coordinate
+            results.extend(partition_list(egraph, &ids, |i, _| vec_list[i].0));
+            results.extend(partition_list(egraph, &ids, |i, _| vec_list[i].1));
+            results.extend(partition_list(egraph, &ids, |i, _| vec_list[i].2));
+            results.extend(partition_list(egraph, &ids, |i, _| {
+                (vec_list[i].0, vec_list[i].1)
+            }));
+            results.extend(partition_list(egraph, &ids, |i, _| {
+                (vec_list[i].0, vec_list[i].2)
+            }));
+            results.extend(partition_list(egraph, &ids, |i, _| {
+                (vec_list[i].1, vec_list[i].2)
+            }));
+        }
 
-        // // try to partition things by eclass
-        // results.extend(partition_list(egraph, &ids, |i, _| ids[i]));
+        // try to partition things by eclass
+        results.extend(partition_list(egraph, &ids, |i, _| ids[i]));
 
-        // // try to partition things by operator
-        // if let Some(ops) = ops {
-        //     results.extend(partition_list(egraph, &ids, |i, _| ops[i].clone()));
-        // }
+        // try to partition things by operator
+        if let Some(ops) = ops {
+            results.extend(partition_list(egraph, &ids, |i, _| ops[i].clone()));
+        }
 
-        // results
+        results
     }
 }
 
@@ -697,100 +722,96 @@ macro_rules! get_unit {
 #[derive(Debug)]
 struct SortApplier {
     perm: Var,
-    items: Var,
+    list: Var,
 }
 
 impl Applier<Cad, Meta> for SortApplier {
     fn apply_one(&self, egraph: &mut EGraph, _: Id, map: &Subst) -> Vec<Id> {
-        todo!()
-        // let items = &map[&self.items];
-        // let perm: &Permutation = get_unit!(egraph, map[&self.perm], Cad::Permutation);
-        // let sorted = perm.apply(items);
-        // let e = ENode::new(Cad::List, sorted.into());
-        // vec![egraph.add(e)]
+        let items = get_meta_list!(egraph, map[&self.list]);
+        let perm: &Permutation = get_unit!(egraph, map[&self.perm], Cad::Permutation);
+        let sorted = perm.apply(items);
+        let e = ENode::new(Cad::List, sorted);
+        vec![egraph.add(e)]
     }
 }
 
 #[derive(Debug)]
 struct PartApplier {
     part: Var,
-    items: Var,
+    list: Var,
 }
 
 impl Applier<Cad, Meta> for PartApplier {
     fn apply_one(&self, egraph: &mut EGraph, _: Id, map: &Subst) -> Vec<Id> {
-        todo!()
-        // let items = &map[&self.items];
-        // let part: &Partitioning = get_unit!(egraph, map[&self.part], Cad::Partitioning);
-        // let list_of_lists = part
-        //     .apply(items)
-        //     .into_iter()
-        //     .map(|sublist| egraph.add(ENode::new(Cad::List, sublist.into())))
-        //     .collect();
+        let items = get_meta_list!(egraph, map[&self.list]);
+        let part: &Partitioning = get_unit!(egraph, map[&self.part], Cad::Partitioning);
+        let list_of_lists = part
+            .apply(items)
+            .into_iter()
+            .map(|sublist| egraph.add(ENode::new(Cad::List, sublist)));
 
-        // let e = ENode::new(Cad::List, list_of_lists);
-        // vec![egraph.add(e)]
+        let e = ENode::new(Cad::List, list_of_lists);
+        vec![egraph.add(e)]
     }
 }
 
 #[derive(Debug)]
 struct UnpartApplier {
     part: Var,
-    items: Var,
+    list: Var,
 }
 
 impl Applier<Cad, Meta> for UnpartApplier {
     fn apply_one(&self, egraph: &mut EGraph, _: Id, map: &Subst) -> Vec<Id> {
-        todo!()
-        // let part: Partitioning = get_unit!(egraph, map[&self.part], Cad::Partitioning).clone();
-        // let items = &map[&self.items];
-        // assert_eq!(part.lengths.len(), items.len());
+        let items = get_meta_list!(egraph, map[&self.list]).clone();
+        let part: Partitioning = get_unit!(egraph, map[&self.part], Cad::Partitioning).clone();
+        assert_eq!(part.lengths.len(), items.len());
 
-        // if items.is_empty() {
-        //     return vec![egraph.add(ENode::leaf(Cad::Nil))];
-        // }
+        if items.is_empty() {
+            return vec![egraph.add(ENode::leaf(Cad::Nil))];
+        }
 
-        // let get_unsort = |id: Id| -> Option<(&Permutation, Id)> {
-        //     egraph[id].nodes.iter().find_map(|n| match n.op {
-        //         Cad::Unsort => {
-        //             let perm = get_unit!(egraph, n.children[..1], Cad::Permutation);
-        //             Some((perm, n.children[1]))
-        //         }
-        //         _ => None,
-        //     })
-        // };
+        let get_unsort = |id: Id| -> Option<(&Permutation, Id)> {
+            egraph[id].nodes.iter().find_map(|n| match n.op {
+                Cad::Unsort => {
+                    let perm = get_unit!(egraph, n.children[0], Cad::Permutation);
+                    Some((perm, n.children[1]))
+                }
+                _ => None,
+            })
+        };
 
-        // let mut big_perm = vec![];
-        // let mut ids = vec![];
-        // let mut len_so_far = 0;
-        // for (&id, &len) in items.iter().zip(&part.lengths) {
-        //     if let Some((perm, inner_id)) = get_unsort(id) {
-        //         assert_eq!(perm.len(), len);
-        //         big_perm.extend(perm.order.iter().map(|i| i + len_so_far));
-        //         ids.push(inner_id);
-        //     } else {
-        //         big_perm.extend(len_so_far..len_so_far + len);
-        //         ids.push(id);
-        //     }
-        //     len_so_far += len;
-        // }
-        // assert_eq!(len_so_far, part.total_len());
-        // assert_eq!(len_so_far, big_perm.len());
+        let mut big_perm = vec![];
+        let mut ids = vec![];
+        let mut len_so_far = 0;
+        for (&id, &len) in items.iter().zip(&part.lengths) {
+            if let Some((perm, inner_id)) = get_unsort(id) {
+                assert_eq!(perm.len(), len);
+                big_perm.extend(perm.order.iter().map(|i| i + len_so_far));
+                ids.push(inner_id);
+            } else {
+                big_perm.extend(len_so_far..len_so_far + len);
+                ids.push(id);
+            }
+            len_so_far += len;
+        }
+        assert_eq!(len_so_far, part.total_len());
+        assert_eq!(len_so_far, big_perm.len());
 
-        // let perm = Permutation::from_vec(big_perm);
-        // let is_ordered = perm.is_ordered();
-        // let perm = egraph.add(ENode::leaf(Cad::Permutation(perm)));
-        // let part = egraph.add(ENode::leaf(Cad::Partitioning(part)));
+        let perm = Permutation::from_vec(big_perm);
+        let is_ordered = perm.is_ordered();
+        let perm = egraph.add(ENode::leaf(Cad::Permutation(perm)));
+        let part = egraph.add(ENode::leaf(Cad::Partitioning(part)));
 
-        // let list = egraph.add(ENode::new(Cad::List, ids.into()));
-        // let unpart = egraph.add(ENode::new(Cad::Unpart, vec![part, list]));
+        let list = egraph.add(ENode::new(Cad::List, ids));
+        let unpart = egraph.add(ENode::new(Cad::Unpart, vec![part, list]));
 
-        // if is_ordered {
-        //     vec![unpart]
-        // } else {
-        //     let unsort = egraph.add(ENode::new(Cad::Unsort, vec![perm, unpart]));
-        //     vec![unsort]
-        // }
+        if is_ordered {
+            vec![unpart]
+        } else {
+            let unsort = egraph.add(ENode::new(Cad::Unsort, vec![perm, unpart]));
+            vec![unsort]
+        }
     }
 }
 
@@ -798,43 +819,42 @@ impl Applier<Cad, Meta> for UnpartApplier {
 struct SortUnpartApplier {
     sort: Var,
     part: Var,
-    items: Var,
+    list: Var,
 }
 
 impl Applier<Cad, Meta> for SortUnpartApplier {
     fn apply_one(&self, egraph: &mut EGraph, _: Id, map: &Subst) -> Vec<Id> {
-        todo!()
-        // let sort: Permutation = get_unit!(egraph, map[&self.sort], Cad::Permutation).clone();
-        // let part: Partitioning = get_unit!(egraph, map[&self.part], Cad::Partitioning).clone();
-        // let items = &map[&self.items];
+        let sort: Permutation = get_unit!(egraph, map[&self.sort], Cad::Permutation).clone();
+        let part: Partitioning = get_unit!(egraph, map[&self.part], Cad::Partitioning).clone();
+        let items = get_meta_list!(egraph, map[&self.list]).clone();
 
-        // let mut sorts = vec![];
-        // let mut len_so_far = 0;
-        // for len in &part.lengths {
-        //     let slice = &sort.order[len_so_far..len_so_far + len];
-        //     if !slice
-        //         .iter()
-        //         .all(|&i| len_so_far <= i && i < len_so_far + len)
-        //     {
-        //         return vec![];
-        //     }
-        //     sorts.push(slice.iter().map(|i| i - len_so_far).collect());
-        //     len_so_far += len;
-        // }
+        let mut sorts = vec![];
+        let mut len_so_far = 0;
+        for len in &part.lengths {
+            let slice = &sort.order[len_so_far..len_so_far + len];
+            if !slice
+                .iter()
+                .all(|&i| len_so_far <= i && i < len_so_far + len)
+            {
+                return vec![];
+            }
+            sorts.push(slice.iter().map(|i| i - len_so_far).collect());
+            len_so_far += len;
+        }
 
-        // let sorted_lists = sorts
-        //     .into_iter()
-        //     .zip(items)
-        //     .map(|(p, &list_id)| {
-        //         let perm = Permutation::from_vec(p);
-        //         let sort_id = egraph.add(ENode::leaf(Cad::Permutation(perm)));
-        //         egraph
-        //             .add(ENode::new(Cad::Sort, vec![sort_id, list_id]))
+        let sorted_lists = sorts
+            .into_iter()
+            .zip(items)
+            .map(|(p, list_id)| {
+                let perm = Permutation::from_vec(p);
+                let sort_id = egraph.add(ENode::leaf(Cad::Permutation(perm)));
+                egraph
+                    .add(ENode::new(Cad::Sort, vec![sort_id, list_id]))
 
-        //     })
-        //     .collect();
-        // let list = egraph.add(ENode::new(Cad::List, sorted_lists));
-        // let part_id = egraph.add(ENode::leaf(Cad::Partitioning(part.clone())));
-        // vec![egraph.add(ENode::new(Cad::Unpart, vec![part_id, list]))]
+            });
+        let sorted = ENode::new(Cad::List, sorted_lists);
+        let list = egraph.add(sorted);
+        let part_id = egraph.add(ENode::leaf(Cad::Partitioning(part.clone())));
+        vec![egraph.add(ENode::new(Cad::Unpart, vec![part_id, list]))]
     }
 }
