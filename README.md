@@ -63,8 +63,8 @@ This document contains the following parts:
 
 * The terminal should be open at startup. The project repository is already
   cloned.  Navigate to the `albatross` directory.  All the required packages
-  are already installed. Type `make`.
-
+  are already installed and Szalinki is already compiled for you, ready to be
+  run.
 
 ## Running the tools
 
