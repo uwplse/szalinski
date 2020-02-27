@@ -71,12 +71,17 @@ Similarly, when calling `make`, we recommend adding
   are already installed and Szalinki is already compiled for you, ready to be
   run.
 
-* To allow a quick verification of our artifact, we provided pre-run results
-in the VM. You can therefore skip the `make` commands in the instructions
+* To allow a quick verification of our artifact, we provided pre-generated data and
+results in the VM. You can therefore skip the `make` commands in the instructions
 and directly view the results (see below on how to do that).
 
-* To run the tool yourself, first delete the entire `out` directory
-and follow the instructions below.
+* As a next step, you can verify that the results are indeed
+generated from the data we provided. To do so, delete the
+results (`out/aec-table2/table2.csv`, `out/fig14.pdf`) and run the `make`
+commands as explained below.
+
+* To run the tool yourself entirely from scratch,
+first delete the entire `out` directory and follow the instructions below.
 
 ## Running the tools
 
