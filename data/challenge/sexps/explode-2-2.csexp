@@ -1,9 +1,0 @@
-(Union
-  Unit
-  (Union (Trans(Float 2) (Float 0) (Float 0) Unit)
-  (Union (Trans(Float 2) (Float 2) (Float 0) Unit)
-  (Union (Trans(Float 0) (Float 2) (Float 0) Unit)
-  (Union (Trans(Float 2) (Float 0) (Float 2) Unit)
-  (Union (Trans(Float 2) (Float 2) (Float 2) Unit)
-  (Union (Trans(Float 0) (Float 2) (Float 2) Unit)
-         (Trans(Float 0) (Float 0) (Float 2) Unit))))))))
