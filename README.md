@@ -112,7 +112,7 @@ We use OpenSCAD to compile CSG programs to meshes and use CGAL to compute
 the Hausdorff distance between two meshes.
 
 To validate the programs in `Figure 15`,
-run `make out/aec-fig15/hausdorff`. This should terminate in less than 5
+run `make out/aec-fig15/hausdorff`. This should terminate in less than 3
 minutes. It should show you the names of the 6 examples in `Figure 15` and the
 corresponding Hausdorff distances which are close to zero.
 
@@ -125,7 +125,7 @@ do not perform validation by default.
 You can validate any example from our evaluation by typing:
  `make out/dir_name/example_name.normal.diff`, where
 `dir_name` can be `aec-table2`, `aec_fig15` or `thingiverse`, and
-`example_name` is the name of whatever example you prefer.
+`example_name` is the name of whatever example you choose.
 Then open the generated `.diff` file and check
 that the Hausdorff distance is within some epsilon of 0.
 
