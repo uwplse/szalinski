@@ -31,7 +31,7 @@ This document contains the following parts:
 
 * How to run Szalinski
   - Reproducing Table 2 (takes < 5 minutes)
-  - Reproducing Figure 14 (takes approx. 1 hour)
+  - Reproducing Figure 14 (takes approx. 1.5 hour)
   - Reproducing Figure 15 (takes < 5 minutes)
   - Validation
 
@@ -46,8 +46,8 @@ This document contains the following parts:
   virtual box version `6.1.2`, which can be downloaded
   [here](https://www.virtualbox.org/wiki/Downloads).
 
-* In the machine where we tested the VM, we have 16 GB RAM and 250 GB hard
-  disk.
+* Specs of the machine where we ran the VM:
+  Intel i7-8700K (12 threads @ 4.7GHz), 32GiB RAM
 
 ## Getting started
 
@@ -55,6 +55,7 @@ This document contains the following parts:
   going to `File -> import appliance` and giving the path to the `.ova` file
   and clicking on `continue`. In the next window that pops up, click on
   `Import`. It should take a few minutes to import.
+
 **NOTE:** When you import the `.ova` file, we recommend that you
 increase the CPU count as much as you can afford.
 Similarly, when running `make`, we recommend adding
