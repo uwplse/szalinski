@@ -346,31 +346,9 @@ fn main() {
         .with_time_limit(Duration::from_secs_f64(*TIMEOUT))
         // .with_scheduler(SimpleScheduler)
         .with_scheduler(
-            // SimpleScheduler
-            BackoffScheduler::new(5, 1_000).do_not_ban("scale_cube"), //     // dynamic rules
-                                                                      // .do_not_ban("listapplier")
-                                                                      //     .do_not_ban("sortapplier")
-                                                                      //     .do_not_ban("partapplier")
-                                                                      //     .do_not_ban("unpart-unsort")
-                                                                      //     .do_not_ban("sort-unpart")
-                                                                      //     // inv trans
-                                                                      //     .do_not_ban("map_unpart_r2")
-                                                                      //     .do_not_ban("map_unpart_l2")
-                                                                      //     .do_not_ban("part_unpart")
-                                                                      //     .do_not_ban("unpart_part")
-                                                                      //     .do_not_ban("sort_unsort")
-                                                                      //     .do_not_ban("unsort_sort")
-                                                                      //     .do_not_ban("map_unsort_l")
-                                                                      //     .do_not_ban("map_unsort_r")
-                                                                      //     .do_not_ban("unsort_repeat")
-                                                                      //     .do_not_ban("fold_union_unsort")
-                                                                      //     .do_not_ban("fold_inter_unsort")
-                                                                      //     .do_not_ban("unpolar_trans")
-                                                                      // // // normal
-                                                                      //     .do_not_ban("fold_repeat")
-                                                                      //     .do_not_ban("map_repeat")
-                                                                      //     .do_not_ban("map_mapi2")
-                                                                      //     .do_not_ban("mapi2_mapi2")
+            BackoffScheduler::default()
+                .with_initial_match_limit(5)
+                .with_ban_length(1_000)
         )
         .with_expr(&initial_expr)
         .run(&rules);
