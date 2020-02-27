@@ -344,11 +344,10 @@ fn main() {
         .with_iter_limit(*ITERATIONS)
         .with_node_limit(*NODE_LIMIT)
         .with_time_limit(Duration::from_secs_f64(*TIMEOUT))
-        // .with_scheduler(SimpleScheduler)
         .with_scheduler(
             BackoffScheduler::default()
-                .with_initial_match_limit(5)
-                .with_ban_length(1_000)
+                .with_ban_length(5)
+                .with_initial_match_limit(1_000)
         )
         .with_expr(&initial_expr)
         .run(&rules);
