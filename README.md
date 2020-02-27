@@ -162,6 +162,8 @@ from scratch on a different machine that runs Ubuntu 19.10.
 * Install [OpenSCAD](https://www.openscad.org/) by typing
   `sudo apt-get install openscad`
 
+* Install git by typing `sudo apt install git`
+
 * Clone the repo [here](https://github.com/uwplse/szalinski.git)
 
 * Navigate to the project directory where the `Makefile` is
