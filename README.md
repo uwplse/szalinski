@@ -182,6 +182,10 @@ from scratch on a different machine that runs Ubuntu 19.10.
 
 * Install git by typing `sudo apt install git`
 
+* Install pip by typing `sudo apt install python3-pip` and then
+install `numpy` by typing `pip3 install numpy` and `matplotlib` by typing
+`pip3 install matplotlib`
+
 * Clone the repo [here](https://github.com/uwplse/szalinski.git)
 
 * Navigate to the project directory where the `Makefile` is
