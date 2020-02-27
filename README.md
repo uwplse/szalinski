@@ -138,7 +138,10 @@ file in OpenSCAD (already installed in the VM). In OpenSCAD, click on the
 You should either see nothing rendered or some residual thin walls that are
 artifacts of rounding error prevalent in OpenSCAD.
 
-## Setup instructions (for setting up Szalinski on a different machine that runs Ubuntu 18.04.4 LTS)
+## Setup instructions
+
+Following are the steps for setting up Szalinski
+from scratch on a different machine that runs Ubuntu 19.10.
 
 * Install rust. Type `curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh`
   in the terminal and follow the subsequent instructions. The version we used is `1.41.0`.
@@ -156,14 +159,8 @@ artifacts of rounding error prevalent in OpenSCAD.
 * Install [CGAL](https://www.cgal.org/download/linux.html) by typing
   `sudo apt-get install libcgal-dev`
 
-* Install [OpenSCAD](https://www.openscad.org/).
-We followed the instructions [here](http://ubuntuhandbook.org/index.php/2019/01/install-openscad-ubuntu-18-10-18-04/).
-In short: the following steps should suffice:
-```
-$ sudo add-apt-repository ppa:openscad/releases
-$ sudo apt-get update
-$ sudo apt-get install openscad
-```
+* Install [OpenSCAD](https://www.openscad.org/) by typing
+  `sudo apt-get install openscad`
 
 * Clone the repo [here](https://github.com/uwplse/szalinski.git)
 
