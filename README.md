@@ -30,9 +30,9 @@ This document contains the following parts:
 * Getting started
 
 * How to run Szalinski
-  - Reproducing Table 2
-  - Reproducing Figure 14
-  - Reproducing Figure 15 (**recommend trying first because this takes less time**)
+  - Reproducing Table 2 (takes < 5 minutes)
+  - Reproducing Figure 14 (takes approx. 1 hour)
+  - Reproducing Figure 15 (takes < 5 minutes)
   - Validation
 
 * How to set up Szalinski on a different machine (this is also how we set up
@@ -66,6 +66,13 @@ This document contains the following parts:
   are already installed and Szalinki is already compiled for you, ready to be
   run.
 
+* To allow a quick verification of our artifact, we provided pre-run results
+in the VM. You can therefore skip the `make` commands in the instructions
+and directly view the results (see below on how to do that).
+
+* To run the tool yourself, first delete the entire `out` directory
+and follow the instructions below.
+
 ## Running the tools
 
 ### Reproducing Table 2
@@ -84,6 +91,10 @@ reported in the paper.
 
 
 ### Reproducing Figure 14
+*NOTE:* Running this part takes about an hour.
+We recommend first reproducing `Figure 15` and
+`Table 2`, both of which take much less time.
+
 Navigate to the directory that contains the `Makefile` and type
 `make out/fig14.pdf`. Open the generated file in a pdf viewer and
 compare with `Figure 14` in the paper.
