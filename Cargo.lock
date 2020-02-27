@@ -97,8 +97,8 @@ dependencies = [
 
 [[package]]
 name = "egg"
-version = "0.2.1-dev"
-source = "git+https://github.com/mwillsey/egg.git?rev=0da2c119c0ea6884240309e9acd12e8c9b43dd19#0da2c119c0ea6884240309e9acd12e8c9b43dd19"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "indexmap 1.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "instant 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -440,7 +440,7 @@ name = "szalinski-egg"
 version = "0.1.0"
 dependencies = [
  "colored-diff 0.2.2 (registry+https://github.com/rust-lang/crates.io-index)",
- "egg 0.2.1-dev (git+https://github.com/mwillsey/egg.git?rev=0da2c119c0ea6884240309e9acd12e8c9b43dd19)",
+ "egg 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "env_logger 0.6.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "indexmap 1.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "itertools 0.8.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -542,7 +542,7 @@ dependencies = [
 "checksum colored-diff 0.2.2 (registry+https://github.com/rust-lang/crates.io-index)" = "516f260afc909bb0d056b76891ad91b3275b83682d851b566792077eee946efd"
 "checksum difference 2.0.0 (registry+https://github.com/rust-lang/crates.io-index)" = "524cbf6897b527295dff137cec09ecf3a05f4fddffd7dfcd1585403449e74198"
 "checksum digest 0.8.1 (registry+https://github.com/rust-lang/crates.io-index)" = "f3d0c8c8752312f9713efd397ff63acb9f85585afbf179282e720e7704954dd5"
-"checksum egg 0.2.1-dev (git+https://github.com/mwillsey/egg.git?rev=0da2c119c0ea6884240309e9acd12e8c9b43dd19)" = "<none>"
+"checksum egg 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)" = "b6afb6605be4a4d8068687f7a9e5bf1ee65aaaa3b55ab977a0b3722d6174e0fe"
 "checksum either 1.5.2 (registry+https://github.com/rust-lang/crates.io-index)" = "5527cfe0d098f36e3f8839852688e63c8fff1c90b2b405aef730615f9a7bcf7b"
 "checksum env_logger 0.6.2 (registry+https://github.com/rust-lang/crates.io-index)" = "aafcde04e90a5226a6443b7aabdb016ba2f8307c847d524724bd9b346dd1a2d3"
 "checksum fake-simd 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)" = "e88a8acf291dafb59c2d96e8f59828f3838bb1a70398823ade51a84de6a6deed"

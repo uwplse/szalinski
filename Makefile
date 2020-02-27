@@ -28,7 +28,7 @@ everything=$(diffs)
 
 .PHONY: all compile-csgs compile-csexps case-studies checked unit-tests
 
-all: $(everything)
+all: $(jsons)
 
 jsons: $(jsons)
 diffs: $(diffs)
@@ -116,23 +116,6 @@ out/%.checked: inputs/%.expected out/%
 	$(diff) inputs/$*.expected out/$*
 	touch $@
 
-## report generation
-
-out/case-studies/report.csv: ./scripts/report.py $(filter out/case-studies/%, $(jsons))
-	./scripts/report.py --output $@ $(filter out/case-studies/%, $(jsons))
-out/inverse-csg/report.csv: ./scripts/report.py $(filter out/inverse-csg/%, $(jsons))
-	./scripts/report.py --output $@ $(filter out/inverse-csg/%, $(jsons))
-out/reincarnate/report.csv: ./scripts/report.py $(filter out/reincarnate/%, $(jsons))
-	./scripts/report.py --output $@ $(filter out/reincarnate/%, $(jsons))
-out/reincarnate-new/report.csv: ./scripts/report.py $(filter out/reincarnate-new/%, $(jsons))
-	./scripts/report.py --output $@ $(filter out/reincarnate-new/%, $(jsons))
-out/latex-drawing/report.csv: ./scripts/report.py $(filter out/latex-drawing/%, $(jsons))
-	./scripts/report.py --output $@ $(filter out/latex-drawing/%, $(jsons))
-out/thingiverse/report.csv: ./scripts/report.py $(filter out/thingiverse/%, $(jsons))
-	./scripts/report.py --output $@ $(filter out/thingiverse/%, $(jsons))
-out/report.csv: ./scripts/report.py $(jsons)
-	./scripts/report.py --output $@ $(jsons)
-
 thingiverse-normal: $(filter out/thingiverse/%, $(jsons))
 thingiverse-perturb: $(filter out/thingiverse/%, $(jsons-perturb))
 thingiverse-perturb-nocad: $(filter out/thingiverse/%, $(jsons-perturb-nocad))
@@ -148,18 +131,3 @@ out/fig14.pdf: ./scripts/plot-boxes.py thingiverse-all
 
 out/aec-fig15/hausdorff: ./scripts/hausdorff.py out/compare_mesh aec-fig15-valid
 	python3 $< $@
-
-# out/case-studies/report.csv: ./scripts/report.py $(filter out/case-studies/%, $(jsons) $(diffs))
-#	./scripts/report.py --output $@ $(filter out/case-studies/%, $(jsons))
-# out/inverse-csg/report.csv: ./scripts/report.py $(filter out/inverse-csg/%, $(jsons) $(diffs))
-#	./scripts/report.py --output $@ $(filter out/inverse-csg/%, $(jsons))
-# out/reincarnate/report.csv: ./scripts/report.py $(filter out/reincarnate/%, $(jsons) $(diffs))
-#	./scripts/report.py --output $@ $(filter out/reincarnate/%, $(jsons))
-# out/reincarnate-new/report.csv: ./scripts/report.py $(filter out/reincarnate-new/%, $(jsons) $(diffs))
-#	./scripts/report.py --output $@ $(filter out/reincarnate-new/%, $(jsons))
-# out/latex-drawing/report.csv: ./scripts/report.py $(filter out/latex-drawing/%, $(jsons) $(diffs))
-#	./scripts/report.py --output $@ $(filter out/latex-drawing/%, $(jsons))
-# out/thingiverse/report.csv: ./scripts/report.py $(filter out/thingiverse/%, $(jsons) $(diffs))
-#	./scripts/report.py --output $@ $(filter out/thingiverse/%, $(jsons))
-# out/report.csv: ./scripts/report.py $(jsons) $(diffs)
-#	./scripts/report.py --output $@ $(jsons)
