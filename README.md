@@ -55,8 +55,7 @@ This document contains the following parts:
   going to `File -> import appliance` and giving the path to the `.ova` file
   and clicking on `continue`. In the next window that pops up, click on
   `Import`. It should take a few minutes to import.
-
-* When you import the `.ova` file, we recommend that you
+**NOTE:** When you import the `.ova` file, we recommend that you
 increase the CPU count as much as you can afford.
 Similarly, when running `make`, we recommend adding
 `make -jN` where `N` is the number of CPUs you allocated to the VM.
