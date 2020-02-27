@@ -1,4 +1,4 @@
-CC_WITH_FLAGS ?= g++ -lCGAL -lgmp -lmpfr
+CC_WITH_FLAGS ?= g++ -lgmp -lmpfr -lCGAL
 
 tgt=target/release
 diff=git --no-pager diff --no-index --word-diff=color --ignore-space-at-eol
@@ -55,7 +55,7 @@ $(tgt)/optimize $(tgt)/parse-csg: $(rust-src)
 
 out/compare_mesh: scripts/compare_mesh.cpp
 	mkdir -p out/
-	g++ $< -O2 -o $@ $(CC_FLAGS)
+	g++ $< -O2 -lgmp -lmpfr -lCGAL -o $@
 
 print-%:
 	@echo '$*=$($*)'
@@ -139,13 +139,14 @@ thingiverse-perturb-nocad: $(filter out/thingiverse/%, $(jsons-perturb-nocad))
 thingiverse-perturb-noinv: $(filter out/thingiverse/%, $(jsons-perturb-noinv))
 thingiverse-all: thingiverse-normal thingiverse-perturb thingiverse-perturb-nocad thingiverse-perturb-noinv
 
+.PRECIOUS:
 out/aec-table2/table2.csv: ./scripts/table2.py aec-table2-nocad aec-table2-noinv aec-table2
 	python3 $< $@
 
 out/fig14.pdf: ./scripts/plot-boxes.py thingiverse-all
 	python3 $< $@
 
-out/aec-fig15/hausdorff: ./scripts/hausdorff.py aec-fig15-valid
+out/aec-fig15/hausdorff: ./scripts/hausdorff.py out/compare_mesh aec-fig15-valid
 	python3 $< $@
 
 # out/case-studies/report.csv: ./scripts/report.py $(filter out/case-studies/%, $(jsons) $(diffs))

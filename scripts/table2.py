@@ -14,7 +14,7 @@ def get_scad_loc(nm):
 
 mesh_faces_re = re.compile(r'(OFF)?[ \n]*(\d+)[ \n]+(\d+)')
 def get_mesh_loc(nm):
-    fnm = "out/aec-table2/" + nm + ".in.off"
+    fnm = "inputs/aec-table2/tri-mesh/" + nm + ".off"
     with open(fnm, 'r') as f:
         text = f.read()
 
@@ -48,7 +48,7 @@ def main():
     tab2_dir = "out/aec-table2/"
     nms = []
     for f in os.listdir(tab2_dir):
-        if f.endswith('.normal.csexp.opt'):
+        if f.endswith('.normal.json'):
             print(f)
             n = f.split('.')[0]
             nms.append(n)
