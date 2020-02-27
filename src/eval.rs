@@ -222,10 +222,20 @@ pub fn eval(cx: Option<&FunCtx>, expr: &RecExpr<Cad>) -> RecExpr<Cad> {
             let b = get_num(&eval(cx, arg(1)));
             rec!(Cad::Num((a + b).into()))
         }
+        Cad::Sub => {
+            let a = get_num(&eval(cx, arg(0)));
+            let b = get_num(&eval(cx, arg(1)));
+            rec!(Cad::Num((a - b).into()))
+        }
         Cad::Mul => {
             let a = get_num(&eval(cx, arg(0)));
             let b = get_num(&eval(cx, arg(1)));
             rec!(Cad::Num((a * b).into()))
+        }
+        Cad::Div => {
+            let a = get_num(&eval(cx, arg(0)));
+            let b = get_num(&eval(cx, arg(1)));
+            rec!(Cad::Num((a / b).into()))
         }
         // cad
         Cad::Cube => rec!(Cad::Cube, eval(cx, arg(0)), eval(cx, arg(1))),
