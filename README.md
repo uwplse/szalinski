@@ -67,7 +67,7 @@ Similarly, when running `make`, we recommend adding
 * Login is automatic, but in case needed, the password is: `pldi2020`.
 
 * The terminal should be open at startup. The project repository is already
-  cloned.  Navigate to the `albatross` directory.  All the required packages
+  cloned.  Navigate to the `szalinski` directory.  All the required packages
   are already installed and Szalinki is already compiled for you, ready to be
   run.
 
@@ -106,6 +106,12 @@ version we used during the deadline because we ran it on a MacOS.
 Due to this, the numbers in the `#Tri` column may vary in this artifact.
 
 ### Reproducing Figure 14
+
+We have included in the repo the 2,127 examples from Thingiverse that
+we evaluated on in the paper.
+The remainder of the 12,939 scraped from Thingiverse were either
+malformed or used features not supported by Szalinski.
+
 *NOTE:* Running this part takes about an hour.
 We recommend first reproducing `Figure 15` and
 `Table 2`, both of which take much less time.
@@ -183,7 +189,7 @@ from scratch on a different machine that runs Ubuntu 19.10.
 * Install g++ by typing: `sudo apt-get install g++`
 
 * Install jq by typing: `sudo apt-get install jq`
- 
+
 * Install [CGAL](https://www.cgal.org/download/linux.html) by typing
   `sudo apt-get install libcgal-dev`
 
