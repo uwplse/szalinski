@@ -56,6 +56,11 @@ This document contains the following parts:
   and clicking on `continue`. In the next window that pops up, click on
   `Import`. It should take a few minutes to import.
 
+* When you import the `.ova` file, we recommend that you
+increase the CPU count as much as you can afford.
+Similarly, when calling `make`, we recommend adding
+`make -jN` where `N` is the number of CPUs you allocated to the VM.
+
 * Next, please open the virtual machine image in virtual box by clicking on the
   green `Start` button.
 
