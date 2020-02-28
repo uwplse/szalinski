@@ -202,7 +202,8 @@ from scratch on a different machine that runs Ubuntu 19.10.
 install `numpy` by typing `pip3 install numpy` and `matplotlib` by typing
 `pip3 install matplotlib`
 
-* Clone the repo [here](https://github.com/uwplse/szalinski.git)
+* We have made a [github release](https://github.com/uwplse/szalinski/tree/pldi2020-aec)
+for the PLDI AEC from where you can get the source.
 
 * Navigate to the project directory where the `Makefile` is
 and run the tool as described above.
