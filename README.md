@@ -233,7 +233,7 @@ degree polynomials in Cartesian and Spherical coordinates, and performs
 partitioning and permutations of lists.
 
 * The rewrites rules are in `rules.rs`. Syntactic rewrites are
-written using the `rw!` macro. Each rewrite as a name, a left hand side,
+written using the `rw!` macro. Each rewrite has a name, a left hand side,
 and a right hand side. You can add / remove rules to see how that affects
 the final Caddy output of Szalinski. For example, if you comment out the
 rules for inverse transformations, they will not be propagated and
