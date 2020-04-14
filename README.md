@@ -38,7 +38,7 @@ This document contains the following parts:
 * Reusability
   - How to set up Szalinski on a different machine (this is also how
   we set up the VM)
-  - How to modify the code
+  - Description of the code and how to modify it
 
 * Notes and remarks
 
@@ -176,7 +176,7 @@ file in OpenSCAD (already installed in the VM). In OpenSCAD, click on the
 You should either see nothing rendered or some residual thin walls that are
 artifacts of rounding error prevalent in OpenSCAD.
 
-## Reproducibility
+## Reusability
 
 Here we provide instructions on how to start using Szalinski including
 installation and changing the rules and features of the Caddy language.
