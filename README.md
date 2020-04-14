@@ -35,8 +35,10 @@ This document contains the following parts:
   - Reproducing Figure 15 (takes < 5 minutes)
   - Validation
 
-* How to set up Szalinski on a different machine (this is also how we set up
-  the VM)
+* Reusability
+  - How to set up Szalinski on a different machine (this is also how
+  we set up the VM)
+  - How to modify the code
 
 * Notes and remarks
 
@@ -111,6 +113,8 @@ We have included in the repo the 2,127 examples from Thingiverse that
 we evaluated on in the paper.
 The remainder of the 12,939 scraped from Thingiverse were either
 malformed or used features not supported by Szalinski.
+The script (`scripts/scrape-thingiverse.sh`) scrapes models under the
+`customizable` category, from the first 500 pages.
 
 *NOTE:* Running this part takes about an hour.
 We recommend first reproducing `Figure 15` and
@@ -172,7 +176,12 @@ file in OpenSCAD (already installed in the VM). In OpenSCAD, click on the
 You should either see nothing rendered or some residual thin walls that are
 artifacts of rounding error prevalent in OpenSCAD.
 
-## Setup instructions
+## Reproducibility
+
+Here we provide instructions on how to start using Szalinski including
+installation and changing the rules and features of the Caddy language.
+
+### Setup instructions
 
 Following are the steps for setting up Szalinski
 from scratch on a different machine that runs Ubuntu 19.10.
@@ -207,6 +216,29 @@ for the PLDI AEC from where you can get the source.
 
 * Navigate to the project directory where the `Makefile` is
 and run the tool as described above.
+
+### Changing Caddy and modifying the rules
+
+* The Caddy language is defined in `cad.rs` in the `src` directory.
+A simple feature you can add is support for a new primitive or new
+transformations. You can also change the costs of various language
+constructs. The definition of the `cost` function starts at line `267`.
+
+* As we described in the paper, to verify the correctness of Szalinski,
+we evaluate Caddy programs to flat Core Caddy and pretty print to CSG. This
+code is in `eval.rs`.
+
+* `solve.rs` and `permute.rs` contains code that solves for first and second
+degree polynomials in Cartesian and Spherical coordinates, and performs
+partitioning and permutations of lists.
+
+* The rewrites rules are in `rules.rs`. Syntactic rewrites are
+written using the `rw!` macro. Each rewrite as a name, a left hand side,
+and a right hand side. You can add / remove rules to see how that affects
+the final Caddy output of Szalinski. For example, if you comment out the
+rules for inverse transformations, they will not be propagated and
+eliminated, and therefore the quality of Szalinski's output will not be
+as good.
 
 ## Notes and remarks
 
