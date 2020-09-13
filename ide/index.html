@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+  <title>Szalinski</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="https://codemirror.net/lib/codemirror.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://codemirror.net/lib/codemirror.css">
+</head>
+
+<body>
+
+<div class="text-center" style="margin-bottom:0;">
+  <h1>Szalinski Demo</h1>
+  <p>Szalinski is a tool for automatically inferring loops in the form of
+  Folds, Maps, and Tabulates from flat CSG based 3D models. Szalinski uses
+  Equality Saturation, a powerful compiler optimization technique together with
+  a new idea called Inverse Transformations to automatically find loops.</p>
+
+</div>
+
+<nav class='navbar navbar-expand-sm navbar-light'
+     style='background: #fa8072; font-size: 1.2rem;'>
+  <a class="navbar-brand" href="#">Demo</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="collapsibleNavbar">
+    <ul class="navbar-nav">
+     <li class="nav-item dropdown">
+       <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Examples</a>
+       <div class="dropdown-menu">
+         <a class="dropdown-item" id="tacklebox" onclick="upload(this)" style="cursor: pointer;">Tackle Box</a>
+         <a class="dropdown-item" id="cncendmill" onclick="upload(this)" style="cursor: pointer;">CNC End Mills</a>
+         <a class="dropdown-item" id="circlecell" onclick="upload(this)" style="cursor: pointer;">Circle Cell</a>
+       </div>
+     </li>
+      <li class="nav-item">
+        <a class="nav-link" href="http://incarnate.uwplse.org/">Research</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="https://github.com/uwplse/szalinski">Github</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<style>
+  h2 {text-align: center;}
+
+.CodeMirror {
+    /* Bootstrap Settings */
+    overflow: auto;
+    font-family: inherit;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    border: 2px solid #FFA07A;
+    border-radius: 10px;
+    /* Code Mirror Settings */
+    overflow: hidden;
+}
+
+.center {
+  margin: auto;
+  width: 50%;
+  padding: 10px;
+}
+
+.btn-primary, .btn-primary:hover {
+  background: #F08080;
+  border-color: #F08080;
+  color: #000000;
+}
+
+
+</style>
+
+<div class="center">
+  <textarea rows="4" cols="50" id="input" name="input">Enter flat CSG here</textarea>
+  <button type="button" class="btn btn-primary btn-success" style="margin:5px">Run</button>
+  <textarea rows="4" cols="50" id="output" name="output"></textarea>
+</div>
+
+<script src="inputs.js"></script>
+<script src="editor.js"></script>
+
+
+<div class="text-center" style="margin-bottom:0">
+  <footer>
+    <p>2020
+      <a href="https://homes.cs.washington.edu/~cnandi/" style='color:#b22222'>Chandrakana Nandi</a>
+    </p>
+  </footer>
+</div>
+
+
+</body>
+</html>
+
