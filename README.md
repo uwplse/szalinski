@@ -53,7 +53,8 @@ This document contains the following parts:
 
 ## Getting started
 
-* Please download the `.ova` file from the link and open it with Virtual Box by
+* Please download the `.ova` file [here](https://drive.google.com/drive/folders/1w28mR3hrINCKBkvj1j0GF61mzEsAq7vM)
+  and open it with Virtual Box by
   going to `File -> import appliance` and giving the path to the `.ova` file
   and clicking on `continue`. In the next window that pops up, click on
   `Import`. It should take a few minutes to import.
