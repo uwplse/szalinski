@@ -302,8 +302,7 @@ impl egg::CostFunction<Cad> for CostFn {
             Vec3(_) => 1.0,
 
             Unpolar(_) => BIG,
-            // Sort(_) | Unsort(_) | Part(_) | Unpart(_) => BIG,
-            Sort(_) | Unsort(_) | Part(_) | Unpart(_) => SMALL,
+            Sort(_) | Unsort(_) | Part(_) | Unpart(_) => BIG,
             Partitioning(_) => BIG,
             Permutation(_) => BIG,
         };

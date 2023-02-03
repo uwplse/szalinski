@@ -698,7 +698,9 @@ impl Applier<Cad, MetaAnalysis> for ListApplier {
             if len > 2 {
                 let solved = crate::solve::solve(egraph, &vec_list);
                 // if !solved.is_empty() {
-                //     println!("Solved!: {:?}", solved);
+                //     for id in &solved {
+                //         println_cad(egraph, *id);
+                //     }
                 // }
                 results.extend(solved);
             }
