@@ -1,6 +1,7 @@
 use std::fmt;
 use std::str::FromStr;
 
+use egg::Language;
 use log::*;
 
 use crate::cad::{Cad, EGraph};
@@ -85,9 +86,9 @@ pub fn unify_close_nums(egraph: &mut EGraph) {
     let mut nums = vec![];
     for eclass in egraph.classes() {
         for node in &eclass.nodes {
-            if let Cad::Num(num) = node.op {
-                assert_eq!(node.children.len(), 0);
-                nums.push((num, eclass.id));
+            if let Cad::Num(num) = node {
+                assert_eq!(node.children().len(), 0);
+                nums.push((*num, eclass.id));
             }
         }
     }
