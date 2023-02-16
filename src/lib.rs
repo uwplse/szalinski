@@ -32,6 +32,7 @@ macro_rules! sz_param {
 pub mod cad;
 pub mod rules;
 
+pub mod au;
 pub mod eval;
 pub mod num;
 mod permute;

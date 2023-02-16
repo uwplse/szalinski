@@ -88,14 +88,14 @@ define_language! {
         "Concat" = Concat([Id; 1]),
         "List" = List(Vec<Id>),
 
-        "Sort" = Sort([Id; 2]),
+        // "Sort" = Sort([Id; 2]),
         "Unsort" = Unsort([Id; 2]),
-        "Part" = Part([Id; 2]),
+        // "Part" = Part([Id; 2]),
         "Unpart" = Unpart([Id; 2]),
         "Unpolar" = Unpolar([Id; 3]),
 
-        Permutation(Permutation),
-        Partitioning(Partitioning),
+        // Permutation(Permutation),
+        // Partitioning(Partitioning),
 
         "+" = Add([Id; 2]),
         "-" = Sub([Id; 2]),
@@ -107,6 +107,7 @@ define_language! {
 
 #[derive(Debug, Default)]
 pub struct MetaAnalysis;
+
 #[derive(Debug, Clone)]
 pub struct Meta {
     pub list: Option<Vec<Id>>,
@@ -302,9 +303,10 @@ impl egg::CostFunction<Cad> for CostFn {
             Vec3(_) => 1.0,
 
             Unpolar(_) => BIG,
-            Sort(_) | Unsort(_) | Part(_) | Unpart(_) => BIG,
-            Partitioning(_) => BIG,
-            Permutation(_) => BIG,
+            Unsort(_) | Unpart(_) => BIG,
+            // Sort(_) | Part(_) => BIG,
+            // Partitioning(_) => BIG,
+            // Permutation(_) => BIG,
         };
 
         enode.fold(cost, |sum, i| sum + costs(i))

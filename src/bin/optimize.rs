@@ -1,3 +1,4 @@
+use std::str::FromStr;
 use std::time::{Duration, Instant};
 
 use log::*;
@@ -5,8 +6,10 @@ use serde::Serialize;
 
 use egg::*;
 use std::default::Default;
+use szalinski_egg::au::AU;
 use szalinski_egg::cad::{Cad, Cost, CostFn, MetaAnalysis};
 use szalinski_egg::eval::remove_empty;
+use szalinski_egg::rules::reroll;
 use szalinski_egg::sz_param;
 
 // #[derive(Debug, Serialize)]
@@ -369,7 +372,6 @@ fn main() {
 
     let rules = szalinski_egg::rules::rules();
     let mut runner = MyRunner::new(MetaAnalysis::default())
-        // .with_explanations_enabled()
         .with_iter_limit(*ITERATIONS)
         .with_node_limit(*NODE_LIMIT)
         .with_time_limit(Duration::from_secs_f64(*TIMEOUT))
@@ -381,6 +383,10 @@ fn main() {
         .with_expr(&initial_expr)
         .run(&rules);
 
+    runner.print_report();
+    let egraph = &mut runner.egraph;
+    reroll(egraph);
+
     info!(
         "Stopping after {} iters: {:?}",
         runner.iterations.len(),
@@ -391,13 +397,6 @@ fn main() {
     let extract_time = Instant::now();
     let best = Extractor::new(&runner.egraph, CostFn).find_best(root);
     let extract_time = extract_time.elapsed().as_secs_f64();
-
-    // println!(
-    //     "{}",
-    //     runner
-    //         .explain_equivalence(&initial_expr, &best.1)
-    //         .get_flat_string()
-    // );
 
     println!("Best ({}): {}", best.0, best.1.pretty(80));
 

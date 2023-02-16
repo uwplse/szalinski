@@ -240,19 +240,20 @@ fn solve_vec(egraph: &mut EGraph, list: &[Vec3]) -> Vec<Id> {
         Permutation::sort(&zxs),
     ];
 
-    for perm in &perms {
-        if perm.is_ordered() {
-            continue;
-        }
-        let xs = perm.apply(&xs);
-        let ys = perm.apply(&ys);
-        let zs = perm.apply(&zs);
-        if let Some(added_mapi) = solve_and_add(egraph, &xs, &ys, &zs) {
-            let p = Cad::Permutation(perm.clone());
-            let e = Cad::Unsort([egraph.add(p), added_mapi]);
-            results.push(egraph.add(e));
-        }
-    }
+    // yz: TODO
+    // for perm in &perms {
+    //     if perm.is_ordered() {
+    //         continue;
+    //     }
+    //     let xs = perm.apply(&xs);
+    //     let ys = perm.apply(&ys);
+    //     let zs = perm.apply(&zs);
+    //     if let Some(added_mapi) = solve_and_add(egraph, &xs, &ys, &zs) {
+    //         let p = Cad::Permutation(perm.clone());
+    //         let e = Cad::Unsort([egraph.add(p), added_mapi]);
+    //         results.push(egraph.add(e));
+    //     }
+    // }
 
     results
 }
