@@ -9,6 +9,7 @@ use std::{
 use egg::{Id, Language};
 use indexmap::map::OccupiedEntry;
 use itertools::Itertools;
+use std::convert::TryInto;
 
 use crate::{
     cad::{println_cad, BlackBox, Cad, EGraph, ListVar},
@@ -62,6 +63,7 @@ pub enum CadCtx {
     Mul([Box<CadCtx>; 2]),
     Div([Box<CadCtx>; 2]),
     BlackBox(BlackBox, Vec<Box<CadCtx>>),
+    GetAt([Box<CadCtx>; 2]),
 }
 pub type ArgList = Vec<Num>;
 impl CadCtx {
@@ -147,6 +149,7 @@ impl CadCtx {
             CadCtx::Mul(templates) => f!(templates, Cad::Mul),
             CadCtx::Div(templates) => f!(templates, Cad::Div),
             CadCtx::BlackBox(b, templates) => f!(templates, Cad::BlackBox, [b1 b1 == b]),
+            CadCtx::GetAt(templates) => f!(templates, Cad::GetAt),
         }
     }
     pub fn size(&self) -> usize {
@@ -185,6 +188,7 @@ impl CadCtx {
             CadCtx::Mul(children) => children.iter().map(|c| c.size()).sum::<usize>() + 1,
             CadCtx::Div(children) => children.iter().map(|c| c.size()).sum::<usize>() + 1,
             CadCtx::BlackBox(_, children) => children.iter().map(|c| c.size()).sum::<usize>() + 1,
+            CadCtx::GetAt(children) => children.iter().map(|c| c.size()).sum::<usize>() + 1,
         }
     }
 }
@@ -205,6 +209,7 @@ pub struct AU {
 
 impl AU {
     pub fn anti_unify_class(&mut self, egraph: &EGraph, pair: &(Id, Id)) -> &Vec<CadCtx> {
+        let pair = &(egraph.find(pair.0), egraph.find(pair.1));
         if self.cache.contains_key(pair) {
             return &self.cache[pair];
         }
@@ -250,24 +255,9 @@ impl AU {
         self.cache.insert(pair.clone(), aus);
         &self.cache[&pair]
     }
-
-    pub fn anti_unify_node(&mut self, egraph: &EGraph, a: &Cad, b: &Cad) -> Vec<CadCtx> {
-        if discriminant(a) == discriminant(b) && a.children().len() == b.children().len() {
-            a.children()
-                .iter()
-                .zip(b.children().iter())
-                .map(|(p1, p2)| self.anti_unify_class(egraph, &(*p1, *p2)).clone())
-                .multi_cartesian_product()
-                .map(|x| build_cad_ctx(a, x))
-                .collect()
-        } else {
-            vec![]
-        }
-    }
 }
 
 fn build_cad_ctx(a: &Cad, xs: Vec<CadCtx>) -> CadCtx {
-    use std::convert::TryInto;
     fn f<const N: usize>(xs: [CadCtx; N]) -> [Box<CadCtx>; N] {
         xs.map(|x| Box::new(x))
     }
@@ -309,5 +299,92 @@ fn build_cad_ctx(a: &Cad, xs: Vec<CadCtx>) -> CadCtx {
         Cad::Mul(_) => CadCtx::Mul(f(xs.try_into().unwrap())),
         Cad::Div(_) => CadCtx::Div(f(xs.try_into().unwrap())),
         Cad::BlackBox(bb, _) => CadCtx::BlackBox(bb.clone(), fv(xs)),
+        Cad::GetAt(_) => CadCtx::GetAt(f(xs.try_into().unwrap())),
+    }
+}
+
+#[derive(Debug)]
+pub struct SolveResult {
+    // we will only build loops when range is something
+    pub ranges: Option<Vec<Id>>,
+    pub args: Vec<Id>,
+}
+impl SolveResult {
+    pub(crate) fn assemble(self, egraph: &mut EGraph, template: &CadCtx) -> Id {
+        let mut pos_idx = 0;
+        let body = self.assemble_impl(egraph, template, &mut pos_idx);
+        assert_eq!(pos_idx, self.args.len());
+        if let Some(mut children) = self.ranges {
+            children.push(body);
+            egraph.add(Cad::MapI(children))
+        } else {
+            body
+        }
+    }
+
+    fn assemble_impl(&self, egraph: &mut EGraph, template: &CadCtx, arg_index: &mut usize) -> Id {
+        macro_rules! f {
+            ($templates:expr, $cad:path $(, $arg:expr )*) => {{
+                let ids = $templates.iter().map(|temp| self.assemble_impl(egraph, &temp, arg_index)).collect::<Vec<_>>();
+                egraph.add($cad($($arg,)* ids.try_into().unwrap()))
+            }};
+
+            (@vec $templates:expr, $cad:path $(, $arg:expr )*) => {{
+                let ids = $templates.iter().map(|temp| self.assemble_impl(egraph, &temp, arg_index)).collect_vec();
+                egraph.add($cad($($arg,)* ids))
+            }};
+        }
+        match template {
+            CadCtx::Hole => {
+                let hole = self.args[*arg_index];
+                *arg_index += 1;
+                hole
+            }
+            CadCtx::Id(id) => *id,
+            CadCtx::Cube(templates) => f!(templates, Cad::Cube),
+            CadCtx::Sphere(templates) => f!(templates, Cad::Sphere),
+            CadCtx::Cylinder(templates) => f!(templates, Cad::Cylinder),
+            CadCtx::Empty => egraph.add(Cad::Empty),
+            CadCtx::Hull(templates) => f!(templates, Cad::Hull),
+            CadCtx::Nil => egraph.add(Cad::Nil),
+            CadCtx::Num(n) => egraph.add(Cad::Num(*n)),
+            CadCtx::Bool(b) => egraph.add(Cad::Bool(*b)),
+            CadCtx::MapI(templates) => f!(@vec templates, Cad::MapI),
+            CadCtx::ListVar(v) => egraph.add(Cad::ListVar(v.clone())),
+            CadCtx::Repeat(templates) => f!(templates, Cad::Repeat),
+            CadCtx::Trans => egraph.add(Cad::Trans),
+            CadCtx::TransPolar => egraph.add(Cad::TransPolar),
+            CadCtx::Scale => egraph.add(Cad::Scale),
+            CadCtx::Rotate => egraph.add(Cad::Rotate),
+            CadCtx::Union => egraph.add(Cad::Union),
+            CadCtx::Diff => egraph.add(Cad::Diff),
+            CadCtx::Inter => egraph.add(Cad::Inter),
+            CadCtx::Map2(templates) => f!(templates, Cad::Map2),
+            CadCtx::Fold(templates) => f!(templates, Cad::Fold),
+            CadCtx::Affine(templates) => f!(templates, Cad::Affine),
+            CadCtx::Binop(templates) => f!(templates, Cad::Binop),
+            CadCtx::Vec3(templates) => f!(templates, Cad::Vec3),
+            CadCtx::Cons(templates) => f!(templates, Cad::Cons),
+            CadCtx::Concat(templates) => f!(templates, Cad::Concat),
+            CadCtx::List(templates) => f!(@vec templates, Cad::List),
+            CadCtx::Unpolar(templates) => f!(templates, Cad::Unpolar),
+            CadCtx::Add(templates) => f!(templates, Cad::Add),
+            CadCtx::Sub(templates) => f!(templates, Cad::Sub),
+            CadCtx::Mul(templates) => f!(templates, Cad::Mul),
+            CadCtx::Div(templates) => f!(templates, Cad::Div),
+            CadCtx::BlackBox(b, templates) => f!(@vec templates, Cad::BlackBox, b.clone()),
+            CadCtx::GetAt(templates) => f!(templates, Cad::GetAt),
+        }
+    }
+
+    pub fn from_loop_params(ranges: Vec<Id>, args: Vec<Id>) -> SolveResult {
+        SolveResult {
+            ranges: Some(ranges),
+            args,
+        }
+    }
+
+    pub fn from_constants(args: Vec<Id>) -> SolveResult {
+        SolveResult { ranges: None, args }
     }
 }

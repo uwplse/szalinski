@@ -203,7 +203,7 @@ fn to_cartesian(v: (f64, f64, f64)) -> (f64, f64, f64) {
     (x, y, z)
 }
 
-type FunCtx = HashMap<&'static str, usize>;
+type FunCtx = HashMap<String, usize>;
 
 fn mk_vec((x, y, z): (f64, f64, f64), out: &mut RecExpr<Cad>) -> Id {
     let x = out.add(Cad::Num(x.into()));
@@ -242,7 +242,7 @@ pub fn eval(cx: Option<&FunCtx>, expr: &RecExpr<Cad>, p: Id, out: &mut RecExpr<C
         Cad::Bool(_) => out.add(e),
         Cad::Num(_) => out.add(e),
         Cad::ListVar(v) => {
-            let n = cx.unwrap()[v.0];
+            let n = cx.unwrap()[&v.0];
             out.add(Cad::Num(n.into()))
         }
         Cad::Add(args) => {

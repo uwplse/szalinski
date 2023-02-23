@@ -3,10 +3,7 @@ use std::str::FromStr;
 
 use egg::*;
 
-use crate::{
-    num::{num, Num},
-    permute::{Partitioning, Permutation},
-};
+use crate::num::{num, Num};
 
 use log::debug;
 
@@ -18,15 +15,14 @@ pub type Cost = f64;
 pub type Vec3 = (Num, Num, Num);
 
 #[derive(PartialEq, Eq, Hash, Debug, Clone, PartialOrd, Ord)]
-pub struct ListVar(pub &'static str);
+pub struct ListVar(pub String);
 impl FromStr for ListVar {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "i" => Ok(ListVar("i")),
-            "j" => Ok(ListVar("j")),
-            "k" => Ok(ListVar("k")),
-            _ => Err(()),
+        if s.starts_with("i") {
+            Ok(ListVar(s.into()))
+        } else {
+            Err(())
         }
     }
 }
@@ -101,6 +97,7 @@ define_language! {
         "-" = Sub([Id; 2]),
         "*" = Mul([Id; 2]),
         "/" = Div([Id; 2]),
+        "GetAt" = GetAt([Id; 2]),
         BlackBox(BlackBox, Vec<Id>),
     }
 }
@@ -226,9 +223,10 @@ impl Analysis<Cad> for MetaAnalysis {
                 assert_eq!(
                     list1.children().len(),
                     list2.children().len(),
-                    "at id {}, nodes:\n{:#?}",
+                    // "at id {}, nodes:\n{:#?}",
+                    "at id {}",
                     eclass.id,
-                    eclass.nodes
+                    // eclass.nodes
                 )
             }
         }
@@ -304,6 +302,7 @@ impl egg::CostFunction<Cad> for CostFn {
 
             Unpolar(_) => BIG,
             Unsort(_) | Unpart(_) => BIG,
+            GetAt(_) => 1.0,
             // Sort(_) | Part(_) => BIG,
             // Partitioning(_) => BIG,
             // Permutation(_) => BIG,

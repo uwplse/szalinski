@@ -1,10 +1,12 @@
 use std::f64::consts;
 
+use itertools::Itertools;
 use log::*;
 
 use indexmap::{indexset, IndexMap};
 
 use crate::{
+    au::{CadCtx, SolveResult},
     cad::{Cad, EGraph, ListVar as LV, Vec3},
     num::Num,
     permute::Permutation,
@@ -41,10 +43,14 @@ impl Formula {
         use Cad::*;
         match self {
             Formula::Deg1(f) => {
-                let a = eadd!(e, Num(f.a.into()));
-                let b = eadd!(e, Num(f.b.into()));
-                let mul = eadd!(e, Mul, a, i);
-                eadd!(e, Add, mul, b)
+                if -1e-8 < f.a && f.a < 1e-8 {
+                    eadd!(e, Num(f.b.into()))
+                } else {
+                    let a = eadd!(e, Num(f.a.into()));
+                    let b = eadd!(e, Num(f.b.into()));
+                    let mul = eadd!(e, Mul, a, i);
+                    eadd!(e, Add, mul, b)
+                }
             }
             Formula::Deg2(f) => {
                 let a = eadd!(e, Num(f.a.into()));
@@ -136,44 +142,56 @@ fn solve_list_fn(xs: &[Num]) -> Option<Formula> {
     None
 }
 
-fn solve_and_add(egraph: &mut EGraph, xs: &[Num], ys: &[Num], zs: &[Num]) -> Option<Id> {
+fn solve_and_add(egraph: &mut EGraph, proj_list: &[Vec<Num>], template: &CadCtx) -> Option<Id> {
     // println!("Solving:\n  x={:?}\n  y={:?}\n  z={:?}", xs, ys, zs);
-    assert_eq!(xs.len(), ys.len());
-    assert_eq!(xs.len(), zs.len());
-    let mut by_chunk = IndexMap::<usize, Vec<_>>::default();
-    by_chunk.entry(chunk_length(xs)).or_default().push((0, xs));
-    by_chunk.entry(chunk_length(ys)).or_default().push((1, ys));
-    by_chunk.entry(chunk_length(zs)).or_default().push((2, zs));
-    by_chunk.sort_by(|k1, _, k2, _| k2.cmp(k1));
 
-    if !by_chunk.keys().any(|len| *len == xs.len()) {
+    let mut by_chunk = IndexMap::<usize, Vec<_>>::default();
+    let col_len = proj_list.len();
+    let row_len = proj_list[0].len();
+    for i in 0..col_len {
+        by_chunk
+            .entry(chunk_length(&proj_list[i]))
+            .or_default()
+            .push((i, &proj_list[i]));
+    }
+    if !by_chunk.keys().any(|len| len == &row_len) {
+        // TODO should we really return?
         return None;
     }
 
+    // TODO: what does inners do?
     let inners: Vec<usize> = (0..by_chunk.len())
         .map(|i| by_chunk.get_index(i + 1).map(|(k, _)| *k).unwrap_or(1))
         .collect();
 
-    let vars = &[
-        Cad::ListVar(LV("i")),
-        Cad::ListVar(LV("j")),
-        Cad::ListVar(LV("k")),
-    ];
-    let mut inserted = vec![None; 3];
+    let vars = (0..by_chunk.len())
+        .map(|i| Cad::ListVar(LV(format!("i{}", i))))
+        .collect::<Vec<_>>();
+    let mut inserted = vec![None; col_len];
 
     for (((&chunk_len, lists), inner), var) in by_chunk.iter().zip(&inners).zip(vars) {
         for (index, list) in lists {
             let slice = &list[..chunk_len];
             let nums = unrun(slice, *inner)?;
-            let fun = solve_list_fn(&nums)?;
-            // println!("Found: {:?}", fun);
             let var_id = egraph.add(var.clone());
-            inserted[*index] = Some(fun.add_to_egraph(egraph, var_id));
+            match solve_list_fn(&nums) {
+                Some(fun) => {
+                    inserted[*index] = Some(fun.add_to_egraph(egraph, var_id));
+                }
+                None => {
+                    let children = nums
+                        .iter()
+                        .map(|num| egraph.add(Cad::Num(*num)))
+                        .collect_vec();
+                    let list = egraph.add(Cad::List(children));
+                    inserted[*index] = Some(egraph.add(Cad::GetAt([list, var_id])));
+                }
+            }
         }
     }
 
     let mut lens = vec![];
-    let mut children: Vec<_> = by_chunk
+    let ranges: Vec<_> = by_chunk
         .keys()
         .zip(&inners)
         .map(|(n, inner)| {
@@ -183,78 +201,61 @@ fn solve_and_add(egraph: &mut EGraph, xs: &[Num], ys: &[Num], zs: &[Num]) -> Opt
             egraph.add(Cad::Num(len.into()))
         })
         .collect();
-    // println!("lens: {:?}, {:?}", lens, xs);
-    assert_eq!(lens.iter().product::<usize>(), xs.len());
-    let x = inserted[0].unwrap();
-    let y = inserted[1].unwrap();
-    let z = inserted[2].unwrap();
-    let vec = egraph.add(Cad::Vec3([x, y, z]));
-    children.push(vec);
-    let map = egraph.add(Cad::MapI(children));
-    // println!("inserted map: {:?}", map);
+    // println!("lens: {:?}, {:?}", lens, proj_list);
+    assert_eq!(lens.iter().product::<usize>(), row_len);
+
+    let args = inserted.into_iter().map(|i| i.unwrap()).collect_vec();
+    let solve_result = SolveResult::from_loop_params(ranges, args);
+    let map = solve_result.assemble(egraph, template);
     Some(map)
 }
 
-fn solve_vec(egraph: &mut EGraph, list: &[Vec3]) -> Vec<Id> {
+// This function takes an array of arglist (and convert them to an array of columns)
+fn solve_vec(egraph: &mut EGraph, list: &[Vec<Num>], template: &CadCtx) -> Vec<Id> {
     // print!("Solving: [");
     // for v in list {
-    //     print!("({:.2}, {:.2}, {:.2}), ", v.0, v.1, v.2);
+    //     print!("{:?}, ", v);
     // }
     // println!("]");
 
-    if list.iter().all(|&v| v == list[0]) {
-        // don't infer here, it'll become a repeat
-        return vec![];
-    }
-
-    let xs: Vec<Num> = list.iter().map(|v| v.0).collect();
-    let ys: Vec<Num> = list.iter().map(|v| v.1).collect();
-    let zs: Vec<Num> = list.iter().map(|v| v.2).collect();
-
-    let xys: Vec<(Num, Num)> = list.iter().map(|v| (v.0, v.1)).collect();
-    let yxs: Vec<(Num, Num)> = list.iter().map(|v| (v.1, v.0)).collect();
-
-    let yzs: Vec<(Num, Num)> = list.iter().map(|v| (v.1, v.2)).collect();
-    let zys: Vec<(Num, Num)> = list.iter().map(|v| (v.2, v.1)).collect();
-
-    let xzs: Vec<(Num, Num)> = list.iter().map(|v| (v.0, v.2)).collect();
-    let zxs: Vec<(Num, Num)> = list.iter().map(|v| (v.2, v.0)).collect();
-
-    let len = xs.len();
-    assert_eq!(len, ys.len());
-    assert_eq!(len, zs.len());
-
-    let mut results = vec![];
-
-    results.extend(solve_and_add(egraph, &xs, &ys, &zs));
-
-    let perms = indexset![
-        Permutation::sort(&xs),
-        Permutation::sort(&ys),
-        Permutation::sort(&zs),
-        Permutation::sort(&xys),
-        Permutation::sort(&yxs),
-        Permutation::sort(&yzs),
-        Permutation::sort(&zys),
-        Permutation::sort(&xzs),
-        Permutation::sort(&zxs),
-    ];
-
-    // yz: TODO
-    // for perm in &perms {
-    //     if perm.is_ordered() {
-    //         continue;
-    //     }
-    //     let xs = perm.apply(&xs);
-    //     let ys = perm.apply(&ys);
-    //     let zs = perm.apply(&zs);
-    //     if let Some(added_mapi) = solve_and_add(egraph, &xs, &ys, &zs) {
-    //         let p = Cad::Permutation(perm.clone());
-    //         let e = Cad::Unsort([egraph.add(p), added_mapi]);
-    //         results.push(egraph.add(e));
-    //     }
+    let col_len = list[0].len();
+    // if list.iter().all(|v| v == &list[0]) {
+    //     // don't infer here, it'll become a repeat
+    //     // TODO: is it true?
+    //     return vec![];
     // }
 
+    let mut results = vec![];
+    let arr_of_cols: Vec<Vec<Num>> = (0..col_len)
+        .map(|i| list.iter().map(|row| row[i]).collect())
+        .collect();
+
+    results.extend(solve_and_add(egraph, &arr_of_cols, template));
+
+    let mut perms = indexset![];
+    for i in 0..col_len {
+        for j in 0..col_len {
+            let cols: Vec<(Num, Num)> = list.iter().map(|v| (v[i], v[j])).collect();
+            let perm = Permutation::sort(&cols);
+            perms.insert(perm);
+        }
+    }
+
+    for perm in &perms {
+        if perm.is_ordered() {
+            // TODO(yz): why continue here?
+            continue;
+        }
+        let arr_of_cols: Vec<Vec<Num>> = arr_of_cols.iter().map(|col| perm.apply(&col)).collect();
+        if let Some(added_mapi) = solve_and_add(egraph, &arr_of_cols, template) {
+            // let p = Cad::Permutation(perm.clone());
+            // let e = Cad::Unsort([egraph.add(p), added_mapi]);
+            // results.push(egraph.add(e));
+            results.push(added_mapi);
+        }
+    }
+
+    // results may be empty
     results
 }
 
@@ -304,18 +305,20 @@ fn add_vec(egraph: &mut EGraph, v: Vec3) -> Id {
     egraph.add(Cad::Vec3([x, y, z]))
 }
 
-pub fn solve(egraph: &mut EGraph, list: &[Vec3]) -> Vec<Id> {
-    let mut results = solve_vec(egraph, list);
+pub fn solve(egraph: &mut EGraph, list: &[Vec<Num>], template: &CadCtx) -> Vec<Id> {
+    let mut results = solve_vec(egraph, list, template);
     debug!("Solved {:?} -> {:?}", list, results);
-    let (center, polar_list) = polarize(&list);
-    for res in solve_vec(egraph, &polar_list) {
-        let e = Cad::Unpolar([
-            add_num(egraph, list.len().into()),
-            add_vec(egraph, center),
-            res,
-        ]);
-        results.push(egraph.add(e));
-    }
+    // TODO(yz): Add polarize back
+    // It is potentially tricker, because we may also want these "constant coordinates" to solve for a closed form
+    // let (center, polar_list) = polarize(&list);
+    // for res in solve_vec(egraph, &polar_list) {
+    //     let e = Cad::Unpolar([
+    //         add_num(egraph, list.len().into()),
+    //         add_vec(egraph, center),
+    //         res,
+    //     ]);
+    //     results.push(egraph.add(e));
+    // }
     results
 }
 

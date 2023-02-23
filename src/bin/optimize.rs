@@ -1,4 +1,3 @@
-use std::str::FromStr;
 use std::time::{Duration, Instant};
 
 use log::*;
@@ -6,7 +5,6 @@ use serde::Serialize;
 
 use egg::*;
 use std::default::Default;
-use szalinski_egg::au::AU;
 use szalinski_egg::cad::{Cad, Cost, CostFn, MetaAnalysis};
 use szalinski_egg::eval::remove_empty;
 use szalinski_egg::rules::reroll;
