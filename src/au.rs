@@ -11,6 +11,8 @@ use indexmap::map::OccupiedEntry;
 use itertools::Itertools;
 use std::convert::TryInto;
 
+sz_param!(STRUCTURE_MATCH_LIMIT: usize);
+
 use crate::{
     cad::{println_cad, BlackBox, Cad, EGraph, ListVar},
     num::Num,
@@ -91,7 +93,9 @@ impl CadCtx {
                             .map(|(temp, child)| temp.get_params(egraph, *child))
                             .multi_cartesian_product()
                             .map(|ms| ms.into_iter().flatten().collect::<ArgList>())
+                            .take(*STRUCTURE_MATCH_LIMIT)
                     })
+                    .take(*STRUCTURE_MATCH_LIMIT)
                     .collect()
             };
             ($cad:expr) => {

@@ -553,34 +553,29 @@ pub fn reroll(egraph: &mut EGraph) {
 
             // Step 3: compute and build rerolled exprs
             let mut part_to_ids = HashMap::<Vec<Id>, Vec<Id>>::new();
-            for id in list.iter() {
-                let list_id = egraph.add(Cad::List(vec![*id]));
-                part_to_ids.insert(vec![*id], vec![list_id]);
-            }
             let au_groups = get_au_groups(egraph, &list, &mut au);
             eprintln!("au_groups.len(): {}", au_groups.len());
             for (template, ids) in au_groups {
-                println!("template: {:?}", template);
-                println!("ids: {:?}", ids);
                 let mut no_solving_exprs = vec![];
                 // anti_substs[i] denotes potential anti-substitutions for ids[i].
                 // in many cases there will be only one, but there may be many as well.
                 let anti_subst_candidates = ids
                     .iter()
                     .map(|id| template.get_params(egraph, *id))
-                    .multi_cartesian_product();
-                // .collect_vec();
+                    .multi_cartesian_product()
+                    .take(*STRUCTURE_MATCH_LIMIT)
+                    .collect_vec();
                 // println!(
                 //     "groups: {:?}",
                 //     ids.iter()
                 //         .map(|id| template.get_params(egraph, *id))
                 //         .collect_vec()
                 // );
-                // println!(
-                //     "anti_subst_candidates.len(): {}",
-                //     anti_subst_candidates.len()
-                // );
-                for anti_substs in anti_subst_candidates.take(1000) {
+                eprintln!(
+                    "anti_subst_candidates.len(): {}",
+                    anti_subst_candidates.len()
+                );
+                for anti_substs in anti_subst_candidates.iter() {
                     assert!(anti_substs.len() == ids.len());
 
                     // compute all possible partition of the list
@@ -626,11 +621,13 @@ pub fn reroll(egraph: &mut EGraph) {
                         SolveResult::from_loop_params(vec![n], arg_ids).assemble(egraph, &template);
                     no_solving_exprs.push(no_solving);
                 }
+
+                eprintln!("done solving");
                 part_to_ids.entry(ids).or_default().extend(no_solving_exprs);
             }
 
             // Step 4: try to combine different parts
-            let part_to_ids = part_to_ids
+            let mut part_to_ids = part_to_ids
                 .into_iter()
                 .filter_map(|(part, ids)| {
                     if ids.len() > 0 {
@@ -645,14 +642,27 @@ pub fn reroll(egraph: &mut EGraph) {
                 })
                 .collect_vec();
 
+            eprintln!(
+                "start searching: option_len: {} list_len: {list_len}",
+                part_to_ids.len()
+            );
+            part_to_ids.sort_by(|a, b| a.0.len().cmp(&b.0.len()).reverse());
+
+            let mut singleton_part_to_ids = HashMap::new();
+            for id in list.iter() {
+                let list_id = egraph.add(Cad::List(vec![*id]));
+                singleton_part_to_ids.insert(*id, list_id);
+            }
             search_combinations_and_add(
                 &part_to_ids,
+                &singleton_part_to_ids,
                 egraph,
                 root_id,
                 &mut vec![],
                 &mut HashSet::default(),
                 0,
                 list_len,
+                3,
             );
         }
     }
@@ -662,6 +672,7 @@ pub fn reroll(egraph: &mut EGraph) {
 
 fn search_combinations_and_add(
     part_to_ids: &[(Vec<Id>, Id)],
+    singleton_part_to_ids: &HashMap<Id, Id>,
     egraph: &mut EGraph,
     root_id: Id,
     // part ids that are used
@@ -669,17 +680,22 @@ fn search_combinations_and_add(
     ids_covered: &mut HashSet<Id>,
     cur_pos: usize,
     target_size: usize,
+    limit: usize,
 ) {
     let todo_size = target_size - ids_covered.len();
-    if todo_size == 0 {
-        println!("found a merge!");
-        for id in cur_buffer.iter() {
-            println_cad(egraph, *id);
+    if limit == 0 || todo_size == 0 {
+        // fill with singleton list
+        let mut cur_buffer = cur_buffer.clone();
+        for (part, id) in singleton_part_to_ids {
+            if !ids_covered.contains(part) {
+                cur_buffer.push(*id);
+            }
         }
+        // insert into the e-graph
         if cur_buffer.len() == 1 {
             egraph.union(root_id, cur_buffer[0]);
         } else {
-            let list_id = egraph.add(Cad::List(cur_buffer.clone()));
+            let list_id = egraph.add(Cad::List(cur_buffer));
             let concat_id = egraph.add(Cad::Concat([list_id]));
             egraph.union(root_id, concat_id);
         }
@@ -692,12 +708,14 @@ fn search_combinations_and_add(
                 ids_covered.extend(part);
                 search_combinations_and_add(
                     part_to_ids,
+                    singleton_part_to_ids,
                     egraph,
                     root_id,
                     cur_buffer,
                     ids_covered,
                     i + 1,
                     target_size,
+                    limit - 1,
                 );
                 part.iter().for_each(|id| assert!(ids_covered.remove(id)));
                 cur_buffer.pop();

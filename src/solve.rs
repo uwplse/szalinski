@@ -40,27 +40,46 @@ macro_rules! eadd {
 
 impl Formula {
     fn add_to_egraph(&self, e: &mut EGraph, i: Id) -> Id {
+        fn approx(v: f64, k: f64) -> bool {
+            k - *SOLVE_ROUND < v && v < k + *SOLVE_ROUND
+        }
         use Cad::*;
         match self {
             Formula::Deg1(f) => {
-                if -1e-8 < f.a && f.a < 1e-8 {
+                if approx(f.a, 0.) {
                     eadd!(e, Num(f.b.into()))
                 } else {
-                    let a = eadd!(e, Num(f.a.into()));
-                    let b = eadd!(e, Num(f.b.into()));
-                    let mul = eadd!(e, Mul, a, i);
-                    eadd!(e, Add, mul, b)
+                    let ax = if approx(f.a, 1.) {
+                        let b = eadd!(e, Num(f.b.into()));
+                        eadd!(e, Add, i, b)
+                    } else {
+                        let a = eadd!(e, Num(f.a.into()));
+                        eadd!(e, Mul, a, i)
+                    };
+                    if approx(f.a, 0.) {
+                        ax
+                    } else {
+                        let b = eadd!(e, Num(f.b.into()));
+                        eadd!(e, Add, ax, b)
+                    }
                 }
             }
             Formula::Deg2(f) => {
-                let a = eadd!(e, Num(f.a.into()));
-                let b = eadd!(e, Num(f.b.into()));
-                let c = eadd!(e, Num(f.c.into()));
+                assert!(!approx(f.a, 0.));
                 let ii = eadd!(e, Mul, i, i);
-                let a2 = eadd!(e, Mul, a, ii);
-                let b1 = eadd!(e, Mul, b, i);
-                let ab = eadd!(e, Add, a2, b1);
-                eadd!(e, Add, ab, c)
+                let ax2 = if approx(f.a, 1.) {
+                    ii
+                } else {
+                    let a = eadd!(e, Num(f.a.into()));
+                    eadd!(e, Mul, a, ii)
+                };
+
+                if approx(f.b, 0.) && approx(f.c, 0.) {
+                    ax2
+                } else {
+                    let bxc = Formula::Deg1(Deg1 { a: f.a, b: f.b }).add_to_egraph(e, i);
+                    eadd!(e, Add, ax2, bxc)
+                }
             }
         }
     }
@@ -154,6 +173,7 @@ fn solve_and_add(egraph: &mut EGraph, proj_list: &[Vec<Num>], template: &CadCtx)
             .or_default()
             .push((i, &proj_list[i]));
     }
+    by_chunk.sort_by(|k1, _, k2, _| k2.cmp(k1));
     if !by_chunk.keys().any(|len| len == &row_len) {
         // TODO should we really return?
         return None;
@@ -172,20 +192,29 @@ fn solve_and_add(egraph: &mut EGraph, proj_list: &[Vec<Num>], template: &CadCtx)
     for (((&chunk_len, lists), inner), var) in by_chunk.iter().zip(&inners).zip(vars) {
         for (index, list) in lists {
             let slice = &list[..chunk_len];
-            let nums = unrun(slice, *inner)?;
             let var_id = egraph.add(var.clone());
-            match solve_list_fn(&nums) {
-                Some(fun) => {
-                    inserted[*index] = Some(fun.add_to_egraph(egraph, var_id));
+
+            // if it can be unrunned, we can reroll the expression based on one index,
+            // if it cannot be unrunned, we need to compose indices i.e., i1*n*m + i2*m + i3
+            if let Some(nums) = unrun(slice, *inner) {
+                let solving_result = solve_list_fn(&nums);
+                match solving_result {
+                    Some(fun) => {
+                        inserted[*index] = Some(fun.add_to_egraph(egraph, var_id));
+                    }
+                    None => {
+                        let children = nums
+                            .iter()
+                            .map(|num| egraph.add(Cad::Num(*num)))
+                            .collect_vec();
+                        let list = egraph.add(Cad::List(children));
+                        inserted[*index] = Some(egraph.add(Cad::GetAt([list, var_id])));
+                    }
                 }
-                None => {
-                    let children = nums
-                        .iter()
-                        .map(|num| egraph.add(Cad::Num(*num)))
-                        .collect_vec();
-                    let list = egraph.add(Cad::List(children));
-                    inserted[*index] = Some(egraph.add(Cad::GetAt([list, var_id])));
-                }
+            } else {
+                // TODO: we should not return None, but only modify when we can achieve the same result
+                // as original szalinski
+                return None;
             }
         }
     }
@@ -201,7 +230,6 @@ fn solve_and_add(egraph: &mut EGraph, proj_list: &[Vec<Num>], template: &CadCtx)
             egraph.add(Cad::Num(len.into()))
         })
         .collect();
-    // println!("lens: {:?}, {:?}", lens, proj_list);
     assert_eq!(lens.iter().product::<usize>(), row_len);
 
     let args = inserted.into_iter().map(|i| i.unwrap()).collect_vec();
@@ -230,9 +258,9 @@ fn solve_vec(egraph: &mut EGraph, list: &[Vec<Num>], template: &CadCtx) -> Vec<I
         .map(|i| list.iter().map(|row| row[i]).collect())
         .collect();
 
-    results.extend(solve_and_add(egraph, &arr_of_cols, template));
-
     let mut perms = indexset![];
+    let perm = Permutation::sort(list);
+    perms.insert(perm);
     for i in 0..col_len {
         for j in 0..col_len {
             let cols: Vec<(Num, Num)> = list.iter().map(|v| (v[i], v[j])).collect();
@@ -242,11 +270,8 @@ fn solve_vec(egraph: &mut EGraph, list: &[Vec<Num>], template: &CadCtx) -> Vec<I
     }
 
     for perm in &perms {
-        if perm.is_ordered() {
-            // TODO(yz): why continue here?
-            continue;
-        }
-        let arr_of_cols: Vec<Vec<Num>> = arr_of_cols.iter().map(|col| perm.apply(&col)).collect();
+        let arr_of_cols: Vec<Vec<Num>> = arr_of_cols.iter().map(|col| perm.apply(col)).collect();
+        println!("arr_of_cols: {:?}", arr_of_cols);
         if let Some(added_mapi) = solve_and_add(egraph, &arr_of_cols, template) {
             // let p = Cad::Permutation(perm.clone());
             // let e = Cad::Unsort([egraph.add(p), added_mapi]);

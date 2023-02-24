@@ -385,6 +385,13 @@ fn main() {
     let egraph = &mut runner.egraph;
     reroll(egraph);
 
+    runner.stop_reason = None;
+    let new_limit = runner.iterations.len() + 2;
+    let runner = runner
+        .with_scheduler(SimpleScheduler)
+        .with_iter_limit(new_limit)
+        .run(&rules);
+
     info!(
         "Stopping after {} iters: {:?}",
         runner.iterations.len(),
