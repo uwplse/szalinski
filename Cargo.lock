@@ -135,9 +135,9 @@ dependencies = [
 
 [[package]]
 name = "egg"
-version = "0.9.2"
+version = "0.9.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4c6e969a475908119d4603393dfe05a17f676d9570c493c90763321aa950de2c"
+checksum = "ad232a21846e5a5f72b8ca53cb959d4cb4ad864361825a3bbc5e5fdc0674c41b"
 dependencies = [
  "env_logger 0.9.3",
  "fxhash",
