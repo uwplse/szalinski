@@ -1,5 +1,3 @@
-use std::f64::consts;
-
 use itertools::Itertools;
 use log::*;
 
@@ -7,7 +5,7 @@ use indexmap::{indexset, IndexMap};
 
 use crate::{
     au::{CadCtx, SolveResult},
-    cad::{Cad, EGraph, ListVar as LV, Vec3},
+    cad::{Cad, EGraph, ListVar as LV},
     num::Num,
     permute::Permutation,
 };
@@ -37,12 +35,13 @@ macro_rules! eadd {
         $egraph.add($op([$($arg),*]))
     };
 }
+sz_param!(ABS_EPSILON: f64 = 0.0001);
+fn approx(v: f64, k: f64) -> bool {
+    k - *ABS_EPSILON < v && v < k + *ABS_EPSILON
+}
 
 impl Formula {
     fn add_to_egraph(&self, e: &mut EGraph, i: Id) -> Id {
-        fn approx(v: f64, k: f64) -> bool {
-            k - *SOLVE_ROUND < v && v < k + *SOLVE_ROUND
-        }
         use Cad::*;
         match self {
             Formula::Deg1(f) => {
@@ -162,8 +161,6 @@ fn solve_list_fn(xs: &[Num]) -> Option<Formula> {
 }
 
 fn solve_and_add(egraph: &mut EGraph, proj_list: &[Vec<Num>], template: &CadCtx) -> Option<Id> {
-    // println!("Solving:\n  x={:?}\n  y={:?}\n  z={:?}", xs, ys, zs);
-
     let mut by_chunk = IndexMap::<usize, Vec<_>>::default();
     let col_len = proj_list.len();
     let row_len = proj_list[0].len();
@@ -179,7 +176,6 @@ fn solve_and_add(egraph: &mut EGraph, proj_list: &[Vec<Num>], template: &CadCtx)
         return None;
     }
 
-    // TODO: what does inners do?
     let inners: Vec<usize> = (0..by_chunk.len())
         .map(|i| by_chunk.get_index(i + 1).map(|(k, _)| *k).unwrap_or(1))
         .collect();
@@ -240,18 +236,7 @@ fn solve_and_add(egraph: &mut EGraph, proj_list: &[Vec<Num>], template: &CadCtx)
 
 // This function takes an array of arglist (and convert them to an array of columns)
 fn solve_vec(egraph: &mut EGraph, list: &[Vec<Num>], template: &CadCtx) -> Vec<Id> {
-    // print!("Solving: [");
-    // for v in list {
-    //     print!("{:?}, ", v);
-    // }
-    // println!("]");
-
     let col_len = list[0].len();
-    // if list.iter().all(|v| v == &list[0]) {
-    //     // don't infer here, it'll become a repeat
-    //     // TODO: is it true?
-    //     return vec![];
-    // }
 
     let mut results = vec![];
     let arr_of_cols: Vec<Vec<Num>> = (0..col_len)
@@ -271,11 +256,7 @@ fn solve_vec(egraph: &mut EGraph, list: &[Vec<Num>], template: &CadCtx) -> Vec<I
 
     for perm in &perms {
         let arr_of_cols: Vec<Vec<Num>> = arr_of_cols.iter().map(|col| perm.apply(col)).collect();
-        println!("arr_of_cols: {:?}", arr_of_cols);
         if let Some(added_mapi) = solve_and_add(egraph, &arr_of_cols, template) {
-            // let p = Cad::Permutation(perm.clone());
-            // let e = Cad::Unsort([egraph.add(p), added_mapi]);
-            // results.push(egraph.add(e));
             results.push(added_mapi);
         }
     }
@@ -284,54 +265,54 @@ fn solve_vec(egraph: &mut EGraph, list: &[Vec<Num>], template: &CadCtx) -> Vec<I
     results
 }
 
-fn polar_one(center: (f64, f64, f64), v: Vec3) -> Vec3 {
-    let (x, y, z) = (v.0.to_f64(), v.1.to_f64(), v.2.to_f64());
-    let (a, b, c) = center;
-    let (xa, yb, zc) = (x - a, y - b, z - c);
-    let r = (xa * xa + yb * yb + zc * zc).sqrt();
-    // println!("r: {}", r);
-    let theta = yb.atan2(xa) * 180.0 / consts::PI;
-    let phi = if r == 0.0 {
-        0.0
-    } else {
-        (zc / r).acos() * 180.0 / consts::PI
-    };
-    // println!("xa: {} yb: {} zc: {}", xa, yb, zc);
-    // println!("r: {} t: {} p: {}", r, theta, phi);
-    (r.into(), theta.into(), phi.into())
-}
+// fn polar_one(center: (f64, f64, f64), v: Vec3) -> Vec3 {
+//     let (x, y, z) = (v.0.to_f64(), v.1.to_f64(), v.2.to_f64());
+//     let (a, b, c) = center;
+//     let (xa, yb, zc) = (x - a, y - b, z - c);
+//     let r = (xa * xa + yb * yb + zc * zc).sqrt();
+//     // println!("r: {}", r);
+//     let theta = yb.atan2(xa) * 180.0 / consts::PI;
+//     let phi = if r == 0.0 {
+//         0.0
+//     } else {
+//         (zc / r).acos() * 180.0 / consts::PI
+//     };
+//     // println!("xa: {} yb: {} zc: {}", xa, yb, zc);
+//     // println!("r: {} t: {} p: {}", r, theta, phi);
+//     (r.into(), theta.into(), phi.into())
+// }
 
-fn polarize(list: &[Vec3]) -> (Vec3, Vec<Vec3>) {
-    let xc = list.iter().map(|v| v.0.to_f64()).sum::<f64>();
-    let yc = list.iter().map(|v| v.1.to_f64()).sum::<f64>();
-    let zc = list.iter().map(|v| v.2.to_f64()).sum::<f64>();
-    let n = f(list.len());
-    let center = (xc / n, yc / n, zc / n);
-    let new_list = list.iter().map(|&v| polar_one(center, v)).collect();
-    let num_center = (center.0.into(), center.1.into(), center.2.into());
-    (num_center, new_list)
-}
+// fn polarize(list: &[Vec3]) -> (Vec3, Vec<Vec3>) {
+//     let xc = list.iter().map(|v| v.0.to_f64()).sum::<f64>();
+//     let yc = list.iter().map(|v| v.1.to_f64()).sum::<f64>();
+//     let zc = list.iter().map(|v| v.2.to_f64()).sum::<f64>();
+//     let n = f(list.len());
+//     let center = (xc / n, yc / n, zc / n);
+//     let new_list = list.iter().map(|&v| polar_one(center, v)).collect();
+//     let num_center = (center.0.into(), center.1.into(), center.2.into());
+//     (num_center, new_list)
+// }
 
-fn add_num(egraph: &mut EGraph, n: Num) -> Id {
-    static NS: &[f64] = &[consts::SQRT_2, 0.0, 90.0, 180.0, 270.0, 360.0];
+// fn add_num(egraph: &mut EGraph, n: Num) -> Id {
+//     static NS: &[f64] = &[consts::SQRT_2, 0.0, 90.0, 180.0, 270.0, 360.0];
 
-    for &known_n in NS {
-        if n == known_n.into() {
-            return egraph.add(Cad::Num(known_n.into()));
-        }
-    }
-    egraph.add(Cad::Num(n))
-}
+//     for &known_n in NS {
+//         if n == known_n.into() {
+//             return egraph.add(Cad::Num(known_n.into()));
+//         }
+//     }
+//     egraph.add(Cad::Num(n))
+// }
 
-fn add_vec(egraph: &mut EGraph, v: Vec3) -> Id {
-    let x = add_num(egraph, v.0);
-    let y = add_num(egraph, v.1);
-    let z = add_num(egraph, v.2);
-    egraph.add(Cad::Vec3([x, y, z]))
-}
+// fn add_vec(egraph: &mut EGraph, v: Vec3) -> Id {
+//     let x = add_num(egraph, v.0);
+//     let y = add_num(egraph, v.1);
+//     let z = add_num(egraph, v.2);
+//     egraph.add(Cad::Vec3([x, y, z]))
+// }
 
 pub fn solve(egraph: &mut EGraph, list: &[Vec<Num>], template: &CadCtx) -> Vec<Id> {
-    let mut results = solve_vec(egraph, list, template);
+    let results = solve_vec(egraph, list, template);
     debug!("Solved {:?} -> {:?}", list, results);
     // TODO(yz): Add polarize back
     // It is potentially tricker, because we may also want these "constant coordinates" to solve for a closed form
@@ -348,17 +329,18 @@ pub fn solve(egraph: &mut EGraph, list: &[Vec<Num>], template: &CadCtx) -> Vec<I
 }
 
 fn chunk_length(list: &[Num]) -> usize {
-    if list.iter().all(|&x| x == list[0]) {
+    if list.iter().all(|&x| x.is_close(list[0])) {
         return list.len();
     }
 
     for n in 2..list.len() {
         if list.len() % n == 0 {
-            if list
-                .chunks_exact(n)
-                .skip(1)
-                .all(|chunk| &list[..n] == chunk)
-            {
+            if list.chunks_exact(n).skip(1).all(|chunk| {
+                list[..n]
+                    .iter()
+                    .zip(chunk.iter())
+                    .all(|(a, b)| a.is_close(*b))
+            }) {
                 return n;
             }
         }
@@ -372,7 +354,7 @@ fn unrun(list: &[Num], n: usize) -> Option<Vec<Num>> {
         return None;
     }
 
-    let all_same = |slice: &[Num]| slice.iter().all(|&x| x == slice[0]);
+    let all_same = |slice: &[Num]| slice.iter().all(|&x| x.is_close(slice[0]));
     if list.chunks_exact(n).all(all_same) {
         Some(list.iter().copied().step_by(n).collect())
     } else {

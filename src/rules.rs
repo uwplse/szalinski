@@ -1,18 +1,15 @@
 use std::{fmt::Debug, str::FromStr};
 
-use crate::au::{ArgList, SolveResult};
-use crate::cad::ListVar;
+use crate::au::ArgList;
 use crate::permute::{Partitioning, Permutation};
-use crate::solve::{self, solve};
+use crate::solve::solve;
 use crate::{
     au::{CadCtx, AU},
-    cad::{println_cad, Cad, EGraph, MetaAnalysis, Rewrite, Vec3},
+    cad::{Cad, EGraph, MetaAnalysis, Rewrite},
     num::{num, Num},
 };
 use egg::{rewrite as rw, *};
-use indexmap::IndexSet;
 use itertools::Itertools;
-use log::warn;
 use std::collections::{BTreeMap, HashMap, HashSet};
 
 fn is_not_zero(var: &'static str) -> impl Fn(&mut EGraph, Id, &Subst) -> bool {
@@ -21,11 +18,11 @@ fn is_not_zero(var: &'static str) -> impl Fn(&mut EGraph, Id, &Subst) -> bool {
     move |egraph, _, subst| !egraph[subst[var]].nodes.contains(&zero)
 }
 
-fn is_eq(v1: &'static str, v2: &'static str) -> ConditionEqual<Cad> {
-    let p1: Pattern<Cad> = v1.parse().unwrap();
-    let p2: Pattern<Cad> = v2.parse().unwrap();
-    ConditionEqual::new(p1, p2)
-}
+// fn is_eq(v1: &'static str, v2: &'static str) -> ConditionEqual<Cad> {
+//     let p1: Pattern<Cad> = v1.parse().unwrap();
+//     let p2: Pattern<Cad> = v2.parse().unwrap();
+//     ConditionEqual::new(p1, p2)
+// }
 
 fn is_pos(vars: &[&'static str]) -> impl Fn(&mut EGraph, Id, &Subst) -> bool {
     let vars: Vec<Var> = vars.iter().map(|v| v.parse().unwrap()).collect();
@@ -86,8 +83,7 @@ pub fn pre_rules() -> Vec<Rewrite> {
 pub fn rules() -> Vec<Rewrite> {
 
 
-    sz_param!(CAD_IDENTS: bool);
-    sz_param!(INV_TRANS: bool);
+    sz_param!(CAD_IDENTS: bool = true);
 
     let mut rules = vec![
         // rw!("union_comm"; "(Binop Union ?a ?b)" => "(Binop Union ?b ?a)"),
@@ -268,31 +264,6 @@ pub fn rules() -> Vec<Rewrite> {
 
     rules
 }
-
-fn get_float(expr: &Cad) -> Option<Num> {
-    match expr {
-        Cad::Num(f) => Some(f.clone()),
-        _ => None,
-    }
-}
-
-fn get_vec(egraph: &EGraph, expr: &Cad) -> Option<Vec3> {
-    if let Cad::Vec3(args) = expr {
-        assert_eq!(args.len(), 3);
-        let f0 = get_float(&egraph[args[0]].data.best)?;
-        let f1 = get_float(&egraph[args[1]].data.best)?;
-        let f2 = get_float(&egraph[args[2]].data.best)?;
-        Some((f0, f1, f2))
-    } else {
-        None
-    }
-}
-
-#[derive(Debug)]
-struct ListApplier {
-    var: Var,
-}
-
 // this partition will partition all at once
 fn partition_list<U, F, K>(args: &[U], mut key_fn: F) -> Option<(Partitioning, Permutation)>
 where
@@ -301,7 +272,7 @@ where
     U: Ord,
 {
     // allow easy disabling
-    sz_param!(PARTITIONING: bool);
+    sz_param!(PARTITIONING: bool = true);
     if !*PARTITIONING {
         return None;
     }
@@ -319,7 +290,7 @@ where
         part.sort_by_key(|i| &args[*i]);
     }
 
-    sz_param!(PARTITIONING_MAX: usize);
+    sz_param!(PARTITIONING_MAX: usize = 5);
     if parts.len() <= 1 || parts.len() > *PARTITIONING_MAX {
         return None;
     }
@@ -338,134 +309,6 @@ where
     return Some((part, perm));
 }
 
-fn get_single_cad(egraph: &EGraph, id: Id) -> Cad {
-    // let nodes = &egraph[id].nodes;
-    // assert!(nodes.iter().all(|n| n == &nodes[0]));
-    // let n = &nodes[0];
-    // assert_eq!(n.children.len(), 0);
-    // n.op.clone()
-    let best = &egraph[id].data.best;
-    assert!(best.is_leaf());
-    best.clone()
-}
-
-fn get_affines(egraph: &EGraph, id: Id, affine_kind: &Cad) -> Vec<(Id, Id)> {
-    egraph[id]
-        .nodes
-        .iter()
-        .filter_map(|n| {
-            if let Cad::Affine(args) = n {
-                let kind = get_single_cad(egraph, args[0]);
-                if affine_kind == &kind {
-                    Some((args[1], args[2]))
-                } else {
-                    None
-                }
-            } else {
-                None
-            }
-        })
-        .collect()
-}
-
-sz_param!(AFFINE_SIGNATURE_MAX_LEN: usize);
-type AffineSig = [usize; 3];
-fn affine_signature(egraph: &EGraph, id: Id) -> AffineSig {
-    let mut scales = 0;
-    let mut rotates = 0;
-    let mut translates = 0;
-    for n in &egraph[id].nodes {
-        if let Cad::Affine(args) = n {
-            let kind = get_single_cad(egraph, args[0]);
-            #[rustfmt::skip]
-            match kind {
-                Cad::Trans => {translates += 1;}
-                Cad::Scale => {scales += 1;}
-                Cad::Rotate => {rotates += 1;}
-                _ => (),
-            };
-        }
-    }
-    translates = AFFINE_SIGNATURE_MAX_LEN.min(translates);
-    scales = AFFINE_SIGNATURE_MAX_LEN.min(scales);
-    rotates = AFFINE_SIGNATURE_MAX_LEN.min(rotates);
-    [translates, scales, rotates]
-}
-
-// HACK just part a hard limit here so it doesn't get out of hand
-sz_param!(STRUCTURE_MATCH_LIMIT: usize);
-
-fn insert_map2s(egraph: &mut EGraph, list_ids: &[Id]) -> Vec<Id> {
-    let mut results = vec![];
-
-    let sigs: Vec<AffineSig> = list_ids
-        .iter()
-        .map(|&id| affine_signature(egraph, id))
-        .collect();
-    let unique_sigs: IndexSet<AffineSig> = sigs.iter().cloned().collect();
-
-    for (cadi, cad) in [Cad::Trans, Cad::Scale, Cad::Rotate].iter().enumerate() {
-        let affs_list: Vec<Vec<_>> = list_ids
-            .iter()
-            .map(|&id| get_affines(egraph, id, cad))
-            .collect();
-
-        assert!(affs_list
-            .iter()
-            .zip(&sigs)
-            .all(|(affs, sig)| affs.len() >= sig[cadi]));
-
-        let aff_id = egraph.add(cad.clone());
-
-        let unique_sig_lengths = || unique_sigs.iter().map(|&sig| sig[cadi]);
-
-        let total: usize = unique_sig_lengths().product();
-        if total > *STRUCTURE_MATCH_LIMIT {
-            warn!(
-                "Exceeding structure match limit: {} > {}",
-                total, *STRUCTURE_MATCH_LIMIT
-            );
-        }
-
-        for choices in unique_sig_lengths()
-            .map(|len| 0..len)
-            .multi_cartesian_product()
-            .take(*STRUCTURE_MATCH_LIMIT)
-        {
-            let (param_ids, cad_ids): (Vec<Id>, Vec<Id>) = affs_list
-                .iter()
-                .zip(&sigs)
-                .map(|(affs, sig)| {
-                    let unique_sig_i = unique_sigs.get_full(sig).unwrap().0;
-                    affs[choices[unique_sig_i]]
-                })
-                .unzip();
-
-            assert_eq!(param_ids.len(), cad_ids.len());
-
-            let param_list_id = egraph.add(Cad::List(param_ids));
-            let cad_list_id = egraph.add(Cad::List(cad_ids));
-            let map2 = Cad::Map2([aff_id, param_list_id, cad_list_id]);
-            let id = egraph.add(map2);
-            results.push(id)
-        }
-    }
-
-    results
-}
-
-#[allow(dead_code)]
-fn num_sign(n: Num) -> i32 {
-    let f = n.to_f64();
-    if f < 0.0 {
-        -1
-    } else if f > 0.0 {
-        1
-    } else {
-        0
-    }
-}
-
 macro_rules! get_meta_list {
     ($egraph:expr, $eclass:expr) => {
         match &$egraph[$eclass].data.list {
@@ -473,24 +316,6 @@ macro_rules! get_meta_list {
             None => return vec![],
         }
     };
-}
-
-macro_rules! get_unit {
-    ($egraph:expr, $eclass:expr, $cad:path) => {{
-        let egraph = &$egraph;
-        let eclass = $eclass;
-        // let nodes = &egraph[eclass_list[0]].nodes;
-        // if nodes.len() > 1 {
-        //     assert!(nodes[1..].iter().all(|n| n == &nodes[0]))
-        // }
-        match &egraph[eclass].data.best {
-            $cad(p) => {
-                // assert_eq!(nodes[0].children.len(), 0);
-                p
-            }
-            _ => panic!("expected {}", stringify!($cad)),
-        }
-    }};
 }
 
 #[derive(Debug)]
@@ -553,77 +378,55 @@ pub fn reroll(egraph: &mut EGraph) {
 
             // Step 3: compute and build rerolled exprs
             let mut part_to_ids = HashMap::<Vec<Id>, Vec<Id>>::new();
-            let au_groups = get_au_groups(egraph, &list, &mut au);
+            let au_groups: Vec<(CadCtx, Vec<Id>, Vec<Vec<Num>>)> =
+                get_au_groups(egraph, &list, &mut au);
             eprintln!("au_groups.len(): {}", au_groups.len());
-            for (template, ids) in au_groups {
-                let mut no_solving_exprs = vec![];
+            for (template, ids, anti_substs) in au_groups {
                 // anti_substs[i] denotes potential anti-substitutions for ids[i].
                 // in many cases there will be only one, but there may be many as well.
-                let anti_subst_candidates = ids
-                    .iter()
-                    .map(|id| template.get_params(egraph, *id))
-                    .multi_cartesian_product()
-                    .take(*STRUCTURE_MATCH_LIMIT)
-                    .collect_vec();
-                // println!(
-                //     "groups: {:?}",
-                //     ids.iter()
-                //         .map(|id| template.get_params(egraph, *id))
-                //         .collect_vec()
-                // );
-                eprintln!(
-                    "anti_subst_candidates.len(): {}",
-                    anti_subst_candidates.len()
-                );
-                for anti_substs in anti_subst_candidates.iter() {
-                    assert!(anti_substs.len() == ids.len());
+                // compute all possible partition of the list
+                let part_perms = get_all_part_perms(&anti_substs);
 
-                    // compute all possible partition of the list
-                    let part_perms = get_all_part_perms(&anti_substs);
+                // eprintln!("part_perms.len(): {}", part_perms.len());
+                // Solve for each partition
+                for (part, perm) in part_perms {
+                    let anti_substs_parts: Vec<Vec<ArgList>> =
+                        part.apply(&perm.apply(&anti_substs));
+                    let id_parts = part.apply(&perm.apply(&ids));
 
-                    // Solve for each partition
-                    for (part, perm) in part_perms {
-                        let anti_substs_parts: Vec<Vec<ArgList>> =
-                            part.apply(&perm.apply(&anti_substs));
-                        let id_parts = part.apply(&perm.apply(&ids));
-
-                        for (anti_substs, mut ids) in
-                            anti_substs_parts.into_iter().zip(id_parts.into_iter())
-                        {
-                            ids.sort();
-                            if anti_substs.len() > 1 {
-                                // TODO: solve should also do partial solving
-                                let solved_ids = solve(egraph, &anti_substs, &template);
-                                let vec_of_ids = part_to_ids.entry(ids).or_default();
-                                for id in solved_ids.iter() {
-                                    vec_of_ids.push(*id);
-                                }
+                    for (anti_substs, mut ids) in
+                        anti_substs_parts.into_iter().zip(id_parts.into_iter())
+                    {
+                        ids.sort();
+                        if anti_substs.len() > 1 {
+                            let solved_ids = solve(egraph, &anti_substs, &template);
+                            let vec_of_ids = part_to_ids.entry(ids).or_default();
+                            for id in solved_ids.iter() {
+                                vec_of_ids.push(*id);
                             }
                         }
                     }
-
-                    // also add the dumb list that does no solving
-                    let col_len = anti_substs[0].len();
-                    let arr_of_cols = (0..col_len)
-                        .map(|i| anti_substs.iter().map(|row| row[i]).collect_vec())
-                        .collect_vec();
-                    let n = egraph.add(Cad::Num(anti_substs.len().into()));
-                    let arg_ids = arr_of_cols
-                        .iter()
-                        .map(|col| {
-                            let elems = col.iter().map(|n| egraph.add(Cad::Num(*n))).collect_vec();
-                            let list_id = egraph.add(Cad::List(elems));
-                            let var_id = egraph.add(Cad::ListVar(ListVar("i0".into())));
-                            egraph.add(Cad::GetAt([list_id, var_id]))
-                        })
-                        .collect_vec();
-                    let no_solving =
-                        SolveResult::from_loop_params(vec![n], arg_ids).assemble(egraph, &template);
-                    no_solving_exprs.push(no_solving);
                 }
 
-                eprintln!("done solving");
-                part_to_ids.entry(ids).or_default().extend(no_solving_exprs);
+                // also add the dumb list that does no solving
+                // let col_len = anti_substs[0].len();
+                // let arr_of_cols = (0..col_len)
+                //     .map(|i| anti_substs.iter().map(|row| row[i]).collect_vec())
+                //     .collect_vec();
+                // let n = egraph.add(Cad::Num(anti_substs.len().into()));
+                // let arg_ids = arr_of_cols
+                //     .iter()
+                //     .map(|col| {
+                //         let elems = col.iter().map(|n| egraph.add(Cad::Num(*n))).collect_vec();
+                //         let list_id = egraph.add(Cad::List(elems));
+                //         let var_id = egraph.add(Cad::ListVar(ListVar("i0".into())));
+                //         egraph.add(Cad::GetAt([list_id, var_id]))
+                //     })
+                //     .collect_vec();
+                // let no_solving =
+                //     SolveResult::from_loop_params(vec![n], arg_ids).assemble(egraph, &template);
+
+                // part_to_ids.entry(ids).or_default().push(no_solving);
             }
 
             // Step 4: try to combine different parts
@@ -753,46 +556,64 @@ fn get_all_part_perms(anti_substs: &Vec<ArgList>) -> HashSet<(Partitioning, Perm
     part_perms
 }
 
-fn get_au_groups(egraph: &EGraph, list: &Vec<Id>, au: &mut AU) -> Vec<(CadCtx, Vec<Id>)> {
-    let mut au_groups = HashMap::<CadCtx, HashSet<Id>>::default();
+fn get_au_groups(
+    egraph: &EGraph,
+    list: &Vec<Id>,
+    au: &mut AU,
+) -> Vec<(CadCtx, Vec<Id>, Vec<Vec<Num>>)> {
+    let mut au_groups = HashMap::<CadCtx, HashMap<Id, Vec<Num>>>::default();
 
     // TODO: handle repeated substructures (or do we?)
     // Step 1: compute anti-unification
     for i in 0..list.len() {
         for j in i + 1..list.len() {
-            let result: &Vec<CadCtx> = au.anti_unify_class(egraph, &(list[i], list[j]));
-            for cad in result {
-                if au_groups.contains_key(cad) {
-                    au_groups.get_mut(cad).unwrap().extend([list[i], list[j]]);
-                } else {
-                    au_groups.insert(cad.clone(), HashSet::default());
+            let result = au.anti_unify_class(egraph, &(list[i], list[j]));
+            eprintln!("result.len: {}", result.len());
+            for (cad, args1, args2) in result {
+                if !au_groups.contains_key(cad) {
+                    au_groups.insert(cad.clone(), HashMap::default());
                 }
+                let map = au_groups.get_mut(cad).unwrap();
+                map.entry(list[i]).or_insert_with(|| args1.clone());
+                map.entry(list[j]).or_insert_with(|| args2.clone());
             }
         }
     }
     if au_groups.len() == 0 {
         return vec![];
     }
+    eprintln!(
+        "anti_unification done, templates found: {}",
+        au_groups.len()
+    );
     // flat buffer au_groups
-    let mut au_groups: Vec<(CadCtx, Vec<Id>)> = au_groups
+    let au_groups: Vec<(CadCtx, Vec<Id>, Vec<Vec<Num>>)> = au_groups
         .into_iter()
+        // .filter(|(_x, y)| y.len() > 2)
         .map(|(x, y)| {
             let mut y = y.into_iter().collect::<Vec<_>>();
-            y.sort();
-            (x, y)
+            y.sort_by_key(|(id, _args)| *id);
+            let mut ids = vec![];
+            let mut list_of_args = vec![];
+            for (id, args) in y {
+                ids.push(id);
+                list_of_args.push(args);
+            }
+            (x, ids, list_of_args)
         })
         .collect();
 
     // Step 2: shrink the AUs
     // we group by the ids they match and only take ones with smallest size
-    // TODO: push this filtering down to AU
+    // UPDATE: We don't do this, since there's no way to figure out which template is just universally "better"
+    // than others.
     // sort by signature (ids), then by size of CadCtx
-    au_groups.sort_unstable_by(|a, b| a.1.cmp(&b.1).then_with(|| a.0.size().cmp(&b.0.size())));
-    let au_groups: Vec<(CadCtx, Vec<Id>)> = au_groups.into_iter().fold(vec![], |mut acc, a| {
-        if acc.last().map_or(true, |b| a.1 != b.1) {
-            acc.push(a);
-        }
-        acc
-    });
+    // au_groups.sort_unstable_by(|a, b| a.1.cmp(&b.1).then_with(|| a.0.size().cmp(&b.0.size())));
+    // let au_groups: Vec<(CadCtx, Vec<Id>)> = au_groups.into_iter().fold(vec![], |mut acc, a| {
+    //     if acc.last().map_or(true, |b| a.1 != b.1) {
+    //         acc.push(a);
+    //     }
+    //     acc
+    // });
     au_groups
 }

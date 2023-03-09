@@ -1,20 +1,11 @@
-use std::{
-    collections::{
-        hash_map::{self, Entry},
-        HashMap, HashSet,
-    },
-    mem::discriminant,
-};
+use std::{collections::HashMap, mem::discriminant};
 
 use egg::{Id, Language};
-use indexmap::map::OccupiedEntry;
 use itertools::Itertools;
 use std::convert::TryInto;
 
-sz_param!(STRUCTURE_MATCH_LIMIT: usize);
-
 use crate::{
-    cad::{println_cad, BlackBox, Cad, EGraph, ListVar},
+    cad::{BlackBox, Cad, EGraph, ListVar},
     num::Num,
 };
 
@@ -69,7 +60,7 @@ pub enum CadCtx {
 }
 pub type ArgList = Vec<Num>;
 impl CadCtx {
-    pub fn get_params(&self, egraph: &EGraph, id: Id) -> Vec<ArgList> {
+    pub fn get_params(&self, egraph: &EGraph, id: Id) -> Option<ArgList> {
         macro_rules! f {
             ($templates:expr, $cad:path $(,[ $arg:ident $check:expr ])*) => {
                 egraph[id]
@@ -93,32 +84,30 @@ impl CadCtx {
                             .map(|(temp, child)| temp.get_params(egraph, *child))
                             .multi_cartesian_product()
                             .map(|ms| ms.into_iter().flatten().collect::<ArgList>())
-                            .take(*STRUCTURE_MATCH_LIMIT)
                     })
-                    .take(*STRUCTURE_MATCH_LIMIT)
-                    .collect()
+                    .next()
             };
             ($cad:expr) => {
                 if $cad == egraph[id].data.best {
-                    vec![vec![]]
+                    Some(vec![])
                 } else {
-                    vec![]
+                    None
                 }
             };
         }
         match self {
             CadCtx::Hole => {
                 if let Cad::Num(n) = egraph[id].data.best {
-                    vec![vec![n]]
+                    Some(vec![n])
                 } else {
-                    vec![]
+                    None
                 }
             }
             CadCtx::Id(id2) => {
                 if &id == id2 {
-                    vec![vec![]]
+                    Some(vec![])
                 } else {
-                    vec![]
+                    None
                 }
             }
             CadCtx::Cube(templates) => f!(templates, Cad::Cube),
@@ -156,6 +145,7 @@ impl CadCtx {
             CadCtx::GetAt(templates) => f!(templates, Cad::GetAt),
         }
     }
+
     pub fn size(&self) -> usize {
         match self {
             CadCtx::Hole => 1,
@@ -199,12 +189,7 @@ impl CadCtx {
 
 pub struct AntiSubst(Vec<Id>);
 
-pub struct AUResult {
-    ctx: CadCtx,
-    anti_substs: Vec<AntiSubst>,
-}
-
-type Cache = HashMap<(Id, Id), Vec<CadCtx>>;
+type Cache = HashMap<(Id, Id), Vec<(CadCtx, Vec<Num>, Vec<Num>)>>;
 
 #[derive(Default)]
 pub struct AU {
@@ -212,13 +197,18 @@ pub struct AU {
 }
 
 impl AU {
-    pub fn anti_unify_class(&mut self, egraph: &EGraph, pair: &(Id, Id)) -> &Vec<CadCtx> {
+    pub fn anti_unify_class(
+        &mut self,
+        egraph: &EGraph,
+        pair: &(Id, Id),
+    ) -> &Vec<(CadCtx, Vec<Num>, Vec<Num>)> {
         let pair = &(egraph.find(pair.0), egraph.find(pair.1));
         if self.cache.contains_key(pair) {
             return &self.cache[pair];
         }
         if pair.0 == pair.1 {
-            self.cache.insert(pair.clone(), vec![CadCtx::Id(pair.0)]);
+            self.cache
+                .insert(pair.clone(), vec![(CadCtx::Id(pair.0), vec![], vec![])]);
             return &self.cache[pair];
         }
         let e1 = &egraph[pair.0];
@@ -226,7 +216,8 @@ impl AU {
 
         if let (Cad::Num(a), Cad::Num(b)) = (&e1.data.best, &e2.data.best) {
             assert!(a != b);
-            self.cache.insert(pair.clone(), vec![CadCtx::Hole]);
+            self.cache
+                .insert(pair.clone(), vec![(CadCtx::Hole, vec![*a], vec![*b])]);
             return &self.cache[pair];
         }
 
@@ -246,7 +237,17 @@ impl AU {
                         .zip(b.children().iter())
                         .map(|(a, b)| self.anti_unify_class(egraph, &(*a, *b)).clone())
                         .multi_cartesian_product()
-                        .map(|x| build_cad_ctx(a, x));
+                        .map(|xs| {
+                            let mut children = vec![];
+                            let mut args1 = vec![];
+                            let mut args2 = vec![];
+                            for (child, arg1, arg2) in xs {
+                                children.push(child);
+                                args1.extend(arg1);
+                                args2.extend(arg2);
+                            }
+                            (build_cad_ctx(a, children), args1, args2)
+                        });
                     aus.extend(result);
                 };
             }

@@ -327,7 +327,7 @@ impl IterationData<Cad, MetaAnalysis> for MyIterData {
 
 type MyRunner = egg::Runner<Cad, MetaAnalysis, MyIterData>;
 
-sz_param!(PRE_EXTRACT: bool);
+sz_param!(PRE_EXTRACT: bool = true);
 
 fn main() {
     let _ = env_logger::builder().is_test(false).try_init();
@@ -337,9 +337,9 @@ fn main() {
     }
     let input = std::fs::read_to_string(&args[1]).expect("failed to read input");
 
-    sz_param!(ITERATIONS: usize);
-    sz_param!(NODE_LIMIT: usize);
-    sz_param!(TIMEOUT: f64);
+    sz_param!(ITERATIONS: usize = 300);
+    sz_param!(NODE_LIMIT: usize = 3000000);
+    sz_param!(TIMEOUT: f64 = 10.0);
 
     let initial_expr: RecExpr<_> = input.parse().expect("Couldn't parse input");
 
