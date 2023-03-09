@@ -66,7 +66,8 @@ print-%:
 
 out/%.raw.csg: inputs/%.scad
 	@mkdir -p $(dir $@)
-	openscad -o $@ $<
+	openscad -o $(notdir $*).raw.csg $<
+	mv inputs/$*.raw.csg out/$(dir $*)
 
 out/%.fn.csg: ./scripts/reduce-fn.py out/%.raw.csg
 	$^ $@
@@ -123,7 +124,7 @@ thingiverse-perturb-noinv: $(filter out/thingiverse/%, $(jsons-perturb-noinv))
 thingiverse-all: thingiverse-normal thingiverse-perturb thingiverse-perturb-nocad thingiverse-perturb-noinv
 
 .PRECIOUS:
-out/aec-table2/table2.csv: ./scripts/table2.py aec-table2-nocad aec-table2-noinv aec-table2
+out/aec-table2/table2.csv: ./scripts/table2.py aec-table2-nocad aec-table2
 	python3 $< $@
 
 out/fig14.pdf: ./scripts/plot-boxes.py thingiverse-all

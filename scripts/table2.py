@@ -39,7 +39,8 @@ def get_no_cad(nm):
     return str(js["final_cost"])
 
 def get_no_inv(nm):
-    fnm = "out/aec-table2/" + nm + ".normal-noinv.json"
+    # fnm = "out/aec-table2/" + nm + ".normal-noinv.json"
+    fnm = "out/aec-table2/" + nm + ".normal.json"
     with open(fnm) as f:
         js = json.load(f)
     return str(js["final_cost"])
