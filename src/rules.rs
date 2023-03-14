@@ -57,7 +57,7 @@ pub fn pre_rules() -> Vec<Rewrite> {
         ),
 
         // rw!("union_consr"; "(Binop Union (Fold Union ?list) ?a)" => "(Fold Union (Cons ?a ?list))"),
-        rw!("inter_consr"; "(Binop Inter/ (Fold Inter ?list) ?a)" => "(Fold Inter (Cons ?a ?list))"),
+        rw!("inter_consr"; "(Binop Inter (Fold Inter ?list) ?a)" => "(Fold Inter (Cons ?a ?list))"),
 
         // TODO can't parse this now
         // rw!("consl"; "(Binop ?bop (Fold ?bop (List ?items...)) ?a)" => "(Fold ?bop (List ?items... ?a))"),
