@@ -5,7 +5,7 @@ use serde::Serialize;
 
 use egg::*;
 use std::default::Default;
-use szalinski_egg::cad::{Cad, Cost, CostFn, MetaAnalysis};
+use szalinski_egg::cad::{Cad, Cost, CostFn, MetaAnalysis, Rewrite};
 use szalinski_egg::eval::remove_empty;
 use szalinski_egg::rules::reroll;
 use szalinski_egg::sz_param;
@@ -382,15 +382,8 @@ fn main() {
         .run(&rules);
 
     runner.print_report();
-    let egraph = &mut runner.egraph;
-    reroll(egraph);
-
-    runner.stop_reason = None;
-    let new_limit = runner.iterations.len() + 2;
-    let runner = runner
-        .with_scheduler(SimpleScheduler)
-        .with_iter_limit(new_limit)
-        .run(&rules);
+    let runner = reroll_and_run(runner, &rules);
+    let runner = reroll_and_run(runner, &rules);
 
     info!(
         "Stopping after {} iters: {:?}",
@@ -425,4 +418,19 @@ fn main() {
     serde_json::to_writer_pretty(out_file, &report).unwrap();
     // let dot = runner.egraph.dot();
     // dot.to_pdf("out.pdf").unwrap();
+}
+
+pub fn reroll_and_run(
+    mut runner: egg::Runner<Cad, MetaAnalysis, MyIterData>,
+    rules: &Vec<Rewrite>,
+) -> egg::Runner<Cad, MetaAnalysis, MyIterData> {
+    let egraph = &mut runner.egraph;
+    reroll(egraph);
+
+    runner.stop_reason = None;
+    let new_limit = runner.iterations.len() + 2;
+    runner
+        .with_scheduler(SimpleScheduler)
+        .with_iter_limit(new_limit)
+        .run(rules)
 }

@@ -105,6 +105,7 @@ pub fn rules() -> Vec<Rewrite> {
 
         rw!("add_comm"; "(+ ?a ?b)" => "(+ ?b ?a)"),
         rw!("add_zero"; "(+ 0 ?a)" => "?a"),
+        rw!("add_zero_1"; "?a" => "(+ 0 ?a)"),
 
         rw!("sub_zero"; "(- ?a 0)" => "?a"),
 

@@ -49,8 +49,8 @@ impl Formula {
                     eadd!(e, Num(f.b.into()))
                 } else {
                     let ax = if approx(f.a, 1.) {
-                        let b = eadd!(e, Num(f.b.into()));
-                        eadd!(e, Add, i, b)
+                        // eadd!(e, Num(f.b.into()))
+                        i
                     } else {
                         let a = eadd!(e, Num(f.a.into()));
                         eadd!(e, Mul, a, i)
