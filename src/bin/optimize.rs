@@ -6,7 +6,7 @@ use serde::Serialize;
 use egg::*;
 use std::default::Default;
 use szalinski_egg::cad::{Cad, Cost, CostFn, MetaAnalysis};
-use szalinski_egg::eval::remove_empty;
+use szalinski_egg::eval::{remove_empty, Scad};
 use szalinski_egg::sz_param;
 
 // #[derive(Debug, Serialize)]
@@ -368,8 +368,7 @@ fn main() {
     };
 
     let rules = szalinski_egg::rules::rules();
-    let mut runner = MyRunner::new(MetaAnalysis::default())
-        // .with_explanations_enabled()
+    let runner = MyRunner::new(MetaAnalysis::default())
         .with_iter_limit(*ITERATIONS)
         .with_node_limit(*NODE_LIMIT)
         .with_time_limit(Duration::from_secs_f64(*TIMEOUT))
@@ -392,13 +391,6 @@ fn main() {
     let best = Extractor::new(&runner.egraph, CostFn).find_best(root);
     let extract_time = extract_time.elapsed().as_secs_f64();
 
-    // println!(
-    //     "{}",
-    //     runner
-    //         .explain_equivalence(&initial_expr, &best.1)
-    //         .get_flat_string()
-    // );
-
     println!("Best ({}): {}", best.0, best.1.pretty(80));
 
     let report = RunResult {
@@ -408,8 +400,7 @@ fn main() {
         final_cost: best.0,
         final_expr: best.1.pretty(80),
         extract_time,
-        final_scad: "".into(),
-        // final_scad: format!("{}", Scad(&best.1)),
+        final_scad: format!("{}", Scad::new(&best.1)),
         stop_reason: runner.stop_reason.unwrap(),
         ast_size: ast_size(&best.1),
         ast_depth: ast_depth(&best.1),
@@ -419,6 +410,4 @@ fn main() {
 
     let out_file = std::fs::File::create(&args[2]).expect("failed to open output");
     serde_json::to_writer_pretty(out_file, &report).unwrap();
-    // let dot = runner.egraph.dot();
-    // dot.to_pdf("out.pdf").unwrap();
 }

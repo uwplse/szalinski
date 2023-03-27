@@ -7,7 +7,7 @@ use log::{info, warn};
 use egg::{rewrite as rw, *};
 
 use crate::{
-    cad::{println_cad, Cad, EGraph, MetaAnalysis, Rewrite, Vec3},
+    cad::{Cad, EGraph, MetaAnalysis, Rewrite, Vec3},
     num::{num, Num},
     permute::{Partitioning, Permutation},
 };
@@ -639,11 +639,6 @@ impl Applier<Cad, MetaAnalysis> for ListApplier {
         _searcher_ast: Option<&PatternAst<Cad>>,
         _rule_name: Symbol,
     ) -> Vec<Id> {
-        // let ids: Vec<Id> = get_meta_list!(egraph, map[self.var])
-        //     .iter()
-        //     .copied()
-        //     .map(|id| egraph.find(id))
-        //     .collect();
         let ids: Vec<Id> = get_meta_list!(egraph, map[self.var]).clone();
         // println!("LISTAPPLIER: {:?}", ids);
         // println!("ids: {:?}", ids);
