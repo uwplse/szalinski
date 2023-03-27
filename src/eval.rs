@@ -1,9 +1,12 @@
 use std::collections::HashMap;
+use std::fmt;
+use std::mem::discriminant;
 
 use egg::Id;
 use egg::Language;
 use egg::RecExpr;
 
+use crate::cad::println_cad;
 use crate::cad::Cad;
 
 // macro_rules! rec {
@@ -225,7 +228,7 @@ fn get_list(expr: &RecExpr<Cad>, list: Id) -> &Vec<Id> {
 
 fn eval_list(cx: Option<&FunCtx>, expr: &RecExpr<Cad>, p: Id, out: &mut RecExpr<Cad>) -> Vec<Id> {
     let list = eval(cx, expr, p, out);
-    match &expr[list] {
+    match &out[list] {
         Cad::List(list) => list.clone(),
         cad => panic!("expected list, got {:?}", cad),
     }
@@ -293,12 +296,7 @@ pub fn eval(cx: Option<&FunCtx>, expr: &RecExpr<Cad>, p: Id, out: &mut RecExpr<C
             out.add(Cad::Hull(args))
         }
 
-        Cad::Trans | Cad::Scale | Cad::Rotate | Cad::TransPolar => {
-            if !e.children().is_empty() {
-                panic!("Got an affine with children: {}", expr.pretty(80))
-            }
-            out.add(e.clone())
-        }
+        Cad::Trans | Cad::Scale | Cad::Rotate | Cad::TransPolar => out.add(e.clone()),
 
         Cad::Affine(args) => {
             let aff = eval(cx, expr, args[0], out);
@@ -376,11 +374,14 @@ pub fn eval(cx: Option<&FunCtx>, expr: &RecExpr<Cad>, p: Id, out: &mut RecExpr<C
             out.add(list)
         }
         Cad::MapI(args) => {
-            let args: Vec<_> = args.iter().map(|arg| eval(cx, expr, *arg, out)).collect();
+            // let args: Vec<_> = args[..args.len() - 1]
+            //     .iter()
+            //     .map(|arg| eval(cx, expr, *arg, out))
+            //     .collect();
             let body = *args.last().unwrap();
             let bounds: Vec<usize> = args[..args.len() - 1]
                 .iter()
-                .map(|n| get_num(out, *n) as usize)
+                .map(|n| get_num(expr, *n) as usize)
                 .collect();
             let mut ctx = HashMap::new();
             let mut vec = Vec::new();
@@ -388,7 +389,7 @@ pub fn eval(cx: Option<&FunCtx>, expr: &RecExpr<Cad>, p: Id, out: &mut RecExpr<C
                 1 => {
                     for i in 0..bounds[0] {
                         ctx.insert("i", i);
-                        vec.push(body);
+                        vec.push(eval(Some(&ctx), expr, body, out));
                     }
                 }
                 2 => {
@@ -396,7 +397,7 @@ pub fn eval(cx: Option<&FunCtx>, expr: &RecExpr<Cad>, p: Id, out: &mut RecExpr<C
                         ctx.insert("i", i);
                         for j in 0..bounds[1] {
                             ctx.insert("j", j);
-                            vec.push(body);
+                            vec.push(eval(Some(&ctx), expr, body, out));
                         }
                     }
                 }
@@ -407,7 +408,7 @@ pub fn eval(cx: Option<&FunCtx>, expr: &RecExpr<Cad>, p: Id, out: &mut RecExpr<C
                             ctx.insert("j", j);
                             for k in 0..bounds[2] {
                                 ctx.insert("k", k);
-                                vec.push(body);
+                                vec.push(eval(Some(&ctx), expr, body, out));
                             }
                         }
                     }
@@ -421,78 +422,86 @@ pub fn eval(cx: Option<&FunCtx>, expr: &RecExpr<Cad>, p: Id, out: &mut RecExpr<C
     }
 }
 
-pub struct Scad<'a>(pub &'a RecExpr<Cad>);
+pub struct Scad<'a>(pub &'a RecExpr<Cad>, pub Id);
 
-// impl<'a> fmt::Display for Scad<'a> {
-//     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-//         fn fmt_impl(p: Id, out: ) -> fmt::Result {
-//             let expr = eval(None, self.0, p, out);
-//             let expr = expr.as_ref();
-//             // let arg = |i: usize| expr.children[i].clone();
-//             let child = |i: usize| Scad(&expr.children()[i]);
-//             match &expr.op {
-//                 Cad::Num(float) => write!(f, "{}", float),
-//                 Cad::Bool(b) => write!(f, "{}", b),
-//                 Cad::Vec3(children) => write!(f, "[{}, {}, {}]", children[0], children[1], children[2]),
-//                 Cad::Add(children) => write!(f, "{} + {}", children[0], children[1]),
-//                 Cad::Sub(children) => write!(f, "{} - {}", children[0], children[1]),
-//                 Cad::Mul(children) => write!(f, "{} * {}", children[0], children[1]),
-//                 Cad::Div(children) => write!(f, "{} / {}", children[0], children[1]),
-//                 Cad::Empty => writeln!(f, "sphere(r=0);"),
-//                 Cad::Cube(_) => writeln!(f, "cube({}, center={});", child(0), child(1)),
-//                 Cad::Sphere(_) => writeln!(
-//                     f,
-//                     "sphere(r = {}, $fn = {}, $fa = {}, $fs = {});",
-//                     child(0),
-//                     get_vec3_nums(&arg(1)).0,
-//                     get_vec3_nums(&arg(1)).1,
-//                     get_vec3_nums(&arg(1)).2
-//                 ),
-//                 Cad::Cylinder => writeln!(
-//                     f,
-//                     "cylinder(h = {}, r1 = {}, r2 = {}, $fn = {}, $fa = {}, $fs = {}, center = {});",
-//                     get_vec3_nums(&arg(0)).0,
-//                     get_vec3_nums(&arg(0)).1,
-//                     get_vec3_nums(&arg(0)).2,
-//                     get_vec3_nums(&arg(1)).0,
-//                     get_vec3_nums(&arg(1)).1,
-//                     get_vec3_nums(&arg(1)).2,
-//                     child(2),
-//                 ),
-//                 // Cad::Hexagon => writeln!(f, "cylinder();"),
-//                 Cad::Hull => {
-//                     write!(f, "hull() {{")?;
-//                     for cad in &arg(0).as_ref().children {
-//                         write!(f, "  {}", Scad(cad))?;
-//                     }
-//                     write!(f, "}}")
-//                 }
+impl<'a> Scad<'a> {
+    pub fn new(expr: &'a RecExpr<Cad>) -> Scad<'a> {
+        Scad(expr, (expr.as_ref().len() - 1).into())
+    }
+}
 
-//                 Cad::Trans => write!(f, "translate"),
-//                 Cad::Scale => write!(f, "scale"),
-//                 Cad::Rotate => write!(f, "rotate"),
-//                 Cad::Affine => write!(f, "{} ({}) {}", child(0), child(1), child(2)),
+impl<'a> fmt::Display for Scad<'a> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let mut fmt_impl = |p: Id, out: &RecExpr<Cad>| -> fmt::Result {
+            let expr = &out[p];
+            let arg = |i: usize| expr.children()[i];
+            let child = |i: usize| Scad(&out, expr.children()[i]);
+            match expr {
+                Cad::Num(float) => write!(f, "{}", float),
+                Cad::Bool(b) => write!(f, "{}", b),
+                Cad::Vec3(children) => write!(f, "[{}, {}, {}]", children[0], children[1], children[2]),
+                Cad::Add(children) => write!(f, "{} + {}", children[0], children[1]),
+                Cad::Sub(children) => write!(f, "{} - {}", children[0], children[1]),
+                Cad::Mul(children) => write!(f, "{} * {}", children[0], children[1]),
+                Cad::Div(children) => write!(f, "{} / {}", children[0], children[1]),
+                Cad::Empty => writeln!(f, "sphere(r=0);"),
+                Cad::Cube(_) => writeln!(f, "cube({}, center={});", child(0), child(1)),
+                Cad::Sphere(_) => writeln!(
+                    f,
+                    "sphere(r = {}, $fn = {}, $fa = {}, $fs = {});",
+                    child(0),
+                    get_vec3_nums(out, arg(1)).0,
+                    get_vec3_nums(out, arg(1)).1,
+                    get_vec3_nums(out, arg(1)).2
+                ),
+                Cad::Cylinder(_) => writeln!(
+                    f,
+                    "cylinder(h = {}, r1 = {}, r2 = {}, $fn = {}, $fa = {}, $fs = {}, center = {});",
+                    get_vec3_nums(out, arg(0)).0,
+                    get_vec3_nums(out, arg(0)).1,
+                    get_vec3_nums(out, arg(0)).2,
+                    get_vec3_nums(out, arg(1)).0,
+                    get_vec3_nums(out, arg(1)).1,
+                    get_vec3_nums(out, arg(1)).2,
+                    child(2),
+                ),
+                // Cad::Hexagon => writeln!(f, "cylinder();"),
+                Cad::Hull(_) => {
+                    write!(f, "hull() {{")?;
+                    for cad in out[arg(0)].children() {
+                        write!(f, "  {}", Scad(out, *cad))?;
+                    }
+                    write!(f, "}}")
+                }
 
-//                 Cad::Union => write!(f, "union"),
-//                 Cad::Inter => write!(f, "intersection"),
-//                 Cad::Diff => write!(f, "difference"),
-//                 Cad::Fold => {
-//                     writeln!(f, "{} () {{", child(0))?;
-//                     for cad in &arg(1).as_ref().children {
-//                         write!(f, "  {}", Scad(cad))?;
-//                     }
-//                     write!(f, "}}")
-//                 }
-//                 Cad::BlackBox(b) => {
-//                     writeln!(f, "{} {{", b)?;
-//                     for cad in &expr.children {
-//                         write!(f, "  {}", Scad(cad))?;
-//                     }
-//                     write!(f, "}}")
-//                 }
-//                 cad => panic!("TODO: {:?}", cad),
-//             }
-//         }
-//         fmt_impl((self.0.as_ref().len() - 1).into())
-//     }
-// }
+                Cad::Trans => write!(f, "translate"),
+                Cad::Scale => write!(f, "scale"),
+                Cad::Rotate => write!(f, "rotate"),
+                Cad::Affine(_) => write!(f, "{} ({}) {}", child(0), child(1), child(2)),
+
+                Cad::Union => write!(f, "union"),
+                Cad::Inter => write!(f, "intersection"),
+                Cad::Diff => write!(f, "difference"),
+                Cad::Fold(_) => {
+                    writeln!(f, "{} () {{", child(0))?;
+                    for cad in out[arg(1)].children() {
+                        write!(f, "  {}", Scad(out, *cad))?;
+                    }
+                    write!(f, "}}")
+                }
+                Cad::BlackBox(b, _) => {
+                    writeln!(f, "{} {{", b)?;
+                    for cad in expr.children().iter() {
+                        write!(f, "  {}", Scad(out, *cad))?;
+                    }
+                    write!(f, "}}")
+                }
+                cad => panic!("TODO: {:?}", cad),
+            }
+        };
+        // may need to shrink expr to match self.1
+        let mut normalform = RecExpr::from(vec![]);
+        let p = eval(None, self.0, self.1, &mut normalform);
+        fmt_impl(p, &normalform)
+    }
+}
