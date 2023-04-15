@@ -137,15 +137,15 @@ pub fn rules() -> Vec<Rewrite> {
 
         rw!("fold_op"; "(Fold ?bop (Affine ?aff ?param ?cad))"=> "(Affine ?aff ?param (Fold ?bop ?cad))"),
 
-        rw!("union_trans"; "(Union (Trans ?x ?y ?z ?a) (Trans ?x ?y ?z ?b))"=> "(Trans ?x ?y ?z (Union ?a ?b))"),
+        rw!("union_trans"; "(Binop Union (Trans ?x ?y ?z ?a) (Trans ?x ?y ?z ?b))"=> "(Trans ?x ?y ?z (Binop Union ?a ?b))"),
 
-        rw!("inter_empty"; "(Inter ?a Empty)"=> "Empty"),
+        rw!("inter_empty"; "(Binop Inter ?a Empty)"=> "Empty"),
 
         // idempotent
-        rw!("union_same"; "(Union ?a ?a)"=> "?a"),
-        rw!("inter_same"; "(Inter ?a ?a)"=> "?a"),
+        rw!("union_same"; "(Binop Union ?a ?a)"=> "?a"),
+        rw!("inter_same"; "(Binop Inter ?a ?a)"=> "?a"),
 
-        rw!("inter_union"; "(Inter ?a (Union ?a ?b))"=> "?a"),
+        rw!("inter_union"; "(Binop Inter ?a (Binop Union ?a ?b))"=> "?a"),
 
         // partitioning
         rw!("concat"; "(Unpart ?part ?lists)"=> "(Concat ?lists)"),
@@ -236,8 +236,8 @@ pub fn rules() -> Vec<Rewrite> {
 
 
             // rw("lift_op",
-            //    "(Union (Affine ?op ?params ?a) (Affine ?op ?params ?b))",
-            //    "(Affine ?op ?params (Union ?a ?b))"),
+            //    "(Binop Union (Affine ?op ?params ?a) (Affine ?op ?params ?b))",
+            //    "(Affine ?op ?params (Binop Union ?a ?b))"),
         ]);
     }
 
@@ -399,7 +399,7 @@ pub fn rules() -> Vec<Rewrite> {
         info!("Using suspect rules");
         println!("Using suspect rules");
         rules.extend(vec![
-            rw!("union_comm"; "(Union ?a ?b)"=> "(Union ?b ?a)"),
+            rw!("union_comm"; "(Binop Union ?a ?b)"=> "(Binop Union ?b ?a)"),
             rw!("combine_scale"; "(Affine Scale (Vec3 ?a ?b ?c) (Affine Scale (Vec3 ?d ?e ?f) ?cad))"=> "(Affine Scale (Vec3 (* ?a ?d) (* ?b ?e) (* ?c ?f)) ?cad)"),
         ]);
     } else {
