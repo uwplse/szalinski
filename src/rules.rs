@@ -137,7 +137,7 @@ pub fn rules() -> Vec<Rewrite> {
 
         rw!("fold_op"; "(Fold ?bop (Affine ?aff ?param ?cad))"=> "(Affine ?aff ?param (Fold ?bop ?cad))"),
 
-        rw!("union_trans"; "(Binop Union (Trans ?x ?y ?z ?a) (Trans ?x ?y ?z ?b))"=> "(Trans ?x ?y ?z (Binop Union ?a ?b))"),
+        rw!("union_trans"; "(Binop Union (Affine Trans ?x ?y ?z ?a) (Affine Trans ?x ?y ?z ?b))"=> "(Affine Trans ?x ?y ?z (Binop Union ?a ?b))"),
 
         rw!("inter_empty"; "(Binop Inter ?a Empty)"=> "Empty"),
 
@@ -253,12 +253,12 @@ pub fn rules() -> Vec<Rewrite> {
             rw!("trans_scale"; "(Affine Trans (Vec3 ?x ?y ?z) (Affine Scale (Vec3 ?a ?b ?c) ?m))"=> "(Affine Scale (Vec3 ?a ?b ?c) (Affine Trans (Vec3 (/ ?x ?a) (/ ?y ?b) (/ ?z ?c)) ?m))"),
 
             // rw("scale_rotate",
-            //    "(Scale (Vec3 ?a ?a ?a) (Rotate (Vec3 ?x ?y ?z) ?m))",
-            //    "(Rotate (Vec3 ?x ?y ?z) (Scale (Vec3 ?a ?a ?a) ?m))"),
+            //    "(Affine Scale (Vec3 ?a ?a ?a) (Affine Rotate (Vec3 ?x ?y ?z) ?m))",
+            //    "(Affine Rotate (Vec3 ?x ?y ?z) (Affine Scale (Vec3 ?a ?a ?a) ?m))"),
 
             // rw("rotate_scale",
-            //    "(Scale (Vec3 ?a ?a ?a) (Rotate (Vec3 ?x ?y ?z) ?m))",
-            //    "(Rotate (Vec3 ?x ?y ?z) (Scale (Vec3 ?a ?a ?a) ?m))"),
+            //    "(Affine Scale (Vec3 ?a ?a ?a) (Affine Rotate (Vec3 ?x ?y ?z) ?m))",
+            //    "(Affine Rotate (Vec3 ?x ?y ?z) (Affine Scale (Vec3 ?a ?a ?a) ?m))"),
 
             // primitives
 
