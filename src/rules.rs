@@ -137,7 +137,7 @@ pub fn rules() -> Vec<Rewrite> {
 
         rw!("fold_op"; "(Fold ?bop (Affine ?aff ?param ?cad))"=> "(Affine ?aff ?param (Fold ?bop ?cad))"),
 
-        rw!("union_trans"; "(Binop Union (Affine Trans ?x ?y ?z ?a) (Affine Trans ?x ?y ?z ?b))"=> "(Affine Trans ?x ?y ?z (Binop Union ?a ?b))"),
+        rw!("union_trans"; "(Binop Union (Affine Trans (Vec3 ?x ?y ?z) ?a) (Affine Trans (Vec3 ?x ?y ?z) ?b))"=> "(Affine Trans (Vec3 ?x ?y ?z) (Binop Union ?a ?b))"),
 
         rw!("inter_empty"; "(Binop Inter ?a Empty)"=> "Empty"),
 
