@@ -21,3 +21,4 @@ bad/inputs*
 __pycache__
 
 wasm-sz/target
+wasm-sz/site/node_modules
