@@ -1,6 +1,11 @@
 import React, { Component } from "react";
+import App from "./App.jsx";
 
-class App extends Component {
+// Not a functional component because we async load wasm
+// in componentDidMount
+// todo: there's probably a way to do this with hooks?
+// not sure if worth the time though ....
+class Loader extends Component {
   constructor(props) {
     super(props);
 
@@ -24,20 +29,13 @@ class App extends Component {
 
   render() {
     const { wasm = {} } = this.state;
-    console.log(wasm);
 
     return (
       <div className="App">
         <header className="App-header">
           <div>
-            <div>
-              Name:{" "}
-              <input
-                type="text"
-                onChange={(e) => this.setState({ name: e.target.value })}
-              />
-            </div>
-            <div>{wasm.greet && wasm.greet("test")} </div>
+            <div>{wasm.greet && wasm.greet("anjli")} </div>
+            <App />
           </div>
         </header>
       </div>
@@ -45,4 +43,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default Loader;

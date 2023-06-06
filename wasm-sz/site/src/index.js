@@ -1,5 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import App from "./App";
+import Loader from "./Loader.jsx";
 
-ReactDOM.render(<App />, document.getElementById("root"));
+ReactDOM.render(
+  <React.StrictMode>
+    <Loader />
+  </React.StrictMode>,
+  document.getElementById("root")
+);
