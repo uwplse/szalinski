@@ -3,23 +3,28 @@ import React from "react";
 
 export default function JSCadEditor(props) {
   const { scad } = props;
-  const jscad = scad.length === 0 ? "" : openscadOpenJscadParser.parse(scad);
+  let jscad = "";
 
   if (scad.length > 0) {
-    OpenJsCad.parseJsCadScriptASync(jscad, {}, {}, function (err, obj) {
-      if (err) {
-        console.warn(err);
-        return;
-      }
-      document.getElementById("viewer").innerHTML = "";
-      let solid = OpenJsCad.Processor.convertToSolid(obj);
-      const viewer = new OpenJsCad.Viewer(
-        document.getElementById("viewer"),
-        500
-      );
-      viewer.setCsg(solid);
-      viewer.state = 2;
-    });
+    try {
+      jscad = openscadOpenJscadParser.parse(scad);
+      OpenJsCad.parseJsCadScriptASync(jscad, {}, {}, function (err, obj) {
+        if (err) {
+          console.warn(err);
+          return;
+        }
+        document.getElementById("viewer").innerHTML = "";
+        let solid = OpenJsCad.Processor.convertToSolid(obj);
+        const viewer = new OpenJsCad.Viewer(
+          document.getElementById("viewer"),
+          500
+        );
+        viewer.setCsg(solid);
+        viewer.state = 2;
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
