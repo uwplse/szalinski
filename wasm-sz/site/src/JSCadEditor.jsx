@@ -30,7 +30,7 @@ export default function JSCadEditor(props) {
   return (
     <>
       <div className="column">
-        <h2>JSCadEditor</h2>
+        <h2>JSCad</h2>
         <div>
           <button className="hidden">hide me</button>
           <textarea value={jscad} readOnly></textarea>
