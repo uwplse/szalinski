@@ -22,3 +22,4 @@ __pycache__
 
 wasm-sz/target
 wasm-sz/site/node_modules
+wasm-sz/site/build
