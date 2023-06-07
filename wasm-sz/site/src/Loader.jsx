@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import App from "./App.jsx";
-import { cardFramer } from "./CardFramer.js";
 
 // Not a functional component because we async load wasm
 // in componentDidMount
@@ -31,13 +30,14 @@ class Loader extends Component {
   render() {
     const { wasm = {} } = this.state;
 
+    console.log(wasm);
+    console.log(wasm.caddy_to_csg);
+
     return (
       <div className="App">
         <header className="App-header">
           <div>
-            <div>{wasm.greet && wasm.greet("anjali")} </div>
-            <div>{wasm.to_csg && wasm.to_csg(cardFramer)} </div>
-            <App />
+            <App caddyToCsg={wasm.caddy_to_csg} />
           </div>
         </header>
       </div>
