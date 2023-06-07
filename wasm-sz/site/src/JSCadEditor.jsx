@@ -1,11 +1,8 @@
 /* global openscadOpenJscadParser OpenJsCad  */
 import React from "react";
-import { inputs } from "./inputs.js";
 
 export default function JSCadEditor(props) {
-  console.log("render");
-  const { designName } = props;
-  const scad = inputs[designName] || "";
+  const { scad } = props;
   const jscad = openscadOpenJscadParser.parse(scad) || "";
 
   if (scad.length > 0) {
