@@ -13,8 +13,13 @@ export default function CaddyEditor(props) {
     if (!caddyToCsg) {
       return;
     }
-    const scad = caddyToCsg(caddy);
-    setScad(scad);
+    try {
+      const scad = caddyToCsg(caddy);
+
+      setScad(scad);
+    } catch (error) {
+      setScad("There was an error parsing your Caddy. Please try again.");
+    }
   }
 
   return (
