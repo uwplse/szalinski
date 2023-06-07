@@ -3,8 +3,11 @@ import "./App.css";
 import CaddyEditor from "./CaddyEditor";
 import JSCadEditor from "./JSCadEditor";
 import ScadEditor from "./ScadEditor";
+import { cardFramer } from "./CardFramer";
 
-export default function App() {
+export default function App(props) {
+  const { caddyToCsg } = props;
+
   const [designName, setDesignName] = useState("");
 
   const onSelect = (e) => {
@@ -14,7 +17,7 @@ export default function App() {
   return (
     <div>
       <div className="row">
-        <CaddyEditor />
+        <CaddyEditor caddyToCsg={caddyToCsg} />
         <ScadEditor designName={designName} onSelect={onSelect} />
         <JSCadEditor designName={designName} />
       </div>
