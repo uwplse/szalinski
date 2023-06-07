@@ -1,8 +1,9 @@
 import React, { useState } from "react";
+import { cardFramer } from "./CardFramer";
 
 export default function CaddyEditor(props) {
   const { caddyToCsg, setScad } = props;
-  const [caddy, setCaddy] = useState("");
+  const [caddy, setCaddy] = useState(cardFramer);
 
   function onChange(e) {
     setCaddy(e.target.value);
