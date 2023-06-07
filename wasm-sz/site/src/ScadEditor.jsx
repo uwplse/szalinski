@@ -5,7 +5,7 @@ export default function ScadEditor(props) {
 
   return (
     <div className="column">
-      <h2>ScadEditor</h2>
+      <h2>SCAD</h2>
       <div>
         <button className="hidden">hide me</button>
         <textarea value={scad} readOnly></textarea>
