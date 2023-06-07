@@ -3,7 +3,7 @@ import React from "react";
 
 export default function JSCadEditor(props) {
   const { scad } = props;
-  const jscad = openscadOpenJscadParser.parse(scad) || "";
+  const jscad = scad.length === 0 ? "" : openscadOpenJscadParser.parse(scad);
 
   if (scad.length > 0) {
     OpenJsCad.parseJsCadScriptASync(jscad, {}, {}, function (err, obj) {
