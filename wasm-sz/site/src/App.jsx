@@ -3,23 +3,18 @@ import "./App.css";
 import CaddyEditor from "./CaddyEditor";
 import JSCadEditor from "./JSCadEditor";
 import ScadEditor from "./ScadEditor";
-import { cardFramer } from "./CardFramer";
 
 export default function App(props) {
   const { caddyToCsg } = props;
 
-  const [designName, setDesignName] = useState("");
-
-  const onSelect = (e) => {
-    setDesignName(e.target.value);
-  };
+  const [scad, setScad] = useState("");
 
   return (
     <div>
       <div className="row">
-        <CaddyEditor caddyToCsg={caddyToCsg} />
-        <ScadEditor designName={designName} onSelect={onSelect} />
-        <JSCadEditor designName={designName} />
+        <CaddyEditor caddyToCsg={caddyToCsg} setScad={setScad} />
+        <ScadEditor scad={scad} />
+        <JSCadEditor scad={scad} />
       </div>
     </div>
   );

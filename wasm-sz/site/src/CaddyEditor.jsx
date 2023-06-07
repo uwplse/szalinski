@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 export default function CaddyEditor(props) {
-  const { caddyToCsg } = props;
+  const { caddyToCsg, setScad } = props;
   const [caddy, setCaddy] = useState("");
 
   function onChange(e) {
@@ -12,7 +12,8 @@ export default function CaddyEditor(props) {
     if (!caddyToCsg) {
       return;
     }
-    console.log(caddyToCsg(caddy));
+    const scad = caddyToCsg(caddy);
+    setScad(scad);
   }
 
   return (

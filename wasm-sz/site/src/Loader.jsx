@@ -30,9 +30,6 @@ class Loader extends Component {
   render() {
     const { wasm = {} } = this.state;
 
-    console.log(wasm);
-    console.log(wasm.caddy_to_csg);
-
     return (
       <div className="App">
         <header className="App-header">
