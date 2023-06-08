@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import CodeEditor from "./CodeEditor.jsx";
 import Renderer from "./Renderer";
 import { cardFramer } from "./cardFramer";
+import RunButtons from "./RunButtons.jsx";
 
 export default function App(props) {
   const { wasm } = props;
@@ -20,10 +21,15 @@ export default function App(props) {
     setCaddy(runSzalinski(csg) || "");
   };
 
+  const buttons = [
+    { id: "szalinski", label: "Run Szalinski", onClick: onRunClick },
+    { id: "au", label: "Run AU", onClick: onRunClick },
+  ];
+
   return (
     <div className="row">
       <CodeEditor code={csg} setCode={setCsg} />
-      <button onClick={onRunClick}>Run Szalinski</button>
+      <RunButtons buttons={buttons} />
       <CodeEditor code={caddy} setCode={setCaddy} readOnly />
       <Renderer caddyToScad={wasm.caddy_to_scad} caddy={caddy} />
     </div>
