@@ -1,28 +1,25 @@
-use std::time::{Duration, Instant};
+use std::time::{Instant, Duration};
 
-use log::*;
-
-use egg::*;
-use szalinski_egg::cad::{CostFn};
-use szalinski_egg::eval::{remove_empty, Scad};
-use szalinski_egg::loop_inference::*;
-use szalinski_egg::sz_param;
+use egg::{Extractor, CostFunction, BackoffScheduler};
+use log::info;
+use szalinski_egg::{eval::{Scad, remove_empty}, loop_inference::{ast_size, ast_depth, depth_under_mapis, n_mapis, RunResult, MyRunner}, cad::CostFn, sz_param, csg_parser::parse};
 
 sz_param!(PRE_EXTRACT: bool);
-
 fn main() {
     let _ = env_logger::builder().is_test(false).try_init();
     let args: Vec<String> = std::env::args().collect();
     if args.len() != 3 {
-        panic!("Usage: optimize <input> <output>")
+        panic!("Usage: optimize <input>.scad <output>.log")
     }
-    let input = std::fs::read_to_string(&args[1]).expect("failed to read input");
+    let scad = std::fs::read_to_string(&args[1]).expect("failed to read input scad");
+    let mut csg = vec![];
+    parse(&mut csg, &scad).unwrap();
 
     sz_param!(ITERATIONS: usize);
     sz_param!(NODE_LIMIT: usize);
     sz_param!(TIMEOUT: f64);
 
-    let initial_expr = input.parse().expect("Couldn't parse input");
+    let initial_expr = std::str::from_utf8(&csg).expect("Couldn't serialize csg").parse().expect("Couldn't parse csg");
     let initial_expr = remove_empty(&initial_expr).expect("input was empty");
     let initial_cost = CostFn.cost_rec(&initial_expr);
 
