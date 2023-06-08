@@ -1,14 +1,17 @@
-import React, { useState } from "react";
+import React from "react";
 import MonacoEditor from "react-monaco-editor";
 
 export default function CodeEditor(props) {
-  let { initialCode, render } = props;
-  let [code, setCode] = useState(initialCode || "");
+  let { code, setCode, readOnly } = props;
 
   return (
     <div className="column">
-      {render && <button onClick={() => render(code)}>Render</button>}
-      <MonacoEditor value={code} height={"95%"} />
+      <MonacoEditor
+        value={code}
+        height={"95%"}
+        options={{ readOnly: readOnly }}
+        onChange={(value) => setCode(value)}
+      />
     </div>
   );
 }
