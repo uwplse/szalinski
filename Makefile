@@ -66,7 +66,8 @@ print-%:
 
 out/%.raw.csg: inputs/%.scad
 	@mkdir -p $(dir $@)
-	openscad -o $@ $<
+	openscad -o $(notdir $*).raw.csg $<
+	mv inputs/$*.raw.csg out/$(dir $*)
 
 out/%.fn.csg: ./scripts/reduce-fn.py out/%.raw.csg
 	$^ $@
