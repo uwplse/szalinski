@@ -10,20 +10,24 @@ export default function App(props) {
   const [csg, setCsg] = useState(cardFramer);
   const [caddy, setCaddy] = useState("");
 
-  const runSzalinski = (csgCode) => {
+  const runSynthesis = (csgCode, type) => {
     try {
-      return wasm.run_szalinski(csgCode);
+      return wasm.synthesize_caddy(csgCode, type);
     } catch (e) {
       console.warn(e);
     }
   };
-  const onRunClick = () => {
-    setCaddy(runSzalinski(csg) || "");
+  const onRunClick = (type) => {
+    setCaddy(runSynthesis(csg, type) || "");
   };
 
   const buttons = [
-    { id: "szalinski", label: "Run Szalinski", onClick: onRunClick },
-    { id: "au", label: "Run AU", onClick: onRunClick },
+    {
+      id: "szalinski",
+      label: "Run Szalinski",
+      onClick: () => onRunClick("szalinski"),
+    },
+    { id: "au", label: "Run AU", onClick: () => onRunClick("AU") },
   ];
 
   return (
