@@ -33,6 +33,9 @@ pub mod cad;
 pub mod rules;
 
 pub mod eval;
+pub mod csg_parser;
+pub mod loop_inference;
+
 pub mod num;
 mod permute;
 mod solve;
