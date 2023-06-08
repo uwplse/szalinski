@@ -1,4 +1,5 @@
 #[macro_export]
+#[allow(dead_code)]
 macro_rules! sz_param {
     ($name:ident : $ty:ty) => {
         $crate::sz_param!($name : $ty = |x: $ty| x);
@@ -32,6 +33,7 @@ macro_rules! sz_param {
 pub mod cad;
 pub mod rules;
 
+pub mod au;
 pub mod eval;
 pub mod num;
 mod permute;
