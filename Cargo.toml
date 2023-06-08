@@ -4,11 +4,7 @@ version = "0.1.0"
 authors = ["Max Willsey <me@mwillsey.com>"]
 edition = "2018"
 
-[lib]
-crate-type = ["cdylib", "rlib"]
-
 [dependencies]
-wasm-bindgen = "0.2"
 log = "0.4"
 ordered-float = "1"
 symbolic_expressions = "5.0.3"

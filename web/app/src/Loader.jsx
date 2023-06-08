@@ -29,11 +29,15 @@ class Loader extends Component {
   render() {
     const { wasm = {} } = this.state;
 
+    if (wasm.greet) {
+      console.log(wasm.greet("test"));
+    }
+
     return (
       <div className="App">
         <header className="App-header">
           <div>
-            <p>{wasm.test && wasm.test("TEST STRING")}</p>
+            <p>{wasm.greet && wasm.greet(" STRING")}</p>
           </div>
         </header>
       </div>
