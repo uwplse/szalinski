@@ -21,9 +21,9 @@ pub fn caddy_to_scad(_s: String) -> String {
 }
 
 #[wasm_bindgen]
-pub fn run_szalinski(_s: String) -> String {
-    // TODO: run Szalinski to generate Caddy
-    "(Fold
+pub fn synthesize_caddy(_s: String, technique: &str) -> String {
+    // TODO: actually generate the Caddy
+    let dummy_caddy = "(Fold
   Diff
   (Map2
     Trans
@@ -64,5 +64,11 @@ pub fn run_szalinski(_s: String) -> String {
               (Vec3 33.3 24.05 1)
               (Vec3 32.4 24.05 1))
             (Repeat 9 (Cube (Vec3 1 1 1) false))))))))"
-        .to_string()
+        .to_string();
+    match technique {
+        "szalinski" => (), // do something,
+        "AU" => (),        // do something else,
+        _ => panic!("Unsupported synthesis technique: {}", technique),
+    };
+    dummy_caddy
 }
