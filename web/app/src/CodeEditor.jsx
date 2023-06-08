@@ -25,7 +25,7 @@ export default function CodeEditor(props) {
       <MonacoEditor
         value={code}
         height={"95%"}
-        options={{ readOnly: readOnly }}
+        options={{ readOnly: readOnly, minimap: { enabled: false } }}
         onChange={(value) => setCode(value)}
       />
     </div>
