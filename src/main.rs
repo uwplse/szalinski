@@ -11,15 +11,15 @@ fn main() {
     if args.len() != 3 {
         panic!("Usage: optimize <input>.scad <output>.json")
     }
-    let scad = std::fs::read_to_string(&args[1]).expect("failed to read input scad");
-    let mut csg = vec![];
-    parse(&mut csg, &scad).unwrap();
+    let csg = std::fs::read_to_string(&args[1]).expect("failed to read input scad");
+    let mut csg_parse = vec![];
+    parse(&mut csg_parse, &csg).unwrap();
 
     sz_param!(ITERATIONS: usize);
     sz_param!(NODE_LIMIT: usize);
     sz_param!(TIMEOUT: f64);
 
-    let initial_expr = std::str::from_utf8(&csg).expect("Couldn't serialize csg").parse().expect("Couldn't parse csg");
+    let initial_expr = std::str::from_utf8(&csg_parse).expect("Couldn't serialize csg").parse().expect("Couldn't parse csg");
     let initial_expr = remove_empty(&initial_expr).expect("input was empty");
     let initial_cost = CostFn.cost_rec(&initial_expr);
 
