@@ -28,7 +28,7 @@ export default function App(props) {
 
   return (
     <div className="row">
-      <CodeEditor code={csg} setCode={setCsg} />
+      <CodeEditor code={csg} setCode={setCsg} allowImport />
       <RunButtons buttons={buttons} />
       <CodeEditor code={caddy} setCode={setCaddy} readOnly />
       <Renderer caddyToScad={wasm.caddy_to_scad} caddy={caddy} />
