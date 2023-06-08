@@ -20,5 +20,6 @@ bad/inputs*
 
 __pycache__
 
-web/node_modules
-web/pkg
+web/app/node_modules
+web/app/pkg
+web/target
