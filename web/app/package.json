@@ -17,6 +17,7 @@
     "@monaco-editor/react": "^4.5.1",
     "react": "^16.8.5",
     "react-dom": "^16.8.5",
+    "react-monaco-editor": "^0.52.0",
     "react-scripts": "2.1.8",
     "wasm-sz": "file:./pkg"
   },
