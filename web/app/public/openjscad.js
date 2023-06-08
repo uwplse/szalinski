@@ -55,8 +55,8 @@ OpenJsCad.Viewer = function (containerelement, initialdepth) {
   // Set up the viewport
   // this.gl.canvas.width = $(containerelement).width();
   // this.gl.canvas.height = $(containerelement).height(); // anjali
-  const width = document.getElementsByClassName("column")[0].offsetWidth;
-  const height = document.getElementsByTagName("textarea")[0].offsetHeight;
+  const width = document.getElementById("viewer").offsetWidth;
+  const height = document.getElementById("viewer").offsetHeight;
   this.gl.canvas.width = width;
   this.gl.canvas.height = height;
   this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);

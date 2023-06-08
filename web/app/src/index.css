@@ -14,4 +14,10 @@
 body {
   /* Temporary to make it easier to see divs */
   background-color: pink;
+  margin: 0px;
+}
+
+#viewer {
+  height: 95vh;
+  margin-top: 15px;
 }

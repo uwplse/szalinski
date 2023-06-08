@@ -8,8 +8,7 @@ pub fn greet(name: &str) -> String {
 }
 
 #[wasm_bindgen]
-pub fn caddy_to_csg(s: String) -> String {
-    let cad: RecExpr<Cad> = s.parse().unwrap();
-    let _scad = Scad(&cad);
-    format!("{:?}", cad)
+pub fn caddy_to_scad(_s: String) -> String {
+    // TODO: parse Caddy to SCAD
+    "cube([100, 200, 300], center=true);".to_string()
 }
