@@ -1,0 +1,17 @@
+.row {
+  width: 100%;
+  display: flex;
+}
+
+.column {
+  width: 33%;
+  padding: 0px;
+  height: 100vh;
+  background-color: lightgray;
+  margin: 0px 10px;
+}
+
+body {
+  /* Temporary to make it easier to see divs */
+  background-color: pink;
+}
