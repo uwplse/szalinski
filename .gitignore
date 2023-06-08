@@ -19,3 +19,6 @@ bad/thingiverse*
 bad/inputs*
 
 __pycache__
+
+web/node_modules
+web/pkg
