@@ -1,3 +1,8 @@
+use egg::RecExpr;
+use wasm_bindgen::prelude::wasm_bindgen;
+
+use crate::{cad::Cad, eval::Scad};
+
 #[macro_export]
 #[allow(dead_code)]
 macro_rules! sz_param {
@@ -38,3 +43,15 @@ pub mod eval;
 pub mod num;
 mod permute;
 mod solve;
+
+#[wasm_bindgen]
+pub fn caddy_to_csg(s: String) -> String {
+    let cad: RecExpr<Cad> = s.parse().unwrap();
+    let _scad = Scad(&cad);
+    format!("{:?}", cad)
+}
+
+#[wasm_bindgen]
+pub fn test(s: String) -> usize {
+    s.len()
+}
