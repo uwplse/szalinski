@@ -1,7 +1,7 @@
 use std::fmt;
 use std::str::FromStr;
 
-#[derive(PartialEq, Eq, Hash, Debug, Clone)]
+#[derive(PartialEq, Eq, Hash, Debug, Clone, PartialOrd, Ord)]
 pub struct Permutation {
     pub order: Vec<usize>,
 }
@@ -24,20 +24,22 @@ impl Permutation {
         self.order.len()
     }
 
-    pub fn is_ordered(&self) -> bool {
-        self.order.iter().enumerate().all(|(a, b)| a == *b)
-    }
+    // pub fn is_ordered(&self) -> bool {
+    //     self.order.iter().enumerate().all(|(a, b)| a == *b)
+    // }
 
-    pub fn invert(&self) -> Permutation {
-        Permutation::sort(&self.order)
-    }
+    // pub fn invert(&self) -> Permutation {
+    //     Permutation::sort(&self.order)
+    // }
 
     pub fn from_vec(order: Vec<usize>) -> Permutation {
         Permutation { order }
     }
 
+    // pub fn sort<T: Ord>(list: &[T], cmp: impl Fn(&T, &T) -> std::cmp::Ordering) -> Permutation {
     pub fn sort<T: Ord>(list: &[T]) -> Permutation {
         let mut order: Vec<usize> = (0..list.len()).collect();
+        // order.sort_by(|i, j| cmp(&list[*i], &list[*j]));
         order.sort_by_key(|&i| &list[i]);
         Permutation { order }
     }
@@ -48,7 +50,7 @@ impl Permutation {
     }
 }
 
-#[derive(PartialEq, Eq, Hash, Debug, Clone)]
+#[derive(PartialEq, Eq, Hash, Debug, Clone, PartialOrd, Ord)]
 pub struct Partitioning {
     pub lengths: Vec<usize>,
 }
