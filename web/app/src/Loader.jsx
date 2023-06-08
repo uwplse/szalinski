@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import "./index.css";
-import CodeEditor from "./CodeEditor.jsx";
-import Renderer from "./Renderer";
+import App from "./App";
 
 // Not a functional component because we async load wasm
 // in componentDidMount
@@ -32,21 +31,7 @@ class Loader extends Component {
   render() {
     const { wasm = {} } = this.state;
 
-    if (wasm.greet) {
-      console.log(wasm.greet("test"));
-    }
-
-    return (
-      <div className="App">
-        <header className="App-header">
-          <div className="row">
-            <CodeEditor />
-            <CodeEditor />
-            <Renderer />
-          </div>
-        </header>
-      </div>
-    );
+    return <App wasm={wasm} />;
   }
 }
 
