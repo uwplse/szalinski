@@ -1,12 +1,7 @@
-use std::time::{Duration, Instant};
-
-use log::*;
 use serde::Serialize;
 
 use egg::*;
 use crate::cad::{Cad, Cost, CostFn, Meta};
-use crate::eval::{remove_empty, Scad};
-use sz_param;
 
 // #[derive(Debug, Serialize)]
 // pub enum StopReason {

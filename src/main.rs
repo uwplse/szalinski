@@ -9,7 +9,7 @@ fn main() {
     let _ = env_logger::builder().is_test(false).try_init();
     let args: Vec<String> = std::env::args().collect();
     if args.len() != 3 {
-        panic!("Usage: optimize <input>.scad <output>.log")
+        panic!("Usage: optimize <input>.scad <output>.json")
     }
     let scad = std::fs::read_to_string(&args[1]).expect("failed to read input scad");
     let mut csg = vec![];
