@@ -1,3 +1,10 @@
+html,
+body,
+#root,
+#root>div {
+  height: 100%
+}
+
 .row {
   width: 100%;
   display: flex;
@@ -28,4 +35,17 @@ body {
 .gutter.gutter-horizontal {
   background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAeCAYAAADkftS9AAAAIklEQVQoU2M4c+bMfxAGAgYYmwGrIIiDjrELjpo5aiZeMwF+yNnOs5KSvgAAAABJRU5ErkJggg==');
   cursor: col-resize;
+}
+
+.container {
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+}
+.header {
+  flex: 0 1 auto;
+}
+
+.content {
+  flex: 1 1 auto;
 }
