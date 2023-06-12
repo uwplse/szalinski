@@ -21,12 +21,8 @@ export default function Renderer(props) {
       viewer.setCsg(solid);
       viewer.state = 2;
     });
-    return (
-      <div className="column" id="viewer">
-        {scad}
-      </div>
-    );
+    return <div id="viewer" />;
   } else {
-    return <div className="column"></div>;
+    return <div></div>;
   }
 }
