@@ -31,22 +31,28 @@ export default function CodeEditor(props) {
   }
 
   return (
-    <div style={{ height: "100vh" }}>
-      {allowImport && <button onClick={onClickImport}>Import from File</button>}
-      {buttons &&
-        buttons.map((b) => (
-          <button key={b.id} onClick={b.onClick}>
-            {b.label}
-          </button>
-        ))}
-      <MonacoEditor
-        value={code}
-        width={"100%"}
-        height={"95%"}
-        options={{ readOnly: readOnly, minimap: { enabled: false } }}
-        onChange={(value) => setCode(value)}
-        editorDidMount={handleMount}
-      />
+    <div className="container">
+      <div className="header">
+        {allowImport && (
+          <button onClick={onClickImport}>Import from File</button>
+        )}
+        {buttons &&
+          buttons.map((b) => (
+            <button key={b.id} onClick={b.onClick}>
+              {b.label}
+            </button>
+          ))}
+      </div>
+      <div className="content">
+        <MonacoEditor
+          value={code}
+          width={"100%"}
+          height={"100%"}
+          options={{ readOnly: readOnly, minimap: { enabled: false } }}
+          onChange={(value) => setCode(value)}
+          editorDidMount={handleMount}
+        />
+      </div>
     </div>
   );
 }
