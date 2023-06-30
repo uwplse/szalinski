@@ -14,6 +14,7 @@ body {
   /* Temporary to make it easier to see divs */
   background-color: pink;
   margin: 0px;
+  overflow: hidden;
 }
 
 #viewer {
