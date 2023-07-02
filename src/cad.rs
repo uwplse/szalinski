@@ -3,30 +3,26 @@ use std::str::FromStr;
 
 use egg::*;
 
-use crate::{
-    num::{num, Num},
-    permute::{Partitioning, Permutation},
-};
+use crate::num::{num, Num};
 
 use log::debug;
 
-pub type EGraph = egg::EGraph<Cad, Meta>;
-pub type EClass = egg::EClass<Cad, Meta>;
-pub type Rewrite = egg::Rewrite<Cad, Meta>;
+pub type EGraph = egg::EGraph<Cad, MetaAnalysis>;
+pub type EClass = egg::EClass<Cad, MetaAnalysis>;
+pub type Rewrite = egg::Rewrite<Cad, MetaAnalysis>;
 pub type Cost = f64;
 
 pub type Vec3 = (Num, Num, Num);
 
-#[derive(PartialEq, Eq, Hash, Debug, Clone)]
-pub struct ListVar(pub &'static str);
+#[derive(PartialEq, Eq, Hash, Debug, Clone, PartialOrd, Ord)]
+pub struct ListVar(pub String);
 impl FromStr for ListVar {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "i" => Ok(ListVar("i")),
-            "j" => Ok(ListVar("j")),
-            "k" => Ok(ListVar("k")),
-            _ => Err(()),
+        if s.starts_with("i") {
+            Ok(ListVar(s.into()))
+        } else {
+            Err(())
         }
     }
 }
@@ -36,7 +32,7 @@ impl fmt::Display for ListVar {
     }
 }
 
-#[derive(PartialEq, Eq, Hash, Debug, Clone)]
+#[derive(PartialEq, Eq, Hash, Debug, Clone, PartialOrd, Ord)]
 pub struct BlackBox(String);
 impl FromStr for BlackBox {
     type Err = ();
@@ -54,91 +50,99 @@ impl fmt::Display for BlackBox {
 
 define_language! {
     pub enum Cad {
-        Cube = "Cube",
-        Sphere = "Sphere",
-        Cylinder = "Cylinder",
-        Empty = "Empty",
-        Hull = "Hull",
-        Nil = "Nil",
+        "Cube" = Cube([Id; 2]),
+        "Sphere" = Sphere([Id; 2]),
+        "Cylinder" = Cylinder([Id; 3]),
+        "Empty" = Empty,
+        "Hull" = Hull([Id; 1]),
+        "Nil" = Nil,
         Num(Num),
         Bool(bool),
 
-        MapI = "MapI",
+        // TODO: mapI could be a smallvec
+        "MapI" = MapI(Vec<Id>),
         ListVar(ListVar),
-        Repeat = "Repeat",
+        "Repeat" = Repeat([Id; 2]),
 
-        Trans = "Trans",
-        TransPolar = "TransPolar",
-        Scale = "Scale",
-        Rotate = "Rotate",
+        "Trans" = Trans,
+        "TransPolar" = TransPolar,
+        "Scale" = Scale,
+        "Rotate" = Rotate,
 
-        Union = "Union",
-        Diff = "Diff",
-        Inter = "Inter",
+        "Union" = Union,
+        "Diff" = Diff,
+        "Inter" = Inter,
 
-        Map2 = "Map2",
-        Fold = "Fold",
-        Affine = "Affine",
-        Binop = "Binop",
+        "Map2" = Map2([Id; 3]),
+        "Fold" = Fold([Id; 2]),
+        "Affine" = Affine([Id; 3]),
+        "Binop" = Binop([Id; 3]),
 
-        Vec3 = "Vec3",
+        "Vec3" = Vec3([Id; 3]),
 
-        Cons = "Cons",
-        Concat = "Concat",
-        List = "List",
+        "Cons" = Cons([Id; 2]),
+        "Concat" = Concat([Id; 1]),
+        "List" = List(Vec<Id>),
 
-        Sort = "Sort",
-        Unsort = "Unsort",
-        Part = "Part",
-        Unpart = "Unpart",
-        Unpolar = "Unpolar",
+        // "Sort" = Sort([Id; 2]),
+        "Unsort" = Unsort([Id; 2]),
+        // "Part" = Part([Id; 2]),
+        "Unpart" = Unpart([Id; 2]),
+        "Unpolar" = Unpolar([Id; 3]),
 
-        Permutation(Permutation),
-        Partitioning(Partitioning),
+        // Permutation(Permutation),
+        // Partitioning(Partitioning),
 
-        Add = "+",
-        Sub = "-",
-        Mul = "*",
-        Div = "/",
-        BlackBox(BlackBox),
+        "+" = Add([Id; 2]),
+        "-" = Sub([Id; 2]),
+        "*" = Mul([Id; 2]),
+        "/" = Div([Id; 2]),
+        "GetAt" = GetAt([Id; 2]),
+        BlackBox(BlackBox, Vec<Id>),
     }
+}
+
+
+#[derive(Debug, Default)]
+pub struct MetaAnalysis {
+    pub checking_enabled: bool,
 }
 
 #[derive(Debug, Clone)]
 pub struct Meta {
     pub list: Option<Vec<Id>>,
     pub cost: Cost,
-    pub best: RecExpr<Cad>,
+    pub best: Cad,
 }
 
-fn eval(op: Cad, args: &[Cad]) -> Option<Cad> {
+fn eval(egraph: &EGraph, enode: &Cad) -> Option<Cad> {
     use Cad::*;
-    let a = |i: usize| args[i].clone();
-    match op {
-        Add => {
+    // let a = |i: usize| enode.children()[i].clone();
+    match enode {
+        Add(args) => {
             assert_eq!(args.len(), 2);
-            match (a(0), a(1)) {
+            match (&egraph[args[0]].data.best, &egraph[args[1]].data.best) {
                 (Num(f1), Num(f2)) => Some(Num(num(f1.to_f64() + f2.to_f64()))),
                 _ => None,
             }
         }
-        Sub => {
+        Sub(args) => {
             assert_eq!(args.len(), 2);
-            match (a(0), a(1)) {
+            match (&egraph[args[0]].data.best, &egraph[args[1]].data.best) {
                 (Num(f1), Num(f2)) => Some(Num(num(f1.to_f64() - f2.to_f64()))),
                 _ => None,
             }
         }
-        Mul => {
+        Mul(args) => {
             assert_eq!(args.len(), 2);
-            match (a(0), a(1)) {
+            match (&egraph[args[0]].data.best, &egraph[args[1]].data.best) {
                 (Num(f1), Num(f2)) => Some(Num(num(f1.to_f64() * f2.to_f64()))),
                 _ => None,
             }
         }
-        Div => {
+        Div(args) => {
             assert_eq!(args.len(), 2);
-            match (a(0), a(1)) {
+            match (&egraph[args[0]].data.best, &egraph[args[1]].data.best) {
                 (Num(f1), Num(f2)) => {
                     let f = f1.to_f64() / f2.to_f64();
                     if f.is_finite() && !f2.is_close(0) {
@@ -154,55 +158,48 @@ fn eval(op: Cad, args: &[Cad]) -> Option<Cad> {
     }
 }
 
-impl Metadata<Cad> for Meta {
-    type Error = std::convert::Infallible;
-    fn merge(&self, other: &Self) -> Self {
-        let list = self.list.as_ref().or(other.list.as_ref()).cloned();
+impl Analysis<Cad> for MetaAnalysis {
+    type Data = Meta;
 
-        if self.cost <= other.cost {
-            Self {
-                list,
-                ..self.clone()
-            }
-        } else {
-            Self {
-                list,
-                ..other.clone()
-            }
+    fn merge(&mut self, a: &mut Self::Data, b: Self::Data) -> DidMerge {
+        let mut did_merge = DidMerge(false, false);
+        did_merge.0 |= a.list.is_none() && b.list.is_some();
+        did_merge.1 |= a.list.is_some() && b.list.is_none();
+        did_merge.0 |= a.cost > b.cost;
+        did_merge.1 |= a.cost < b.cost;
+        if a.list.is_none() {
+            a.list = b.list;
         }
+
+        if a.cost > b.cost {
+            a.cost = b.cost;
+            a.best = b.best;
+        }
+
+        did_merge
     }
+    fn make(egraph: &EGraph, enode: &Cad) -> Self::Data {
+        // let const_args: Option<Vec<Cad>> = enode
+        //     .map_children(|&id| {
+        //         let e: &Cad = egraph[id].data.best.as_ref();
+        //         if e.children().is_empty() {
+        //             Some(e.op.clone())
+        //         } else {
+        //             None
+        //         }
+        //     })
+        //     .collect();
 
-    fn make(egraph: &EGraph, enode: &ENode<Cad>) -> Self {
-        let const_args: Option<Vec<Cad>> = enode
-            .children
-            .iter()
-            .map(|&id| {
-                let e = egraph[id].metadata.best.as_ref();
-                if e.children.is_empty() {
-                    Some(e.op.clone())
-                } else {
-                    None
-                }
-            })
-            .collect();
+        let best = eval(&egraph, enode).unwrap_or_else(|| enode.clone());
 
-        let best = const_args
-            .and_then(|a| eval(enode.op.clone(), &a))
-            .map(|op| recexpr!(op))
-            .unwrap_or_else(|| {
-                enode
-                    .map_children(|id| egraph[id].metadata.best.clone())
-                    .into()
-            });
+        let cost = CostFn.cost(enode, |id| egraph[id].data.cost);
 
-        let cost = CostFn.cost(&enode.map_children(|id| egraph[id].metadata.cost));
-
-        let list = match enode.op {
+        let list = match enode {
             Cad::Nil => Some(vec![]),
-            Cad::Cons => {
-                assert_eq!(enode.children.len(), 2);
-                let head = std::iter::once(enode.children[0]);
-                let tail_meta = &egraph[enode.children[1]].metadata;
+            Cad::Cons(args) => {
+                assert_eq!(args.len(), 2);
+                let head = std::iter::once(args[0]);
+                let tail_meta = &egraph[args[1]].data;
                 tail_meta
                     .list
                     .as_ref()
@@ -215,29 +212,36 @@ impl Metadata<Cad> for Meta {
                 //     .copied();
                 // Some(head.chain(tail).collect())
             }
-            Cad::List => Some(enode.children.iter().copied().collect()),
+            Cad::List(list) => Some(list.clone()),
             _ => None,
         };
 
-        Self { list, best, cost }
+        Self::Data { list, best, cost }
     }
 
-    fn modify(eclass: &mut EClass) {
-        if let Some(list1) = eclass.nodes.iter().find(|n| n.op == Cad::List) {
-            for list2 in eclass.nodes.iter().filter(|n| n.op == Cad::List) {
-                assert_eq!(
-                    list1.children.len(),
-                    list2.children.len(),
-                    "at id {}, nodes:\n{:#?}",
-                    eclass.id,
-                    eclass.nodes
-                )
+    fn modify(egraph: &mut EGraph, id: Id) {
+        let eclass = &egraph[id];
+        if egraph.analysis.checking_enabled {
+            if let Some(list1) = eclass.nodes.iter().find(|n| matches!(n, Cad::List(_))) {
+                for list2 in eclass.nodes.iter().filter(|n| matches!(n, Cad::List(_))) {
+                    assert_eq!(
+                        list1.children().len(),
+                        list2.children().len(),
+                        // "at id {}, nodes:\n{:#?}",
+                        "at id {}",
+                        eclass.id,
+                        // eclass.nodes
+                    )
+                }
             }
         }
 
-        if let Some(list) = &eclass.metadata.list {
-            eclass.nodes.push(ENode::new(Cad::List, list.clone()))
+        if let Some(list) = &eclass.data.list {
+            let list = list.clone();
+            let id2 = egraph.add(Cad::List(list));
+            egraph.union(id, id2);
         }
+        let eclass = &egraph[id];
 
         // // here we prune away excess unsorts, as that will cause some stuff to spin out
         // let mut n_unsorts = 0;
@@ -253,9 +257,11 @@ impl Metadata<Cad> for Meta {
         //     warn!("Went over unsort limit: {} > {}", n_unsorts, limit);
         // }
 
-        let best = eclass.metadata.best.as_ref();
-        if best.children.is_empty() {
-            eclass.nodes.push(ENode::leaf(best.op.clone()))
+        let best = &eclass.data.best;
+        if best.is_leaf() {
+            let best = best.clone();
+            let id2 = egraph.add(best);
+            egraph.union(id, id2);
         }
     }
 }
@@ -264,46 +270,70 @@ pub struct CostFn;
 impl egg::CostFunction<Cad> for CostFn {
     type Cost = Cost;
 
-    fn cost(&mut self, enode: &ENode<Cad, Cost>) -> Cost {
+    fn cost<C>(&mut self, enode: &Cad, mut costs: C) -> Self::Cost
+    where
+        C: FnMut(Id) -> Self::Cost,
+    {
         use Cad::*;
         const BIG: f64 = 100_000_000.0;
         const SMALL: f64 = 0.001;
 
-        let cost = match enode.op {
+        let cost = match enode {
             Num(n) => {
                 let s = format!("{}", n);
                 0.000001 * s.len() as Cost
             }
             Bool(_) | ListVar(_) => SMALL,
-            Add | Sub | Mul | Div => SMALL,
+            Add(_args) | Sub(_args) | Mul(_args) | Div(_args) => SMALL,
 
-            BlackBox(_) => 1.0,
-            Cube | Empty | Nil | Sphere | Cylinder | Hull => 1.0,
+            BlackBox(..) => 1.0,
+            Cube(_) | Empty | Nil | Sphere(_) | Cylinder(_) | Hull(_) => 1.0,
 
             Trans | TransPolar | Scale | Rotate => 1.0,
 
             Union | Diff | Inter => 1.0,
 
-            Repeat => 0.99,
-            MapI => 1.0,
-            Fold => 1.0,
-            Map2 => 1.0,
-            Affine => 1.0,
-            Binop => 1.0,
+            Repeat(_) => 0.99,
+            MapI(_) => 1.0,
+            Fold(_) => 1.0,
+            Map2(_) => 1.0,
+            Affine(_) => 1.0,
+            Binop(_) => 1.0,
 
-            Concat => 1.0,
-            Cons => 1.0,
-            List => 1.0,
-            Vec3 => 1.0,
+            Concat(_) => 1.0,
+            Cons(_) => 1.0,
+            List(_) => 1.0,
+            Vec3(_) => 1.0,
 
-            Unpolar => BIG,
-            Sort | Unsort | Part | Unpart => BIG,
-            Partitioning(_) => BIG,
-            Permutation(_) => BIG,
+            Unpolar(_) => BIG,
+            Unsort(_) | Unpart(_) => BIG,
+            GetAt(_) => 1.0,
+            // Sort(_) | Part(_) => BIG,
+            // Partitioning(_) => BIG,
+            // Permutation(_) => BIG,
         };
 
-        cost + enode.children.iter().sum::<Cost>()
+        enode.fold(cost, |sum, i| sum + costs(i))
     }
+}
+
+pub fn println_cad(egraph: &EGraph, id: Id) {
+    pub fn println_cad_impl(egraph: &EGraph, id: Id) {
+        let best = &egraph[id].data.best;
+        if best.is_leaf() {
+            print!("{}", best.to_string());
+            return;
+        }
+        print!("(");
+        print!("{}", best.to_string());
+        best.for_each(|i| {
+            print!(" ");
+            println_cad_impl(egraph, i);
+        });
+        print!(")");
+    }
+    println_cad_impl(egraph, id);
+    println!();
 }
 
 // impl Language for Cad {
