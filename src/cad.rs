@@ -102,8 +102,11 @@ define_language! {
     }
 }
 
+
 #[derive(Debug, Default)]
-pub struct MetaAnalysis;
+pub struct MetaAnalysis {
+    pub checking_enabled: bool,
+}
 
 #[derive(Debug, Clone)]
 pub struct Meta {
@@ -218,16 +221,18 @@ impl Analysis<Cad> for MetaAnalysis {
 
     fn modify(egraph: &mut EGraph, id: Id) {
         let eclass = &egraph[id];
-        if let Some(list1) = eclass.nodes.iter().find(|n| matches!(n, Cad::List(_))) {
-            for list2 in eclass.nodes.iter().filter(|n| matches!(n, Cad::List(_))) {
-                assert_eq!(
-                    list1.children().len(),
-                    list2.children().len(),
-                    // "at id {}, nodes:\n{:#?}",
-                    "at id {}",
-                    eclass.id,
-                    // eclass.nodes
-                )
+        if egraph.analysis.checking_enabled {
+            if let Some(list1) = eclass.nodes.iter().find(|n| matches!(n, Cad::List(_))) {
+                for list2 in eclass.nodes.iter().filter(|n| matches!(n, Cad::List(_))) {
+                    assert_eq!(
+                        list1.children().len(),
+                        list2.children().len(),
+                        // "at id {}, nodes:\n{:#?}",
+                        "at id {}",
+                        eclass.id,
+                        // eclass.nodes
+                    )
+                }
             }
         }
 
