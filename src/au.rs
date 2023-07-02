@@ -228,7 +228,7 @@ impl AU {
         // TODO: this can be improved
         // TODO: a pre-filtering pass that only process promising a and b (i.e., their children has constrs that match)
         let mut aus = vec![];
-        for a in ns1 {
+        'outer: for a in ns1 {
             for b in ns2 {
                 if discriminant(a) == discriminant(b) && a.children().len() == b.children().len() {
                     let result = a
@@ -237,6 +237,7 @@ impl AU {
                         .zip(b.children().iter())
                         .map(|(a, b)| self.anti_unify_class(egraph, &(*a, *b)).clone())
                         .multi_cartesian_product()
+                        .take(1)
                         .map(|xs| {
                             let mut children = vec![];
                             let mut args1 = vec![];
@@ -249,6 +250,11 @@ impl AU {
                             (build_cad_ctx(a, children), args1, args2)
                         });
                     aus.extend(result);
+                    // make sure to return the result eagerly.
+                    // This makes sure AU is very very fast.
+                    if aus.len() > 0 {
+                        break 'outer;
+                    }
                 };
             }
         }

@@ -1,6 +1,9 @@
+use std::cmp::max;
+use std::io::Write;
 use std::{fmt::Debug, str::FromStr};
 
 use crate::au::ArgList;
+use crate::cad::println_cad;
 use crate::permute::{Partitioning, Permutation};
 use crate::solve::solve;
 use crate::{
@@ -10,6 +13,8 @@ use crate::{
 };
 use egg::{rewrite as rw, *};
 use itertools::Itertools;
+use rand::prelude::Distribution;
+use rand::thread_rng;
 use std::collections::{BTreeMap, HashMap, HashSet};
 
 fn is_not_zero(var: &'static str) -> impl Fn(&mut EGraph, Id, &Subst) -> bool {
@@ -136,15 +141,15 @@ pub fn rules() -> Vec<Rewrite> {
 
         rw!("fold_op"; "(Fold ?bop (Affine ?aff ?param ?cad))"=> "(Affine ?aff ?param (Fold ?bop ?cad))"),
 
-        rw!("union_trans"; "(Union (Trans ?x ?y ?z ?a) (Trans ?x ?y ?z ?b))"=> "(Trans ?x ?y ?z (Union ?a ?b))"),
+        rw!("union_trans"; "(Binop Union (Affine Trans (Vec3 ?x ?y ?z) ?a) (Affine Trans (Vec3 ?x ?y ?z) ?b))"=> "(Affine Trans (Vec3 ?x ?y ?z) (Binop Union ?a ?b))"),
 
-        rw!("inter_empty"; "(Inter ?a Empty)"=> "Empty"),
+        rw!("inter_empty"; "(Binop Inter ?a Empty)"=> "Empty"),
 
         // idempotent
-        rw!("union_same"; "(Union ?a ?a)"=> "?a"),
-        rw!("inter_same"; "(Inter ?a ?a)"=> "?a"),
+        rw!("union_same"; "(Binop Union ?a ?a)"=> "?a"),
+        rw!("inter_same"; "(Binop Inter ?a ?a)"=> "?a"),
 
-        rw!("inter_union"; "(Inter ?a (Union ?a ?b))"=> "?a"),
+        rw!("inter_union"; "(Binop Inter ?a (Binop Union ?a ?b))"=> "?a"),
         rw!("repeat_mapi"; "(Repeat ?n ?x)"=> "(MapI ?n ?x)"),
     ];
 
@@ -158,14 +163,6 @@ pub fn rules() -> Vec<Rewrite> {
               (Affine Scale (Vec3 ?a ?b ?c) ?m))"),
 
             rw!("trans_scale"; "(Affine Trans (Vec3 ?x ?y ?z) (Affine Scale (Vec3 ?a ?b ?c) ?m))"=> "(Affine Scale (Vec3 ?a ?b ?c) (Affine Trans (Vec3 (/ ?x ?a) (/ ?y ?b) (/ ?z ?c)) ?m))"),
-
-            // rw("scale_rotate",
-            //    "(Scale (Vec3 ?a ?a ?a) (Rotate (Vec3 ?x ?y ?z) ?m))",
-            //    "(Rotate (Vec3 ?x ?y ?z) (Scale (Vec3 ?a ?a ?a) ?m))"),
-
-            // rw("rotate_scale",
-            //    "(Scale (Vec3 ?a ?a ?a) (Rotate (Vec3 ?x ?y ?z) ?m))",
-            //    "(Rotate (Vec3 ?x ?y ?z) (Scale (Vec3 ?a ?a ?a) ?m))"),
 
             // primitives
 
@@ -374,7 +371,10 @@ pub fn reroll(egraph: &mut EGraph) {
     for m in matches {
         for subst in &m.substs {
             let root_id = subst[list_var];
-            let list = egraph[root_id].data.list.as_ref().unwrap().clone();
+            let list = match egraph[root_id].data.list.as_ref() {
+                Some(list) => list.clone(),
+                None => continue,
+            };
             let list_len = list.len();
 
             // Step 3: compute and build rerolled exprs
@@ -388,7 +388,6 @@ pub fn reroll(egraph: &mut EGraph) {
                 // compute all possible partition of the list
                 let part_perms = get_all_part_perms(&anti_substs);
 
-                // eprintln!("part_perms.len(): {}", part_perms.len());
                 // Solve for each partition
                 for (part, perm) in part_perms {
                     let anti_substs_parts: Vec<Vec<ArgList>> =
@@ -408,30 +407,10 @@ pub fn reroll(egraph: &mut EGraph) {
                         }
                     }
                 }
-
-                // also add the dumb list that does no solving
-                // let col_len = anti_substs[0].len();
-                // let arr_of_cols = (0..col_len)
-                //     .map(|i| anti_substs.iter().map(|row| row[i]).collect_vec())
-                //     .collect_vec();
-                // let n = egraph.add(Cad::Num(anti_substs.len().into()));
-                // let arg_ids = arr_of_cols
-                //     .iter()
-                //     .map(|col| {
-                //         let elems = col.iter().map(|n| egraph.add(Cad::Num(*n))).collect_vec();
-                //         let list_id = egraph.add(Cad::List(elems));
-                //         let var_id = egraph.add(Cad::ListVar(ListVar("i0".into())));
-                //         egraph.add(Cad::GetAt([list_id, var_id]))
-                //     })
-                //     .collect_vec();
-                // let no_solving =
-                //     SolveResult::from_loop_params(vec![n], arg_ids).assemble(egraph, &template);
-
-                // part_to_ids.entry(ids).or_default().push(no_solving);
             }
 
             // Step 4: try to combine different parts
-            let mut part_to_ids = part_to_ids
+            let part_to_ids = part_to_ids
                 .into_iter()
                 .filter_map(|(part, ids)| {
                     if ids.len() > 0 {
@@ -450,23 +429,20 @@ pub fn reroll(egraph: &mut EGraph) {
                 "start searching: option_len: {} list_len: {list_len}",
                 part_to_ids.len()
             );
-            part_to_ids.sort_by(|a, b| a.0.len().cmp(&b.0.len()).reverse());
 
             let mut singleton_part_to_ids = HashMap::new();
             for id in list.iter() {
                 let list_id = egraph.add(Cad::List(vec![*id]));
                 singleton_part_to_ids.insert(*id, list_id);
             }
+
             search_combinations_and_add(
-                &part_to_ids,
+                part_to_ids,
                 &singleton_part_to_ids,
                 egraph,
                 root_id,
-                &mut vec![],
-                &mut HashSet::default(),
-                0,
-                list_len,
-                3,
+                singleton_part_to_ids.len(),
+                100,
             );
         }
     }
@@ -475,53 +451,122 @@ pub fn reroll(egraph: &mut EGraph) {
 }
 
 fn search_combinations_and_add(
+    mut part_to_ids: Vec<(Vec<Id>, Id)>,
+    singleton_part_to_ids: &HashMap<Id, Id>,
+    egraph: &mut EGraph,
+    root_id: Id,
+    target_size: usize,
+    mut fuel: i64,
+) {
+    part_to_ids.sort_by(|a, b| a.0.len().cmp(&b.0.len()).reverse());
+
+    let mut covered_by = HashMap::<Id, HashSet<Id>>::new();
+
+    for (part, id) in part_to_ids.iter() {
+        for part_id in part {
+            covered_by.entry(*part_id).or_default().insert(*id);
+        }
+    }
+
+    let mut disabled_parts = HashMap::<Id, usize>::default();
+    for (_part, id) in part_to_ids.iter() {
+        disabled_parts.insert(*id, 0);
+    }
+
+    search_combinations_and_add_impl(
+        &part_to_ids,
+        &singleton_part_to_ids,
+        egraph,
+        root_id,
+        &mut vec![],
+        0,
+        &covered_by,
+        &mut disabled_parts,
+        0,
+        target_size,
+        3,
+        &mut fuel,
+    );
+}
+
+fn search_combinations_and_add_impl(
     part_to_ids: &[(Vec<Id>, Id)],
     singleton_part_to_ids: &HashMap<Id, Id>,
     egraph: &mut EGraph,
     root_id: Id,
     // part ids that are used
     cur_buffer: &mut Vec<Id>,
-    ids_covered: &mut HashSet<Id>,
+    // current position
     cur_pos: usize,
+    // a reverted index on the mapping from part to id that covers this part
+    covered_by: &HashMap<Id, HashSet<Id>>,
+    // parts that are disabled by parts in cur_buffer
+    disabled_parts: &mut HashMap<Id, usize>,
+    // the size of parts covered
+    covered_size: usize,
+    // the size to target
     target_size: usize,
     limit: usize,
+    fuel: &mut i64,
 ) {
-    let todo_size = target_size - ids_covered.len();
-    if limit == 0 || todo_size == 0 {
-        // fill with singleton list
-        let mut cur_buffer = cur_buffer.clone();
-        for (part, id) in singleton_part_to_ids {
-            if !ids_covered.contains(part) {
-                cur_buffer.push(*id);
+    if *fuel < 0 {
+        return;
+    }
+    if limit == 0 || covered_size == target_size {
+        // fill the rest of missing pieces with singleton list
+        let mut result = cur_buffer.clone();
+        for (part_id, id) in singleton_part_to_ids {
+            if cur_buffer
+                .iter()
+                .all(|id| covered_by.contains_key(part_id) && !covered_by[part_id].contains(id))
+            {
+                result.push(*id);
             }
         }
         // insert into the e-graph
-        if cur_buffer.len() == 1 {
-            egraph.union(root_id, cur_buffer[0]);
+        if result.len() == 1 {
+            egraph.union(root_id, result[0]);
         } else {
-            let list_id = egraph.add(Cad::List(cur_buffer));
+            let list_id = egraph.add(Cad::List(result));
             let concat_id = egraph.add(Cad::Concat([list_id]));
             egraph.union(root_id, concat_id);
         }
+        *fuel -= 1;
     } else {
         // for i in cur_pos..(part_to_ids.len() - todo_size + 1) {
         for i in cur_pos..part_to_ids.len() {
             let (part, id) = &part_to_ids[i];
-            if part.iter().all(|id| !ids_covered.contains(id)) {
+            if disabled_parts[id] == 0 {
                 cur_buffer.push(*id);
-                ids_covered.extend(part);
-                search_combinations_and_add(
+                for part_id in part {
+                    for id in covered_by[part_id].iter() {
+                        *disabled_parts.get_mut(id).unwrap() += 1;
+                    }
+                }
+
+                search_combinations_and_add_impl(
                     part_to_ids,
                     singleton_part_to_ids,
                     egraph,
                     root_id,
                     cur_buffer,
-                    ids_covered,
                     i + 1,
+                    covered_by,
+                    disabled_parts,
+                    covered_size + part.len(),
                     target_size,
                     limit - 1,
+                    fuel,
                 );
-                part.iter().for_each(|id| assert!(ids_covered.remove(id)));
+                if *fuel < 0 {
+                    return;
+                }
+
+                for part_id in part {
+                    for id in covered_by[part_id].iter() {
+                        *disabled_parts.get_mut(id).unwrap() -= 1;
+                    }
+                }
                 cur_buffer.pop();
             }
         }
@@ -565,19 +610,53 @@ fn get_au_groups(
     let mut au_groups = HashMap::<CadCtx, HashMap<Id, Vec<Num>>>::default();
 
     // TODO: handle repeated substructures (or do we?)
+    eprintln!("list length: {}", list.len());
+    // TODO: don't hard code constants
     // Step 1: compute anti-unification
-    for i in 0..list.len() {
-        for j in i + 1..list.len() {
-            let result = au.anti_unify_class(egraph, &(list[i], list[j]));
-            eprintln!("result.len: {}", result.len());
-            for (cad, args1, args2) in result {
-                if !au_groups.contains_key(cad) {
-                    au_groups.insert(cad.clone(), HashMap::default());
+    if list.len() < 500 {
+        for i in 0..list.len() {
+            for j in i + 1..list.len() {
+                let result = au.anti_unify_class(egraph, &(list[i], list[j]));
+                // eprintln!("result.len: {}", result.len());
+                for (cad, args1, args2) in result {
+                    if !au_groups.contains_key(cad) {
+                        au_groups.insert(cad.clone(), HashMap::default());
+                    }
+                    let map = au_groups.get_mut(cad).unwrap();
+                    map.entry(list[i]).or_insert_with(|| args1.clone());
+                    map.entry(list[j]).or_insert_with(|| args2.clone());
                 }
-                let map = au_groups.get_mut(cad).unwrap();
-                map.entry(list[i]).or_insert_with(|| args1.clone());
-                map.entry(list[j]).or_insert_with(|| args2.clone());
             }
+        }
+    } else {
+        // If # arguments is too big, we sample a small set of pairs
+        // to heuristically find possible templates (and a canonical e-class for each template)
+        let mut rng = thread_rng();
+        let uniform = rand::distributions::Uniform::new(0, list.len());
+        let (mut success_times, mut try_times) = (0, 0);
+        // we want # templates * # parametrization to be close to 100_000
+        let template_limit = max(100_000 / list.len(), 5);
+        let mut templates = HashSet::<CadCtx>::default();
+        while success_times < template_limit && try_times < 100_000 {
+            let i = uniform.sample(&mut rng);
+            let j = uniform.sample(&mut rng);
+            let result = au.anti_unify_class(egraph, &(list[i], list[j]));
+            for (cad, _, _) in result {
+                templates.insert(cad.clone());
+                success_times += 1;
+            }
+            try_times += 1;
+        }
+        for cad in templates {
+            println!("{:?}", &cad);
+            let mut map = HashMap::<Id, Vec<Num>>::default();
+            for i in 0..list.len() {
+                let result = cad.get_params(egraph, list[i]);
+                if let Some(result) = result {
+                    map.entry(list[i]).or_insert(result);
+                }
+            }
+            au_groups.insert(cad, map);
         }
     }
     if au_groups.len() == 0 {
