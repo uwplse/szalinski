@@ -1,3 +1,4 @@
+use std::mem::forget;
 use std::time::{Duration, Instant};
 
 use log::*;
@@ -312,7 +313,7 @@ fn depth_under_mapis(e: &RecExpr<Cad>) -> usize {
     depth_under_mapis_impl(e, (e.as_ref().len() - 1).into())
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Clone)]
 pub struct MyIterData {
     best_cost: Cost,
 }
@@ -369,7 +370,7 @@ fn main() {
     };
 
     let rules = szalinski_egg::rules::rules();
-    let mut runner = MyRunner::new(MetaAnalysis::default())
+    let runner = MyRunner::new(MetaAnalysis::default())
         .with_iter_limit(*ITERATIONS)
         .with_node_limit(*NODE_LIMIT)
         .with_time_limit(Duration::from_secs_f64(*TIMEOUT))
@@ -383,7 +384,6 @@ fn main() {
 
     runner.print_report();
     let runner = reroll_and_run(runner, &rules);
-    let runner = reroll_and_run(runner, &rules);
 
     info!(
         "Stopping after {} iters: {:?}",
@@ -396,23 +396,31 @@ fn main() {
     let best = Extractor::new(&runner.egraph, CostFn).find_best(root);
     let extract_time = extract_time.elapsed().as_secs_f64();
 
-    println!("Best ({}): {}", best.0, best.1.pretty(80));
+    println!(
+        "Egraph size: {}: {}",
+        runner.egraph.number_of_classes(),
+        runner.egraph.total_number_of_nodes()
+    );
+
+    // println!("Best ({}): {}", best.0, best.1.pretty(80));
 
     let report = RunResult {
         initial_expr: initial_expr.pretty(80),
         initial_cost,
-        iterations: runner.iterations,
+        iterations: runner.iterations.clone(),
         final_cost: best.0,
         final_expr: best.1.pretty(80),
         extract_time,
         final_scad: "".into(),
         // final_scad: format!("{}", Scad(&best.1)),
-        stop_reason: runner.stop_reason.unwrap(),
+        stop_reason: runner.stop_reason.clone().unwrap(),
         ast_size: ast_size(&best.1),
         ast_depth: ast_depth(&best.1),
         n_mapis: n_mapis(&best.1),
         depth_under_mapis: depth_under_mapis(&best.1),
     };
+
+    forget(runner);
 
     let out_file = std::fs::File::create(&args[2]).expect("failed to open output");
     serde_json::to_writer_pretty(out_file, &report).unwrap();
