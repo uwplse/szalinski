@@ -1,12 +1,31 @@
-use std::fmt;
 use std::str::FromStr;
+use std::{cmp::Ordering, fmt};
 
+use egg::Language;
 use log::*;
 
 use crate::cad::{Cad, EGraph};
 
-#[derive(PartialOrd, Ord, PartialEq, Eq, Hash, Default, Clone, Copy)]
+#[derive(PartialEq, Eq, Hash, Default, Clone, Copy)]
 pub struct Num(ordered_float::NotNan<f64>);
+
+sz_param!(SOLVE_ROUND: f64 = 0.01);
+
+impl PartialOrd for Num {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.0.cmp(&other.0))
+    }
+}
+
+impl Ord for Num {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        let diff: f64 = self.to_f64() - other.to_f64();
+        if -*SOLVE_ROUND < diff && diff < *SOLVE_ROUND {
+            return Ordering::Equal;
+        }
+        self.0.cmp(&other.0)
+    }
+}
 
 sz_param!(ABS_EPSILON: f64 = 0.0001);
 sz_param!(REL_EPSILON: f64 = 0.0001);
@@ -85,9 +104,9 @@ pub fn unify_close_nums(egraph: &mut EGraph) {
     let mut nums = vec![];
     for eclass in egraph.classes() {
         for node in &eclass.nodes {
-            if let Cad::Num(num) = node.op {
-                assert_eq!(node.children.len(), 0);
-                nums.push((num, eclass.id));
+            if let Cad::Num(num) = node {
+                assert_eq!(node.children().len(), 0);
+                nums.push((*num, eclass.id));
             }
         }
     }
