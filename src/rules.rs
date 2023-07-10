@@ -1,9 +1,7 @@
 use std::cmp::max;
-use std::io::Write;
 use std::{fmt::Debug, str::FromStr};
 
 use crate::au::ArgList;
-use crate::cad::println_cad;
 use crate::permute::{Partitioning, Permutation};
 use crate::solve::solve;
 use crate::{
@@ -442,8 +440,10 @@ pub fn reroll(egraph: &mut EGraph) {
                 egraph,
                 root_id,
                 singleton_part_to_ids.len(),
-                100,
+                // TODO: magic number
+                100000,
             );
+            eprintln!("search finished");
         }
     }
 
@@ -508,11 +508,53 @@ fn search_combinations_and_add_impl(
     target_size: usize,
     limit: usize,
     fuel: &mut i64,
-) {
+) -> bool {
+    *fuel -= 1;
     if *fuel < 0 {
-        return;
+        return false;
     }
-    if limit == 0 || covered_size == target_size {
+    let mut inserted = false;
+    if limit != 0 && covered_size != target_size {
+        // for i in cur_pos..(part_to_ids.len() - todo_size + 1) {
+        for i in cur_pos..part_to_ids.len() {
+            let (part, id) = &part_to_ids[i];
+            if disabled_parts[id] == 0 {
+                cur_buffer.push(*id);
+                for part_id in part {
+                    for id in covered_by[part_id].iter() {
+                        *disabled_parts.get_mut(id).unwrap() += 1;
+                    }
+                }
+
+                inserted |= search_combinations_and_add_impl(
+                    part_to_ids,
+                    singleton_part_to_ids,
+                    egraph,
+                    root_id,
+                    cur_buffer,
+                    i + 1,
+                    covered_by,
+                    disabled_parts,
+                    covered_size + part.len(),
+                    target_size,
+                    limit - 1,
+                    fuel,
+                );
+                if *fuel < 0 {
+                    return inserted;
+                }
+
+                for part_id in part {
+                    for id in covered_by[part_id].iter() {
+                        *disabled_parts.get_mut(id).unwrap() -= 1;
+                    }
+                }
+                cur_buffer.pop();
+            }
+        }
+    }
+
+    if !inserted {
         // fill the rest of missing pieces with singleton list
         let mut result = cur_buffer.clone();
         for (part_id, id) in singleton_part_to_ids {
@@ -531,53 +573,15 @@ fn search_combinations_and_add_impl(
             let concat_id = egraph.add(Cad::Concat([list_id]));
             egraph.union(root_id, concat_id);
         }
-        *fuel -= 1;
-    } else {
-        // for i in cur_pos..(part_to_ids.len() - todo_size + 1) {
-        for i in cur_pos..part_to_ids.len() {
-            let (part, id) = &part_to_ids[i];
-            if disabled_parts[id] == 0 {
-                cur_buffer.push(*id);
-                for part_id in part {
-                    for id in covered_by[part_id].iter() {
-                        *disabled_parts.get_mut(id).unwrap() += 1;
-                    }
-                }
-
-                search_combinations_and_add_impl(
-                    part_to_ids,
-                    singleton_part_to_ids,
-                    egraph,
-                    root_id,
-                    cur_buffer,
-                    i + 1,
-                    covered_by,
-                    disabled_parts,
-                    covered_size + part.len(),
-                    target_size,
-                    limit - 1,
-                    fuel,
-                );
-                if *fuel < 0 {
-                    return;
-                }
-
-                for part_id in part {
-                    for id in covered_by[part_id].iter() {
-                        *disabled_parts.get_mut(id).unwrap() -= 1;
-                    }
-                }
-                cur_buffer.pop();
-            }
-        }
     }
+    return true;
 }
 
 fn get_all_part_perms(anti_substs: &Vec<ArgList>) -> HashSet<(Partitioning, Permutation)> {
     let m = anti_substs[0].len();
     // build possible partitions of the list
     // We only care about interesting columns, which hopefully aren't that many.
-    let cands: Vec<_> = (1..m)
+    let cands: Vec<_> = (0..m)
         .filter(|i| {
             !anti_substs
                 .iter()
@@ -590,7 +594,7 @@ fn get_all_part_perms(anti_substs: &Vec<ArgList>) -> HashSet<(Partitioning, Perm
     let mut part_perms = cands
         .iter()
         .cartesian_product(cands.iter())
-        // when i == j, this corresponds partitioning by one key
+        // when i == j, this corresponds to partitioning by one key
         .filter(|(i, j)| i <= j)
         .filter_map(|(i, j)| partition_list(&anti_substs, |_, a_s| (a_s[*i], a_s[*j])))
         .collect::<HashSet<_>>();
@@ -613,18 +617,14 @@ fn get_au_groups(
     eprintln!("list length: {}", list.len());
     // TODO: don't hard code constants
     // Step 1: compute anti-unification
+    let mut templates = HashSet::<CadCtx>::default();
     if list.len() < 500 {
         for i in 0..list.len() {
             for j in i + 1..list.len() {
                 let result = au.anti_unify_class(egraph, &(list[i], list[j]));
-                // eprintln!("result.len: {}", result.len());
-                for (cad, args1, args2) in result {
-                    if !au_groups.contains_key(cad) {
-                        au_groups.insert(cad.clone(), HashMap::default());
-                    }
-                    let map = au_groups.get_mut(cad).unwrap();
-                    map.entry(list[i]).or_insert_with(|| args1.clone());
-                    map.entry(list[j]).or_insert_with(|| args2.clone());
+                dbg!(result.len());
+                for (cad, _, _) in result {
+                    templates.insert(cad.clone());
                 }
             }
         }
@@ -636,7 +636,6 @@ fn get_au_groups(
         let (mut success_times, mut try_times) = (0, 0);
         // we want # templates * # parametrization to be close to 100_000
         let template_limit = max(100_000 / list.len(), 5);
-        let mut templates = HashSet::<CadCtx>::default();
         while success_times < template_limit && try_times < 100_000 {
             let i = uniform.sample(&mut rng);
             let j = uniform.sample(&mut rng);
@@ -647,25 +646,40 @@ fn get_au_groups(
             }
             try_times += 1;
         }
-        for cad in templates {
-            println!("{:?}", &cad);
-            let mut map = HashMap::<Id, Vec<Num>>::default();
-            for i in 0..list.len() {
-                let result = cad.get_params(egraph, list[i]);
-                if let Some(result) = result {
-                    map.entry(list[i]).or_insert(result);
-                }
-            }
-            au_groups.insert(cad, map);
-        }
     }
-    if au_groups.len() == 0 {
-        return vec![];
-    }
+
     eprintln!(
         "anti_unification done, templates found: {}",
         au_groups.len()
     );
+
+    for cad in templates {
+        // dbg!(&cad);
+        let mut map = HashMap::<Id, Vec<Num>>::default();
+        for i in 0..list.len() {
+            // let result = cad.get_params(egraph, list[i]);
+            // if let Some(result) = result {
+            //     map.entry(list[i]).or_insert(result);
+            // }
+            let results = cad.get_params(egraph, list[i]);
+            // BIG TODO: this will only get you one parameter
+            if results.len() > 0 {
+                map.entry(list[i]).or_insert(results[0].clone());
+            }
+            // for result in results {
+            //     map.entry(list[i]).or_insert(result);
+            // }
+        }
+        if !map.is_empty() {
+            au_groups.insert(cad, map);
+        }
+    }
+
+    eprintln!("parametrization done");
+
+    if au_groups.len() == 0 {
+        return vec![];
+    }
     // flat buffer au_groups
     let au_groups: Vec<(CadCtx, Vec<Id>, Vec<Vec<Num>>)> = au_groups
         .into_iter()

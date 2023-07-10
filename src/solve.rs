@@ -160,7 +160,12 @@ fn solve_list_fn(xs: &[Num]) -> Option<Formula> {
     None
 }
 
-fn solve_and_add(egraph: &mut EGraph, proj_list: &[Vec<Num>], template: &CadCtx) -> Option<Id> {
+fn solve_and_add(
+    egraph: &mut EGraph,
+    proj_list: &[Vec<Num>],
+    template: &CadCtx,
+    should_always_insert: bool,
+) -> Option<Id> {
     let mut by_chunk = IndexMap::<usize, Vec<_>>::default();
     let col_len = proj_list.len();
     let row_len = proj_list[0].len();
@@ -185,6 +190,8 @@ fn solve_and_add(egraph: &mut EGraph, proj_list: &[Vec<Num>], template: &CadCtx)
         .collect::<Vec<_>>();
     let mut inserted = vec![None; col_len];
 
+    let mut should_insert = should_always_insert;
+    let mut get_ats = vec![];
     for (((&chunk_len, lists), inner), var) in by_chunk.iter().zip(&inners).zip(vars) {
         for (index, list) in lists {
             let slice = &list[..chunk_len];
@@ -196,15 +203,11 @@ fn solve_and_add(egraph: &mut EGraph, proj_list: &[Vec<Num>], template: &CadCtx)
                 let solving_result = solve_list_fn(&nums);
                 match solving_result {
                     Some(fun) => {
+                        should_insert = true;
                         inserted[*index] = Some(fun.add_to_egraph(egraph, var_id));
                     }
                     None => {
-                        let children = nums
-                            .iter()
-                            .map(|num| egraph.add(Cad::Num(*num)))
-                            .collect_vec();
-                        let list = egraph.add(Cad::List(children));
-                        inserted[*index] = Some(egraph.add(Cad::GetAt([list, var_id])));
+                        get_ats.push((nums, index, var_id));
                     }
                 }
             } else {
@@ -213,6 +216,19 @@ fn solve_and_add(egraph: &mut EGraph, proj_list: &[Vec<Num>], template: &CadCtx)
                 return None;
             }
         }
+    }
+
+    if !should_insert {
+        return None;
+    }
+
+    for (nums, index, var_id) in get_ats {
+        let children = nums
+            .iter()
+            .map(|num| egraph.add(Cad::Num(*num)))
+            .collect_vec();
+        let list = egraph.add(Cad::List(children));
+        inserted[*index] = Some(egraph.add(Cad::GetAt([list, var_id])));
     }
 
     let mut lens = vec![];
@@ -254,11 +270,14 @@ fn solve_vec(egraph: &mut EGraph, list: &[Vec<Num>], template: &CadCtx) -> Vec<I
         }
     }
 
-    for perm in &perms {
+    let mut flag = true;
+    // TODO: magic number
+    for perm in perms.into_iter().take(100) {
         let arr_of_cols: Vec<Vec<Num>> = arr_of_cols.iter().map(|col| perm.apply(col)).collect();
-        if let Some(added_mapi) = solve_and_add(egraph, &arr_of_cols, template) {
+        if let Some(added_mapi) = solve_and_add(egraph, &arr_of_cols, template, flag) {
             results.push(added_mapi);
         }
+        flag = false;
     }
 
     // results may be empty

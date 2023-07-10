@@ -2,6 +2,7 @@ use std::{collections::HashMap, mem::discriminant};
 
 use egg::{Id, Language};
 use itertools::Itertools;
+use rand::{prelude::Distribution, thread_rng};
 use std::convert::TryInto;
 
 use crate::{
@@ -60,7 +61,7 @@ pub enum CadCtx {
 }
 pub type ArgList = Vec<Num>;
 impl CadCtx {
-    pub fn get_params(&self, egraph: &EGraph, id: Id) -> Option<ArgList> {
+    pub fn get_params(&self, egraph: &EGraph, id: Id) -> Vec<ArgList> {
         macro_rules! f {
             ($templates:expr, $cad:path $(,[ $arg:ident $check:expr ])*) => {
                 egraph[id]
@@ -78,36 +79,43 @@ impl CadCtx {
                         }
                     })
                     .flat_map(|children| {
+                        if $templates.len() != children.len() {
+                            return vec![];
+                        }
                         $templates
                             .iter()
                             .zip(children.iter())
                             .map(|(temp, child)| temp.get_params(egraph, *child))
                             .multi_cartesian_product()
                             .map(|ms| ms.into_iter().flatten().collect::<ArgList>())
+                            .take(1)
+                            .collect_vec()
                     })
-                    .next()
+                    // TODO: magic number
+                    .take(1)
+                    .collect()
             };
             ($cad:expr) => {
                 if $cad == egraph[id].data.best {
-                    Some(vec![])
+                    vec![vec![]]
                 } else {
-                    None
+                    vec![]
                 }
             };
         }
         match self {
             CadCtx::Hole => {
                 if let Cad::Num(n) = egraph[id].data.best {
-                    Some(vec![n])
+                    vec![vec![n]]
                 } else {
-                    None
+                    vec![]
                 }
             }
             CadCtx::Id(id2) => {
                 if &id == id2 {
-                    Some(vec![])
+                    vec![vec![]]
                 } else {
-                    None
+                    vec![]
                 }
             }
             CadCtx::Cube(templates) => f!(templates, Cad::Cube),
@@ -228,34 +236,61 @@ impl AU {
         // TODO: this can be improved
         // TODO: a pre-filtering pass that only process promising a and b (i.e., their children has constrs that match)
         let mut aus = vec![];
-        'outer: for a in ns1 {
-            for b in ns2 {
-                if discriminant(a) == discriminant(b) && a.children().len() == b.children().len() {
-                    let result = a
-                        .children()
-                        .iter()
-                        .zip(b.children().iter())
-                        .map(|(a, b)| self.anti_unify_class(egraph, &(*a, *b)).clone())
-                        .multi_cartesian_product()
-                        .take(1)
-                        .map(|xs| {
-                            let mut children = vec![];
-                            let mut args1 = vec![];
-                            let mut args2 = vec![];
-                            for (child, arg1, arg2) in xs {
-                                children.push(child);
-                                args1.extend(arg1);
-                                args2.extend(arg2);
-                            }
-                            (build_cad_ctx(a, children), args1, args2)
-                        });
-                    aus.extend(result);
-                    // make sure to return the result eagerly.
-                    // This makes sure AU is very very fast.
-                    if aus.len() > 0 {
-                        break 'outer;
-                    }
-                };
+        let mut work = |a: &Cad, b: &Cad| {
+            if discriminant(a) == discriminant(b) && a.children().len() == b.children().len() {
+                let result = a
+                    .children()
+                    .iter()
+                    .zip(b.children().iter())
+                    .map(|(a, b)| self.anti_unify_class(egraph, &(*a, *b)).clone())
+                    .multi_cartesian_product()
+                    .take(1)
+                    .map(|xs| {
+                        let mut children = vec![];
+                        let mut args1 = vec![];
+                        let mut args2 = vec![];
+                        for (child, arg1, arg2) in xs {
+                            children.push(child);
+                            args1.extend(arg1);
+                            args2.extend(arg2);
+                        }
+                        (build_cad_ctx(a, children), args1, args2)
+                    });
+                aus.extend(result);
+                // make sure to return the result eagerly.
+                // This makes sure AU is very very fast.
+                // This also makes the result poor quality
+                // if aus.len() > 0 {
+                //     break 'outer;
+                // }
+            };
+        };
+        // TODO: magic number
+        if ns1.len() * ns2.len() <= 500 {
+            for a in ns1 {
+                if let Cad::MapI(_) = a {
+                    continue;
+                }
+
+                for b in ns2 {
+                    work(a, b);
+                }
+            }
+        } else {
+            let mut rng = thread_rng();
+            let gen_a = rand::distributions::Uniform::new(0, ns1.len());
+            let gen_b = rand::distributions::Uniform::new(0, ns2.len());
+            let mut try_times = 0;
+            while try_times < 500 {
+                let a = &ns1[gen_a.sample(&mut rng)];
+                let b = &ns2[gen_b.sample(&mut rng)];
+
+                if let Cad::MapI(_) = a {
+                    continue;
+                }
+
+                work(a, b);
+                try_times += 1;
             }
         }
 
