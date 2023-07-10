@@ -368,6 +368,12 @@ pub fn eval(cx: Option<&FunCtx>, expr: &RecExpr<Cad>) -> RecExpr<Cad> {
 
             mk_list(vec)
         }
+        Cad::GetAt => {
+            let list = eval_list(cx, arg(0));
+            let idx = eval(cx, arg(1));
+            let num = get_num(&idx) as usize;
+            list.into_iter().nth(num).unwrap()
+        }
         cad => panic!("can't eval({:?})", cad),
     }
 }
