@@ -165,10 +165,21 @@ fn solve_and_add(egraph: &mut EGraph, xs: &[Num], ys: &[Num], zs: &[Num]) -> Opt
         for (index, list) in lists {
             let slice = &list[..chunk_len];
             let nums = unrun(slice, *inner)?;
-            let fun = solve_list_fn(&nums)?;
-            // println!("Found: {:?}", fun);
             let var_id = egraph.add(ENode::leaf(var.clone()));
-            inserted[*index] = Some(fun.add_to_egraph(egraph, var_id));
+            match solve_list_fn(&nums) {
+                Some(fun) => {
+                    inserted[*index] = Some(fun.add_to_egraph(egraph, var_id));
+                }
+                None => {
+                    let children: Vec<_> = nums
+                        .iter()
+                        .map(|num| egraph.add(ENode::leaf(Cad::Num(*num))))
+                        .collect();
+                    let list = egraph.add(ENode::new(Cad::List, children));
+                    inserted[*index] = Some(egraph.add(ENode::new(Cad::GetAt, vec![list, var_id])));
+                }
+            }
+            // println!("Found: {:?}", fun);
         }
     }
 
@@ -305,7 +316,9 @@ fn add_vec(egraph: &mut EGraph, v: Vec3) -> Id {
 
 pub fn solve(egraph: &mut EGraph, list: &[Vec3]) -> Vec<Id> {
     let mut results = solve_vec(egraph, list);
-    debug!("Solved {:?} -> {:?}", list, results);
+    if results.len() > 0 {
+        warn!("Solved {:?} -> {:?}", list, results);
+    }
     let (center, polar_list) = polarize(&list);
     for res in solve_vec(egraph, &polar_list) {
         let e = ENode::new(
