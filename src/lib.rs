@@ -36,5 +36,7 @@ pub mod rules;
 pub mod au;
 pub mod eval;
 pub mod num;
+pub mod synthesize;
+
 mod permute;
 mod solve;
