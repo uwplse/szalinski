@@ -316,9 +316,7 @@ fn add_vec(egraph: &mut EGraph, v: Vec3) -> Id {
 
 pub fn solve(egraph: &mut EGraph, list: &[Vec3]) -> Vec<Id> {
     let mut results = solve_vec(egraph, list);
-    if results.len() > 0 {
-        warn!("Solved {:?} -> {:?}", list, results);
-    }
+    debug!("Solved {:?} -> {:?}", list, results);
     let (center, polar_list) = polarize(&list);
     for res in solve_vec(egraph, &polar_list) {
         let e = ENode::new(
