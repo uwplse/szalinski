@@ -16,15 +16,15 @@ export default function App(props) {
     Array(NUM_PANES).fill(100 / NUM_PANES)
   );
 
-  const runSynthesis = (csgCode, type) => {
+  const runSynthesis = (csgCode) => {
     try {
-      return wasm.synthesize_caddy(csgCode, type);
+      return wasm.synthesize_caddy(csgCode);
     } catch (e) {
       console.warn(e);
     }
   };
-  const onRunClick = (type) => {
-    setCaddy(runSynthesis(csg, type) || "");
+  const onRunClick = () => {
+    setCaddy(runSynthesis(csg) || "");
   };
 
   const onDrag = (widths) => {
@@ -36,11 +36,11 @@ export default function App(props) {
   };
 
   const buttons = [
-    {
-      id: "szalinski",
-      label: "Run Szalinski",
-      onClick: () => onRunClick("szalinski"),
-    },
+    // {
+    //   id: "szalinski",
+    //   label: "Run Szalinski",
+    //   onClick: () => onRunClick("szalinski"),
+    // },
     { id: "au", label: "Run AU", onClick: () => onRunClick("AU") },
   ];
 

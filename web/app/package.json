@@ -20,7 +20,7 @@
     "react-monaco-editor": "^0.52.0",
     "react-scripts": "2.1.8",
     "react-split": "^2.0.14",
-    "wasm-sz": "file:./pkg"
+    "wasm-sz": "file:../pkg"
   },
   "devDependencies": {
     "gh-pages": "^5.0.0",
