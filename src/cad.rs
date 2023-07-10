@@ -80,6 +80,7 @@ define_language! {
         Fold = "Fold",
         Affine = "Affine",
         Binop = "Binop",
+        GetAt = "GetAt",
 
         Vec3 = "Vec3",
 
@@ -272,7 +273,7 @@ impl egg::CostFunction<Cad> for CostFn {
         let cost = match enode.op {
             Num(n) => {
                 let s = format!("{}", n);
-                0.000001 * s.len() as Cost
+                1. + (0.000001 * s.len() as Cost)
             }
             Bool(_) | ListVar(_) => SMALL,
             Add | Sub | Mul | Div => SMALL,
@@ -295,6 +296,7 @@ impl egg::CostFunction<Cad> for CostFn {
             Cons => 1.0,
             List => 1.0,
             Vec3 => 1.0,
+            GetAt => 1.0,
 
             Unpolar => BIG,
             Sort | Unsort | Part | Unpart => BIG,
