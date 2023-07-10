@@ -622,7 +622,6 @@ fn get_au_groups(
         for i in 0..list.len() {
             for j in i + 1..list.len() {
                 let result = au.anti_unify_class(egraph, &(list[i], list[j]));
-                dbg!(result.len());
                 for (cad, _, _) in result {
                     templates.insert(cad.clone());
                 }
