@@ -1,4 +1,4 @@
-use std::{fmt::Debug, hash::Hash};
+use std::{fmt::Debug, hash::Hash, mem::discriminant};
 
 use indexmap::{IndexMap, IndexSet};
 use itertools::Itertools;
@@ -7,29 +7,29 @@ use log::{info, warn};
 use egg::{rewrite as rw, *};
 
 use crate::{
-    cad::{Cad, EGraph, Meta, Rewrite, Vec3},
+    cad::{Cad, EGraph, MetaAnalysis, Rewrite, Vec3},
     num::{num, Num},
     permute::{Partitioning, Permutation},
 };
 
 fn is_not_zero(var: &'static str) -> impl Fn(&mut EGraph, Id, &Subst) -> bool {
     let var = var.parse().unwrap();
-    let zero = enode!(Cad::Num(num(0.0)));
-    move |egraph, _, subst| !egraph[subst[&var]].nodes.contains(&zero)
+    let zero = Cad::Num(num(0.0));
+    move |egraph, _, subst| !egraph[subst[var]].nodes.contains(&zero)
 }
 
-fn is_eq(v1: &'static str, v2: &'static str) -> ConditionEqual<Pattern<Cad>, Pattern<Cad>> {
+fn is_eq(v1: &'static str, v2: &'static str) -> ConditionEqual<Cad> {
     let p1: Pattern<Cad> = v1.parse().unwrap();
     let p2: Pattern<Cad> = v2.parse().unwrap();
-    ConditionEqual(p1, p2)
+    ConditionEqual::new(p1, p2)
 }
 
 fn is_pos(vars: &[&'static str]) -> impl Fn(&mut EGraph, Id, &Subst) -> bool {
     let vars: Vec<Var> = vars.iter().map(|v| v.parse().unwrap()).collect();
     move |egraph, _, subst| {
         vars.iter().all(|v| {
-            egraph[subst[&v]].nodes.iter().all(|n| {
-                if let Cad::Num(num) = n.op {
+            egraph[subst[*v]].nodes.iter().all(|n| {
+                if let Cad::Num(num) = n {
                     num.to_f64() > 0.0
                 } else {
                     true
@@ -137,15 +137,15 @@ pub fn rules() -> Vec<Rewrite> {
 
         rw!("fold_op"; "(Fold ?bop (Affine ?aff ?param ?cad))"=> "(Affine ?aff ?param (Fold ?bop ?cad))"),
 
-        rw!("union_trans"; "(Union (Trans ?x ?y ?z ?a) (Trans ?x ?y ?z ?b))"=> "(Trans ?x ?y ?z (Union ?a ?b))"),
+        rw!("union_trans"; "(Binop Union (Affine Trans (Vec3 ?x ?y ?z) ?a) (Affine Trans (Vec3 ?x ?y ?z) ?b))"=> "(Affine Trans (Vec3 ?x ?y ?z) (Binop Union ?a ?b))"),
 
-        rw!("inter_empty"; "(Inter ?a Empty)"=> "Empty"),
+        rw!("inter_empty"; "(Binop Inter ?a Empty)"=> "Empty"),
 
         // idempotent
-        rw!("union_same"; "(Union ?a ?a)"=> "?a"),
-        rw!("inter_same"; "(Inter ?a ?a)"=> "?a"),
+        rw!("union_same"; "(Binop Union ?a ?a)"=> "?a"),
+        rw!("inter_same"; "(Binop Inter ?a ?a)"=> "?a"),
 
-        rw!("inter_union"; "(Inter ?a (Union ?a ?b))"=> "?a"),
+        rw!("inter_union"; "(Binop Inter ?a (Binop Union ?a ?b))"=> "?a"),
 
         // partitioning
         rw!("concat"; "(Unpart ?part ?lists)"=> "(Concat ?lists)"),
@@ -236,8 +236,8 @@ pub fn rules() -> Vec<Rewrite> {
 
 
             // rw("lift_op",
-            //    "(Union (Affine ?op ?params ?a) (Affine ?op ?params ?b))",
-            //    "(Affine ?op ?params (Union ?a ?b))"),
+            //    "(Binop Union (Affine ?op ?params ?a) (Affine ?op ?params ?b))",
+            //    "(Affine ?op ?params (Binop Union ?a ?b))"),
         ]);
     }
 
@@ -253,12 +253,12 @@ pub fn rules() -> Vec<Rewrite> {
             rw!("trans_scale"; "(Affine Trans (Vec3 ?x ?y ?z) (Affine Scale (Vec3 ?a ?b ?c) ?m))"=> "(Affine Scale (Vec3 ?a ?b ?c) (Affine Trans (Vec3 (/ ?x ?a) (/ ?y ?b) (/ ?z ?c)) ?m))"),
 
             // rw("scale_rotate",
-            //    "(Scale (Vec3 ?a ?a ?a) (Rotate (Vec3 ?x ?y ?z) ?m))",
-            //    "(Rotate (Vec3 ?x ?y ?z) (Scale (Vec3 ?a ?a ?a) ?m))"),
+            //    "(Affine Scale (Vec3 ?a ?a ?a) (Affine Rotate (Vec3 ?x ?y ?z) ?m))",
+            //    "(Affine Rotate (Vec3 ?x ?y ?z) (Affine Scale (Vec3 ?a ?a ?a) ?m))"),
 
             // rw("rotate_scale",
-            //    "(Scale (Vec3 ?a ?a ?a) (Rotate (Vec3 ?x ?y ?z) ?m))",
-            //    "(Rotate (Vec3 ?x ?y ?z) (Scale (Vec3 ?a ?a ?a) ?m))"),
+            //    "(Affine Scale (Vec3 ?a ?a ?a) (Affine Rotate (Vec3 ?x ?y ?z) ?m))",
+            //    "(Affine Rotate (Vec3 ?x ?y ?z) (Affine Scale (Vec3 ?a ?a ?a) ?m))"),
 
             // primitives
 
@@ -399,7 +399,7 @@ pub fn rules() -> Vec<Rewrite> {
         info!("Using suspect rules");
         println!("Using suspect rules");
         rules.extend(vec![
-            rw!("union_comm"; "(Union ?a ?b)"=> "(Union ?b ?a)"),
+            rw!("union_comm"; "(Binop Union ?a ?b)"=> "(Binop Union ?b ?a)"),
             rw!("combine_scale"; "(Affine Scale (Vec3 ?a ?b ?c) (Affine Scale (Vec3 ?d ?e ?f) ?cad))"=> "(Affine Scale (Vec3 (* ?a ?d) (* ?b ?e) (* ?c ?f)) ?cad)"),
         ]);
     } else {
@@ -412,20 +412,19 @@ pub fn rules() -> Vec<Rewrite> {
     rules
 }
 
-fn get_float(expr: &RecExpr<Cad>) -> Option<Num> {
-    match expr.as_ref().op {
+fn get_float(expr: &Cad) -> Option<Num> {
+    match expr {
         Cad::Num(f) => Some(f.clone()),
         _ => None,
     }
 }
 
-fn get_vec(expr: &RecExpr<Cad>) -> Option<Vec3> {
-    if Cad::Vec3 == expr.as_ref().op {
-        let args = &expr.as_ref().children;
+fn get_vec(egraph: &EGraph, expr: &Cad) -> Option<Vec3> {
+    if let Cad::Vec3(args) = expr {
         assert_eq!(args.len(), 3);
-        let f0 = get_float(&args[0])?;
-        let f1 = get_float(&args[1])?;
-        let f2 = get_float(&args[2])?;
+        let f0 = get_float(&egraph[args[0]].data.best)?;
+        let f1 = get_float(&egraph[args[1]].data.best)?;
+        let f2 = get_float(&egraph[args[2]].data.best)?;
         Some((f0, f1, f2))
     } else {
         None
@@ -471,19 +470,19 @@ where
     for (_, (is, ids)) in &parts {
         order.extend(is);
         lengths.push(ids.len());
-        list_ids.push(egraph.add(ENode::new(Cad::List, ids.clone())));
+        list_ids.push(egraph.add(Cad::List(ids.clone())));
     }
     let part = Partitioning::from_vec(lengths);
-    let part_id = egraph.add(ENode::leaf(Cad::Partitioning(part)));
-    let list_of_lists = egraph.add(ENode::new(Cad::List, list_ids));
-    let concat = egraph.add(ENode::new(Cad::Unpart, vec![part_id, list_of_lists]));
+    let part_id = egraph.add(Cad::Partitioning(part));
+    let list_of_lists = egraph.add(Cad::List(list_ids));
+    let concat = egraph.add(Cad::Unpart([part_id, list_of_lists]));
 
     let perm = Permutation::from_vec(order);
     let res = if perm.is_ordered() {
         concat
     } else {
         let p = Cad::Permutation(perm);
-        let e = ENode::new(Cad::Unsort, vec![egraph.add(ENode::leaf(p)), concat]);
+        let e = Cad::Unsort([egraph.add(p), concat]);
         egraph.add(e)
     };
 
@@ -500,7 +499,9 @@ fn get_single_cad(egraph: &EGraph, id: Id) -> Cad {
     // let n = &nodes[0];
     // assert_eq!(n.children.len(), 0);
     // n.op.clone()
-    egraph[id].metadata.best.as_ref().op.clone()
+    let best = &egraph[id].data.best;
+    assert!(best.is_leaf());
+    best.clone()
 }
 
 fn get_affines(egraph: &EGraph, id: Id, affine_kind: &Cad) -> Vec<(Id, Id)> {
@@ -508,12 +509,13 @@ fn get_affines(egraph: &EGraph, id: Id, affine_kind: &Cad) -> Vec<(Id, Id)> {
         .nodes
         .iter()
         .filter_map(|n| {
-            if n.op != Cad::Affine {
-                return None;
-            }
-            let kind = get_single_cad(egraph, n.children[0]);
-            if affine_kind == &kind {
-                Some((n.children[1], n.children[2]))
+            if let Cad::Affine(args) = n {
+                let kind = get_single_cad(egraph, args[0]);
+                if affine_kind == &kind {
+                    Some((args[1], args[2]))
+                } else {
+                    None
+                }
             } else {
                 None
             }
@@ -528,8 +530,8 @@ fn affine_signature(egraph: &EGraph, id: Id) -> AffineSig {
     let mut rotates = 0;
     let mut translates = 0;
     for n in &egraph[id].nodes {
-        if n.op == Cad::Affine {
-            let kind = get_single_cad(egraph, n.children[0]);
+        if let Cad::Affine(args) = n {
+            let kind = get_single_cad(egraph, args[0]);
             #[rustfmt::skip]
             match kind {
                 Cad::Trans => {translates += 1;}
@@ -568,7 +570,7 @@ fn insert_map2s(egraph: &mut EGraph, list_ids: &[Id]) -> Vec<Id> {
             .zip(&sigs)
             .all(|(affs, sig)| affs.len() >= sig[cadi]));
 
-        let aff_id = egraph.add(ENode::leaf(cad.clone()));
+        let aff_id = egraph.add(cad.clone());
 
         let unique_sig_lengths = || unique_sigs.iter().map(|&sig| sig[cadi]);
 
@@ -596,10 +598,11 @@ fn insert_map2s(egraph: &mut EGraph, list_ids: &[Id]) -> Vec<Id> {
 
             assert_eq!(param_ids.len(), cad_ids.len());
 
-            let param_list_id = egraph.add(ENode::new(Cad::List, param_ids));
-            let cad_list_id = egraph.add(ENode::new(Cad::List, cad_ids));
-            let map2 = ENode::new(Cad::Map2, vec![aff_id, param_list_id, cad_list_id]);
-            results.push(egraph.add(map2))
+            let param_list_id = egraph.add(Cad::List(param_ids));
+            let cad_list_id = egraph.add(Cad::List(cad_ids));
+            let map2 = Cad::Map2([aff_id, param_list_id, cad_list_id]);
+            let id = egraph.add(map2);
+            results.push(id)
         }
     }
 
@@ -620,27 +623,31 @@ fn num_sign(n: Num) -> i32 {
 
 macro_rules! get_meta_list {
     ($egraph:expr, $eclass:expr) => {
-        match &$egraph[$eclass].metadata.list {
+        match &$egraph[$eclass].data.list {
             Some(ids) => ids,
             None => return vec![],
         }
     };
 }
 
-impl Applier<Cad, Meta> for ListApplier {
-    fn apply_one(&self, egraph: &mut EGraph, _: Id, map: &Subst) -> Vec<Id> {
-        let ids = get_meta_list!(egraph, map[&self.var]).clone();
+impl Applier<Cad, MetaAnalysis> for ListApplier {
+    fn apply_one(
+        &self,
+        egraph: &mut EGraph,
+        eclass: Id,
+        map: &Subst,
+        _searcher_ast: Option<&PatternAst<Cad>>,
+        _rule_name: Symbol,
+    ) -> Vec<Id> {
+        let ids: Vec<Id> = get_meta_list!(egraph, map[self.var]).clone();
         // println!("LISTAPPLIER: {:?}", ids);
         // println!("ids: {:?}", ids);
-        let bests: Vec<_> = ids
-            .iter()
-            .map(|&id| egraph[id].metadata.best.clone())
-            .collect();
+        let bests: Vec<_> = ids.iter().map(|&id| egraph[id].data.best.clone()).collect();
         let ops: Option<Vec<_>> = ids
             .iter()
             .map(|&id| {
-                egraph[id].nodes.iter().find_map(|n| match n.op {
-                    Cad::Affine => Some(get_single_cad(egraph, n.children[0])),
+                egraph[id].nodes.iter().find_map(|n| match n {
+                    Cad::Affine(args) => Some(get_single_cad(egraph, args[0])),
                     _ => None,
                 })
             })
@@ -651,9 +658,14 @@ impl Applier<Cad, Meta> for ListApplier {
         if ids.len() > 1 {
             let i0 = egraph.find(ids[0]);
             if ids.iter().all(|id| i0 == egraph.find(*id)) {
-                let len = ENode::leaf(Cad::Num(ids.len().into()));
-                let e = ENode::new(Cad::Repeat, vec![egraph.add(len), i0]);
-                results.push(egraph.add(e));
+                let len = Cad::Num(ids.len().into());
+                let e = Cad::Repeat([egraph.add(len), i0]);
+                let id = egraph.add(e);
+                results.push(id);
+
+                for result in results.iter() {
+                    egraph.union(eclass, *result);
+                }
                 return results;
             }
         }
@@ -661,20 +673,29 @@ impl Applier<Cad, Meta> for ListApplier {
         // don't partition a list of lists
         if ids
             .iter()
-            .any(|&id| egraph[id].nodes.iter().any(|n| n.op == Cad::List))
+            .any(|&id| egraph[id].nodes.iter().any(|n| matches!(n, Cad::List(_))))
         {
+            for result in results.iter() {
+                egraph.union(eclass, *result);
+            }
             return results;
         }
 
         results.extend(insert_map2s(egraph, &ids));
 
         // try to solve a list
-        if let Some(vec_list) = bests.iter().map(get_vec).collect::<Option<Vec<Vec3>>>() {
+        if let Some(vec_list) = bests
+            .iter()
+            .map(|n| get_vec(egraph, n))
+            .collect::<Option<Vec<Vec3>>>()
+        {
             let len = vec_list.len();
             if len > 2 {
                 let solved = crate::solve::solve(egraph, &vec_list);
                 // if !solved.is_empty() {
-                //     println!("Solved!: {:?}", solved);
+                //     for id in &solved {
+                //         println_cad(egraph, *id);
+                //     }
                 // }
                 results.extend(solved);
             }
@@ -704,9 +725,12 @@ impl Applier<Cad, Meta> for ListApplier {
 
         // try to partition things by operator
         if let Some(ops) = ops {
-            results.extend(partition_list(egraph, &ids, |i, _| ops[i].clone()));
+            results.extend(partition_list(egraph, &ids, |i, _| discriminant(&ops[i])));
         }
 
+        for result in results.iter() {
+            egraph.union(eclass, *result);
+        }
         results
     }
 }
@@ -719,7 +743,7 @@ macro_rules! get_unit {
         // if nodes.len() > 1 {
         //     assert!(nodes[1..].iter().all(|n| n == &nodes[0]))
         // }
-        match &egraph[eclass].metadata.best.as_ref().op {
+        match &egraph[eclass].data.best {
             $cad(p) => {
                 // assert_eq!(nodes[0].children.len(), 0);
                 p
@@ -735,13 +759,23 @@ struct SortApplier {
     list: Var,
 }
 
-impl Applier<Cad, Meta> for SortApplier {
-    fn apply_one(&self, egraph: &mut EGraph, _: Id, map: &Subst) -> Vec<Id> {
-        let items = get_meta_list!(egraph, map[&self.list]);
-        let perm: &Permutation = get_unit!(egraph, map[&self.perm], Cad::Permutation);
+impl Applier<Cad, MetaAnalysis> for SortApplier {
+    fn apply_one(
+        &self,
+        egraph: &mut EGraph,
+        eclass: Id,
+        map: &Subst,
+        _searcher_ast: Option<&PatternAst<Cad>>,
+        _rule_name: Symbol,
+    ) -> Vec<Id> {
+        let items = get_meta_list!(egraph, map[self.list]);
+        let perm: &Permutation = get_unit!(egraph, map[self.perm], Cad::Permutation);
         let sorted = perm.apply(items);
-        let e = ENode::new(Cad::List, sorted);
-        vec![egraph.add(e)]
+        let e = Cad::List(sorted);
+
+        let id = egraph.add(e);
+        egraph.union(eclass, id);
+        vec![id]
     }
 }
 
@@ -751,17 +785,28 @@ struct PartApplier {
     list: Var,
 }
 
-impl Applier<Cad, Meta> for PartApplier {
-    fn apply_one(&self, egraph: &mut EGraph, _: Id, map: &Subst) -> Vec<Id> {
-        let items = get_meta_list!(egraph, map[&self.list]);
-        let part: &Partitioning = get_unit!(egraph, map[&self.part], Cad::Partitioning);
+impl Applier<Cad, MetaAnalysis> for PartApplier {
+    fn apply_one(
+        &self,
+        egraph: &mut EGraph,
+        eclass: Id,
+        map: &Subst,
+        _searcher_ast: Option<&PatternAst<Cad>>,
+        _rule_name: Symbol,
+    ) -> Vec<Id> {
+        let items = get_meta_list!(egraph, map[self.list]);
+        let part: &Partitioning = get_unit!(egraph, map[self.part], Cad::Partitioning);
         let list_of_lists = part
             .apply(items)
             .into_iter()
-            .map(|sublist| egraph.add(ENode::new(Cad::List, sublist)));
+            .map(|sublist| egraph.add(Cad::List(sublist)))
+            .collect();
 
-        let e = ENode::new(Cad::List, list_of_lists);
-        vec![egraph.add(e)]
+        let e = Cad::List(list_of_lists);
+
+        let id = egraph.add(e);
+        egraph.union(eclass, id);
+        vec![id]
     }
 }
 
@@ -771,21 +816,30 @@ struct UnpartApplier {
     list: Var,
 }
 
-impl Applier<Cad, Meta> for UnpartApplier {
-    fn apply_one(&self, egraph: &mut EGraph, _: Id, map: &Subst) -> Vec<Id> {
-        let items = get_meta_list!(egraph, map[&self.list]).clone();
-        let part: Partitioning = get_unit!(egraph, map[&self.part], Cad::Partitioning).clone();
+impl Applier<Cad, MetaAnalysis> for UnpartApplier {
+    fn apply_one(
+        &self,
+        egraph: &mut EGraph,
+        eclass: Id,
+        map: &Subst,
+        _searcher_ast: Option<&PatternAst<Cad>>,
+        _rule_name: Symbol,
+    ) -> Vec<Id> {
+        let items = get_meta_list!(egraph, map[self.list]).clone();
+        let part: Partitioning = get_unit!(egraph, map[self.part], Cad::Partitioning).clone();
         assert_eq!(part.lengths.len(), items.len());
 
         if items.is_empty() {
-            return vec![egraph.add(ENode::leaf(Cad::Nil))];
+            let nil = egraph.add(Cad::Nil);
+            egraph.union(eclass, nil);
+            return vec![nil];
         }
 
         let get_unsort = |id: Id| -> Option<(&Permutation, Id)> {
-            egraph[id].nodes.iter().find_map(|n| match n.op {
-                Cad::Unsort => {
-                    let perm = get_unit!(egraph, n.children[0], Cad::Permutation);
-                    Some((perm, n.children[1]))
+            egraph[id].nodes.iter().find_map(|n| match n {
+                Cad::Unsort(args) => {
+                    let perm = get_unit!(egraph, args[0], Cad::Permutation);
+                    Some((perm, args[1]))
                 }
                 _ => None,
             })
@@ -810,18 +864,22 @@ impl Applier<Cad, Meta> for UnpartApplier {
 
         let perm = Permutation::from_vec(big_perm);
         let is_ordered = perm.is_ordered();
-        let perm = egraph.add(ENode::leaf(Cad::Permutation(perm)));
-        let part = egraph.add(ENode::leaf(Cad::Partitioning(part)));
+        let perm = egraph.add(Cad::Permutation(perm));
+        let part = egraph.add(Cad::Partitioning(part));
 
-        let list = egraph.add(ENode::new(Cad::List, ids));
-        let unpart = egraph.add(ENode::new(Cad::Unpart, vec![part, list]));
+        let list = egraph.add(Cad::List(ids));
+        let unpart = egraph.add(Cad::Unpart([part, list]));
 
-        if is_ordered {
+        let results = if is_ordered {
             vec![unpart]
         } else {
-            let unsort = egraph.add(ENode::new(Cad::Unsort, vec![perm, unpart]));
+            let unsort = egraph.add(Cad::Unsort([perm, unpart]));
             vec![unsort]
+        };
+        for result in results.iter() {
+            egraph.union(eclass, *result);
         }
+        results
     }
 }
 
@@ -832,11 +890,18 @@ struct SortUnpartApplier {
     list: Var,
 }
 
-impl Applier<Cad, Meta> for SortUnpartApplier {
-    fn apply_one(&self, egraph: &mut EGraph, _: Id, map: &Subst) -> Vec<Id> {
-        let sort: Permutation = get_unit!(egraph, map[&self.sort], Cad::Permutation).clone();
-        let part: Partitioning = get_unit!(egraph, map[&self.part], Cad::Partitioning).clone();
-        let items = get_meta_list!(egraph, map[&self.list]).clone();
+impl Applier<Cad, MetaAnalysis> for SortUnpartApplier {
+    fn apply_one(
+        &self,
+        egraph: &mut EGraph,
+        eclass: Id,
+        map: &Subst,
+        _searcher_ast: Option<&PatternAst<Cad>>,
+        _rule_name: Symbol,
+    ) -> Vec<Id> {
+        let sort: Permutation = get_unit!(egraph, map[self.sort], Cad::Permutation).clone();
+        let part: Partitioning = get_unit!(egraph, map[self.part], Cad::Partitioning).clone();
+        let items = get_meta_list!(egraph, map[self.list]).clone();
 
         let mut sorts = vec![];
         let mut len_so_far = 0;
@@ -852,15 +917,24 @@ impl Applier<Cad, Meta> for SortUnpartApplier {
             len_so_far += len;
         }
 
-        let sorted_lists = sorts.into_iter().zip(items).map(|(p, list_id)| {
-            let perm = Permutation::from_vec(p);
-            let sort_id = egraph.add(ENode::leaf(Cad::Permutation(perm)));
-            egraph.add(ENode::new(Cad::Sort, vec![sort_id, list_id]))
-        });
-        let sorted = ENode::new(Cad::List, sorted_lists);
+        let sorted_lists = sorts
+            .into_iter()
+            .zip(items)
+            .map(|(p, list_id)| {
+                let perm = Permutation::from_vec(p);
+                let sort_id = egraph.add(Cad::Permutation(perm));
+                egraph.add(Cad::Sort([sort_id, list_id]))
+            })
+            .collect();
+        let sorted = Cad::List(sorted_lists);
         let list = egraph.add(sorted);
-        let part_id = egraph.add(ENode::leaf(Cad::Partitioning(part.clone())));
-        vec![egraph.add(ENode::new(Cad::Unpart, vec![part_id, list]))]
+        let part_id = egraph.add(Cad::Partitioning(part.clone()));
+
+        let results = vec![egraph.add(Cad::Unpart([part_id, list]))];
+        for result in results.iter() {
+            egraph.union(eclass, *result);
+        }
+        results
     }
 }
 
@@ -870,19 +944,26 @@ struct Flatten {
     list: Var,
 }
 
-impl Applier<Cad, Meta> for Flatten {
-    fn apply_one(&self, egraph: &mut EGraph, _: Id, map: &Subst) -> Vec<Id> {
+impl Applier<Cad, MetaAnalysis> for Flatten {
+    fn apply_one(
+        &self,
+        egraph: &mut EGraph,
+        eclass: Id,
+        map: &Subst,
+        _searcher_ast: Option<&PatternAst<Cad>>,
+        _rule_name: Symbol,
+    ) -> Vec<Id> {
         fn get_nested_fold<'a>(egraph: &'a EGraph, op: &'a Cad, id: Id) -> Option<&'a [Id]> {
-            let is_op = |i| egraph[i].nodes.iter().any(|c| &c.op == op);
-            let get_list = |i| egraph[i].metadata.list.as_ref().map(Vec::as_slice);
+            let is_op = |i| egraph[i].nodes.iter().any(|c| c == op);
+            let get_list = |i| egraph[i].data.list.as_ref().map(Vec::as_slice);
             egraph[id]
                 .nodes
                 .iter()
-                .find(|n| n.op == Cad::Fold && is_op(n.children[0]))
-                .and_then(|n| get_list(n.children[1]))
+                .find(|n| matches!(n, Cad::Fold(_)) && is_op(n.children()[0]))
+                .and_then(|n| get_list(n.children()[1]))
         }
 
-        let ids = get_meta_list!(egraph, map[&self.list]);
+        let ids = get_meta_list!(egraph, map[self.list]);
         let mut new_ids = Vec::new();
         for id in ids {
             match get_nested_fold(egraph, &self.op, *id) {
@@ -891,9 +972,14 @@ impl Applier<Cad, Meta> for Flatten {
             }
         }
 
-        let new_list = egraph.add(ENode::new(Cad::List, new_ids));
-        let op = egraph.add(enode!(self.op.clone()));
-        let new_fold = egraph.add(enode!(Cad::Fold, op, new_list));
-        vec![new_fold]
+        let new_list = egraph.add(Cad::List(new_ids));
+        let op = egraph.add(self.op.clone());
+        let new_fold = egraph.add(Cad::Fold([op, new_list]));
+
+        let results = vec![new_fold];
+        for result in results.iter() {
+            egraph.union(eclass, *result);
+        }
+        results
     }
 }

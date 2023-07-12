@@ -1,88 +1,100 @@
 use std::collections::HashMap;
-
 use std::fmt;
 
-use egg::{ENode, RecExpr};
+use egg::Id;
+use egg::Language;
+use egg::RecExpr;
 
 use crate::cad::Cad;
 
-macro_rules! rec {
-    ($op:expr) => {RecExpr::from(ENode::leaf($op))};
-    ($op:expr, $($arg:expr),*) => {
-        RecExpr::from(ENode::new($op, vec![$($arg),*]))
-    };
-}
+// macro_rules! rec {
+//     ($op:expr) => {RecExpr::from($op)};
+//     ($op:expr, $($arg:expr),*) => {
+//         RecExpr::from($op(vec![$($arg),*]))
+//     };
+// }
 
-pub fn remove_empty(expr: &RecExpr<Cad>) -> Option<RecExpr<Cad>> {
-    let e = expr.as_ref();
-    let child = |i: usize| &e.children[i];
-    let recurse = |i: usize| remove_empty(&e.children[i]);
+pub fn remove_empty(expr: &RecExpr<Cad>, p: Id, out: &mut RecExpr<Cad>) -> Option<Id> {
+    let e = expr[p].clone();
+    // let child = |i: usize| &expr[e.children()[i]];
+    // let recurse = |i: usize| remove_empty(expr, e.children()[i], out);
     use Cad::*;
-    let res = match e.op {
+    let res = match e {
         Empty => None,
-        BlackBox(ref b) => {
-            let args: Vec<_> = e
-                .children
+        BlackBox(ref b, args) => {
+            let args: Vec<_> = args
                 .iter()
-                .map(|c| remove_empty(c).unwrap_or_else(|| rec!(Empty)))
+                .map(|c| remove_empty(expr, *c, out).unwrap_or_else(|| out.add(Cad::Empty)))
                 .collect();
-            Some(ENode::new(BlackBox(b.clone()), args).into())
+            Some(out.add(BlackBox(b.clone(), args)))
         }
-        Hull => Some(rec!(Hull, recurse(0)?)),
-        List => {
-            let args: Vec<_> = e
-                .children
+        Hull(args) => {
+            let args =
+                args.map(|c| remove_empty(expr, c, out).unwrap_or_else(|| out.add(Cad::Empty)));
+            Some(out.add(Cad::Hull(args)))
+        }
+        List(args) => {
+            let args: Vec<_> = args
                 .iter()
-                .map(|c| remove_empty(c).unwrap_or_else(|| rec!(Empty)))
+                .map(|c| remove_empty(expr, *c, out).unwrap_or_else(|| out.add(Cad::Empty)))
                 .collect();
-            Some(ENode::new(List, args).into())
+            Some(out.add(List(args)))
         }
-        Cube => {
-            let v = get_vec3_nums(child(0));
+        Cube(args) => {
+            let args =
+                args.map(|c| remove_empty(expr, c, out).unwrap_or_else(|| out.add(Cad::Empty)));
+            let v = get_vec3_nums(out, args[0]);
             if v.0 == 0.0 || v.1 == 0.0 || v.2 == 0.0 {
                 None
             } else {
-                Some(expr.clone())
+                Some(out.add(Cube(args)))
             }
         }
-        Sphere => {
-            let r = get_num(child(0));
+        Sphere(args) => {
+            let args =
+                args.map(|c| remove_empty(expr, c, out).unwrap_or_else(|| out.add(Cad::Empty)));
+            let r = get_num(out, args[0]);
             if r == 0.0 {
                 None
             } else {
-                Some(expr.clone())
+                Some(out.add(Sphere(args)))
             }
         }
-        Cylinder => {
-            let (h, r1, r2) = get_vec3_nums(child(0));
+        Cylinder(args) => {
+            let args =
+                args.map(|c| remove_empty(expr, c, out).unwrap_or_else(|| out.add(Cad::Empty)));
+            let (h, r1, r2) = get_vec3_nums(out, args[0]);
             if h == 0.0 || (r1, r2) == (0.0, 0.0) {
                 None
             } else {
-                Some(expr.clone())
+                Some(out.add(Cylinder(args)))
             }
         }
-        Affine => {
-            let cad = recurse(2)?;
-            Some(rec!(Affine, child(0).clone(), child(1).clone(), cad))
+        Affine(args) => {
+            let args =
+                args.map(|c| remove_empty(expr, c, out).unwrap_or_else(|| out.add(Cad::Empty)));
+            Some(out.add(Affine(args)))
             // TODO check scale
         }
-        Binop => {
-            let bop = child(0).as_ref().op.clone();
-            let a = recurse(1);
-            let b = recurse(2);
+        Binop(args) => {
+            let args = args.map(|c| remove_empty(expr, c, out));
+            let bop_id = args[0].expect("op should be valid");
+            let bop = out[bop_id].clone();
+            let a = args[1];
+            let b = args[2];
             match bop {
                 Union => {
                     if a.is_none() || b.is_none() {
                         a.or(b)
                     } else {
-                        Some(rec!(Binop, rec!(bop), a.unwrap(), b.unwrap()))
+                        Some(out.add(Binop([bop_id, a.unwrap(), b.unwrap()])))
                     }
                 }
                 Inter => {
                     if a.is_none() || b.is_none() {
                         None
                     } else {
-                        Some(rec!(Binop, rec!(bop), a.unwrap(), b.unwrap()))
+                        Some(out.add(Binop([bop_id, a.unwrap(), b.unwrap()])))
                     }
                 }
                 Diff => {
@@ -91,51 +103,64 @@ pub fn remove_empty(expr: &RecExpr<Cad>) -> Option<RecExpr<Cad>> {
                     } else if b.is_none() {
                         a
                     } else {
-                        Some(rec!(Binop, rec!(bop), a.unwrap(), b.unwrap()))
+                        Some(out.add(Binop([bop_id, a.unwrap(), b.unwrap()])))
                     }
                 }
                 _ => panic!("unexpected binop: {:?}", bop),
             }
         }
-        Fold => {
-            let bop = child(0).as_ref().op.clone();
-            let list = child(1);
-            assert_eq!(list.as_ref().op, List);
-            let listargs = list.as_ref().children.iter().map(|e| remove_empty(e));
+        Fold(args) => {
+            let bop = expr[args[0]].clone();
+            let list = expr[args[1]].clone();
+            assert!(matches!(list, List(_)));
+            let listargs = list.children().iter().map(|e| remove_empty(expr, *e, out));
             match bop {
                 Union => {
-                    let non_empty: Vec<RecExpr<Cad>> = listargs.filter_map(|e| e).collect();
+                    let non_empty: Vec<Id> = listargs.filter_map(|e| e).collect();
                     if non_empty.is_empty() {
                         None
                     } else {
-                        let listexpr = ENode::new(List, non_empty);
-                        Some(rec!(Fold, rec!(Union), listexpr.into()))
+                        let listexpr = List(non_empty);
+                        let union_expr = out.add(Union);
+                        let listexpr = out.add(listexpr);
+                        Some(out.add(Fold([union_expr, listexpr])))
                     }
                 }
                 Inter => {
-                    let args: Option<Vec<RecExpr<Cad>>> = listargs.collect();
-                    let listexpr = ENode::new(List, args?);
-                    Some(rec!(Fold, rec!(Inter), listexpr.into()))
+                    let args: Option<Vec<Id>> = listargs.collect();
+                    let listexpr = List(args?);
+                    let inter = out.add(Inter);
+                    let listexpr = out.add(listexpr);
+                    Some(out.add(Fold([inter, listexpr])))
                 }
                 Diff => {
                     let mut listargs = listargs;
                     // if first is empty, then we are empty
                     let first = listargs.next().unwrap()?;
 
-                    let non_empty: Vec<RecExpr<Cad>> = listargs.filter_map(|e| e).collect();
+                    let non_empty: Vec<Id> = listargs.filter_map(|e| e).collect();
                     if non_empty.is_empty() {
                         Some(first)
                     } else {
                         let mut args = vec![first];
                         args.extend(non_empty);
-                        let listexpr = ENode::new(List, args);
-                        Some(rec!(Fold, rec!(Diff), listexpr.into()))
+                        let listexpr = List(args);
+                        let diff = out.add(Diff);
+                        let listexpr = out.add(listexpr.into());
+                        Some(out.add(Fold([diff, listexpr])))
                     }
                 }
                 _ => panic!("unexpected binop: {:?}", bop),
             }
         }
-        _ => panic!("unexpected cad: {}", expr.pretty(80)),
+        _ => {
+            let e =
+                e.map_children(|id| remove_empty(expr, id, out).unwrap_or_else(|| out.add(Empty)));
+            Some(out.add(e))
+            // todo!()
+
+            // panic!("unexpected cad: {} {}", e, expr.pretty(80))
+        }
     };
     if res.is_none() {
         // println!("Found empty: {}", expr.pretty(80));
@@ -143,19 +168,20 @@ pub fn remove_empty(expr: &RecExpr<Cad>) -> Option<RecExpr<Cad>> {
     res
 }
 
-fn get_num(expr: &RecExpr<Cad>) -> f64 {
-    let expr = expr.as_ref();
-    match expr.op {
+fn get_num(expr: &RecExpr<Cad>, p: Id) -> f64 {
+    match expr[p] {
         Cad::Num(num) => num.to_f64(),
         _ => panic!("Not a num"), // is panic the right thing?
     }
 }
 
-fn get_vec3_nums(expr: &RecExpr<Cad>) -> (f64, f64, f64) {
-    let expr = expr.as_ref();
-    let arg = |i: usize| expr.children[i].clone();
-    match expr.op {
-        Cad::Vec3 => (get_num(&arg(0)), get_num(&arg(1)), get_num(&arg(2))),
+fn get_vec3_nums(expr: &RecExpr<Cad>, p: Id) -> (f64, f64, f64) {
+    match expr[p] {
+        Cad::Vec3(arg) => (
+            get_num(expr, arg[0]),
+            get_num(expr, arg[1]),
+            get_num(expr, arg[2]),
+        ),
         _ => panic!("Not a vec3"), // is panic the right thing?
     }
 }
@@ -180,158 +206,180 @@ fn to_cartesian(v: (f64, f64, f64)) -> (f64, f64, f64) {
 
 type FunCtx = HashMap<&'static str, usize>;
 
-fn mk_vec((x, y, z): (f64, f64, f64)) -> RecExpr<Cad> {
-    rec!(
-        Cad::Vec3,
-        rec!(Cad::Num(x.into())),
-        rec!(Cad::Num(y.into())),
-        rec!(Cad::Num(z.into()))
-    )
+fn mk_vec((x, y, z): (f64, f64, f64), out: &mut RecExpr<Cad>) -> Id {
+    let x = out.add(Cad::Num(x.into()));
+    let y = out.add(Cad::Num(y.into()));
+    let z = out.add(Cad::Num(z.into()));
+    out.add(Cad::Vec3([x, y, z]))
 }
 
-fn mk_list(exprs: Vec<RecExpr<Cad>>) -> RecExpr<Cad> {
-    ENode::new(Cad::List, exprs).into()
+fn mk_list(exprs: Vec<Id>) -> Cad {
+    Cad::List(exprs)
 }
 
-fn eval_list(cx: Option<&FunCtx>, expr: &RecExpr<Cad>) -> Vec<RecExpr<Cad>> {
-    let list = eval(cx, expr);
-    let list = list.as_ref();
-    match &list.op {
-        Cad::List => list.children.clone().into_vec(),
+fn get_list(expr: &RecExpr<Cad>, list: Id) -> &Vec<Id> {
+    match &expr[list] {
+        Cad::List(list) => &list,
         cad => panic!("expected list, got {:?}", cad),
     }
 }
 
-pub fn eval(cx: Option<&FunCtx>, expr: &RecExpr<Cad>) -> RecExpr<Cad> {
-    let e = expr.as_ref();
-    let arg = |i: usize| &e.children[i];
-    match &e.op {
-        Cad::BlackBox(ref b) => {
-            let args: Vec<_> = e.children.iter().map(|c| eval(cx, c)).collect();
-            ENode::new(Cad::BlackBox(b.clone()), args).into()
+fn eval_list(cx: Option<&FunCtx>, expr: &RecExpr<Cad>, p: Id, out: &mut RecExpr<Cad>) -> Vec<Id> {
+    let list = eval(cx, expr, p, out);
+    match &out[list] {
+        Cad::List(list) => list.clone(),
+        cad => panic!("expected list, got {:?}", cad),
+    }
+}
+
+pub fn eval(cx: Option<&FunCtx>, expr: &RecExpr<Cad>, p: Id, out: &mut RecExpr<Cad>) -> Id {
+    let e = expr[p].clone();
+    match &e {
+        Cad::BlackBox(ref b, args) => {
+            let args: Vec<_> = args.iter().map(|c| eval(cx, expr, *c, out)).collect();
+            out.add(Cad::BlackBox(b.clone(), args))
         }
         // arith
-        Cad::Bool(_) => expr.clone(),
-        Cad::Num(_) => expr.clone(),
+        Cad::Bool(_) => out.add(e),
+        Cad::Num(_) => out.add(e),
         Cad::ListVar(v) => {
             let n = cx.unwrap()[v.0];
-            rec!(Cad::Num(n.into()))
+            out.add(Cad::Num(n.into()))
         }
-        Cad::Add => {
-            let a = get_num(&eval(cx, arg(0)));
-            let b = get_num(&eval(cx, arg(1)));
-            rec!(Cad::Num((a + b).into()))
+        Cad::Add(args) => {
+            let args = args.map(|arg| eval(cx, expr, arg, out));
+            let a = get_num(out, args[0]);
+            let b = get_num(out, args[1]);
+            out.add(Cad::Num((a + b).into()))
         }
-        Cad::Sub => {
-            let a = get_num(&eval(cx, arg(0)));
-            let b = get_num(&eval(cx, arg(1)));
-            rec!(Cad::Num((a - b).into()))
+        Cad::Sub(args) => {
+            let args = args.map(|arg| eval(cx, expr, arg, out));
+            let a = get_num(out, args[0]);
+            let b = get_num(out, args[1]);
+            out.add(Cad::Num((a - b).into()))
         }
-        Cad::Mul => {
-            let a = get_num(&eval(cx, arg(0)));
-            let b = get_num(&eval(cx, arg(1)));
-            rec!(Cad::Num((a * b).into()))
+        Cad::Mul(args) => {
+            let args = args.map(|arg| eval(cx, expr, arg, out));
+            let a = get_num(out, args[0]);
+            let b = get_num(out, args[1]);
+            out.add(Cad::Num((a * b).into()))
         }
-        Cad::Div => {
-            let a = get_num(&eval(cx, arg(0)));
-            let b = get_num(&eval(cx, arg(1)));
-            rec!(Cad::Num((a / b).into()))
+        Cad::Div(args) => {
+            let args = args.map(|arg| eval(cx, expr, arg, out));
+            let a = get_num(out, args[0]);
+            let b = get_num(out, args[1]);
+            out.add(Cad::Num((a / b).into()))
         }
         // cad
-        Cad::Cube => rec!(Cad::Cube, eval(cx, arg(0)), eval(cx, arg(1))),
-        Cad::Sphere => rec!(Cad::Sphere, eval(cx, arg(0)), eval(cx, arg(1))),
-        Cad::Cylinder => rec!(
-            Cad::Cylinder,
-            eval(cx, arg(0)),
-            eval(cx, arg(1)),
-            eval(cx, arg(2))
-        ),
-        // Cad::Hexagon => rec!(Cad::Hexagon),
-        Cad::Empty => rec!(Cad::Empty),
-        Cad::Vec3 => rec!(
-            Cad::Vec3,
-            eval(cx, arg(0)),
-            eval(cx, arg(1)),
-            eval(cx, arg(2))
-        ),
-        Cad::Hull => rec!(Cad::Hull, eval(cx, arg(0))),
-
-        Cad::Trans | Cad::Scale | Cad::Rotate | Cad::TransPolar => {
-            if !e.children.is_empty() {
-                panic!("Got an affine with children: {}", expr.pretty(80))
-            }
-            rec!(e.op.clone())
+        Cad::Cube(args) => {
+            let args = args.map(|arg| eval(cx, expr, arg, out));
+            out.add(Cad::Cube(args))
+        }
+        Cad::Sphere(args) => {
+            let args = args.map(|arg| eval(cx, expr, arg, out));
+            out.add(Cad::Sphere(args))
+        }
+        Cad::Cylinder(args) => {
+            let args = args.map(|arg| eval(cx, expr, arg, out));
+            out.add(Cad::Cylinder(args))
+        }
+        // Cad::Hexagon => out.add(Cad::Hexagon),
+        Cad::Empty => out.add(Cad::Empty),
+        Cad::Vec3(args) => {
+            let args = args.map(|arg| eval(cx, expr, arg, out));
+            out.add(Cad::Vec3(args))
+        }
+        Cad::Hull(args) => {
+            let args = args.map(|arg| eval(cx, expr, arg, out));
+            out.add(Cad::Hull(args))
         }
 
-        Cad::Affine => {
-            let aff = eval(cx, arg(0)).as_ref().op.clone();
-            match aff {
+        Cad::Trans | Cad::Scale | Cad::Rotate | Cad::TransPolar => out.add(e.clone()),
+
+        Cad::Affine(args) => {
+            let aff = eval(cx, expr, args[0], out);
+            match out[aff] {
                 Cad::Trans | Cad::Scale | Cad::Rotate => {
-                    let param = eval(cx, arg(1));
-                    let cad = eval(cx, arg(2));
-                    rec!(Cad::Affine, rec!(aff), param, cad)
+                    let param = eval(cx, expr, args[1], out);
+                    let cad = eval(cx, expr, args[2], out);
+                    out.add(Cad::Affine([aff, param, cad]))
                 }
                 Cad::TransPolar => {
-                    let param = eval(cx, arg(1));
-                    let cad = eval(cx, arg(2));
-                    let pnums = get_vec3_nums(&param);
+                    let param = eval(cx, expr, args[1], out);
+                    let cad = eval(cx, expr, args[2], out);
+                    let pnums = get_vec3_nums(out, param);
                     let cnums = to_cartesian(pnums);
-                    rec!(Cad::Affine, rec!(Cad::Trans), mk_vec(cnums), cad)
+
+                    let trans = out.add(Cad::Trans);
+                    let cnums = mk_vec(cnums, out);
+                    out.add(Cad::Affine([trans, cnums, cad]))
                 }
                 _ => panic!("expected affine kind, got {:?}", aff),
             }
         }
 
-        Cad::Diff => rec!(Cad::Diff),
-        Cad::Inter => rec!(Cad::Inter),
-        Cad::Union => rec!(Cad::Union),
+        Cad::Diff => out.add(Cad::Diff),
+        Cad::Inter => out.add(Cad::Inter),
+        Cad::Union => out.add(Cad::Union),
 
-        Cad::Fold => rec!(Cad::Fold, eval(cx, arg(0)), eval(cx, arg(1))),
-        Cad::Binop => rec!(
-            Cad::Fold,
-            eval(cx, arg(0)),
-            rec!(Cad::List, eval(cx, arg(1)), eval(cx, arg(2)))
-        ),
+        Cad::Fold(args) => {
+            let args = args.map(|arg| eval(cx, expr, arg, out));
+            out.add(Cad::Fold(args))
+        }
+        Cad::Binop(args) => {
+            let args = args.map(|arg| eval(cx, expr, arg, out));
+            let list = out.add(Cad::List(vec![args[1], args[2]]));
+            out.add(Cad::Fold([args[0], list]))
+        }
 
         // lists
-        Cad::Nil => mk_list(vec![]),
-        Cad::Cons => {
-            let mut list = eval_list(cx, arg(1));
-            list.insert(0, eval(cx, arg(0)));
-            mk_list(list)
+        Cad::Nil => out.add(mk_list(vec![])),
+        Cad::Cons(args) => {
+            let mut list = eval_list(cx, expr, args[1], out);
+            list.insert(0, eval(cx, expr, args[0], out));
+            out.add(mk_list(list))
         }
-        Cad::List => mk_list(e.children.iter().map(|e| eval(cx, e)).collect()),
-        Cad::Repeat => {
-            let n = get_num(&eval(cx, arg(0)));
-            let t = eval(cx, arg(1));
-            mk_list(vec![t.clone(); n as usize])
+        Cad::List(list) => {
+            let list = mk_list(list.iter().map(|e| eval(cx, expr, *e, out)).collect());
+            out.add(list)
         }
-        Cad::Concat => {
+        Cad::Repeat(args) => {
+            let args = args.map(|arg| eval(cx, expr, arg, out));
+            let n = get_num(out, args[0]);
+            let t = args[1];
+            out.add(mk_list(vec![t.clone(); n as usize]))
+        }
+        Cad::Concat(args) => {
             let mut vec = Vec::new();
-            for list in eval_list(cx, &e.children[0]) {
-                for c in eval_list(cx, &list) {
-                    vec.push(c)
+            for list in eval_list(cx, expr, args[0], out) {
+                for c in get_list(out, list) {
+                    vec.push(*c)
                 }
             }
-            mk_list(vec)
+            out.add(mk_list(vec))
         }
-        Cad::Map2 => {
-            let op = &e.children[0].as_ref().op;
-            let params: Vec<_> = eval_list(cx, &e.children[1]);
-            let cads: Vec<_> = eval_list(cx, &e.children[2]);
-            mk_list(
+        Cad::Map2(args) => {
+            let op = out.add(expr[e.children()[0]].clone());
+            let params: Vec<_> = eval_list(cx, expr, args[1], out);
+            let cads: Vec<_> = eval_list(cx, expr, args[2], out);
+            let list = mk_list(
                 params
                     .into_iter()
                     .zip(cads)
-                    .map(|(p, c)| rec!(Cad::Affine, rec!(op.clone()), p, c))
+                    .map(|(p, c)| out.add(Cad::Affine([op, p, c])))
                     .collect(),
-            )
+            );
+            out.add(list)
         }
-        Cad::MapI => {
-            let body = e.children.last().unwrap();
-            let bounds: Vec<usize> = e.children[..e.children.len() - 1]
+        Cad::MapI(args) => {
+            // let args: Vec<_> = args[..args.len() - 1]
+            //     .iter()
+            //     .map(|arg| eval(cx, expr, *arg, out))
+            //     .collect();
+            let body = *args.last().unwrap();
+            let bounds: Vec<usize> = args[..args.len() - 1]
                 .iter()
-                .map(|n| get_num(n) as usize)
+                .map(|n| get_num(expr, *n) as usize)
                 .collect();
             let mut ctx = HashMap::new();
             let mut vec = Vec::new();
@@ -339,7 +387,7 @@ pub fn eval(cx: Option<&FunCtx>, expr: &RecExpr<Cad>) -> RecExpr<Cad> {
                 1 => {
                     for i in 0..bounds[0] {
                         ctx.insert("i", i);
-                        vec.push(eval(Some(&ctx), body));
+                        vec.push(eval(Some(&ctx), expr, body, out));
                     }
                 }
                 2 => {
@@ -347,7 +395,7 @@ pub fn eval(cx: Option<&FunCtx>, expr: &RecExpr<Cad>) -> RecExpr<Cad> {
                         ctx.insert("i", i);
                         for j in 0..bounds[1] {
                             ctx.insert("j", j);
-                            vec.push(eval(Some(&ctx), body));
+                            vec.push(eval(Some(&ctx), expr, body, out));
                         }
                     }
                 }
@@ -358,7 +406,7 @@ pub fn eval(cx: Option<&FunCtx>, expr: &RecExpr<Cad>) -> RecExpr<Cad> {
                             ctx.insert("j", j);
                             for k in 0..bounds[2] {
                                 ctx.insert("k", k);
-                                vec.push(eval(Some(&ctx), body));
+                                vec.push(eval(Some(&ctx), expr, body, out));
                             }
                         }
                     }
@@ -366,81 +414,92 @@ pub fn eval(cx: Option<&FunCtx>, expr: &RecExpr<Cad>) -> RecExpr<Cad> {
                 _ => unimplemented!(),
             }
 
-            mk_list(vec)
+            out.add(mk_list(vec))
         }
         cad => panic!("can't eval({:?})", cad),
     }
 }
 
-pub struct Scad<'a>(pub &'a RecExpr<Cad>);
+pub struct Scad<'a>(pub &'a RecExpr<Cad>, pub Id);
+
+impl<'a> Scad<'a> {
+    pub fn new(expr: &'a RecExpr<Cad>) -> Scad<'a> {
+        Scad(expr, (expr.as_ref().len() - 1).into())
+    }
+}
 
 impl<'a> fmt::Display for Scad<'a> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let expr = eval(None, self.0);
-        let expr = expr.as_ref();
-        let arg = |i: usize| expr.children[i].clone();
-        let child = |i: usize| Scad(&expr.children[i]);
-        match &expr.op {
-            Cad::Num(float) => write!(f, "{}", float),
-            Cad::Bool(b) => write!(f, "{}", b),
-            Cad::Vec3 => write!(f, "[{}, {}, {}]", child(0), child(1), child(2)),
-            Cad::Add => write!(f, "{} + {}", child(0), child(1)),
-            Cad::Sub => write!(f, "{} - {}", child(0), child(1)),
-            Cad::Mul => write!(f, "{} * {}", child(0), child(1)),
-            Cad::Div => write!(f, "{} / {}", child(0), child(1)),
-            Cad::Empty => writeln!(f, "sphere(r=0);"),
-            Cad::Cube => writeln!(f, "cube({}, center={});", child(0), child(1)),
-            Cad::Sphere => writeln!(
-                f,
-                "sphere(r = {}, $fn = {}, $fa = {}, $fs = {});",
-                child(0),
-                get_vec3_nums(&arg(1)).0,
-                get_vec3_nums(&arg(1)).1,
-                get_vec3_nums(&arg(1)).2
-            ),
-            Cad::Cylinder => writeln!(
-                f,
-                "cylinder(h = {}, r1 = {}, r2 = {}, $fn = {}, $fa = {}, $fs = {}, center = {});",
-                get_vec3_nums(&arg(0)).0,
-                get_vec3_nums(&arg(0)).1,
-                get_vec3_nums(&arg(0)).2,
-                get_vec3_nums(&arg(1)).0,
-                get_vec3_nums(&arg(1)).1,
-                get_vec3_nums(&arg(1)).2,
-                child(2),
-            ),
-            // Cad::Hexagon => writeln!(f, "cylinder();"),
-            Cad::Hull => {
-                write!(f, "hull() {{")?;
-                for cad in &arg(0).as_ref().children {
-                    write!(f, "  {}", Scad(cad))?;
+        let mut fmt_impl = |p: Id, out: &RecExpr<Cad>| -> fmt::Result {
+            let expr = &out[p];
+            let arg = |i: usize| expr.children()[i];
+            let child = |i: usize| Scad(&out, expr.children()[i]);
+            match expr {
+                Cad::Num(float) => write!(f, "{}", float),
+                Cad::Bool(b) => write!(f, "{}", b),
+                Cad::Vec3(children) => write!(f, "[{}, {}, {}]", children[0], children[1], children[2]),
+                Cad::Add(children) => write!(f, "{} + {}", children[0], children[1]),
+                Cad::Sub(children) => write!(f, "{} - {}", children[0], children[1]),
+                Cad::Mul(children) => write!(f, "{} * {}", children[0], children[1]),
+                Cad::Div(children) => write!(f, "{} / {}", children[0], children[1]),
+                Cad::Empty => writeln!(f, "sphere(r=0);"),
+                Cad::Cube(_) => writeln!(f, "cube({}, center={});", child(0), child(1)),
+                Cad::Sphere(_) => writeln!(
+                    f,
+                    "sphere(r = {}, $fn = {}, $fa = {}, $fs = {});",
+                    child(0),
+                    get_vec3_nums(out, arg(1)).0,
+                    get_vec3_nums(out, arg(1)).1,
+                    get_vec3_nums(out, arg(1)).2
+                ),
+                Cad::Cylinder(_) => writeln!(
+                    f,
+                    "cylinder(h = {}, r1 = {}, r2 = {}, $fn = {}, $fa = {}, $fs = {}, center = {});",
+                    get_vec3_nums(out, arg(0)).0,
+                    get_vec3_nums(out, arg(0)).1,
+                    get_vec3_nums(out, arg(0)).2,
+                    get_vec3_nums(out, arg(1)).0,
+                    get_vec3_nums(out, arg(1)).1,
+                    get_vec3_nums(out, arg(1)).2,
+                    child(2),
+                ),
+                // Cad::Hexagon => writeln!(f, "cylinder();"),
+                Cad::Hull(_) => {
+                    write!(f, "hull() {{")?;
+                    for cad in out[arg(0)].children() {
+                        write!(f, "  {}", Scad(out, *cad))?;
+                    }
+                    write!(f, "}}")
                 }
-                write!(f, "}}")
-            }
 
-            Cad::Trans => write!(f, "translate"),
-            Cad::Scale => write!(f, "scale"),
-            Cad::Rotate => write!(f, "rotate"),
-            Cad::Affine => write!(f, "{} ({}) {}", child(0), child(1), child(2)),
+                Cad::Trans => write!(f, "translate"),
+                Cad::Scale => write!(f, "scale"),
+                Cad::Rotate => write!(f, "rotate"),
+                Cad::Affine(_) => write!(f, "{} ({}) {}", child(0), child(1), child(2)),
 
-            Cad::Union => write!(f, "union"),
-            Cad::Inter => write!(f, "intersection"),
-            Cad::Diff => write!(f, "difference"),
-            Cad::Fold => {
-                writeln!(f, "{} () {{", child(0))?;
-                for cad in &arg(1).as_ref().children {
-                    write!(f, "  {}", Scad(cad))?;
+                Cad::Union => write!(f, "union"),
+                Cad::Inter => write!(f, "intersection"),
+                Cad::Diff => write!(f, "difference"),
+                Cad::Fold(_) => {
+                    writeln!(f, "{} () {{", child(0))?;
+                    for cad in out[arg(1)].children() {
+                        write!(f, "  {}", Scad(out, *cad))?;
+                    }
+                    write!(f, "}}")
                 }
-                write!(f, "}}")
-            }
-            Cad::BlackBox(b) => {
-                writeln!(f, "{} {{", b)?;
-                for cad in &expr.children {
-                    write!(f, "  {}", Scad(cad))?;
+                Cad::BlackBox(b, _) => {
+                    writeln!(f, "{} {{", b)?;
+                    for cad in expr.children().iter() {
+                        write!(f, "  {}", Scad(out, *cad))?;
+                    }
+                    write!(f, "}}")
                 }
-                write!(f, "}}")
+                cad => panic!("TODO: {:?}", cad),
             }
-            cad => panic!("TODO: {:?}", cad),
-        }
+        };
+        // may need to shrink expr to match self.1
+        let mut normalform = RecExpr::from(vec![]);
+        let p = eval(None, self.0, self.1, &mut normalform);
+        fmt_impl(p, &normalform)
     }
 }
