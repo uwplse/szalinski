@@ -165,10 +165,19 @@ fn solve_and_add(egraph: &mut EGraph, xs: &[Num], ys: &[Num], zs: &[Num]) -> Opt
         for (index, list) in lists {
             let slice = &list[..chunk_len];
             let nums = unrun(slice, *inner)?;
-            let fun = solve_list_fn(&nums)?;
-            // println!("Found: {:?}", fun);
             let var_id = egraph.add(var.clone());
-            inserted[*index] = Some(fun.add_to_egraph(egraph, var_id));
+            match solve_list_fn(&nums) {
+                Some(fun) => {
+                    inserted[*index] = Some(fun.add_to_egraph(egraph, var_id));
+                }
+                None => {
+                    let children: Vec<_> =
+                        nums.iter().map(|num| egraph.add(Cad::Num(*num))).collect();
+                    let list = egraph.add(Cad::List(children));
+                    inserted[*index] = Some(egraph.add(Cad::GetAt([list, var_id])));
+                }
+            }
+            // println!("Found: {:?}", fun);
         }
     }
 
