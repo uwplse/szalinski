@@ -309,7 +309,7 @@ pub fn eval(cx: Option<&FunCtx>, expr: &RecExpr<Cad>, p: Id, out: &mut RecExpr<C
                 Cad::TransPolar => {
                     let param = eval(cx, expr, args[1], out);
                     let cad = eval(cx, expr, args[2], out);
-                    let pnums = get_vec3_nums(expr, param);
+                    let pnums = get_vec3_nums(out, param);
                     let cnums = to_cartesian(pnums);
 
                     let trans = out.add(Cad::Trans);
