@@ -5,7 +5,7 @@ use log::*;
 use indexmap::{indexset, IndexMap};
 
 use crate::{
-    cad::{Cad, EGraph, ListVar as LV, Vec3},
+    cad::{Cad, EGraph, ListVar as LV, Vec3, VecId},
     num::Num,
     permute::Permutation,
 };
@@ -136,7 +136,13 @@ fn solve_list_fn(xs: &[Num]) -> Option<Formula> {
     None
 }
 
-fn solve_and_add(egraph: &mut EGraph, xs: &[Num], ys: &[Num], zs: &[Num]) -> Option<Id> {
+fn solve_and_add(
+    egraph: &mut EGraph,
+    xs: &[Num],
+    ys: &[Num],
+    zs: &[Num],
+    should_always_insert: bool,
+) -> Option<Id> {
     // println!("Solving:\n  x={:?}\n  y={:?}\n  z={:?}", xs, ys, zs);
     assert_eq!(xs.len(), ys.len());
     assert_eq!(xs.len(), zs.len());
@@ -161,6 +167,8 @@ fn solve_and_add(egraph: &mut EGraph, xs: &[Num], ys: &[Num], zs: &[Num]) -> Opt
     ];
     let mut inserted = vec![None; 3];
 
+    let mut should_insert = should_always_insert;
+    let mut get_ats = vec![];
     for (((&chunk_len, lists), inner), var) in by_chunk.iter().zip(&inners).zip(vars) {
         for (index, list) in lists {
             let slice = &list[..chunk_len];
@@ -168,17 +176,25 @@ fn solve_and_add(egraph: &mut EGraph, xs: &[Num], ys: &[Num], zs: &[Num]) -> Opt
             let var_id = egraph.add(var.clone());
             match solve_list_fn(&nums) {
                 Some(fun) => {
+                    should_insert = true;
                     inserted[*index] = Some(fun.add_to_egraph(egraph, var_id));
                 }
                 None => {
-                    let children: Vec<_> =
-                        nums.iter().map(|num| egraph.add(Cad::Num(*num))).collect();
-                    let list = egraph.add(Cad::List(children));
-                    inserted[*index] = Some(egraph.add(Cad::GetAt([list, var_id])));
+                    get_ats.push((nums, index, var_id));
                 }
             }
             // println!("Found: {:?}", fun);
         }
+    }
+
+    if !should_insert {
+        return None;
+    }
+
+    for (nums, index, var_id) in get_ats {
+        let children = VecId::new(nums.iter().map(|num| egraph.add(Cad::Num(*num))).collect());
+        let list = egraph.add(Cad::List(children));
+        inserted[*index] = Some(egraph.add(Cad::GetAt([list, var_id])));
     }
 
     let mut lens = vec![];
@@ -235,7 +251,7 @@ fn solve_vec(egraph: &mut EGraph, list: &[Vec3]) -> Vec<Id> {
 
     let mut results = vec![];
 
-    results.extend(solve_and_add(egraph, &xs, &ys, &zs));
+    results.extend(solve_and_add(egraph, &xs, &ys, &zs, true));
 
     let perms = indexset![
         Permutation::sort(&xs),
@@ -256,7 +272,7 @@ fn solve_vec(egraph: &mut EGraph, list: &[Vec3]) -> Vec<Id> {
         let xs = perm.apply(&xs);
         let ys = perm.apply(&ys);
         let zs = perm.apply(&zs);
-        if let Some(added_mapi) = solve_and_add(egraph, &xs, &ys, &zs) {
+        if let Some(added_mapi) = solve_and_add(egraph, &xs, &ys, &zs, false) {
             let p = Cad::Permutation(perm.clone());
             let e = Cad::Unsort([egraph.add(p), added_mapi]);
             results.push(egraph.add(e));
