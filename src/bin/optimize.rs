@@ -319,7 +319,8 @@ pub struct MyIterData {
 impl IterationData<Cad, MetaAnalysis> for MyIterData {
     fn make(runner: &MyRunner) -> Self {
         let root = runner.roots[0];
-        let best_cost = Extractor::new(&runner.egraph, CostFn).find_best(root).0;
+        // let best_cost = Extractor::new(&runner.egraph, CostFn).find_best(root).0;
+        let best_cost = runner.egraph[root].data.cost;
         MyIterData { best_cost }
     }
 }
@@ -385,6 +386,8 @@ fn main() {
         runner.iterations.len(),
         runner.stop_reason
     );
+
+    runner.print_report();
 
     let root = runner.roots[0];
     let extract_time = Instant::now();
