@@ -7,7 +7,7 @@ use log::{info, warn};
 use egg::{rewrite as rw, *};
 
 use crate::{
-    cad::{Cad, EGraph, MetaAnalysis, Rewrite, Vec3},
+    cad::{Cad, EGraph, MetaAnalysis, Rewrite, Vec3, VecId},
     num::{num, Num},
     permute::{Partitioning, Permutation},
 };
@@ -470,11 +470,11 @@ where
     for (_, (is, ids)) in &parts {
         order.extend(is);
         lengths.push(ids.len());
-        list_ids.push(egraph.add(Cad::List(ids.clone())));
+        list_ids.push(egraph.add(Cad::List(VecId::new(ids.clone()))));
     }
     let part = Partitioning::from_vec(lengths);
     let part_id = egraph.add(Cad::Partitioning(part));
-    let list_of_lists = egraph.add(Cad::List(list_ids));
+    let list_of_lists = egraph.add(Cad::List(VecId::new(list_ids)));
     let concat = egraph.add(Cad::Unpart([part_id, list_of_lists]));
 
     let perm = Permutation::from_vec(order);
@@ -598,8 +598,8 @@ fn insert_map2s(egraph: &mut EGraph, list_ids: &[Id]) -> Vec<Id> {
 
             assert_eq!(param_ids.len(), cad_ids.len());
 
-            let param_list_id = egraph.add(Cad::List(param_ids));
-            let cad_list_id = egraph.add(Cad::List(cad_ids));
+            let param_list_id = egraph.add(Cad::List(VecId::new(param_ids)));
+            let cad_list_id = egraph.add(Cad::List(VecId::new(cad_ids)));
             let map2 = Cad::Map2([aff_id, param_list_id, cad_list_id]);
             let id = egraph.add(map2);
             results.push(id)
@@ -771,7 +771,7 @@ impl Applier<Cad, MetaAnalysis> for SortApplier {
         let items = get_meta_list!(egraph, map[self.list]);
         let perm: &Permutation = get_unit!(egraph, map[self.perm], Cad::Permutation);
         let sorted = perm.apply(items);
-        let e = Cad::List(sorted);
+        let e = Cad::List(VecId::new(sorted));
 
         let id = egraph.add(e);
         egraph.union(eclass, id);
@@ -796,11 +796,12 @@ impl Applier<Cad, MetaAnalysis> for PartApplier {
     ) -> Vec<Id> {
         let items = get_meta_list!(egraph, map[self.list]);
         let part: &Partitioning = get_unit!(egraph, map[self.part], Cad::Partitioning);
-        let list_of_lists = part
-            .apply(items)
-            .into_iter()
-            .map(|sublist| egraph.add(Cad::List(sublist)))
-            .collect();
+        let list_of_lists = VecId::new(
+            part.apply(items)
+                .into_iter()
+                .map(|sublist| egraph.add(Cad::List(VecId::new(sublist))))
+                .collect(),
+        );
 
         let e = Cad::List(list_of_lists);
 
@@ -867,7 +868,7 @@ impl Applier<Cad, MetaAnalysis> for UnpartApplier {
         let perm = egraph.add(Cad::Permutation(perm));
         let part = egraph.add(Cad::Partitioning(part));
 
-        let list = egraph.add(Cad::List(ids));
+        let list = egraph.add(Cad::List(VecId::new(ids)));
         let unpart = egraph.add(Cad::Unpart([part, list]));
 
         let results = if is_ordered {
@@ -917,15 +918,17 @@ impl Applier<Cad, MetaAnalysis> for SortUnpartApplier {
             len_so_far += len;
         }
 
-        let sorted_lists = sorts
-            .into_iter()
-            .zip(items)
-            .map(|(p, list_id)| {
-                let perm = Permutation::from_vec(p);
-                let sort_id = egraph.add(Cad::Permutation(perm));
-                egraph.add(Cad::Sort([sort_id, list_id]))
-            })
-            .collect();
+        let sorted_lists = VecId::new(
+            sorts
+                .into_iter()
+                .zip(items)
+                .map(|(p, list_id)| {
+                    let perm = Permutation::from_vec(p);
+                    let sort_id = egraph.add(Cad::Permutation(perm));
+                    egraph.add(Cad::Sort([sort_id, list_id]))
+                })
+                .collect(),
+        );
         let sorted = Cad::List(sorted_lists);
         let list = egraph.add(sorted);
         let part_id = egraph.add(Cad::Partitioning(part.clone()));
@@ -972,7 +975,7 @@ impl Applier<Cad, MetaAnalysis> for Flatten {
             }
         }
 
-        let new_list = egraph.add(Cad::List(new_ids));
+        let new_list = egraph.add(Cad::List(VecId::new(new_ids)));
         let op = egraph.add(self.op.clone());
         let new_fold = egraph.add(Cad::Fold([op, new_list]));
 

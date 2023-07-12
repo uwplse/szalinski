@@ -1,5 +1,5 @@
-use std::fmt;
 use std::str::FromStr;
+use std::{fmt, sync::Arc};
 
 use egg::*;
 
@@ -16,6 +16,42 @@ pub type Rewrite = egg::Rewrite<Cad, MetaAnalysis>;
 pub type Cost = f64;
 
 pub type Vec3 = (Num, Num, Num);
+
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Clone)]
+pub struct VecId(Arc<Vec<Id>>);
+
+impl LanguageChildren for VecId {
+    fn len(&self) -> usize {
+        self.0.len()
+    }
+    fn can_be_length(_: usize) -> bool {
+        true
+    }
+    fn from_vec(v: Vec<Id>) -> Self {
+        VecId(Arc::new(v))
+    }
+    fn as_slice(&self) -> &[Id] {
+        &self.0
+    }
+    fn as_mut_slice(&mut self) -> &mut [Id] {
+        Arc::make_mut(&mut self.0).as_mut()
+    }
+}
+
+impl VecId {
+    pub fn new(v: Vec<Id>) -> Self {
+        VecId(Arc::new(v))
+    }
+    pub fn as_vec(&self) -> &Vec<Id> {
+        &self.0
+    }
+    pub fn len(&self) -> usize {
+        self.0.len()
+    }
+    pub fn iter(&self) -> impl Iterator<Item = &Id> {
+        self.0.iter()
+    }
+}
 
 #[derive(PartialEq, Eq, Hash, Debug, Clone, PartialOrd, Ord)]
 pub struct ListVar(pub &'static str);
@@ -86,7 +122,7 @@ define_language! {
 
         "Cons" = Cons([Id; 2]),
         "Concat" = Concat([Id; 1]),
-        "List" = List(Vec<Id>),
+        "List" = List(VecId),
 
         "Sort" = Sort([Id; 2]),
         "Unsort" = Unsort([Id; 2]),
@@ -211,7 +247,7 @@ impl Analysis<Cad> for MetaAnalysis {
                 //     .copied();
                 // Some(head.chain(tail).collect())
             }
-            Cad::List(list) => Some(list.clone()),
+            Cad::List(list) => Some(list.as_vec().clone()),
             _ => None,
         };
 
@@ -234,7 +270,7 @@ impl Analysis<Cad> for MetaAnalysis {
 
         if let Some(list) = &eclass.data.list {
             let list = list.clone();
-            let id2 = egraph.add(Cad::List(list));
+            let id2 = egraph.add(Cad::List(VecId::new(list)));
             egraph.union(id, id2);
         }
         let eclass = &egraph[id];
