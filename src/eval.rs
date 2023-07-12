@@ -6,6 +6,7 @@ use egg::Language;
 use egg::RecExpr;
 
 use crate::cad::Cad;
+use crate::cad::VecId;
 
 // macro_rules! rec {
 //     ($op:expr) => {RecExpr::from($op)};
@@ -38,7 +39,7 @@ pub fn remove_empty(expr: &RecExpr<Cad>, p: Id, out: &mut RecExpr<Cad>) -> Optio
                 .iter()
                 .map(|c| remove_empty(expr, *c, out).unwrap_or_else(|| out.add(Cad::Empty)))
                 .collect();
-            Some(out.add(List(args)))
+            Some(out.add(List(VecId::new(args))))
         }
         Cube(args) => {
             let args =
@@ -120,7 +121,7 @@ pub fn remove_empty(expr: &RecExpr<Cad>, p: Id, out: &mut RecExpr<Cad>) -> Optio
                     if non_empty.is_empty() {
                         None
                     } else {
-                        let listexpr = List(non_empty);
+                        let listexpr = List(VecId::new(non_empty));
                         let union_expr = out.add(Union);
                         let listexpr = out.add(listexpr);
                         Some(out.add(Fold([union_expr, listexpr])))
@@ -128,7 +129,7 @@ pub fn remove_empty(expr: &RecExpr<Cad>, p: Id, out: &mut RecExpr<Cad>) -> Optio
                 }
                 Inter => {
                     let args: Option<Vec<Id>> = listargs.collect();
-                    let listexpr = List(args?);
+                    let listexpr = List(VecId::new(args?));
                     let inter = out.add(Inter);
                     let listexpr = out.add(listexpr);
                     Some(out.add(Fold([inter, listexpr])))
@@ -144,7 +145,7 @@ pub fn remove_empty(expr: &RecExpr<Cad>, p: Id, out: &mut RecExpr<Cad>) -> Optio
                     } else {
                         let mut args = vec![first];
                         args.extend(non_empty);
-                        let listexpr = List(args);
+                        let listexpr = List(VecId::new(args));
                         let diff = out.add(Diff);
                         let listexpr = out.add(listexpr.into());
                         Some(out.add(Fold([diff, listexpr])))
@@ -214,12 +215,12 @@ fn mk_vec((x, y, z): (f64, f64, f64), out: &mut RecExpr<Cad>) -> Id {
 }
 
 fn mk_list(exprs: Vec<Id>) -> Cad {
-    Cad::List(exprs)
+    Cad::List(VecId::new(exprs))
 }
 
 fn get_list(expr: &RecExpr<Cad>, list: Id) -> &Vec<Id> {
     match &expr[list] {
-        Cad::List(list) => &list,
+        Cad::List(list) => &list.as_vec(),
         cad => panic!("expected list, got {:?}", cad),
     }
 }
@@ -227,7 +228,7 @@ fn get_list(expr: &RecExpr<Cad>, list: Id) -> &Vec<Id> {
 fn eval_list(cx: Option<&FunCtx>, expr: &RecExpr<Cad>, p: Id, out: &mut RecExpr<Cad>) -> Vec<Id> {
     let list = eval(cx, expr, p, out);
     match &out[list] {
-        Cad::List(list) => list.clone(),
+        Cad::List(list) => list.as_vec().clone(),
         cad => panic!("expected list, got {:?}", cad),
     }
 }
@@ -328,7 +329,7 @@ pub fn eval(cx: Option<&FunCtx>, expr: &RecExpr<Cad>, p: Id, out: &mut RecExpr<C
         }
         Cad::Binop(args) => {
             let args = args.map(|arg| eval(cx, expr, arg, out));
-            let list = out.add(Cad::List(vec![args[1], args[2]]));
+            let list = out.add(Cad::List(VecId::new(vec![args[1], args[2]])));
             out.add(Cad::Fold([args[0], list]))
         }
 
