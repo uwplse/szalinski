@@ -6,7 +6,7 @@ use rand::{prelude::Distribution, thread_rng};
 use std::convert::TryInto;
 
 use crate::{
-    cad::{BlackBox, Cad, EGraph, ListVar},
+    cad::{BlackBox, Cad, EGraph, ListVar, VecId},
     num::Num,
 };
 
@@ -195,9 +195,7 @@ impl CadCtx {
     }
 }
 
-pub struct AntiSubst(Vec<Id>);
-
-type Cache = HashMap<(Id, Id), Vec<(CadCtx, Vec<Num>, Vec<Num>)>>;
+type Cache = HashMap<((Id, Id), bool), Vec<(CadCtx, Vec<Num>, Vec<Num>)>>;
 
 #[derive(Default)]
 pub struct AU {
@@ -209,15 +207,17 @@ impl AU {
         &mut self,
         egraph: &EGraph,
         pair: &(Id, Id),
+        toplevel: bool,
     ) -> &Vec<(CadCtx, Vec<Num>, Vec<Num>)> {
-        let pair = &(egraph.find(pair.0), egraph.find(pair.1));
-        if self.cache.contains_key(pair) {
-            return &self.cache[pair];
+        let pair = (egraph.find(pair.0), egraph.find(pair.1));
+        let cache_entry = (pair, toplevel);
+        if self.cache.contains_key(&cache_entry) {
+            return &self.cache[&cache_entry];
         }
         if pair.0 == pair.1 {
             self.cache
-                .insert(pair.clone(), vec![(CadCtx::Id(pair.0), vec![], vec![])]);
-            return &self.cache[pair];
+                .insert(cache_entry, vec![(CadCtx::Id(pair.0), vec![], vec![])]);
+            return &self.cache[&cache_entry];
         }
         let e1 = &egraph[pair.0];
         let e2 = &egraph[pair.1];
@@ -225,11 +225,11 @@ impl AU {
         if let (Cad::Num(a), Cad::Num(b)) = (&e1.data.best, &e2.data.best) {
             assert!(a != b);
             self.cache
-                .insert(pair.clone(), vec![(CadCtx::Hole, vec![*a], vec![*b])]);
-            return &self.cache[pair];
+                .insert(cache_entry, vec![(CadCtx::Hole, vec![*a], vec![*b])]);
+            return &self.cache[&cache_entry];
         }
 
-        self.cache.insert(pair.clone(), vec![]);
+        self.cache.insert(cache_entry, vec![]);
 
         let ns1 = &e1.nodes;
         let ns2 = &e2.nodes;
@@ -242,7 +242,7 @@ impl AU {
                     .children()
                     .iter()
                     .zip(b.children().iter())
-                    .map(|(a, b)| self.anti_unify_class(egraph, &(*a, *b)).clone())
+                    .map(|(a, b)| self.anti_unify_class(egraph, &(*a, *b), false).clone())
                     .multi_cartesian_product()
                     .take(1)
                     .map(|xs| {
@@ -257,31 +257,35 @@ impl AU {
                         (build_cad_ctx(a, children), args1, args2)
                     });
                 aus.extend(result);
+
                 // make sure to return the result eagerly.
                 // This makes sure AU is very very fast.
                 // This also makes the result poor quality
-                // if aus.len() > 0 {
-                //     break 'outer;
-                // }
+
+                if aus.len() > 0 && !toplevel {
+                    return false;
+                }
             };
+            true
         };
         // TODO: magic number
         if ns1.len() * ns2.len() <= 500 {
-            for a in ns1 {
+            'outer: for a in ns1 {
                 if let Cad::MapI(_) = a {
                     continue;
                 }
 
                 for b in ns2 {
-                    work(a, b);
+                    if !work(a, b) {
+                        break 'outer;
+                    }
                 }
             }
         } else {
             let mut rng = thread_rng();
             let gen_a = rand::distributions::Uniform::new(0, ns1.len());
             let gen_b = rand::distributions::Uniform::new(0, ns2.len());
-            let mut try_times = 0;
-            while try_times < 500 {
+            for _ in 0..500 {
                 let a = &ns1[gen_a.sample(&mut rng)];
                 let b = &ns2[gen_b.sample(&mut rng)];
 
@@ -289,8 +293,9 @@ impl AU {
                     continue;
                 }
 
-                work(a, b);
-                try_times += 1;
+                if !work(a, b) {
+                    break;
+                }
             }
         }
 
@@ -298,8 +303,8 @@ impl AU {
         aus.sort();
         aus.dedup();
 
-        self.cache.insert(pair.clone(), aus);
-        &self.cache[&pair]
+        self.cache.insert(cache_entry, aus);
+        &self.cache[&cache_entry]
     }
 }
 
@@ -412,7 +417,15 @@ impl SolveResult {
             CadCtx::Vec3(templates) => f!(templates, Cad::Vec3),
             CadCtx::Cons(templates) => f!(templates, Cad::Cons),
             CadCtx::Concat(templates) => f!(templates, Cad::Concat),
-            CadCtx::List(templates) => f!(@vec templates, Cad::List),
+            CadCtx::List(templates) => {
+                let ids = VecId::new(
+                    templates
+                        .iter()
+                        .map(|temp| self.assemble_impl(egraph, &temp, arg_index))
+                        .collect_vec(),
+                );
+                egraph.add(Cad::List(ids))
+            }
             CadCtx::Unpolar(templates) => f!(templates, Cad::Unpolar),
             CadCtx::Add(templates) => f!(templates, Cad::Add),
             CadCtx::Sub(templates) => f!(templates, Cad::Sub),

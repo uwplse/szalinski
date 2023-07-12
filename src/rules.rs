@@ -2,6 +2,7 @@ use std::cmp::max;
 use std::{fmt::Debug, str::FromStr};
 
 use crate::au::ArgList;
+use crate::cad::VecId;
 use crate::permute::{Partitioning, Permutation};
 use crate::solve::solve;
 use crate::{
@@ -17,8 +18,13 @@ use std::collections::{BTreeMap, HashMap, HashSet};
 
 fn is_not_zero(var: &'static str) -> impl Fn(&mut EGraph, Id, &Subst) -> bool {
     let var = var.parse().unwrap();
-    let zero = Cad::Num(num(0.0));
-    move |egraph, _, subst| !egraph[subst[var]].nodes.contains(&zero)
+    let zero = num(0.0);
+    move |egraph, _, subst| {
+        egraph[subst[var]]
+            .nodes
+            .iter()
+            .any(|n| matches!(n, Cad::Num(num) if num != &zero))
+    }
 }
 
 // fn is_eq(v1: &'static str, v2: &'static str) -> ConditionEqual<Cad> {
@@ -160,7 +166,10 @@ pub fn rules() -> Vec<Rewrite> {
                "(Affine Trans (Vec3 (* ?a ?x) (* ?b ?y) (* ?c ?z))
               (Affine Scale (Vec3 ?a ?b ?c) ?m))"),
 
-            rw!("trans_scale"; "(Affine Trans (Vec3 ?x ?y ?z) (Affine Scale (Vec3 ?a ?b ?c) ?m))"=> "(Affine Scale (Vec3 ?a ?b ?c) (Affine Trans (Vec3 (/ ?x ?a) (/ ?y ?b) (/ ?z ?c)) ?m))"),
+            rw!("trans_scale"; "(Affine Trans (Vec3 ?x ?y ?z) (Affine Scale (Vec3 ?a ?b ?c) ?m))"=> "(Affine Scale (Vec3 ?a ?b ?c) (Affine Trans (Vec3 (/ ?x ?a) (/ ?y ?b) (/ ?z ?c)) ?m))"
+                if is_not_zero("?a")
+                if is_not_zero("?b")
+                if is_not_zero("?c")),
 
             // primitives
 
@@ -331,7 +340,14 @@ impl Applier<Cad, MetaAnalysis> for Flatten {
     ) -> Vec<Id> {
         fn get_nested_fold<'a>(egraph: &'a EGraph, op: &'a Cad, id: Id) -> Option<&'a [Id]> {
             let is_op = |i| egraph[i].nodes.iter().any(|c| c == op);
-            let get_list = |i| egraph[i].data.list.as_ref().map(Vec::as_slice);
+            let get_list = |i| {
+                egraph[i]
+                    .data
+                    .list
+                    .as_ref()
+                    .map(|l| l.as_vec())
+                    .map(Vec::as_slice)
+            };
             egraph[id]
                 .nodes
                 .iter()
@@ -339,7 +355,7 @@ impl Applier<Cad, MetaAnalysis> for Flatten {
                 .and_then(|n| get_list(n.children()[1]))
         }
 
-        let ids = get_meta_list!(egraph, map[self.list]);
+        let ids = get_meta_list!(egraph, map[self.list]).as_vec();
         let mut new_ids = Vec::new();
         for id in ids {
             match get_nested_fold(egraph, &self.op, *id) {
@@ -348,7 +364,7 @@ impl Applier<Cad, MetaAnalysis> for Flatten {
             }
         }
 
-        let new_list = egraph.add(Cad::List(new_ids));
+        let new_list = egraph.add(Cad::List(VecId::new(new_ids)));
         let op = egraph.add(self.op.clone());
         let new_fold = egraph.add(Cad::Fold([op, new_list]));
 
@@ -370,7 +386,7 @@ pub fn reroll(egraph: &mut EGraph) {
         for subst in &m.substs {
             let root_id = subst[list_var];
             let list = match egraph[root_id].data.list.as_ref() {
-                Some(list) => list.clone(),
+                Some(list) => list.as_vec().clone(),
                 None => continue,
             };
             let list_len = list.len();
@@ -430,7 +446,7 @@ pub fn reroll(egraph: &mut EGraph) {
 
             let mut singleton_part_to_ids = HashMap::new();
             for id in list.iter() {
-                let list_id = egraph.add(Cad::List(vec![*id]));
+                let list_id = egraph.add(Cad::List(VecId::new(vec![*id])));
                 singleton_part_to_ids.insert(*id, list_id);
             }
 
@@ -441,7 +457,7 @@ pub fn reroll(egraph: &mut EGraph) {
                 root_id,
                 singleton_part_to_ids.len(),
                 // TODO: magic number
-                100000,
+                5000,
             );
             eprintln!("search finished");
         }
@@ -510,11 +526,8 @@ fn search_combinations_and_add_impl(
     fuel: &mut i64,
 ) -> bool {
     *fuel -= 1;
-    if *fuel < 0 {
-        return false;
-    }
     let mut inserted = false;
-    if limit != 0 && covered_size != target_size {
+    if *fuel > 0 && limit != 0 && covered_size != target_size {
         // for i in cur_pos..(part_to_ids.len() - todo_size + 1) {
         for i in cur_pos..part_to_ids.len() {
             let (part, id) = &part_to_ids[i];
@@ -569,7 +582,7 @@ fn search_combinations_and_add_impl(
         if result.len() == 1 {
             egraph.union(root_id, result[0]);
         } else {
-            let list_id = egraph.add(Cad::List(result));
+            let list_id = egraph.add(Cad::List(VecId::new(result)));
             let concat_id = egraph.add(Cad::Concat([list_id]));
             egraph.union(root_id, concat_id);
         }
@@ -618,12 +631,15 @@ fn get_au_groups(
     // TODO: don't hard code constants
     // Step 1: compute anti-unification
     let mut templates = HashSet::<CadCtx>::default();
-    if list.len() < 500 {
+    if list.len() < 100 {
         for i in 0..list.len() {
             for j in i + 1..list.len() {
-                let result = au.anti_unify_class(egraph, &(list[i], list[j]));
-                for (cad, _, _) in result {
-                    templates.insert(cad.clone());
+                let result = au.anti_unify_class(egraph, &(list[i], list[j]), true);
+                for (cad, args, _) in result {
+                    // TODO magic number
+                    if args.len() < 40 {
+                        templates.insert(cad.clone());
+                    }
                 }
             }
         }
@@ -633,14 +649,17 @@ fn get_au_groups(
         let mut rng = thread_rng();
         let uniform = rand::distributions::Uniform::new(0, list.len());
         let (mut success_times, mut try_times) = (0, 0);
-        // we want # templates * # parametrization to be close to 100_000
-        let template_limit = max(100_000 / list.len(), 5);
-        while success_times < template_limit && try_times < 100_000 {
+        // we want # templates * # parametrization to be close to 10_000
+        let template_limit = max(10_000 / list.len(), 5);
+        while success_times < template_limit && try_times < 10_000 {
             let i = uniform.sample(&mut rng);
             let j = uniform.sample(&mut rng);
-            let result = au.anti_unify_class(egraph, &(list[i], list[j]));
-            for (cad, _, _) in result {
-                templates.insert(cad.clone());
+            let result = au.anti_unify_class(egraph, &(list[i], list[j]), true);
+            for (cad, args, _) in result {
+                // TODO magic number
+                if args.len() < 40 {
+                    templates.insert(cad.clone());
+                }
                 success_times += 1;
             }
             try_times += 1;
@@ -649,25 +668,16 @@ fn get_au_groups(
 
     eprintln!(
         "anti_unification done, templates found: {}",
-        au_groups.len()
+        templates.len()
     );
 
     for cad in templates {
-        // dbg!(&cad);
         let mut map = HashMap::<Id, Vec<Num>>::default();
         for i in 0..list.len() {
-            // let result = cad.get_params(egraph, list[i]);
-            // if let Some(result) = result {
-            //     map.entry(list[i]).or_insert(result);
-            // }
             let results = cad.get_params(egraph, list[i]);
-            // BIG TODO: this will only get you one parameter
             if results.len() > 0 {
                 map.entry(list[i]).or_insert(results[0].clone());
             }
-            // for result in results {
-            //     map.entry(list[i]).or_insert(result);
-            // }
         }
         if !map.is_empty() {
             au_groups.insert(cad, map);
