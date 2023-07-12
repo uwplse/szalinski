@@ -5,7 +5,7 @@ use indexmap::{indexset, IndexMap};
 
 use crate::{
     au::{CadCtx, SolveResult},
-    cad::{Cad, EGraph, ListVar as LV},
+    cad::{Cad, EGraph, ListVar as LV, VecId},
     num::Num,
     permute::Permutation,
 };
@@ -64,7 +64,6 @@ impl Formula {
                 }
             }
             Formula::Deg2(f) => {
-                assert!(!approx(f.a, 0.));
                 let ii = eadd!(e, Mul, i, i);
                 let ax2 = if approx(f.a, 1.) {
                     ii
@@ -227,7 +226,7 @@ fn solve_and_add(
             .iter()
             .map(|num| egraph.add(Cad::Num(*num)))
             .collect_vec();
-        let list = egraph.add(Cad::List(children));
+        let list = egraph.add(Cad::List(VecId::new(children)));
         inserted[*index] = Some(egraph.add(Cad::GetAt([list, var_id])));
     }
 
