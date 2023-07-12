@@ -1,12 +1,10 @@
 use std::collections::HashMap;
 use std::fmt;
-use std::mem::discriminant;
 
 use egg::Id;
 use egg::Language;
 use egg::RecExpr;
 
-use crate::cad::println_cad;
 use crate::cad::Cad;
 
 // macro_rules! rec {
