@@ -81,6 +81,7 @@ define_language! {
         "Fold" = Fold([Id; 2]),
         "Affine" = Affine([Id; 3]),
         "Binop" = Binop([Id; 3]),
+        "GetAt" = GetAt([Id; 2]),
 
         "Vec3" = Vec3([Id; 3]),
 
@@ -305,6 +306,7 @@ impl egg::CostFunction<Cad> for CostFn {
             Sort(_) | Unsort(_) | Part(_) | Unpart(_) => BIG,
             Partitioning(_) => BIG,
             Permutation(_) => BIG,
+            GetAt(_) => 1.0,
         };
 
         enode.fold(cost, |sum, i| sum + costs(i))
