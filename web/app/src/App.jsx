@@ -4,7 +4,6 @@ import Split from "react-split";
 import CodeEditor from "./CodeEditor.jsx";
 import Renderer from "./Renderer";
 import { cardFramer } from "./cardFramer";
-import RunButtons from "./RunButtons.jsx";
 
 export default function App(props) {
   const NUM_PANES = 3;
@@ -36,11 +35,11 @@ export default function App(props) {
   };
 
   const buttons = [
-    // {
-    //   id: "szalinski",
-    //   label: "Run Szalinski",
-    //   onClick: () => onRunClick("szalinski"),
-    // },
+    {
+      id: "szalinski",
+      label: "Run Szalinski",
+      onClick: () => onRunClick("szalinski"),
+    },
     { id: "au", label: "Run AU", onClick: () => onRunClick("AU") },
   ];
 
