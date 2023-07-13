@@ -18,18 +18,14 @@ export default function App(props) {
 
   const runSynthesis = (csgCode) => {
     try {
-      console.log("starting synthesis");
       let x = wasm.synthesize_caddy(csgCode);
-      console.log("ending synthesis");
-      console.log(x);
       return x;
     } catch (e) {
       console.warn(e);
     }
   };
   const onRunClick = () => {
-     console.log("before calling runSynthesis"); 
-     setCaddy(runSynthesis(csg) || "");
+    setCaddy(runSynthesis(csg) || "");
   };
 
   const onDrag = (widths) => {
