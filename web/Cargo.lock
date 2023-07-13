@@ -679,6 +679,7 @@ dependencies = [
  "egg",
  "szalinski-egg",
  "wasm-bindgen",
+ "web-sys",
 ]
 
 [[package]]
