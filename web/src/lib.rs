@@ -12,5 +12,6 @@ pub fn caddy_to_scad(s: String) -> String {
 #[wasm_bindgen]
 pub fn synthesize_caddy(s: String) -> String {
     let report = synthesize::optimize_with_au(s);
-    report.final_expr
+    report.final_scad
+    
 }

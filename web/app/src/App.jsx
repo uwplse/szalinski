@@ -18,13 +18,18 @@ export default function App(props) {
 
   const runSynthesis = (csgCode) => {
     try {
-      return wasm.synthesize_caddy(csgCode);
+      console.log("starting synthesis");
+      let x = wasm.synthesize_caddy(csgCode);
+      console.log("ending synthesis");
+      console.log(x);
+      return x;
     } catch (e) {
       console.warn(e);
     }
   };
   const onRunClick = () => {
-    setCaddy(runSynthesis(csg) || "");
+     console.log("before calling runSynthesis"); 
+     setCaddy(runSynthesis(csg) || "");
   };
 
   const onDrag = (widths) => {
@@ -36,11 +41,11 @@ export default function App(props) {
   };
 
   const buttons = [
-    // {
-    //   id: "szalinski",
-    //   label: "Run Szalinski",
-    //   onClick: () => onRunClick("szalinski"),
-    // },
+    {
+      id: "szalinski",
+      label: "Run Szalinski",
+      onClick: () => onRunClick("szalinski"),
+    },
     { id: "au", label: "Run AU", onClick: () => onRunClick("AU") },
   ];
 
