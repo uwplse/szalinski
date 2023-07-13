@@ -3,8 +3,8 @@ use std::time::{Duration};
 use serde::Serialize;
 use egg::*;
 use std::default::Default;
-use crate::cad::{Cad, CostFn, MetaAnalysis, Cost, Rewrite};
-use crate::eval::remove_empty;
+use crate::cad::{Cad, CostFn, MetaAnalysis, Cost, Rewrite, self};
+use crate::eval::{remove_empty, Scad, self};
 use crate::rules::{reroll, pre_rules, rules};
 use std::mem::forget;
 
@@ -178,7 +178,6 @@ pub fn optimize_with_au(input: String) -> RunResult {
     );
 
     // println!("Best ({}): {}", best.0, best.1.pretty(80));
-
     let report = RunResult {
         initial_expr: initial_expr.pretty(80),
         initial_cost,
@@ -186,8 +185,8 @@ pub fn optimize_with_au(input: String) -> RunResult {
         final_cost: best.0,
         final_expr: best.1.pretty(80),
         // extract_time,
-        final_scad: "".into(),
-        // final_scad: format!("{}", Scad(&best.1)),
+        //final_scad: "".into(),
+        final_scad: format!("{}", eval::Scad::new(&best.1)),
         stop_reason: runner.stop_reason.clone().unwrap(),
         ast_size: ast_size(&best.1),
         ast_depth: ast_depth(&best.1),
