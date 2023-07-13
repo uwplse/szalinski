@@ -1,5 +1,6 @@
 use std::fmt;
 use std::str::FromStr;
+use std::sync::Arc;
 
 use egg::*;
 
@@ -48,6 +49,42 @@ impl fmt::Display for BlackBox {
     }
 }
 
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Clone)]
+pub struct VecId(Arc<Vec<Id>>);
+
+impl LanguageChildren for VecId {
+    fn len(&self) -> usize {
+        self.0.len()
+    }
+    fn can_be_length(_: usize) -> bool {
+        true
+    }
+    fn from_vec(v: Vec<Id>) -> Self {
+        VecId(Arc::new(v))
+    }
+    fn as_slice(&self) -> &[Id] {
+        &self.0
+    }
+    fn as_mut_slice(&mut self) -> &mut [Id] {
+        Arc::make_mut(&mut self.0).as_mut()
+    }
+}
+
+impl VecId {
+    pub fn new(v: Vec<Id>) -> Self {
+        VecId(Arc::new(v))
+    }
+    pub fn as_vec(&self) -> &Vec<Id> {
+        &self.0
+    }
+    pub fn len(&self) -> usize {
+        self.0.len()
+    }
+    pub fn iter(&self) -> impl Iterator<Item = &Id> {
+        self.0.iter()
+    }
+}
+
 define_language! {
     pub enum Cad {
         "Cube" = Cube([Id; 2]),
@@ -82,7 +119,7 @@ define_language! {
 
         "Cons" = Cons([Id; 2]),
         "Concat" = Concat([Id; 1]),
-        "List" = List(Vec<Id>),
+        "List" = List(VecId),
 
         // "Sort" = Sort([Id; 2]),
         "Unsort" = Unsort([Id; 2]),
@@ -102,7 +139,6 @@ define_language! {
     }
 }
 
-
 #[derive(Debug, Default)]
 pub struct MetaAnalysis {
     pub checking_enabled: bool,
@@ -110,7 +146,7 @@ pub struct MetaAnalysis {
 
 #[derive(Debug, Clone)]
 pub struct Meta {
-    pub list: Option<Vec<Id>>,
+    pub list: Option<VecId>,
     pub cost: Cost,
     pub best: Cad,
 }
@@ -195,7 +231,7 @@ impl Analysis<Cad> for MetaAnalysis {
         let cost = CostFn.cost(enode, |id| egraph[id].data.cost);
 
         let list = match enode {
-            Cad::Nil => Some(vec![]),
+            Cad::Nil => Some(VecId::new(vec![])),
             Cad::Cons(args) => {
                 assert_eq!(args.len(), 2);
                 let head = std::iter::once(args[0]);
@@ -203,7 +239,7 @@ impl Analysis<Cad> for MetaAnalysis {
                 tail_meta
                     .list
                     .as_ref()
-                    .map(|tail| head.chain(tail.iter().copied()).collect())
+                    .map(|tail| VecId::new(head.chain(tail.as_vec().iter().copied()).collect()))
                 // let tail = tail_meta
                 //     .list
                 //     .as_ref()
@@ -281,7 +317,7 @@ impl egg::CostFunction<Cad> for CostFn {
         let cost = match enode {
             Num(n) => {
                 let s = format!("{}", n);
-                0.000001 * s.len() as Cost
+                1. + (0.000001 * s.len() as Cost)
             }
             Bool(_) | ListVar(_) => SMALL,
             Add(_args) | Sub(_args) | Mul(_args) | Div(_args) => SMALL,
