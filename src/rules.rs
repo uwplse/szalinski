@@ -637,7 +637,7 @@ fn get_au_groups(
                 let result = au.anti_unify_class(egraph, &(list[i], list[j]), true);
                 for (cad, args, _) in result {
                     // TODO magic number
-                    if args.len() < 40 {
+                    if args.len() <= 20 {
                         templates.insert(cad.clone());
                     }
                 }
@@ -657,7 +657,7 @@ fn get_au_groups(
             let result = au.anti_unify_class(egraph, &(list[i], list[j]), true);
             for (cad, args, _) in result {
                 // TODO magic number
-                if args.len() < 40 {
+                if args.len() <= 20 {
                     templates.insert(cad.clone());
                 }
                 success_times += 1;
