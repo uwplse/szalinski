@@ -506,3 +506,44 @@ impl<'a> Display for Scad<'a> {
         fmt_impl(p, &normalform)
     }
 }
+
+mod test {
+    use egg::RecExpr;
+
+    use crate::{cad::Cad, eval::Scad};
+
+    #[test]
+    fn test_caddy_to_scad() {
+        let input = "(Fold
+            Union
+            (List
+                (Binop
+                Inter
+                (Binop
+                    Diff
+                    (Affine Trans (Vec3 0 0 50) (Sphere 52.5 (Vec3 0 12 2)))
+                    (Fold
+                    Union
+                    (Concat
+                        (List
+                        (MapI
+                            6
+                            6
+                            (Hull
+                            (Affine Trans (Vec3 0 0 60) (Sphere 1 (Vec3 0 12 2)))
+                            (Affine
+                                Trans
+                                (Vec3 (+ -125 (* 50 i0)) (+ -125 (* 50 i1)) 0)
+                                (Cube (Vec3 33 33 0.1) true))))
+                        (List (Affine Trans (Vec3 0 0 50) (Sphere 50 (Vec3 0 12 2))))))))
+                (Hull
+                    (Affine Trans (Vec3 0 0 50) (Sphere 1 (Vec3 0 12 2)))
+                    (Affine Trans (Vec3 0 0 4) (Cube (Vec3 650 650 8) true))))
+                (Cube (Vec3 40 15 2) true)
+                (Cube (Vec3 15 40 2) true)))";
+        let caddy: RecExpr<Cad> = input.parse().expect("Couldn't parse input");
+        println!("{:?}", caddy);
+        let scad = Scad::new(&caddy);
+        println!("{}", scad);
+    }
+}
