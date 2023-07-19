@@ -205,7 +205,7 @@ fn to_cartesian(v: (f64, f64, f64)) -> (f64, f64, f64) {
     (x, y, z)
 }
 
-type FunCtx = HashMap<&'static str, usize>;
+type FunCtx = HashMap<String, usize>;
 
 fn mk_vec((x, y, z): (f64, f64, f64), out: &mut RecExpr<Cad>) -> Id {
     let x = out.add(Cad::Num(x.into()));
@@ -244,7 +244,7 @@ pub fn eval(cx: Option<&FunCtx>, expr: &RecExpr<Cad>, p: Id, out: &mut RecExpr<C
         Cad::Bool(_) => out.add(e),
         Cad::Num(_) => out.add(e),
         Cad::ListVar(v) => {
-            let n = cx.unwrap()[v.0];
+            let n = cx.unwrap()[&v.0];
             out.add(Cad::Num(n.into()))
         }
         Cad::Add(args) => {
@@ -387,26 +387,26 @@ pub fn eval(cx: Option<&FunCtx>, expr: &RecExpr<Cad>, p: Id, out: &mut RecExpr<C
             match bounds.len() {
                 1 => {
                     for i in 0..bounds[0] {
-                        ctx.insert("i", i);
+                        ctx.insert("i0".into(), i);
                         vec.push(eval(Some(&ctx), expr, body, out));
                     }
                 }
                 2 => {
                     for i in 0..bounds[0] {
-                        ctx.insert("i", i);
+                        ctx.insert("i0".into(), i);
                         for j in 0..bounds[1] {
-                            ctx.insert("j", j);
+                            ctx.insert("i1".into(), j);
                             vec.push(eval(Some(&ctx), expr, body, out));
                         }
                     }
                 }
                 3 => {
                     for i in 0..bounds[0] {
-                        ctx.insert("i", i);
+                        ctx.insert("i0".into(), i);
                         for j in 0..bounds[1] {
-                            ctx.insert("j", j);
+                            ctx.insert("i1".into(), j);
                             for k in 0..bounds[2] {
-                                ctx.insert("k", k);
+                                ctx.insert("i2".into(), k);
                                 vec.push(eval(Some(&ctx), expr, body, out));
                             }
                         }
@@ -509,4 +509,39 @@ impl<'a> fmt::Display for Scad<'a> {
         let p = eval(None, self.0, self.1, &mut normalform);
         fmt_impl(p, &normalform)
     }
+}
+
+#[test]
+fn test_caddy_to_scad() {
+    let input = "(Fold
+            Union
+            (List
+                (Binop
+                Inter
+                (Binop
+                    Diff
+                    (Affine Trans (Vec3 0 0 50) (Sphere 52.5 (Vec3 0 12 2)))
+                    (Fold
+                    Union
+                    (Concat
+                        (List
+                        (MapI
+                            6
+                            6
+                            (Hull
+                            (Affine Trans (Vec3 0 0 60) (Sphere 1 (Vec3 0 12 2)))
+                            (Affine
+                                Trans
+                                (Vec3 (+ -125 (* 50 i0)) (+ -125 (* 50 i1)) 0)
+                                (Cube (Vec3 33 33 0.1) true))))
+                        (List (Affine Trans (Vec3 0 0 50) (Sphere 50 (Vec3 0 12 2))))))))
+                (Hull
+                    (Affine Trans (Vec3 0 0 50) (Sphere 1 (Vec3 0 12 2)))
+                    (Affine Trans (Vec3 0 0 4) (Cube (Vec3 650 650 8) true))))
+                (Cube (Vec3 40 15 2) true)
+                (Cube (Vec3 15 40 2) true)))";
+    let caddy: RecExpr<Cad> = input.parse().expect("Couldn't parse input");
+    println!("{:?}", caddy);
+    let scad = Scad::new(&caddy);
+    println!("{}", scad);
 }
