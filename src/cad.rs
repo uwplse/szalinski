@@ -54,15 +54,14 @@ impl VecId {
 }
 
 #[derive(PartialEq, Eq, Hash, Debug, Clone, PartialOrd, Ord)]
-pub struct ListVar(pub &'static str);
+pub struct ListVar(pub String);
 impl FromStr for ListVar {
     type Err = ();
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "i" => Ok(ListVar("i")),
-            "j" => Ok(ListVar("j")),
-            "k" => Ok(ListVar("k")),
-            _ => Err(()),
+        if s.starts_with("i") && s[1..].parse::<usize>().is_ok() {
+            Ok(ListVar(s.into()))
+        } else {
+            Err(())
         }
     }
 }
