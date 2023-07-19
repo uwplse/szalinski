@@ -573,7 +573,7 @@ fn search_combinations_and_add_impl(
         for (part_id, id) in singleton_part_to_ids {
             if cur_buffer
                 .iter()
-                .all(|id| covered_by.contains_key(part_id) && !covered_by[part_id].contains(id))
+                .all(|id| !covered_by.contains_key(part_id) || !covered_by[part_id].contains(id))
             {
                 result.push(*id);
             }
