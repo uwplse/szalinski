@@ -444,11 +444,11 @@ impl<'a> fmt::Display for Scad<'a> {
             match expr {
                 Cad::Num(float) => write!(f, "{}", float),
                 Cad::Bool(b) => write!(f, "{}", b),
-                Cad::Vec3(children) => write!(f, "[{}, {}, {}]", children[0], children[1], children[2]),
-                Cad::Add(children) => write!(f, "{} + {}", children[0], children[1]),
-                Cad::Sub(children) => write!(f, "{} - {}", children[0], children[1]),
-                Cad::Mul(children) => write!(f, "{} * {}", children[0], children[1]),
-                Cad::Div(children) => write!(f, "{} / {}", children[0], children[1]),
+                Cad::Vec3(_) => write!(f, "[{}, {}, {}]", child(0), child(1), child(2)),
+                Cad::Add(_) => write!(f, "{} + {}", child(0), child(1)),
+                Cad::Sub(_) => write!(f, "{} - {}", child(0), child(1)),
+                Cad::Mul(_) => write!(f, "{} * {}", child(0), child(1)),
+                Cad::Div(_) => write!(f, "{} / {}", child(0), child(1)),
                 Cad::Empty => writeln!(f, "sphere(r=0);"),
                 Cad::Cube(_) => writeln!(f, "cube({}, center={});", child(0), child(1)),
                 Cad::Sphere(_) => writeln!(
