@@ -161,9 +161,9 @@ fn solve_and_add(
         .collect();
 
     let vars = &[
-        Cad::ListVar(LV("i")),
-        Cad::ListVar(LV("j")),
-        Cad::ListVar(LV("k")),
+        Cad::ListVar(LV("i0".into())),
+        Cad::ListVar(LV("i1".into())),
+        Cad::ListVar(LV("i2".into())),
     ];
     let mut inserted = vec![None; 3];
 
