@@ -4,6 +4,7 @@ use std::fmt::{Display, Formatter, Result};
 use egg::Id;
 use egg::Language;
 use egg::RecExpr;
+use itertools::Itertools;
 
 use crate::cad::{Cad, VecId};
 
@@ -226,7 +227,7 @@ fn get_list(expr: &RecExpr<Cad>, list: Id) -> &Vec<Id> {
 
 fn eval_list(cx: Option<&FunCtx>, expr: &RecExpr<Cad>, p: Id, out: &mut RecExpr<Cad>) -> Vec<Id> {
     let list = eval(cx, expr, p, out);
-    match &expr[list] {
+    match &out[list] {
         Cad::List(list) => list.as_vec().clone(),
         cad => panic!("expected list, got {:?}", cad),
     }
@@ -377,45 +378,25 @@ pub fn eval(cx: Option<&FunCtx>, expr: &RecExpr<Cad>, p: Id, out: &mut RecExpr<C
             out.add(list)
         }
         Cad::MapI(args) => {
-            let args: Vec<_> = args.iter().map(|arg| eval(cx, expr, *arg, out)).collect();
             let body = *args.last().unwrap();
-            let bounds: Vec<usize> = args[..args.len() - 1]
+            let args: Vec<_> = args[0..args.len() - 1]
                 .iter()
-                .map(|n| get_num(out, *n) as usize)
+                .map(|arg| eval(cx, expr, *arg, out))
                 .collect();
+            let bounds: Vec<usize> = args.iter().map(|n| get_num(out, *n) as usize).collect();
             let mut ctx = HashMap::new();
             let mut vec = Vec::new();
-            match bounds.len() {
-                1 => {
-                    for i in 0..bounds[0] {
-                        ctx.insert("i", i);
-                        vec.push(body);
-                    }
+            for bounds in bounds
+                .iter()
+                .map(|bound| 0..*bound)
+                .multi_cartesian_product()
+            {
+                for (i, value) in bounds.iter().enumerate() {
+                    ctx.insert(format!("i{}", i), *value);
                 }
-                2 => {
-                    for i in 0..bounds[0] {
-                        ctx.insert("i", i);
-                        for j in 0..bounds[1] {
-                            ctx.insert("j", j);
-                            vec.push(body);
-                        }
-                    }
-                }
-                3 => {
-                    for i in 0..bounds[0] {
-                        ctx.insert("i", i);
-                        for j in 0..bounds[1] {
-                            ctx.insert("j", j);
-                            for k in 0..bounds[2] {
-                                ctx.insert("k", k);
-                                vec.push(body);
-                            }
-                        }
-                    }
-                }
-                _ => unimplemented!(),
+                let body = eval(Some(&ctx), expr, body, out);
+                vec.push(body);
             }
-
             out.add(mk_list(vec))
         }
         cad => panic!("can't eval({:?})", cad),
