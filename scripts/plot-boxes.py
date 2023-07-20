@@ -29,10 +29,10 @@ def improvement_before(j, secs):
 if __name__ == '__main__':
     names = {
         'Slightly Perturbed': '/**/*.normal.json',
-        'Slightly Perturbed\n1 second timeout': '/**/*.normal.json',
+        # 'Slightly Perturbed\n1 second timeout': '/**/*.normal.json',
         'Perturbed': '/**/*.perturb.json',
-        'Perturbed\nNo InvTrans': '/**/*.perturb-noinv.json',
-        'Perturbed\nNo CAD': '/**/*.perturb-nocad.json',
+        # 'Perturbed\nNo InvTrans': '/**/*.perturb-noinv.json',
+        # 'Perturbed\nNo CAD': '/**/*.perturb-nocad.json',
     }
 
     all_data = {}
