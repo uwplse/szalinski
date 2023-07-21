@@ -1,13 +1,12 @@
-use log::*;
-use std::time::{Duration};
-use serde::Serialize;
+use crate::cad::{Cad, Cost, CostFn, MetaAnalysis, Rewrite};
+use crate::eval::{remove_empty, Scad};
+use crate::rules::{pre_rules, reroll, rules};
 use egg::*;
+use log::*;
+use serde::Serialize;
 use std::default::Default;
-use crate::cad::{Cad, CostFn, MetaAnalysis, Cost, Rewrite};
-use crate::eval::remove_empty;
-use crate::rules::{reroll, pre_rules, rules};
 use std::mem::forget;
-
+use std::time::Duration;
 
 #[derive(Serialize)]
 pub struct RunResult {
@@ -186,19 +185,18 @@ pub fn optimize_with_au(input: String) -> RunResult {
         final_cost: best.0,
         final_expr: best.1.pretty(80),
         // extract_time,
-        final_scad: "".into(),
-        // final_scad: format!("{}", Scad(&best.1)),
+        // final_scad: "".into(),
+        final_scad: format!("{}", Scad::new(&best.1)),
         stop_reason: runner.stop_reason.clone().unwrap(),
         ast_size: ast_size(&best.1),
         ast_depth: ast_depth(&best.1),
         n_mapis: n_mapis(&best.1),
         depth_under_mapis: depth_under_mapis(&best.1),
     };
-    
+
     forget(runner);
 
-    return report
+    return report;
     // let dot = runner.egraph.dot();
     // dot.to_pdf("out.pdf").unwrap();
-
 }
