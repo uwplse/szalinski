@@ -433,25 +433,32 @@ impl<'a> Display for Scad<'a> {
                 Cad::Div(_) => write!(f, "{} / {}", child(0), child(1)),
                 Cad::Empty => writeln!(f, "sphere(r=0);"),
                 Cad::Cube(_) => writeln!(f, "cube({}, center={});", child(0), child(1)),
-                Cad::Sphere(_) => writeln!(
-                    f,
-                    "sphere(r = {}, $fn = {}, $fa = {}, $fs = {});",
-                    child(0),
-                    get_vec3_nums(out, arg(1)).0,
-                    get_vec3_nums(out, arg(1)).1,
-                    get_vec3_nums(out, arg(1)).2
-                ),
-                Cad::Cylinder(_) => writeln!(
-                    f,
-                    "cylinder(h = {}, r1 = {}, r2 = {}, $fn = {}, $fa = {}, $fs = {}, center = {});",
-                    get_vec3_nums(out, arg(0)).0,
-                    get_vec3_nums(out, arg(0)).1,
-                    get_vec3_nums(out, arg(0)).2,
-                    get_vec3_nums(out, arg(1)).0,
-                    get_vec3_nums(out, arg(1)).1,
-                    get_vec3_nums(out, arg(1)).2,
-                    child(2),
-                ),
+                Cad::Sphere(args) => {
+                    let Cad::Vec3(vec3) = out[args[1]] else {panic!()};
+                    writeln!(
+                        f,
+                        "sphere(r = {}, $fn = {}, $fa = {}, $fs = {});",
+                        child(0),
+                        Scad(&out, vec3[0]),
+                        Scad(&out, vec3[1]),
+                        Scad(&out, vec3[2])
+                    )
+                }
+                Cad::Cylinder(args) => {
+                    let Cad::Vec3(v0) = out[args[0]] else {panic!()};
+                    let Cad::Vec3(v1) = out[args[1]] else {panic!()};
+                    writeln!(
+                        f,
+                        "cylinder(h = {}, r1 = {}, r2 = {}, $fn = {}, $fa = {}, $fs = {}, center = {});",
+                        Scad(&out, v0[0]),
+                        Scad(&out, v0[1]),
+                        Scad(&out, v0[2]),
+                        Scad(&out, v1[0]),
+                        Scad(&out, v1[1]),
+                        Scad(&out, v1[2]),
+                        child(2),
+                    )
+                }
                 // Cad::Hexagon => writeln!(f, "cylinder();"),
                 Cad::Hull(_) => {
                     write!(f, "hull() {{")?;
@@ -471,10 +478,11 @@ impl<'a> Display for Scad<'a> {
                 Cad::Diff => write!(f, "difference"),
                 Cad::Fold(args) => {
                     if let Cad::Diff = out[args[0]] {
-                        for cad in out[arg(1)].children() {
+                        for cad in out[arg(1)].children().split_last().unwrap().1.iter() {
                             writeln!(f, "difference () {{ {}", Scad(out, *cad))?;
                         }
-                        for _ in 0..out[arg(1)].children().len() {
+                        writeln!(f, "{}", Scad(out, *out[arg(1)].children().last().unwrap()))?;
+                        for _ in 1..out[arg(1)].children().len() {
                             writeln!(f, "}}")?;
                         }
                         Ok(())
@@ -494,7 +502,7 @@ impl<'a> Display for Scad<'a> {
                     write!(f, "}}")
                 }
                 Cad::MapI(args) => {
-                    for (i, bound) in args[0..args.len()-1].iter().enumerate() {
+                    for (i, bound) in args[0..args.len() - 1].iter().enumerate() {
                         write!(f, "for (i{i} = [0:{}-1]) {{ ", Scad(out, *bound))?;
                     }
                     write!(f, "{}", Scad(out, *args.last().unwrap()))?;
