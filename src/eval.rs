@@ -510,6 +510,12 @@ impl<'a> Display for Scad<'a> {
                     }
                     write!(f, "]")
                 }
+                Cad::Binop(_) => {
+                    writeln!(f, "{} () {{", child(0))?;
+                    write!(f, "  {}", child(1))?;
+                    write!(f, "  {}", child(2))?;
+                    write!(f, "}}")
+                }
                 cad => panic!("TODO: {:?}", cad),
             }
         };
