@@ -483,14 +483,41 @@ impl<'a> Display for Scad<'a> {
                     }
                     write!(f, "}}")
                 }
-                // TODO: getAt
+                Cad::MapI(args) => {
+                    for (i, bound) in args[0..args.len()-1].iter().enumerate() {
+                        write!(f, "for (i{i} = [0:{}-1]) {{ ", Scad(out, *bound))?;
+                    }
+                    write!(f, "{}", Scad(out, *args.last().unwrap()))?;
+                    for _ in 0..args.len() - 1 {
+                        write!(f, " }}")?;
+                    }
+                    Ok(())
+                }
+                Cad::GetAt(args) => {
+                    write!(f, "({})[{}]", Scad(out, args[0]), Scad(out, args[1]))
+                }
+                Cad::ListVar(v) => {
+                    write!(f, "{}", v.0)
+                }
+                Cad::List(l) => {
+                    write!(f, "[")?;
+                    let l = l.as_vec();
+                    if l.len() > 0 {
+                        write!(f, "{}", Scad(out, l[0]))?;
+                        for id in l[1..].iter() {
+                            write!(f, ", {}", Scad(out, *id))?;
+                        }
+                    }
+                    write!(f, "]")
+                }
                 cad => panic!("TODO: {:?}", cad),
             }
         };
         // may need to shrink expr to match self.1
-        let mut normalform = RecExpr::from(vec![]);
-        let p = eval(None, self.0, self.1, &mut normalform);
-        fmt_impl(p, &normalform)
+        // let mut normalform = RecExpr::from(vec![]);
+        // let p = eval(None, self.0, self.1, &mut normalform);
+        // fmt_impl(p, &normalform)
+        fmt_impl(self.1, self.0)
     }
 }
 

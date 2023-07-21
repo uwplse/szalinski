@@ -384,8 +384,9 @@ pub fn reroll(egraph: &mut EGraph) {
 
     for m in matches {
         for subst in &m.substs {
-            let root_id = subst[list_var];
-            let list = match egraph[root_id].data.list.as_ref() {
+            let root_id = m.eclass;
+            let list_id = subst[list_var];
+            let list = match egraph[list_id].data.list.as_ref() {
                 Some(list) => list.as_vec().clone(),
                 None => continue,
             };
@@ -583,8 +584,9 @@ fn search_combinations_and_add_impl(
             egraph.union(root_id, result[0]);
         } else {
             let list_id = egraph.add(Cad::List(VecId::new(result)));
-            let concat_id = egraph.add(Cad::Concat([list_id]));
-            egraph.union(root_id, concat_id);
+            let union_id = egraph.add(Cad::Union);
+            let union_id = egraph.add(Cad::Fold([union_id, list_id]));
+            egraph.union(root_id, union_id);
         }
     }
     return true;
