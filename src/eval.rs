@@ -469,12 +469,22 @@ impl<'a> Display for Scad<'a> {
                 Cad::Union => write!(f, "union"),
                 Cad::Inter => write!(f, "intersection"),
                 Cad::Diff => write!(f, "difference"),
-                Cad::Fold(_) => {
-                    writeln!(f, "{} () {{", child(0))?;
-                    for cad in out[arg(1)].children() {
-                        write!(f, "  {}", Scad(out, *cad))?;
+                Cad::Fold(args) => {
+                    if let Cad::Diff = out[args[0]] {
+                        for cad in out[arg(1)].children() {
+                            writeln!(f, "difference () {{ {}", Scad(out, *cad))?;
+                        }
+                        for _ in 0..out[arg(1)].children().len() {
+                            writeln!(f, "}}")?;
+                        }
+                        Ok(())
+                    } else {
+                        writeln!(f, "{} () {{", child(0))?;
+                        for cad in out[arg(1)].children() {
+                            write!(f, "  {}", Scad(out, *cad))?;
+                        }
+                        write!(f, "}}")
                     }
-                    write!(f, "}}")
                 }
                 Cad::BlackBox(b, _) => {
                     writeln!(f, "{} {{", b)?;
