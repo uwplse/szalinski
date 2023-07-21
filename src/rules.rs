@@ -447,8 +447,8 @@ pub fn reroll(egraph: &mut EGraph) {
 
             let mut singleton_part_to_ids = HashMap::new();
             for id in list.iter() {
-                let list_id = egraph.add(Cad::List(VecId::new(vec![*id])));
-                singleton_part_to_ids.insert(*id, list_id);
+                // let list_id = egraph.add(Cad::List(VecId::new(vec![*id])));
+                singleton_part_to_ids.insert(*id, *id);
             }
 
             search_combinations_and_add(
