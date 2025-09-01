@@ -1,5 +1,6 @@
 Here we provide instructions on how to install Szalinski, run it,
   and change the rules and features of the Caddy language.
+If you are interested to use Szalinski, please reach out to us!
 
 ## Setup instructions
 
@@ -33,13 +34,9 @@ install `numpy` by typing `pip3 install numpy` and `matplotlib` by typing
 
 
 ## Running the tools
-Navigate to the directory that contains the `Makefile` and
-type `make out/aec-table2/table2.csv`.
-This should take about 3 minutes.
-This will reproduce `Table 2` from the paper.
-To view the content of the table, type
-`cat out/aec-table2/table2.csv | column -t -s,` and compare the numbers
-with `Table 2` in the paper.
+- First compile Szalinski by running `cargo build --release`
+- To optimize a 3D model (a `.csexp` file) with Szalinski, run `target/release/optimize path/to/foo.csexp path/to/out/foo.json`
+- You can also navigate to the `Makefile` and learn more about how to convert an SCAD file to a `.csexp` file.
 
 
 ## Changing Caddy and modifying the rules
