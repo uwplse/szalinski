@@ -17,13 +17,6 @@ fn f(u: usize) -> f64 {
 }
 
 #[derive(Debug, PartialEq)]
-pub struct VecFormula {
-    x: Formula,
-    y: Formula,
-    z: Formula,
-}
-
-#[derive(Debug, PartialEq)]
 enum Formula {
     Deg1(Deg1),
     Deg2(Deg2),

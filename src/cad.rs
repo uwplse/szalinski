@@ -177,7 +177,7 @@ impl Analysis<Cad> for MetaAnalysis {
 
         did_merge
     }
-    fn make(egraph: &EGraph, enode: &Cad) -> Self::Data {
+    fn make(egraph: &mut EGraph, enode: &Cad, _: Id) -> Self::Data {
         // let const_args: Option<Vec<Cad>> = enode
         //     .map_children(|&id| {
         //         let e: &Cad = egraph[id].data.best.as_ref();
